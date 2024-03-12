@@ -2,11 +2,11 @@
 
 Generate transcripts from audio files within Directus Flows with this custom operation, powered by [Deepgram](https://deepgram.com).
 
-![The AI Transcription operation, showing a Deepgram API Key field and a File URL field.](./docs/options.png)
+![The AI Transcription operation, showing a Deepgram API Key field and a File URL field.](https://raw.githubusercontent.com/directus-labs/extension-ai-transcription-operation/main/docs/options.png)
 
 This operation contains two required configuration options - a [Deepgram API Key](https://console.deepgram.com), and a link to a file. It returns a JSON object containing the transcript, a breakdown of each word and timestamp, a paragraph-formatted transcript, and a breakdown of each paragraph and timestamp.
 
-![The output showing a JSON object containing a transcript and words.](./docs/output.png)
+![The output showing a JSON object containing a transcript and words.](https://raw.githubusercontent.com/directus-labs/extension-ai-transcription-operation/main/docs/output.png)
 
 You can use the operation to then save the result to a file description or item, or run further automation on the output.
 
