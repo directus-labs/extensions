@@ -38,7 +38,7 @@ export default {
 				meta: {
 					interface: 'select-dropdown',
 					options: {
-						choices: [ // Could get these programmatically via GET https://api.openai.com/v1/models
+						choices: [
 							{
 								text: 'GPT-4',
 								value: 'gpt-4',
@@ -48,7 +48,6 @@ export default {
 								value: 'gpt-4-turbo-preview',
 							},
 							{
-								// Included as it is far cheaper (factor of 20 at time of writing compared to GPT-4 Turbo)
 								text: 'GPT-3.5 Turbo',
 								value: 'gpt-3.5-turbo',
 							},
@@ -145,27 +144,5 @@ export default {
 				},
 			},
 		],
-		advanced: [
-			{
-				field: 'temperature',
-				name: 'Temperature',
-				type: 'string',
-				meta: {
-					interface: 'select-dropdown',
-					options: {},
-					width: 'half',
-				},
-			},
-			{
-				field: 'max_tokens',
-				name: 'Max Tokens',
-				type: 'string',
-				meta: {
-					interface: 'select-dropdown',
-					options: {},
-					width: 'half',
-				},
-			},
-		]
 	},
 }

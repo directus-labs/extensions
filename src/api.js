@@ -20,8 +20,6 @@ export default {
 							content: text
 						},
 					],
-					// temperature: 1,
-					// max_tokens: 64,
 				})
 			})
 			if(response.status != 200) {
