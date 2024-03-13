@@ -2,7 +2,7 @@
 	"name": "@directus-labs/ai-text-intelligence-operation",
 	"description": "Use Deepgram's Text Intelligence API to understand the meaning behind text.",
 	"icon": "extension",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"keywords": [
 		"directus",
 		"directus-extension",
