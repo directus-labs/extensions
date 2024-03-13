@@ -2,7 +2,7 @@ export default {
 	id: 'directus-labs-ai-image-generation',
 	name: 'AI Image Generation',
 	icon: 'draw',
-	description: 'Use AI to generate images, powered by DALL•E 3',
+	description: 'Use Open AI\'s Image Generation API to create new images based on user prompts.',
 	overview: ({ prompt, quality, size }) => [
 		{
 			label: 'Prompt',
@@ -31,7 +31,7 @@ export default {
 		{
 			field: 'prompt',
 			name: 'Prompt',
-			type: 'string',
+			type: 'text',
 			required: true,
 			meta: {
 				width: 'full',

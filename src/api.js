@@ -26,23 +26,10 @@ export default {
 			})
 
 			if(response.status != 200) throw new Error('An error occurred when accessing OpenAI')
-
-			const image = await request('/files/import', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					url: response.data.data[0].url
-				})
-			})
-
-			log(JSON.stringify(image))
-
 			return response.data.data[0].url
 		} catch(error) {
 			log(error.message)
 			throw new Error(error.message)
 		}
 	},
-};
+}
