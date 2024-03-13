@@ -1,4 +1,4 @@
-import { request } from 'directus:api'
+import { request, log } from 'directus:api'
 
 export default {
 	id: 'directus-labs-ai-transcription',
