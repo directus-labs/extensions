@@ -10,6 +10,43 @@ This operation contains two required configuration options - a [Deepgram API Key
 
 You can use the operation to then save the result to a file description or item, or run further automation on the output.
 
+## Output
+
+This operation outputs a JSON object with the following structure: 
+
+```json
+{
+    "confidence": 0.9995117,
+    "transcript": "Hi. This is a long string with the full transcript. Complete with punctuation and capitalization."
+    "words": [
+        {
+            "confidence": 0.9995117,
+            "word": "word",
+            "punctuated_word": "Hi.",
+            "start": 0.08,
+            "end": 0.3999998,
+        }
+    ],
+    "paragraphs": {
+        "transcript": "Hi.\n\nThis is a long string with the full transcript.\n\nComplete with punctuation and capitalization.",
+        "paragraphs": [
+            {
+                "sentences": [
+                    {
+                        "start": 0.08,
+                        "end": 0.3999998,
+                        "text": "Hi."
+                    }
+                ],
+                "num_words": 14,
+                "start": 0.08,
+                "end": 0.7075
+            }   
+        ]
+    }
+}
+```
+
 ## Flow Setup
 
 ### Automatically Transcribe New Files
