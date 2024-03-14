@@ -4,7 +4,7 @@ Generate text based on a written prompt within Directus Flows with this custom o
 
 ![The AI Writer operation, showing a masked GPT API Key field, model and prompt selection fields, and a multiline text input.](https://raw.githubusercontent.com/directus-labs/extension-ai-writer-operation/main/docs/options.png)
 
-This operation contains four required configuration options - an [OpenAI API Key](https://platform.openai.com/api-keys), a selection of which model and prompt to use, and a text input. The prompt can be customised further using the optional Messages repeater field. The operation returns a string of the transformed or generated text.
+This operation contains four required configuration options - an [OpenAI API Key](https://platform.openai.com/api-keys), a selection of which model and prompt to use, and a text input. The text input can contain references like `{{$last.data}}` to refer to data available in the current flow. The prompt can be customised further using the optional Messages repeater field. The operation returns a string of the transformed or generated text.
 
 ![The output showing a string that has been grammatically fixed.](https://raw.githubusercontent.com/directus-labs/extension-ai-writer-operation/main/docs/output.png)
 

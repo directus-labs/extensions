@@ -84,9 +84,6 @@ export default {
 				meta: {
 					width: 'full',
 					interface: 'textarea',
-					options: {
-						placeholder: "{{$last.data}}",
-					},
 				},
 			},
 			{
