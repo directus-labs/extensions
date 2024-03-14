@@ -2,7 +2,7 @@
 	"name": "@directus-labs/ai-image-generation-operation",
 	"description": "Use DALLE•E 3 to generate images based on a user prompt.",
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"license": "MIT",
 	"keywords": [
 		"directus",
