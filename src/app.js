@@ -26,6 +26,9 @@ export default {
 			meta: {
 				width: 'full',
 				interface: 'input',
+				options: {
+					masked: true,
+				},
 			},
 		},
 		{
