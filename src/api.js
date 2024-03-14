@@ -4,8 +4,8 @@ import Prompts from './prompts'
 export default {
 	id: 'directus-labs-ai-writer',
 	handler: async ({ apiKey, model, promptKey, text, thread }) => {
-		log(JSON.stringify(thread))
 		try {
+			thread = thread ?? []
 			const response = await request('https://api.openai.com/v1/chat/completions', {
 				method: 'POST',
 				headers: {
