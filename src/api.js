@@ -2,7 +2,7 @@ import { log, request } from 'directus:api'
 import Prompts from './prompts'
 
 export default {
-	id: 'directus-labs-ai-writer',
+	id: 'directus-labs-ai-writer-operation',
 	handler: async ({ apiKey, model, promptKey, text, thread }) => {
 		try {
 			thread = thread ?? []

@@ -1,7 +1,7 @@
 import Prompts from './prompts'
 
 export default {
-	id: 'directus-labs-ai-writer',
+	id: 'directus-labs-ai-writer-operation',
 	name: 'AI Writer',
 	icon: 'edit_square',
 	description: 'Use OpenAI\'s GPT API to generate text',
