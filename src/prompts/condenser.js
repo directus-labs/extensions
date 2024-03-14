@@ -1,5 +1,5 @@
 export default {
-  text: 'Make Content Concise',
+  text: 'Make Shorter',
   value: 'condenser',
   icon: 'short_text',
   messages: [

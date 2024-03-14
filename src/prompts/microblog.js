@@ -1,5 +1,5 @@
 export default {
-  text: 'Rephrase as Microblog',
+  text: 'Short Social Post',
   value: 'microblog',
   icon: 'tag',
   messages: [

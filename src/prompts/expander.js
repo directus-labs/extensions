@@ -1,5 +1,5 @@
 export default {
-  text: 'Expand Content',
+  text: 'Make Longer',
   value: 'expander',
   icon: 'subject',
   messages: [
