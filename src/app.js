@@ -57,7 +57,7 @@ export default {
 				},
 			},
 			{
-				field: 'prompt',
+				field: 'promptKey',
 				name: 'Prompt',
 				type: 'select-dropdown',
 				required: true,
@@ -84,10 +84,13 @@ export default {
 				meta: {
 					width: 'full',
 					interface: 'textarea',
+					options: {
+						placeholder: "{{$last.data}}",
+					},
 				},
 			},
 			{
-				field: 'messages',
+				field: 'thread',
 				name: 'Messages',
 				type: 'json',
 				meta: {
@@ -131,7 +134,7 @@ export default {
 								}
 							},
 							{
-								field: 'message',
+								field: 'content',
 								name: 'Message',
 								type: 'string',
 								meta: {
