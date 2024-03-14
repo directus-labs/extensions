@@ -8,8 +8,6 @@ This operation contains four required configuration options - an [OpenAI API Key
 
 ![The output showing a string that has been grammatically fixed.](https://raw.githubusercontent.com/directus-labs/extension-ai-writer-operation/main/docs/output.png)
 
-Some more examples of generated input and outputs are available in the [./docs/examples](https://github.com/directus-labs/extension-ai-writer-operation/tree/production/docs/examples) directory of this project's repository. Generating these examples used USD $0.05 credit at the time of writing.
-
 ## Customising Responses
 
 The Messages repeater can be used to create or extend seed prompts to OpenAI's GPT. The Messages repeater creates an array of messages that form a conversation thread. GPT will refer to the thread to determine how it should respond to further user prompts. The content in the Text field is used as the last user prompt sent to GPT before receiving the final response. This response is forwarded to the next operation in the flow as a string.
