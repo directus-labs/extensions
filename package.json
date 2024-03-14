@@ -2,7 +2,7 @@
 	"name": "@directus-labs/ai-transcription-operation",
 	"description": "Use Deepgram's Speech Recognition API to generate transcripts from audio files.",
 	"icon": "extension",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"license": "MIT",
 	"keywords": [
 		"directus",
