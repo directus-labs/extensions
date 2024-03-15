@@ -2,7 +2,7 @@
 	"name": "@directus-labs/ai-translator-operation",
 	"description": "Use DeepL's Translation API to translate text into over 30 languages.",
 	"icon": "extension",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"license": "MIT",
 	"keywords": [
 		"directus",
