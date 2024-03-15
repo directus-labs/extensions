@@ -3,7 +3,6 @@ import { request, log } from 'directus:api'
 export default {
 	id: 'directus-labs-focal-point-detection-operation',
 	handler: async ({ apiKey, url }) => {
-		log(url)
 		try {
 			const response = await request('https://api.openai.com/v1/chat/completions', {
 				method: 'POST',
