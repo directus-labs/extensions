@@ -1,6 +1,6 @@
 # AI Text Intelligence Operation
 
-Analyze text within Directus Flows with this customer operation, powered by Deepgram. Understand intents, sentiment, topics, and generate a summary.
+Analyze text within Directus Flows with this custom operation, powered by Deepgram. Understand intents, sentiment, topics, and generate a summary.
 
 ![The AI Text Intelligence operation, showing a Deepgram API Key field and a text field](https://raw.githubusercontent.com/directus-labs/extension-ai-text-intelligence-operation/main/docs/options.png)
 
