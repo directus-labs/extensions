@@ -2,7 +2,7 @@
 	"name": "@directus-labs/ai-focal-point-detection-operation",
 	"description": "Use OpenAI Vision models to find an image's focal points.",
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": [
 		"directus",
 		"directus-extension",
@@ -29,7 +29,9 @@
 			"requestedScopes": {
 				"log": {},
 				"request": {
-					"methods": ["POST"],
+					"methods": [
+						"POST"
+					],
 					"urls": [
 						"https://api.openai.com/v1/chat/**"
 					]
