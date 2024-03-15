@@ -2,7 +2,7 @@
 	"name": "@directus-labs/ai-speech-generation-operation",
 	"description": "Use Genny's Text-to-Speech API to create new audio files.",
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"license": "MIT",
 	"keywords": [
 		"directus",
