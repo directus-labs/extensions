@@ -3,6 +3,7 @@
 	"description": "Use Deepgram's Text Intelligence API to understand the meaning behind text.",
 	"icon": "extension",
 	"version": "1.0.3",
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
