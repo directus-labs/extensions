@@ -3,9 +3,26 @@ import Prompts from './prompts'
 
 export default {
 	id: 'directus-labs-ai-writer-operation',
-	handler: async ({ apiKey, model, promptKey, text, thread }) => {
+	handler: async ({ apiKey, model, promptKey, text, system, thread }) => {
 		try {
+			system = system
+			  ? [
+					{
+						role: 'system',
+						content: system,
+					}
+				]
+				: []
 			thread = thread ?? []
+			let messages = [
+				...Prompts[promptKey].messages,
+				...system,
+				...thread,
+				{
+					role: "user",
+					content: text
+				},
+			]
 			const response = await request('https://api.openai.com/v1/chat/completions', {
 				method: 'POST',
 				headers: {
@@ -14,14 +31,7 @@ export default {
 				},
 				body: JSON.stringify({
 					model,
-					messages: [
-						...Prompts[promptKey].messages,
-						...thread,
-						{
-							role: "user",
-							content: text
-						},
-					],
+					messages,
 				})
 			})
 			if(response.status != 200) {
