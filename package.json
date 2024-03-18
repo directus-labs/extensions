@@ -1,8 +1,9 @@
 {
 	"name": "@directus-labs/ai-writer-operation",
-	"description": "Use OpenAI's GPT API to generate text.",
+	"description": "Use OpenAI's Text Generation API to generate text.",
 	"icon": "extension",
-	"version": "1.0.1",
+	"version": "1.1.0",
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
