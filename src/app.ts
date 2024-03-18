@@ -1,7 +1,7 @@
 import { defineOperationApp } from '@directus/extensions-sdk';
 
 export default defineOperationApp({
-	id: 'extension-ai-text-extraction-operation',
+	id: 'directus-labs-ai-text-extraction-operation',
 	name: 'AI Text Extraction',
 	icon: 'image_search',
 	description: 'Use Clarifai to find and extract text from image files.',
@@ -38,7 +38,7 @@ export default defineOperationApp({
 				options: {
 					iconRight: 'link',
 					font: 'monospace',
-					placeholder: 'https://mydomain/assets/{{$trigger.key}}'
+					placeholder: 'https://my.directus.app/assets/{{$trigger.key}}'
 				}
 			}
 		}

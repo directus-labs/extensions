@@ -4,7 +4,7 @@ import { request, log } from 'directus:api'
 import type { SandboxOperationConfig } from "directus:api";
 
 const operation: SandboxOperationConfig = {
-	id: 'extension-ai-text-extraction-operation',
+	id: 'directus-labs-ai-text-extraction-operation',
 	handler: async ({ apiKey, url }) => {
 		try {
 			const response = await request(`https://api.clarifai.com/v2/users/clarifai/apps/main/models/ocr-scene-english-paddleocr/versions/46e99516c2d94f58baf2bcaf5a6a53a9/outputs`, {
@@ -25,11 +25,11 @@ const operation: SandboxOperationConfig = {
 					]
 				}
 			})
-			const $raw = (<any>response?.data)?.outputs?.[0]?.data;
-			if ($raw?.regions) {
+			const output = (<any>response?.data)?.outputs?.[0]?.data;
+			if (output?.regions) {
 				return {
-					merged: $raw.regions?.map((region:any) => region.data.text.raw).join("\n"),
-					$raw
+					text: output.regions?.map((region:any) => region.data.text.raw).join("\n"),
+					regions: output.regions
 				}
 			}
 			throw new Error("No text was found in the picture.");

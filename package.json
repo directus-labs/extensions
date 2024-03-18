@@ -1,5 +1,5 @@
 {
-	"name": "extension-ai-text-extraction-operation",
+	"name": "@directus-labs/ai-text-extraction-operation",
 	"description": "Use Clarifai to find and extract text from image files.",
 	"icon": "extension",
 	"version": "1.0.0",
