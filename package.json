@@ -2,7 +2,7 @@
 	"name": "@directus-labs/ai-alt-text-writer-operation",
 	"description": "Use Clarifai to create captions for your image files.",
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"license": "MIT",
 	"keywords": [
 		"directus",
@@ -29,8 +29,12 @@
 			"requestedScopes": {
 				"log": {},
 				"request": {
-					"methods": ["POST"],
-					"urls": ["https://api.clarifai.com/v2/**"]
+					"methods": [
+						"POST"
+					],
+					"urls": [
+						"https://api.clarifai.com/v2/**"
+					]
 				}
 			}
 		}
