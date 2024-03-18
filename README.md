@@ -2,11 +2,9 @@
 
 Create captions for your images within Directus Files with this custom operation, using [Clarifai](https://www.clarifai.com).
 
-![The AI Alt Text Writer operation, showing available options.](docs/options.png)
+![The AI Alt Text Writer operation, showing available options](https://raw.githubusercontent.com/directus-labs/extension-ai-alt-text-writer/main/docs/options.png)
 
 This operation requires two options to be set - first a personal access token from [Clarifai](https://www.clarifai.com) (you can find this in your personal settings under [Security](https://clarifai.com/settings/security)), and a link to the image file. The operation will return a string containing a text that describes the image.
-
-![Sample output](docs/sample-output.png)
 
 You can use the operation to then save the result to a file description or item, or run further automation on the output.
 
