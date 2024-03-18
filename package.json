@@ -1,5 +1,5 @@
 {
-	"name": "extension-ai-alt-text-writer-operation",
+	"name": "@directus-labs/ai-alt-text-writer-operation",
 	"description": "Use Clarifai to create captions for your image files.",
 	"icon": "extension",
 	"version": "1.0.0",

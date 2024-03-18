@@ -1,7 +1,7 @@
 import { defineOperationApp } from '@directus/extensions-sdk';
 
 export default defineOperationApp({
-	id: 'extension-ai-alt-text-writer-operation',
+	id: 'directus-labs-ai-alt-text-writer-operation',
 	name: 'AI Alt Text Writer',
 	icon: 'image_search',
 	description: 'Use Clarifai to create captions for your image files.',
@@ -38,7 +38,7 @@ export default defineOperationApp({
 				options: {
 					iconRight: 'link',
 					font: 'monospace',
-					placeholder: 'https://mydomain/assets/{{$trigger.key}}'
+					placeholder: 'https://my.directus.app/assets/{{$trigger.key}}'
 				}
 			}
 		}

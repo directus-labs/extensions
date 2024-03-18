@@ -4,7 +4,7 @@ import { request, log } from 'directus:api'
 import type { SandboxOperationConfig } from "directus:api";
 
 const operation: SandboxOperationConfig = {
-	id: 'extension-ai-alt-text-writer-operation',
+	id: 'directus-labs-ai-alt-text-writer-operation',
 	handler: async ({ apiKey, url }) => {
 		try {
 			const response = await request(`https://api.clarifai.com/v2/users/salesforce/apps/blip/models/general-english-image-caption-blip/versions/cdb690f13e62470ea6723642044f95e4/outputs`, {
@@ -25,12 +25,9 @@ const operation: SandboxOperationConfig = {
 					]
 				}
 			})
-			const $raw = (<any>response?.data)?.outputs?.[0]?.data;
-			if ($raw?.text?.raw) {
-				return {
-					text: $raw.text.raw,
-					$raw
-				};
+			const output = (<any>response?.data)?.outputs?.[0]?.data;
+			if (output?.text?.raw) {
+				return output.text.raw;
 			}
 			throw new Error("No text was found in the picture.");
 		} catch (error:any) {
