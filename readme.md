@@ -31,10 +31,10 @@ This is a bundle extension that includes an interface and a display.
 ## Quick Overview Video
 
 <div>
-    <a href="https://www.loom.com/share/16453b5730f04be4b4e5d85ac42a6197">
+    <a href="https://www.loom.com/share/16453b5730f04be4b4e5d85ac42a6197" target="_blank">
       <p>[Directus] Meter Component Extension - Watch Video</p>
     </a>
-    <a href="https://www.loom.com/share/16453b5730f04be4b4e5d85ac42a6197">
+    <a href="https://www.loom.com/share/16453b5730f04be4b4e5d85ac42a6197" target="_blank">
       <img style="max-width:450px;" src="https://cdn.loom.com/sessions/thumbnails/16453b5730f04be4b4e5d85ac42a6197-with-play.gif">
     </a>
 </div>
