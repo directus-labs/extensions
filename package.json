@@ -1,6 +1,11 @@
 {
 	"name": "@directus-labs/extension-meter-component",
 	"description": "Display a meter gauge for tracking progress inside Directus.",
+    "license": "MIT",
+    "repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extension-meter-component"
+	},
 	"icon": "extension",
 	"version": "1.0.1",
 	"keywords": [
