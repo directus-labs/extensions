@@ -1,8 +1,8 @@
 {
-	"name": "directus-extension-meter-component",
+	"name": "@directus-labs/extension-meter-component",
 	"description": "Display a meter gauge for tracking progress inside Directus.",
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"keywords": [
 		"directus",
 		"directus-extension",
