@@ -35,7 +35,7 @@ This is a bundle extension that includes an interface and a display.
       <p>[Directus] Meter Component Extension - Watch Video</p>
     </a>
     <a href="https://www.loom.com/share/16453b5730f04be4b4e5d85ac42a6197" target="_blank">
-      <img style="max-width:450px;" src="https://cdn.loom.com/sessions/thumbnails/16453b5730f04be4b4e5d85ac42a6197-with-play.gif">
+      <img style="max-width:450px;" src="https://raw.githubusercontent.com/directus-labs/extension-meter-component/main/docs/overview.gif">
     </a>
 </div>
 
