@@ -55,3 +55,9 @@ There are five configuration options.
 - **Label** - The label to display below the meter or on hover (for the display).
 - **Indicator** - Show an indicator with the current value. ie (50%)
 - **Color** - the color of the meter bar. Defaults to the primary theme color.
+
+The components also respect conditional formatting so that you can configure custom percentages, labels, and colors based on a specific value.
+
+![Example view of the meter with conditional formatting.](https://raw.githubusercontent.com/directus-labs/extension-meter-component/main/docs/conditional-example.png)
+
+![Settings screen for the meter with conditional formatting.](https://raw.githubusercontent.com/directus-labs/extension-meter-component/main/docs/conditional-settings.png)
