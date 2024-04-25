@@ -30,9 +30,15 @@ This is a bundle extension that includes an interface and a display.
 
 ## Quick Overview Video
 
-<video controls width="500">
-<source src="https://raw.githubusercontent.com/directus-labs/extension-meter-component/main/docs/directus-meter-extension-component-bundle.mp4" type="video/mp4" />
-</video>
+<div>
+    <a href="https://www.loom.com/share/16453b5730f04be4b4e5d85ac42a6197">
+      <p>[Directus] Meter Component Extension - Watch Video</p>
+    </a>
+    <a href="https://www.loom.com/share/16453b5730f04be4b4e5d85ac42a6197">
+      <img style="max-width:450px;" src="https://cdn.loom.com/sessions/thumbnails/16453b5730f04be4b4e5d85ac42a6197-with-play.gif">
+    </a>
+</div>
+
 
 # Configuration
 
