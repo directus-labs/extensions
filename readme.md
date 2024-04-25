@@ -1,4 +1,4 @@
-# Meter Componenent Bundle
+# Meter Component Bundle
 
 Show completion percentage and progress inside the Directus Studio with these progress meter components.
 
