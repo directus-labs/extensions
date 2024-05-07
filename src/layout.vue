@@ -3,9 +3,9 @@
         <v-table v-if="loading || (itemCount && itemCount > 0 && !error)" ref="table" v-model="selectionWritable"
             v-model:headers="tableHeadersWritable" class="table" fixed-header
             :show-select="showSelect ? showSelect : selection !== undefined" show-resize must-sort :sort="tableSort"
-            :items="items" :loading="loading" :row-height="tableRowHeight" :item-key="primaryKeyField?.field"
-            :show-manual-sort="sortAllowed" :manual-sort-key="sortField" allow-header-reorder selection-use-keys
-            :clickable="false" @update:sort="onSortChange" @manual-sort="changeManualSort">
+            :items="items" :loading="loading" :item-key="primaryKeyField?.field" :show-manual-sort="sortAllowed"
+            :manual-sort-key="sortField" allow-header-reorder selection-use-keys :clickable="false"
+            @update:sort="onSortChange" @manual-sort="changeManualSort">
 
             <template #header-context-menu="{ header }">
                 <v-list>
@@ -87,10 +87,16 @@
 
             <template v-for="header, index in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
                 <spreadsheet-cell :column="index">
-                    <render-display :value="getFromAliasedItem(item, header.value)" :display="header.field.display"
-                        :options="header.field.displayOptions" :interface="header.field.interface"
-                        :interface-options="header.field.interfaceOptions" :type="header.field.type"
-                        :collection="header.field.collection" :field="header.field.field" />
+                    <template #display>
+                        <render-display :value="getFromAliasedItem(item, header.value)" :display="header.field.display"
+                            :options="header.field.displayOptions" :interface="header.field.interface"
+                            :interface-options="header.field.interfaceOptions" :type="header.field.type"
+                            :collection="header.field.collection" :field="header.field.field" />
+                    </template>
+
+                    <template #interface>
+                        <v-input :model-value="item[header.value]" type="text" autofocus fullWidth small />
+                    </template>
                 </spreadsheet-cell>
             </template>
 
@@ -261,6 +267,17 @@
     function removeField(fieldKey: string) {
         fieldsWritable.value = fieldsWritable.value.filter((field) => field !== fieldKey);
     }
+
+    const { cssHeight } = useCloneFromTableRowComponent();
+    function useCloneFromTableRowComponent() {
+        const cssHeight = computed(() => {
+            return {
+                tableRow: props.tableRowHeight + 2 + 'px',
+                // renderTemplateImage: props.tableRowHeight - 16 + 'px',
+            };
+        });
+        return { cssHeight }
+    }
 </script>
 
 
@@ -276,6 +293,14 @@
         width: 100%;
         height: 100%;
         padding: 0;
+        overflow: visible;
+        white-space: unset;
+        text-overflow: unset;
+    }
+
+    .v-table>:deep(table tbody tr.table-row) {
+        height: auto;
+        min-height: v-bind('cssHeight.tableRow');
     }
 
     .v-table {
