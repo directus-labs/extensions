@@ -6,12 +6,6 @@
             :items="items" :loading="loading" :row-height="tableRowHeight" :item-key="primaryKeyField?.field"
             :show-manual-sort="sortAllowed" :manual-sort-key="sortField" allow-header-reorder selection-use-keys
             :clickable="false" @update:sort="onSortChange" @manual-sort="changeManualSort">
-            <template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
-                <render-display :value="getFromAliasedItem(item, header.value)" :display="header.field.display"
-                    :options="header.field.displayOptions" :interface="header.field.interface"
-                    :interface-options="header.field.interfaceOptions" :type="header.field.type"
-                    :collection="header.field.collection" :field="header.field.field" />
-            </template>
 
             <template #header-context-menu="{ header }">
                 <v-list>
@@ -91,6 +85,15 @@
                 </v-menu>
             </template>
 
+            <template v-for="header, index in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
+                <spreadsheet-cell :column="index">
+                    <render-display :value="getFromAliasedItem(item, header.value)" :display="header.field.display"
+                        :options="header.field.displayOptions" :interface="header.field.interface"
+                        :interface-options="header.field.interfaceOptions" :type="header.field.type"
+                        :collection="header.field.collection" :field="header.field.field" />
+                </spreadsheet-cell>
+            </template>
+
             <template #item-append="{ item }">
                 <v-button :to="`/content/${collection}/${item[primaryKeyField?.field]}`" :tooltip="t('edit_item')" icon
                     secondary x-small>
@@ -138,6 +141,7 @@
     import { useI18n } from 'vue-i18n';
     import type { ShowSelect } from '@directus/extensions';
     import type { Field, Filter, Item } from '@directus/types';
+    import SpreadsheetCell from './spreadsheet-cell.vue'
     // CORE CLONES
     import { HeaderRaw } from './core-clones/components/v-table/types';
     import { AliasFields, useAliasFields } from './core-clones/composables/use-alias-fields';
@@ -266,6 +270,12 @@
         display: contents;
         margin: var(--content-padding);
         margin-bottom: var(--content-padding-bottom);
+    }
+
+    .v-table>:deep(table tbody td.cell:not(.select):not(.append):not(.manual)) {
+        width: 100%;
+        height: 100%;
+        padding: 0;
     }
 
     .v-table {

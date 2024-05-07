@@ -26,6 +26,7 @@
     "devDependencies": {
         "@directus/extensions-sdk": "11.0.3",
         "@types/lodash": "^4.17.1",
+        "@vueuse/core": "^10.9.0",
         "lodash": "^4.17.21",
         "sass": "^1.76.0",
         "typescript": "^5.4.5",
