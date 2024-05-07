@@ -5,7 +5,7 @@
             :show-select="showSelect ? showSelect : selection !== undefined" show-resize must-sort :sort="tableSort"
             :items="items" :loading="loading" :row-height="tableRowHeight" :item-key="primaryKeyField?.field"
             :show-manual-sort="sortAllowed" :manual-sort-key="sortField" allow-header-reorder selection-use-keys
-            @click:row="() => { }" @update:sort="onSortChange" @manual-sort="changeManualSort">
+            :clickable="false" @update:sort="onSortChange" @manual-sort="changeManualSort">
             <template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
                 <render-display :value="getFromAliasedItem(item, header.value)" :display="header.field.display"
                     :options="header.field.displayOptions" :interface="header.field.interface"
@@ -89,6 +89,13 @@
                     <v-field-list :collection="collection" :disabled-fields="fields" :allow-select-all="false"
                         @add="addField($event[0])" />
                 </v-menu>
+            </template>
+
+            <template #item-append="{ item }">
+                <v-button :to="`/content/${collection}/${item[primaryKeyField?.field]}`" :tooltip="t('edit_item')" icon
+                    secondary x-small>
+                    <v-icon class="small" name="edit"></v-icon>
+                </v-button>
             </template>
 
             <template #footer>
@@ -273,6 +280,10 @@
 
         &>:deep(table tr) {
             margin-right: var(--content-padding);
+        }
+
+        &>:deep(table tbody td.append.cell) {
+            padding-right: 0;
         }
     }
 
