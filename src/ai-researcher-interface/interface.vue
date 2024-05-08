@@ -1,6 +1,5 @@
 <template>
 	<input :value="value" @input="handleChange($event.target.value)" />
-	<input :value="value" @input="handleChange($event.target.value)" />
 </template>
 
 <script> 
@@ -16,7 +15,8 @@ export default {
 		return { handleChange };
 
 		function handleChange(value) {
-			emit('input', value);
+      console.log("dgl hello world");
+      emit('input', value);
 		}
 	},
 };
