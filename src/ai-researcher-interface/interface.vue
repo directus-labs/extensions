@@ -1,5 +1,6 @@
 <template>
-	<input :value="value" @input="handleChange($event.target.value)" />
+  <VInput v-bind="value" />
+  <VInput v-bind="value" />
 </template>
 
 <script> 
@@ -27,8 +28,9 @@ import { useApi } from '@directus/extensions-sdk';
 const api = useApi();
 
 async function fetchData() {
-    const response = await api.get('ENDPOINT_URL');
+    const response = await api.get('/');
     data.value = response.data;
 };
+
 fetchData();
 </script> -->
