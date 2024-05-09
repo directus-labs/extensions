@@ -8,28 +8,34 @@
 
 
 <script setup lang="ts">
-    import { ref, type Ref } from 'vue'
+    import { nextTick, ref, type Ref } from 'vue'
     import { onKeyStroke, onClickOutside } from '@vueuse/core'
 
     const props = defineProps<{ column: number }>();
 
     const target = ref(null);
 
-    const { editMode, enterCell } = useEditMode();
+    const { editMode, enterCell } = useEditMode({
+        onFocusCell() {
+            target.value?.querySelector('.v-input')?.click();
+        }
+    });
+
     useCellNavigation(editMode);
 
-    function useEditMode() {
+    function useEditMode({ onFocusCell }: any) {
         const editMode = ref(false);
 
         onKeyStroke('Enter', enterCell, { target });
-        onKeyStroke(['Esc', 'Escape'], leaveCellAndFocus, { target });
-        onClickOutside(target, leaveCell);
+        onKeyStroke(['Esc', 'Escape'], leaveCellAndFocus);
+        onClickOutside(target, clickOutside);
 
         return { editMode, enterCell };
 
         function enterCell() {
             if (editMode.value) return;
             editMode.value = true;
+            nextTick(onFocusCell);
         }
 
         function leaveCell() {
@@ -38,8 +44,16 @@
         }
 
         function leaveCellAndFocus() {
+            if (!editMode.value) return;
             leaveCell();
             target.value?.focus();
+        }
+
+        function clickOutside(e: MouseEvent) {
+            if (!editMode.value) return;
+            const elementsToIgnore = e.target?.closest('#dialog-outlet, #menu-outlet');
+            if (elementsToIgnore) return;
+            leaveCell();
         }
     }
 
@@ -50,6 +64,8 @@
         onKeyStroke(['Down', 'ArrowDown'], (e) => cellNavigation(e, { vertical: true, next: true }), { target });
 
         function cellNavigation(e: KeyboardEvent, { vertical = false, next = false }) {
+            e.preventDefault();
+
             if (preventNavigation.value) return;
 
             const parent = vertical ? 'tr.table-row' : 'td.cell';
@@ -89,13 +105,30 @@
             }
         }
 
+        &.edit-mode :deep(.v-input .input),
+        &.edit-mode :deep(.v-checkbox) {
+            border-color: var(--theme--primary);
+        }
+
         &:not(.edit-mode),
         & :deep(.v-input .input) {
             padding: calc(8px - var(--theme--border-width)) calc(12px - var(--theme--border-width));
         }
 
-        & :deep(.v-input) {
+        & :deep(.v-form),
+        & :deep(.v-form > .field),
+        & :deep(.v-form > .field > .interface) {
+            height: 100%;
+        }
+
+        & :deep(.v-input),
+        & :deep(.v-checkbox) {
+            --theme--form--field--input--height: 38px;
             min-height: 100%;
+        }
+
+        & :deep(.v-form) {
+            width: 100%;
         }
     }
 </style>

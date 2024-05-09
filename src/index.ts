@@ -292,6 +292,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                                 layoutOptions.value?.align?.[field.key] ||
                                 "left",
                             field: {
+                                // CORE CHANGE: add whole field data and force some properties
+                                ...field,
+                                hideLabel: true,
+                                meta: {
+                                    ...field.meta,
+                                    width: "fill",
+                                    group: null,
+                                },
+                                // CORE CHANGE end
                                 display:
                                     field.meta?.display ||
                                     getDefaultDisplayForType(field.type),

@@ -95,7 +95,10 @@
                     </template>
 
                     <template #interface>
-                        <v-input :model-value="item[header.value]" type="text" autofocus fullWidth small />
+                        <v-form :fields="[header.field]" :initial-values="item"
+                            v-model="edits[item[primaryKeyField?.field]]" :loading="loading"
+                            :primary-key="item[primaryKeyField?.field]" autofocus :show-validation-errors="false"
+                            :show-no-visible-fields="false" :raw-editor-enabled="false" />
                     </template>
                 </spreadsheet-cell>
             </template>
