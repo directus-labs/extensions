@@ -1,30 +1,10 @@
-<script setup lang="ts">
-    import { useI18n } from 'vue-i18n';
-    import type { Field } from '@directus/types';
-    // CORE CHANGES
-    // import { useSync } from '@directus/composables';
-    import { useSync } from "@directus/extensions-sdk";
-
-    interface Props {
-        fields: string[];
-        activeFields: Field[];
-        tableSpacing: 'compact' | 'cozy' | 'comfortable';
-    }
-
-    defineOptions({ inheritAttrs: false });
-
-    const props = defineProps<Props>();
-
-    const emit = defineEmits(['update:tableSpacing', 'update:activeFields', 'update:fields']);
-
-    const { t } = useI18n();
-
-    const tableSpacingWritable = useSync(props, 'tableSpacing', emit);
-</script>
-
-
-
 <template>
+    <div class="field">
+        <div class="type-label">{{ t('save') }}</div>
+        <v-checkbox v-model="autosaveWritable" :label="t('automatic')" :disabled="!autosaveWritable && hasEdits"
+            block />
+    </div>
+
     <div class="field">
         <div class="type-label">{{ t('layouts.tabular.spacing') }}</div>
         <v-select v-model="tableSpacingWritable" :items="[
@@ -43,6 +23,35 @@
         ]" />
     </div>
 </template>
+
+
+
+<script setup lang="ts">
+    import { useI18n } from 'vue-i18n';
+    import type { Field } from '@directus/types';
+    // CORE CHANGES
+    // import { useSync } from '@directus/composables';
+    import { useSync } from "@directus/extensions-sdk";
+
+    interface Props {
+        fields: string[];
+        activeFields: Field[];
+        tableSpacing: 'compact' | 'cozy' | 'comfortable';
+        autoSave: boolean;
+        hasEdits?: boolean;
+    }
+
+    defineOptions({ inheritAttrs: false });
+
+    const props = defineProps<Props>();
+
+    const emit = defineEmits(['update:tableSpacing', 'update:autoSave', 'update:activeFields', 'update:fields']);
+
+    const { t } = useI18n();
+
+    const autosaveWritable = useSync(props, 'autoSave', emit);
+    const tableSpacingWritable = useSync(props, 'tableSpacing', emit);
+</script>
 
 
 

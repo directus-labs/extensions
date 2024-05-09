@@ -1,25 +1,41 @@
-<script setup lang="ts">
-    defineOptions({ inheritAttrs: false });
-
-    defineProps<{
-        itemCount?: number;
-        showingCount: string;
-    }>();
-</script>
-
-
-
 <template>
     <transition name="fade">
         <span v-if="itemCount" class="item-count">
             {{ showingCount }}
         </span>
     </transition>
+
+    <v-button v-tooltip.bottom="autoSave ? t('saves_automatically') : t('save')" rounded icon
+        :disabled="autoSave || !hasEdits" @click="saveEdits">
+        <v-icon :name="autoSave ? 'published_with_changes' : 'check'" />
+    </v-button>
 </template>
 
 
 
+<script setup lang="ts">
+    import { useI18n } from 'vue-i18n';
+
+    defineOptions({ inheritAttrs: false });
+
+    defineProps<{
+        itemCount?: number;
+        showingCount: string;
+        autoSave?: boolean;
+        hasEdits?: boolean;
+        saveEdits: () => void;
+    }>();
+
+    const { t } = useI18n();
+</script>
+
+
+
 <style lang="scss" scoped>
+    .v-button {
+        margin-right: 8px;
+    }
+
     .item-count {
         position: relative;
         display: none;

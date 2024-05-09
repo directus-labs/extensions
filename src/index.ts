@@ -109,6 +109,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             );
         });
 
+        const { autoSave, edits, hasEdits, saveEdits, autoSaveEdits } =
+            useSaveEdits();
+
         return {
             tableHeaders,
             items,
@@ -142,6 +145,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             fieldsWithRelationalAliased,
             aliasedFields,
             aliasedKeys,
+            autoSave,
+            edits,
+            hasEdits,
+            saveEdits,
+            autoSaveEdits,
         };
 
         async function resetPresetAndRefresh() {
@@ -405,6 +413,34 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                     display: field.meta.display,
                     options: field.meta.display_options,
                 };
+            }
+        }
+
+        function useSaveEdits() {
+            const autoSave = syncRefProperty(layoutOptions, "autosave", true);
+            const edits = ref({});
+            const hasEdits = computed(
+                // TODO: check if single items have edits or they just have empty `{}`
+                () => Object.keys(edits.value).length > 0
+            );
+
+            return { autoSave, edits, hasEdits, saveEdits, autoSaveEdits };
+
+            function resetEdits() {
+                edits.value = {};
+            }
+
+            function saveEdits() {
+                if (!hasEdits.value) return;
+
+                // TODO: Save content here
+
+                resetEdits();
+            }
+
+            function autoSaveEdits() {
+                if (!autoSave.value) return;
+                saveEdits();
             }
         }
     },

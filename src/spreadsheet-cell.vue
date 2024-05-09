@@ -13,6 +13,8 @@
 
     const props = defineProps<{ column: number }>();
 
+    const emit = defineEmits(['leaveCell']);
+
     const target = ref(null);
 
     const { editMode, enterCell } = useEditMode({
@@ -41,6 +43,7 @@
         function leaveCell() {
             if (!editMode.value) return;
             editMode.value = false;
+            emit('leaveCell');
         }
 
         function leaveCellAndFocus() {

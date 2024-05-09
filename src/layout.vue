@@ -86,7 +86,7 @@
             </template>
 
             <template v-for="header, index in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
-                <spreadsheet-cell :column="index">
+                <spreadsheet-cell :column="index" @leaveCell="autoSaveEdits">
                     <template #display>
                         <render-display :value="getFromAliasedItem(item, header.value)" :display="header.field.display"
                             :options="header.field.displayOptions" :interface="header.field.interface"
@@ -96,7 +96,7 @@
 
                     <template #interface>
                         <v-form :fields="[header.field]" :initial-values="item"
-                            v-model="edits[item[primaryKeyField?.field]]" :loading="loading"
+                            v-model="editsWritable[item[primaryKeyField?.field]]" :loading="loading"
                             :primary-key="item[primaryKeyField?.field]" autofocus :show-validation-errors="false"
                             :show-no-visible-fields="false" :raw-editor-enabled="false" />
                     </template>
@@ -193,6 +193,8 @@
         aliasedKeys: string[];
         onSortChange: (newSort: { by: string; desc: boolean }) => void;
         onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
+        edits: Record<string, any>;
+        autoSaveEdits: () => void;
     }
 
     const props = withDefaults(defineProps<Props>(), {
@@ -209,7 +211,7 @@
         onAlignChange: () => undefined,
     });
 
-    const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
+    const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields', 'update:edits']);
 
     const { t } = useI18n();
     const { collection } = toRefs(props);
@@ -281,6 +283,8 @@
         });
         return { cssHeight }
     }
+
+    const editsWritable = useSync(props, 'edits', emit);
 </script>
 
 

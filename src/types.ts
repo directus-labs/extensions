@@ -8,6 +8,8 @@ export type LayoutOptions = {
     };
     limit?: number;
     spacing?: "comfortable" | "cozy" | "compact";
+    // CORE CHANGE
+    autosave?: boolean;
 };
 
 export type LayoutQuery = {
