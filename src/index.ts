@@ -53,6 +53,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             sortField,
         } = useCollection(collection);
 
+        const { allowedFields, filterAllowedFields } = useAllowedFields();
+
         const { sort, limit, page, fields } = useItemOptions();
 
         const { aliasedFields, aliasQuery, aliasedKeys } = useAliasFields(
@@ -96,7 +98,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             tableRowHeight,
             onSortChange,
             onAlignChange,
-            activeFields,
             tableSpacing,
         } = useTable();
 
@@ -134,7 +135,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             fieldsInCollection,
             fields,
             limit,
-            activeFields,
+            allowedFields,
             tableSpacing,
             primaryKeyField,
             info,
@@ -192,7 +193,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
             const fieldsDefaultValue = computed(() => {
                 return fieldsInCollection.value
-                    .filter((field: Field) => !field.meta?.hidden)
+                    .filter(filterAllowedFields)
                     .slice(0, 4)
                     .map(({ field }: Field) => field)
                     .sort();
@@ -202,7 +203,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                 get() {
                     if (layoutQuery.value?.fields) {
                         return layoutQuery.value.fields.filter((field: any) =>
-                            fieldsStore.getField(collection.value!, field)
+                            filterAllowedFields(field)
                         );
                     } else {
                         return unref(fieldsDefaultValue);
@@ -258,11 +259,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                             ...fieldsStore.getField(collection.value!, key),
                             key,
                         }))
-                        .filter(
-                            (f: any) =>
-                                f &&
-                                f.meta?.special?.includes("no-data") !== true
-                        ) as (Field & { key: string })[];
+                        .filter(filterAllowedFields) as (Field & {
+                        key: string;
+                    })[];
                 },
                 set(val) {
                     fields.value = val.map((field) => field.field);
@@ -377,7 +376,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                 tableRowHeight,
                 onSortChange,
                 onAlignChange,
-                activeFields,
                 getFieldDisplay,
             };
 
@@ -503,6 +501,70 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                         delete edits.value[key];
                     }
                 }
+            }
+        }
+
+        function useAllowedFields() {
+            const allowedTypes = [
+                // strings
+                "string",
+                "text",
+                "uuid",
+                // numbers
+                "bigInteger",
+                "integer",
+                "float",
+                "decimal",
+                // boolean
+                "boolean",
+                // dates
+                "dateTime",
+                "date",
+                "time",
+                "timestamp",
+            ];
+            const allowedInlineInterfaces = [
+                "boolean",
+                "collection-item-dropdown",
+                "datetime",
+                "file",
+                "file-image",
+                "input",
+                "input-autocomplete-api",
+                "input-hash",
+                "select-color",
+                "select-dropdown",
+                "select-dropdown-m2o",
+                "select-icon",
+                "select-multiple-dropdown",
+                "slider",
+            ];
+            const allowedFields = computed(() =>
+                fieldsInCollection.value
+                    .filter(filterAllowedFields)
+                    .map((field) => ({ field: field.field, name: field.name }))
+            );
+
+            return {
+                allowedFields,
+                filterAllowedFields,
+            };
+
+            function filterAllowedFields(field: Field) {
+                return (
+                    field &&
+                    !field.meta?.special?.includes("no-data") &&
+                    !field.schema?.is_primary_key &&
+                    !field.meta?.hidden &&
+                    !field.meta?.readonly &&
+                    (!field.type ||
+                        (field.type && allowedTypes.includes(field.type))) &&
+                    (!field.meta?.interface ||
+                        (field.meta.interface &&
+                            allowedInlineInterfaces.includes(
+                                field.meta.interface
+                            )))
+                );
             }
         }
     },

@@ -28,14 +28,9 @@
 
 <script setup lang="ts">
     import { useI18n } from 'vue-i18n';
-    import type { Field } from '@directus/types';
-    // CORE CHANGES
-    // import { useSync } from '@directus/composables';
     import { useSync } from "@directus/extensions-sdk";
 
     interface Props {
-        fields: string[];
-        activeFields: Field[];
         tableSpacing: 'compact' | 'cozy' | 'comfortable';
         autoSave: boolean;
         hasEdits?: boolean;
@@ -45,7 +40,7 @@
 
     const props = defineProps<Props>();
 
-    const emit = defineEmits(['update:tableSpacing', 'update:autoSave', 'update:activeFields', 'update:fields']);
+    const emit = defineEmits(['update:tableSpacing', 'update:autoSave']);
 
     const { t } = useI18n();
 

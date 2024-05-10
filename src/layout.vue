@@ -80,8 +80,14 @@
                             @click="toggle" />
                     </template>
 
-                    <v-field-list :collection="collection" :disabled-fields="fields" :allow-select-all="false"
-                        @add="addField($event[0])" />
+                    <v-list>
+                        <v-list-item v-for="field of allowedFields" :key="field.field" clickable
+                            :disabled="fields.includes(field.field)" @click="addField(field.field)">
+                            <v-list-item-content>
+                                <v-text-overflow :text="field.name || formatTitle(field.field)" />
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
                 </v-menu>
             </template>
 
@@ -182,6 +188,7 @@
         toPage: (newPage: number) => void;
         itemCount?: number;
         fields: string[];
+        allowedFields: Ref<{ field: string, name: string }[]>;
         limit: number;
         primaryKeyField?: Field;
         info?: Collection;
