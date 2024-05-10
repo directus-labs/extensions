@@ -86,12 +86,14 @@
             </template>
 
             <template v-for="header, index in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
-                <spreadsheet-cell :column="index" @leaveCell="autoSaveEdits">
-                    <template #display>
-                        <render-display :value="getFromAliasedItem(item, header.value)" :display="header.field.display"
-                            :options="header.field.displayOptions" :interface="header.field.interface"
-                            :interface-options="header.field.interfaceOptions" :type="header.field.type"
-                            :collection="header.field.collection" :field="header.field.field" />
+                <spreadsheet-cell :column="index" @leaveCell="autoSaveEdits" :item="item" :field-key="header.value"
+                    :field-edits="edits[item[primaryKeyField?.field]]?.[header.value]">
+                    <template #display="{ displayItem }">
+                        <render-display :value="getFromAliasedItem(displayItem, header.value)"
+                            :display="header.field.display" :options="header.field.displayOptions"
+                            :interface="header.field.interface" :interface-options="header.field.interfaceOptions"
+                            :type="header.field.type" :collection="header.field.collection"
+                            :field="header.field.field" />
                     </template>
 
                     <template #interface>

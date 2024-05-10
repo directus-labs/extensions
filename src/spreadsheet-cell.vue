@@ -1,17 +1,25 @@
 <template>
     <div ref="target" tabindex="0" class="spreadsheet-cell" :class="{ 'edit-mode': editMode }" @dblclick="enterCell">
         <slot v-if="editMode" name="interface" />
-        <slot v-else name="display" />
+        <slot v-else name="display" :display-item="mergedItemWithEdits" />
+
+        <div v-if="!editMode && fieldHasEdits" v-tooltip="t('unsaved_changes')" class="edit-dot"></div>
     </div>
 </template>
 
 
 
 <script setup lang="ts">
-    import { nextTick, ref, type Ref } from 'vue'
+    import { nextTick, ref, computed, type Ref } from 'vue'
+    import { useI18n } from 'vue-i18n';
     import { onKeyStroke, onClickOutside } from '@vueuse/core'
 
-    const props = defineProps<{ column: number }>();
+    const props = defineProps<{
+        column: number;
+        item: any;
+        fieldKey: string;
+        fieldEdits?: any;
+    }>();
 
     const emit = defineEmits(['leaveCell']);
 
@@ -24,6 +32,9 @@
     });
 
     useCellNavigation(editMode);
+
+    const { t } = useI18n();
+    const { fieldHasEdits, mergedItemWithEdits } = useDisplayEdits();
 
     function useEditMode({ onFocusCell }: any) {
         const editMode = ref(false);
@@ -79,6 +90,21 @@
 
             (cell as HTMLElement)?.focus()
         }
+    }
+
+    function useDisplayEdits() {
+        const fieldHasEdits = computed(() => typeof props.fieldEdits !== 'undefined');
+
+        const mergedItemWithEdits = computed(() => {
+            if (!fieldHasEdits.value) return props.item;
+
+            return {
+                ...props.item,
+                [props.fieldKey]: props.fieldEdits
+            };
+        });
+
+        return { fieldHasEdits, mergedItemWithEdits };
     }
 </script>
 
@@ -142,6 +168,28 @@
 
         & :deep(.v-form .v-select .v-input) {
             min-width: 120px;
+        }
+    }
+
+    .spreadsheet-cell {
+        position: relative;
+
+        &:focus {
+            .edit-dot {
+                display: none;
+            }
+        }
+
+        .edit-dot {
+            position: absolute;
+            left: 1px;
+            top: 50%;
+            margin-top: -2px;
+            display: block;
+            width: 4px;
+            height: 4px;
+            border-radius: 4px;
+            background-color: var(--theme--foreground-subdued);
         }
     }
 </style>
