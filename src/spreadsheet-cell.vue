@@ -108,6 +108,7 @@
             }
         }
 
+        &.edit-mode :deep(.interface>*),
         &.edit-mode :deep(.v-input .input),
         &.edit-mode :deep(.v-checkbox) {
             border-color: var(--theme--primary);
@@ -131,7 +132,16 @@
         }
 
         & :deep(.v-form) {
+            z-index: 1;
             width: 100%;
+        }
+
+        & :deep(.v-form) {
+            min-width: 90px;
+        }
+
+        & :deep(.v-form .v-select .v-input) {
+            min-width: 120px;
         }
     }
 </style>
