@@ -17,6 +17,7 @@ import Layout from "./layout.vue";
 import type { LayoutOptions, LayoutQuery } from "./types";
 // CORE IMPORTS
 import { useAliasFields } from "./core-clones/composables/use-alias-fields";
+import { useShortcut } from "./core-clones/composables/use-shortcut";
 import { syncRefProperty } from "./core-clones/utils/sync-ref-property";
 import { formatCollectionItemsCount } from "./core-clones/utils/format-collection-items-count";
 import { adjustFieldsForDisplays } from "./core-clones/utils/adjust-fields-for-displays";
@@ -453,6 +454,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             const saving = ref(false);
 
             watch(edits, cleanUpEmptyEdits, { deep: true });
+
+            useShortcut("meta+s", saveEdits);
 
             return {
                 autoSave,

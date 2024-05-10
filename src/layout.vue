@@ -157,9 +157,9 @@
     import { HeaderRaw } from './core-clones/components/v-table/types';
     import { AliasFields, useAliasFields } from './core-clones/composables/use-alias-fields';
     import { usePageSize } from './core-clones/composables/use-page-size';
-    import { useShortcut } from './core-clones/composables/use-shortcut';
     import { Collection } from './core-clones/types/collections';
     // CORE CHANGES
+    // import { useShortcut } from './core-clones/composables/use-shortcut';
     // import { useSync } from '@directus/composables';
     // import { useCollectionPermissions } from '@/composables/use-permissions';
     import { useStores, useSync } from '@directus/extensions-sdk';
@@ -245,13 +245,14 @@
         () => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' }),
     );
 
-    useShortcut(
-        'meta+a',
-        () => {
-            props.selectAll();
-        },
-        table,
-    );
+    // CORE CHANGE
+    // useShortcut(
+    //     'meta+a',
+    //     () => {
+    //         props.selectAll();
+    //     },
+    //     table,
+    // );
 
     const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
         [25, 50, 100, 250, 500, 1000],

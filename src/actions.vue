@@ -5,8 +5,9 @@
         </span>
     </transition>
 
-    <v-button v-tooltip.bottom="autoSave ? t('saves_automatically') : t('save')" rounded icon
-        :disabled="autoSave || !hasEdits" @click="saveEdits" :loading="saving">
+    <v-button
+        v-tooltip.bottom="autoSave ? t('saves_automatically') : `${t('save')} (${translateShortcut(['meta', 's'])})`"
+        rounded icon :disabled="autoSave || !hasEdits" @click="saveEdits" :loading="saving">
         <v-icon :name="autoSave ? 'published_with_changes' : 'check'" />
     </v-button>
 </template>
@@ -15,6 +16,7 @@
 
 <script setup lang="ts">
     import { useI18n } from 'vue-i18n';
+    import { translateShortcut } from './core-clones/utils/translate-shortcut';
 
     defineOptions({ inheritAttrs: false });
 
