@@ -5,9 +5,12 @@ import {
     useItems,
     useCollection,
     useSync,
+    useApi,
 } from "@directus/extensions-sdk";
+import { useI18n } from "vue-i18n";
+import { getEndpoint } from "@directus/utils";
 import type { Field } from "@directus/types";
-import { debounce } from "lodash";
+import { debounce, isEmpty } from "lodash";
 import Actions from "./actions.vue";
 import Options from "./options.vue";
 import Layout from "./layout.vue";
@@ -109,7 +112,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             );
         });
 
-        const { autoSave, edits, hasEdits, saveEdits, autoSaveEdits } =
+        const { unexpectedError } = useUnexpectedError();
+        const { autoSave, edits, hasEdits, saving, saveEdits, autoSaveEdits } =
             useSaveEdits();
 
         return {
@@ -148,6 +152,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             autoSave,
             edits,
             hasEdits,
+            saving,
             saveEdits,
             autoSaveEdits,
         };
@@ -416,31 +421,85 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             }
         }
 
-        function useSaveEdits() {
-            const autoSave = syncRefProperty(layoutOptions, "autosave", true);
-            const edits = ref({});
-            const hasEdits = computed(
-                // TODO: check if single items have edits or they just have empty `{}`
-                () => Object.keys(edits.value).length > 0
-            );
+        // Based from the core: /app/src/utils/unexpected-error.ts
+        function useUnexpectedError() {
+            const { useNotificationsStore } = useStores();
+            const notificationStore = useNotificationsStore();
+            const { t } = useI18n();
 
-            return { autoSave, edits, hasEdits, saveEdits, autoSaveEdits };
+            return {
+                unexpectedError(error: any) {
+                    const code =
+                        error.response?.data?.errors?.[0]?.extensions?.code ||
+                        error?.extensions?.code ||
+                        "UNKNOWN";
+
+                    notificationStore.add({
+                        title: t(`errors.${code}`),
+                        type: "error",
+                        code,
+                        dialog: true,
+                        error,
+                    });
+                },
+            };
+        }
+
+        function useSaveEdits() {
+            const api = useApi();
+            const autoSave = syncRefProperty(layoutOptions, "autosave", true);
+            const edits = ref<Record<string, any>>({});
+            const hasEdits = computed(() => !isEmpty(edits.value));
+            const saving = ref(false);
+
+            watch(edits, cleanUpEmptyEdits, { deep: true });
+
+            return {
+                autoSave,
+                edits,
+                hasEdits,
+                saving,
+                saveEdits,
+                autoSaveEdits,
+            };
 
             function resetEdits() {
                 edits.value = {};
             }
 
-            function saveEdits() {
+            async function saveEdits() {
                 if (!hasEdits.value) return;
+                saving.value = true;
 
-                // TODO: Save content here
+                try {
+                    for (const [id, payload] of Object.entries(edits.value)) {
+                        await api.patch(
+                            `${getEndpoint(collection.value!)}/${id}`,
+                            payload
+                        );
+                    }
+                } catch (error: any) {
+                    unexpectedError(error);
+                }
 
+                saving.value = false;
                 resetEdits();
+                refresh();
             }
 
             function autoSaveEdits() {
                 if (!autoSave.value) return;
                 saveEdits();
+            }
+
+            function cleanUpEmptyEdits() {
+                if (!hasEdits.value) return;
+
+                for (const [key, itemEdits] of Object.entries(edits.value)) {
+                    if (isEmpty(itemEdits)) {
+                        delete edits.value[key];
+                    }
+                }
             }
         }
     },

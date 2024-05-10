@@ -6,7 +6,7 @@
     </transition>
 
     <v-button v-tooltip.bottom="autoSave ? t('saves_automatically') : t('save')" rounded icon
-        :disabled="autoSave || !hasEdits" @click="saveEdits">
+        :disabled="autoSave || !hasEdits" @click="saveEdits" :loading="saving">
         <v-icon :name="autoSave ? 'published_with_changes' : 'check'" />
     </v-button>
 </template>
@@ -23,6 +23,7 @@
         showingCount: string;
         autoSave?: boolean;
         hasEdits?: boolean;
+        saving: boolean;
         saveEdits: () => void;
     }>();
 
