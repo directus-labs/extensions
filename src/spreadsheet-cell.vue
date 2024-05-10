@@ -19,7 +19,7 @@
 
     const { editMode, enterCell } = useEditMode({
         onFocusCell() {
-            target.value?.querySelector('.v-input')?.click();
+            ((target.value! as HTMLElement)?.querySelector('.v-input') as HTMLElement)?.click();
         }
     });
 
@@ -49,12 +49,12 @@
         function leaveCellAndFocus() {
             if (!editMode.value) return;
             leaveCell();
-            target.value?.focus();
+            (target.value! as HTMLElement)?.focus();
         }
 
         function clickOutside(e: MouseEvent) {
             if (!editMode.value) return;
-            const elementsToIgnore = e.target?.closest('#dialog-outlet, #menu-outlet');
+            const elementsToIgnore = (e.target as HTMLElement)?.closest('#dialog-outlet, #menu-outlet');
             if (elementsToIgnore) return;
             leaveCell();
         }
@@ -72,12 +72,12 @@
             if (preventNavigation.value) return;
 
             const parent = vertical ? 'tr.table-row' : 'td.cell';
-            const parentSibling = e.target?.closest(parent)?.[next ? 'nextElementSibling' : 'previousElementSibling'];
+            const parentSibling = (e.target as HTMLElement)?.closest(parent)?.[next ? 'nextElementSibling' : 'previousElementSibling'];
             const cell = vertical
                 ? parentSibling?.querySelectorAll(`.spreadsheet-cell`)?.[props.column]
                 : parentSibling?.querySelector('.spreadsheet-cell');
 
-            cell?.focus()
+            (cell as HTMLElement)?.focus()
         }
     }
 </script>
