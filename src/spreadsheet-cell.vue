@@ -119,6 +119,8 @@
 
         &:not(.edit-mode) {
             overflow: hidden;
+            text-align: inherit;
+            justify-content: inherit;
             white-space: nowrap;
             text-overflow: ellipsis;
             border: var(--theme--border-width) solid transparent;
