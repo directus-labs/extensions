@@ -67,9 +67,9 @@
         onKeyStroke(['Down', 'ArrowDown'], (e) => cellNavigation(e, { vertical: true, next: true }), { target });
 
         function cellNavigation(e: KeyboardEvent, { vertical = false, next = false }) {
-            e.preventDefault();
-
             if (preventNavigation.value) return;
+
+            e.preventDefault();
 
             const parent = vertical ? 'tr.table-row' : 'td.cell';
             const parentSibling = (e.target as HTMLElement)?.closest(parent)?.[next ? 'nextElementSibling' : 'previousElementSibling'];
