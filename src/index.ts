@@ -115,8 +115,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
         });
 
         const { unexpectedError } = useUnexpectedError();
-        const { autoSave, edits, hasEdits, saving, saveEdits, autoSaveEdits } =
-            useSaveEdits();
+        const {
+            autoSave,
+            edits,
+            hasEdits,
+            saving,
+            saveEdits,
+            autoSaveEdits,
+            resetEdits,
+        } = useSaveEdits();
 
         return {
             tableHeaders,
@@ -157,6 +164,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             saving,
             saveEdits,
             autoSaveEdits,
+            resetEdits,
         };
 
         async function resetPresetAndRefresh() {
@@ -462,6 +470,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                 saving,
                 saveEdits,
                 autoSaveEdits,
+                resetEdits,
             };
 
             function resetEdits() {

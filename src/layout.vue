@@ -149,6 +149,19 @@
         <slot v-else-if="itemCount === 0 && (filterUser || search)" name="no-results" />
         <slot v-else-if="itemCount === 0" name="no-items" />
     </div>
+
+    <v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+        <v-card>
+            <v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+            <v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+            <v-card-actions>
+                <v-button secondary @click="discardAndLeave">
+                    {{ t('discard_changes') }}
+                </v-button>
+                <v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 
@@ -158,11 +171,13 @@
     import { useI18n } from 'vue-i18n';
     import type { ShowSelect } from '@directus/extensions';
     import type { Field, Filter, Item } from '@directus/types';
+    import { useRouter } from 'vue-router';
     import SpreadsheetCell from './spreadsheet-cell.vue'
     // CORE CLONES
     import { HeaderRaw } from './core-clones/components/v-table/types';
     import { AliasFields, useAliasFields } from './core-clones/composables/use-alias-fields';
     import { usePageSize } from './core-clones/composables/use-page-size';
+    import { useEditsGuard } from './core-clones/composables/use-edits-guard';
     import { Collection } from './core-clones/types/collections';
     // CORE CHANGES
     // import { useShortcut } from './core-clones/composables/use-shortcut';
@@ -203,7 +218,9 @@
         onSortChange: (newSort: { by: string; desc: boolean }) => void;
         onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
         edits: Record<string, any>;
+        hasEdits: boolean;
         autoSaveEdits: () => void;
+        resetEdits: () => void;
     }
 
     const props = withDefaults(defineProps<Props>(), {
@@ -283,6 +300,8 @@
         fieldsWritable.value = fieldsWritable.value.filter((field) => field !== fieldKey);
     }
 
+    // CUSTOM
+
     const { cssHeight } = useCloneFromTableRowComponent();
     function useCloneFromTableRowComponent() {
         const cssHeight = computed(() => {
@@ -295,6 +314,22 @@
     }
 
     const editsWritable = useSync(props, 'edits', emit);
+
+    const { confirmLeave, discardAndLeave } = useConfirmLeave();
+    function useConfirmLeave() {
+        const router = useRouter();
+        const { hasEdits } = toRefs(props);
+        const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
+
+        return { confirmLeave, discardAndLeave };
+
+        function discardAndLeave() {
+            if (!leaveTo.value) return;
+            props.resetEdits();
+            confirmLeave.value = false;
+            router.push(leaveTo.value);
+        }
+    }
 </script>
 
 
