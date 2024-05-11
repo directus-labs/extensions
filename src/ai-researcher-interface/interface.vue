@@ -1,6 +1,12 @@
 <template>
-  <VInput v-bind="value" />
-  <VInput v-bind="value" />
+  <h1>Open API</h1>
+  <VInput v-bind="value" class="open-api-input" />
+  <VDivider class="divider"/>
+  <h1>Prompt</h1>
+  <VInput v-bind="value" id="prompt"/>
+  <VButton @click="fetchData()" class="open-api-input">
+    Create New
+  </VButton>
 </template>
 
 <script> 
@@ -27,10 +33,24 @@ import { useApi } from '@directus/extensions-sdk';
 
 const api = useApi();
 
-async function fetchData() {
-    const response = await api.get('/');
-    data.value = response.data;
-};
+const foo = () => {
+  console.log('dgl hello');
+}
 
-fetchData();
+async function fetchData() {
+  console.log('dgl fetchData');
+  const response = await api.get('/');
+  console.log(response.data);
+  // data.value = response.data;
+  // console.log(data.value);
+};
 </script> -->
+<style scoped lang="scss">
+  .divider {
+    margin: 1em auto;
+  }
+
+  .open-api-input {
+    margin: 2em auto;
+  }
+</style>
