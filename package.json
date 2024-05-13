@@ -1,12 +1,24 @@
 {
     "name": "directus-extension-spreadsheet-layout",
-    "description": "Please enter a description for your extension",
-    "icon": "extension",
     "version": "1.0.0",
+    "description": "A table layout that allows you to edit item fields directly inline, just like in a spreadsheet",
+    "license": "MIT",
+    "author": "Directus Labs",
+    "contributors": [
+        {
+            "name": "formfcw",
+            "email": "dev@formfcw.com"
+        }
+    ],
+    "icon": "table",
     "keywords": [
+        "inline",
+        "inline-editing",
+        "spreadsheet",
         "directus",
         "directus-extension",
-        "directus-extension-layout"
+        "directus-extension-layout",
+        "directus-extension-spreadsheet-layout"
     ],
     "type": "module",
     "files": [
