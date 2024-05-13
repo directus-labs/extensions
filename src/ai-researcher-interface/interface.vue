@@ -28,7 +28,7 @@ export default {
 	},
 };
 </script>
-<!-- <script setup>
+<script setup>
 import { useApi } from '@directus/extensions-sdk';
 
 const api = useApi();
@@ -44,7 +44,7 @@ async function fetchData() {
   // data.value = response.data;
   // console.log(data.value);
 };
-</script> -->
+</script>
 <style scoped lang="scss">
   .divider {
     margin: 1em auto;

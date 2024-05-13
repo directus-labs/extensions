@@ -11,15 +11,16 @@ export default (router) => {
 
   router.get('/openai', async (req, res) => {
     try {
-      const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: 'gpt-4',
-        messages: [{ role: "system", content: "You are a helpful assistant." }],
-      }, {
-        headers: {
-          Authorization: `Bearer ${req.headers.apiKey}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      // const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+      //   model: 'gpt-4',
+      //   messages: [{ role: "system", content: "You are a helpful assistant." }],
+      // }, {
+      //   headers: {
+      //     Authorization: `Bearer ${req.headers.apiKey}`,
+      //     'Content-Type': 'application/json',
+      //   },
+      // });
+      console.log('dgl openapi');
       res.send(`Hello ${req.headers.apiKey}`);
     } catch (err) {
       log(err.message);
