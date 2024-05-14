@@ -9,7 +9,8 @@ export default {
   options: (ctx) => {
     return {
       standard: [
-        {
+        // apikey should be set here once, then used again
+        { 
 					field: 'apiKey',
 					name: 'OpenAI API Key',
 					type: 'string',
@@ -23,8 +24,8 @@ export default {
 					},
 				},
 				{
-					field: 'text',
-					name: 'Text',
+					field: 'systemPrompt',
+					name: 'systemPrompt',
 					type: 'text',
 					required: true,
 					meta: {
