@@ -9,7 +9,6 @@ export default {
   options: (ctx) => {
     return {
       standard: [
-        // apikey should be set here once, then used again
         { 
 					field: 'apiKey',
 					name: 'OpenAI API Key',
@@ -24,15 +23,16 @@ export default {
 					},
 				},
 				{
-					field: 'systemPrompt',
-					name: 'systemPrompt',
+					field: 'role',
+					name: 'role',
 					type: 'text',
 					required: true,
 					meta: {
 						width: 'full',
-						interface: 'textarea',
+						interface: 'input',
 					},
 				},
+        // TODO: Add prompt
       ]
     }
   },

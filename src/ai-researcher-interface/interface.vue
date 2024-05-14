@@ -4,6 +4,7 @@
   <VButton @click="fetchData()" class="open-api-input">
     Create New
   </VButton>
+  <VTextarea v-model="answer" />
 </template>
 
 <script setup>
@@ -12,28 +13,24 @@ import { useApi } from '@directus/extensions-sdk';
 
 const api = useApi();
 
-const prompt = ref(""); // setstate in react
 const answer = ref("");
+const prompt = ref(""); // setstate in react
 
 const props = defineProps({
-  systemPrompt: {
-    type: String,
-    default: null,
-  },
   apiKey: {
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    default: null,
+  },
 });
 
 async function fetchData() {
-  console.log(props);
-  // prompt.value, props.systemPrompt, props.apiKey needed
-  // answer.value to be filled
-
   const response = await api.post('/ai-researcher-endpoint/openai', {
     prompt: prompt.value,
-    systemPrompt: props.systemPrompt,
+    role: props.role,
   },
   {
     headers: {
@@ -41,6 +38,17 @@ async function fetchData() {
     },
   },
   );
-  // console.log(response.data);
+
+  answer.value = response.data.content;
 };
 </script>
+
+<style scoped lang="scss">
+  .divider {
+    margin: 1em auto;
+  }
+
+  .open-api-input {
+    margin: 2em auto;
+  }
+</style>
