@@ -1,10 +1,10 @@
 <template>
-  <h1>Prompt</h1>
+  <h1 class="title">Research Prompt</h1>
   <VInput v-model="prompt" id="prompt"/>
   <VButton @click="fetchData()" class="open-api-input">
-    Create New
+    Research
   </VButton>
-  <VTextarea v-model="answer" />
+  <VTextarea class="answer" readonly v-model="answer" />
 </template>
 
 <script setup>
@@ -21,16 +21,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  role: {
-    type: String,
-    default: null,
-  },
 });
 
 async function fetchData() {
   const response = await api.post('/ai-researcher-endpoint/openai', {
     prompt: prompt.value,
-    role: props.role,
   },
   {
     headers: {
@@ -50,5 +45,13 @@ async function fetchData() {
 
   .open-api-input {
     margin: 2em auto;
+  }
+
+  .title {
+    margin: 2em auto;
+  }
+
+  .v-textarea {
+    background-color: #d1d1d1;
   }
 </style>
