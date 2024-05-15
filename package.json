@@ -1,7 +1,9 @@
 {
 	"name": "ai-researcher-bundle ",
-	"description": "Please enter a description for your extension",
+	"description": "Allow users to provide a research prompt using GPT-4",
+  "author": "danougill",
 	"icon": "extension",
+  "license": "MIT license",
 	"version": "1.0.0",
 	"keywords": [
 		"directus",

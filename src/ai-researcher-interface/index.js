@@ -22,17 +22,6 @@ export default {
 						interface: 'input',
 					},
 				},
-				{
-					field: 'role',
-					name: 'role',
-					type: 'text',
-					required: true,
-					meta: {
-						width: 'full',
-						interface: 'input',
-					},
-				},
-        // TODO: Add prompt
       ]
     }
   },

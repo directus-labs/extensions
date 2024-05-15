@@ -5,7 +5,7 @@ export default (router) => {
     try {
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
         model: 'gpt-4',
-        messages: [{ role: req.body.role, content: req.body.prompt }],
+        messages: [{ role: 'assistant', content: req.body.prompt }],
       }, {
         headers: {
           Authorization: `Bearer ${req.headers.apikey}`,

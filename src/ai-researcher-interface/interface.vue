@@ -21,16 +21,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  role: {
-    type: String,
-    default: null,
-  },
 });
 
 async function fetchData() {
   const response = await api.post('/ai-researcher-endpoint/openai', {
     prompt: prompt.value,
-    role: props.role,
   },
   {
     headers: {
