@@ -6,13 +6,13 @@ Displays a clickable list of steps that the user can follow to complete a task w
 
 **UI**
 
-![Example view of the steps interface.](https://raw.githubusercontent.com/directus-labs/extension-steps-component/steps-interface-example.png)
+![Example view of the steps interface.](https://raw.githubusercontent.com/directus-labs/extension-steps-component/main/docs/steps-interface-example.png)
 
 **Settings**
 
-![Settings screen for the steps interface.](https://raw.githubusercontent.com/directus-labs/extension-steps-component/steps-interface-settings-steps.png)
+![Settings screen for the steps interface.](https://raw.githubusercontent.com/directus-labs/extension-steps-component/main/docs/steps-interface-settings-steps.png)
 
-![Settings screen for the fields within each step interface.](https://raw.githubusercontent.com/directus-labs/extension-steps-component/steps-interface-settings-field.png)
+![Settings screen for the fields within each step interface.](https://raw.githubusercontent.com/directus-labs/extension-steps-component/main/docs/steps-interface-settings-field.png)
 
 ### Configuration Options
 
