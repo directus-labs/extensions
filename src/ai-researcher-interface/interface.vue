@@ -21,11 +21,16 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  systemprompt: {
+    type: String,
+    required: true,
+  },
 });
 
 async function fetchData() {
   const response = await api.post('/ai-researcher-endpoint/openai', {
-    prompt: prompt.value,
+    userprompt: prompt.value,
+    systemprompt: props.systemprompt,
   },
   {
     headers: {
