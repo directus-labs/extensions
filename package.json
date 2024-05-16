@@ -2,7 +2,7 @@
 	"name": "@directus-labs/ai-writer-operation",
 	"description": "Use OpenAI's Text Generation API to generate text.",
 	"icon": "extension",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"license": "MIT",
 	"keywords": [
 		"directus",
@@ -33,8 +33,12 @@
 			"requestedScopes": {
 				"log": {},
 				"request": {
-					"methods": ["POST"],
-					"urls": ["https://api.openai.com/v1/**"]
+					"methods": [
+						"POST"
+					],
+					"urls": [
+						"https://api.openai.com/v1/**"
+					]
 				}
 			}
 		}

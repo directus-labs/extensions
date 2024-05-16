@@ -40,14 +40,18 @@ export default {
 						interface: 'select-dropdown',
 						options: {
 							choices: [
+                                {
+                                    text: 'GPT-4o',
+                                    value: 'gpt-4o',
+                                },
 								{
-									text: 'GPT-4',
-									value: 'gpt-4',
+                                    text: 'GPT-4 Turbo',
+									value: 'gpt-4-turbo',
 								},
-								{
-									text: 'GPT-4 Turbo (Experimental)',
-									value: 'gpt-4-turbo-preview',
-								},
+                                {
+                                    text: 'GPT-4',
+                                    value: 'gpt-4',
+                                },
 								{
 									text: 'GPT-3.5 Turbo',
 									value: 'gpt-3.5-turbo',
@@ -89,6 +93,19 @@ export default {
 					},
 					schema: {
 						default_value: 'You are a cute little bunny called Directus that wants to help. You will act like a helpful assistant with your replies but always add some personality as if you were a bunny. Never break out of character.',
+					},
+				},
+                {
+					field: 'json_mode',
+					name: 'JSON Mode',
+					type: 'boolean',
+					meta: {
+						width: 'full',
+						hidden: context.promptKey !== Prompts.custom.value,
+                        note: "Always return a JSON object. See the [OpenAI docs on JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode) for more information.",
+					},
+					schema: {
+						default_value: false,
 					},
 				},
 				{
@@ -140,9 +157,9 @@ export default {
 								{
 									field: 'content',
 									name: 'Message',
-									type: 'string',
+									type: 'text',
 									meta: {
-										interface: 'input',
+										interface: 'textarea',
 										width: 'full',
 									}
 								},
