@@ -28,6 +28,8 @@ const props = defineProps({
 });
 
 async function fetchData() {
+  answer.value = "";
+
   const response = await api.post('/ai-researcher-endpoint/openai', {
     userprompt: prompt.value,
     systemprompt: props.systemprompt,
@@ -39,6 +41,16 @@ async function fetchData() {
   },
   );
 
+  const result = (response.data.content).split(" ");
+  
+  const delay = (delayInMS) => {
+    return new Promise(resolve => setTimeout(resolve, delayInMS));
+  } ;
+
+  for (let i = 0; i < result.length; i++) {
+    answer.value += result[i] + " ";
+    await delay(50);
+  }
   answer.value = response.data.content;
 };
 </script>
