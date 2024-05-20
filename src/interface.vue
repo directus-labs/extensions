@@ -21,6 +21,7 @@
 <script setup lang="ts">
     import { ref, computed, watch, type Ref } from 'vue';
     import { useI18n } from "vue-i18n";
+    import getVideoId from 'get-video-id';
     import Plyr from './plyr.vue'
     import type { VideoService, VideoID, Video } from './types'
 
@@ -89,7 +90,8 @@
                 return idInput.value;
             },
             set(newValue) {
-                idInput.value = newValue;
+                const { id } = getVideoId(newValue as string ?? '');
+                idInput.value = id ?? newValue;
             }
         });
 
@@ -133,7 +135,7 @@
 
             if (service.value == 'directus') return t('choose_from_library');
 
-            return `Video ID …`;
+            return `Video URL/ID …`;
         });
 
         return { idInput, inputIsClickable, inputPlaceholder, onInputClick };
