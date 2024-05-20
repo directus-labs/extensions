@@ -12,6 +12,8 @@
     </v-input>
 
     <drawer-files :active="fileDrawer" @update:active="fileDrawer = false" @input="setFileSelection" />
+
+    <plyr v-if="service && id" :service="service" :id="id" />
 </template>
 
 
@@ -19,29 +21,43 @@
 <script setup lang="ts">
     import { ref, computed, watch, type Ref } from 'vue';
     import { useI18n } from "vue-i18n";
+    import Plyr from './plyr.vue'
+    import type { VideoService, VideoID, Video } from './types'
 
-    type VideoService = 'youtube' | 'vimeo' | 'directus';
-    type VideoID = string | number;
-    type Video = { service: VideoService; id: VideoID; } | null;
-
-    defineProps<{ value?: Video }>();
-
+    const props = defineProps<{ value?: Video }>();
     const emit = defineEmits(['input']);
 
     const { t } = useI18n();
 
     const { services, service } = useVideoServices();
-    const { fileDrawer, fileID, setFileSelection } = useFileSelect()
-    const { inputValue, inputIsClickable, inputPlaceholder, onInputClick } = useInputField(service, fileDrawer);
-    const { id, clearID } = useVideoID(service, inputValue, fileID);
+    const { fileDrawer, fileID, setFileSelection } = useFileSelect(service);
+    const { idInput, inputIsClickable, inputPlaceholder, onInputClick } = useInputField(service, fileDrawer);
+    const { id, clearID } = useVideoID(service, idInput, fileID);
 
-    watch([service, id], () => {
-        const video: Video = service.value && id.value
+    watch(() => props.value, setServiceAndID);
+    watch([service, id], emitInputValue);
+
+    function setServiceAndID() {
+        if (!props.value) return;
+
+        service.value = props.value.service;
+
+        if (service.value == 'directus') {
+            fileID.value = props.value.id;
+            return;
+        }
+
+        id.value = props.value.id;
+    }
+
+    function emitInputValue() {
+        if (props.value?.service == service.value && props.value?.id == id.value) return;
+
+        const inputValue = service.value && id.value
             ? { service: service.value, id: id.value }
             : null;
-
-        emit('input', video);
-    })
+        emit('input', ref(inputValue));
+    }
 
     function useVideoServices() {
         const services: { value: VideoService, text: string }[] = [
@@ -63,17 +79,17 @@
         return { service, services }
     }
 
-    function useVideoID(service: Ref<VideoService | null>, inputValue: Ref<VideoID | null | undefined>, fileID: Ref<VideoID | null>) {
+    function useVideoID(service: Ref<VideoService | null>, idInput: Ref<VideoID | null | undefined>, fileID: Ref<VideoID | null>) {
         const id = computed({
             get() {
                 if (!service.value) return;
 
                 if (service.value == 'directus') return fileID.value;
 
-                return inputValue.value;
+                return idInput.value;
             },
             set(newValue) {
-                inputValue.value = newValue;
+                idInput.value = newValue;
             }
         });
 
@@ -89,9 +105,11 @@
         }
     }
 
-    function useFileSelect() {
+    function useFileSelect(service: Ref<VideoService | null>) {
         const fileDrawer = ref(false);
         const fileID = ref<VideoID | null>(null);
+
+        watch(service, openIfFileEmptyOnSelection);
 
         return { fileDrawer, fileID, setFileSelection }
 
@@ -99,10 +117,15 @@
             if (!selection) return;
             fileID.value = selection[0] ?? null;
         }
+
+        function openIfFileEmptyOnSelection(newValue: any, oldValue: any) {
+            if (newValue != oldValue && newValue == 'directus' && !fileID.value)
+                fileDrawer.value = true;
+        }
     }
 
     function useInputField(service: Ref<VideoService | null>, fileDrawer: Ref<boolean>) {
-        const inputValue = ref<VideoID | null>(null);
+        const idInput = ref<VideoID | null>(null);
         const inputIsClickable = computed(() => !service.value || service.value == 'directus');
 
         const inputPlaceholder = computed(() => {
@@ -113,17 +136,20 @@
             return `Video ID …`;
         });
 
-        return { inputValue, inputIsClickable, inputPlaceholder, onInputClick };
+        return { idInput, inputIsClickable, inputPlaceholder, onInputClick };
 
-        function onInputClick(e: MouseEvent) {
+        function onInputClick({ target }: { target: HTMLElement }) {
             if (!inputIsClickable.value) return;
 
-            const clickOnMenu = !!(e.target as HTMLElement)?.closest('.prepend .v-select');
+            const clickOnMenu = !!target?.closest('.prepend .v-select');
 
             if (!clickOnMenu && service.value == 'directus') {
                 fileDrawer.value = true;
                 return;
             }
+
+            const selectActivator: HTMLElement | null = target?.querySelector('.prepend .v-menu-activator > *');
+            selectActivator?.click();
         }
     }
 </script>

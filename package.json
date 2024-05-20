@@ -28,5 +28,8 @@
 		"typescript": "^5.4.5",
 		"vue": "^3.4.27",
 		"vue-i18n": "^9.13.1"
+	},
+	"dependencies": {
+		"plyr": "^3.7.8"
 	}
 }
