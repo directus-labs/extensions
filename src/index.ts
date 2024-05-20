@@ -5,7 +5,8 @@ export default defineInterface({
     id: "directus-labs-video-interface",
     name: "Video",
     icon: "smart_display",
-    description: "This is my custom interface!",
+    description:
+        "An interface to select and display a video from YouTube, Vimeo or Directus itself.",
     component: InterfaceComponent,
     types: ["json"],
     group: "selection",
