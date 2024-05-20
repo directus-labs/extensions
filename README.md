@@ -1,6 +1,6 @@
 # Video Interface for Directus
 
-An interface to select and display a video from YouTube, Vimeo or Directus itself.
+An interface to select and display a video from YouTube, Vimeo or a local file from Directus.
 
 ![](https://raw.githubusercontent.com/directus-labs/extension-video-interface/main/docs/preview.png)
 
