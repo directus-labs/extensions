@@ -135,7 +135,7 @@
 
             if (service.value == 'directus') return t('choose_from_library');
 
-            return `Video URL/ID …`;
+            return `Video ID …`;
         });
 
         return { idInput, inputIsClickable, inputPlaceholder, onInputClick };
