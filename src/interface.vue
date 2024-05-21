@@ -115,7 +115,7 @@
 
         return { fileDrawer, fileID, setFileSelection }
 
-        async function setFileSelection(selection: (string | number)[] | null) {
+        async function setFileSelection(selection: string[] | null) {
             if (!selection) return;
             fileID.value = selection[0] ?? null;
         }
