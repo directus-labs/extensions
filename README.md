@@ -22,3 +22,16 @@ Once installed, go to your data model settings, create a new field or update an 
 ## Usage
 
 Locate the video field on your item page and select a video source: Directus, YouTube or Vimeo. If you choose Directus, select an existing video from the file library. If you are using an external video service, paste in the Video ID. The video will now appear, and if it exists, you can play it directly from the item page.
+
+## Output
+
+```js
+// Example output for YouTube videos
+{ service: 'youtube', id: 'iqBn7sBeJEc' }
+
+// Example output for Vimeo videos
+{ service: 'vimeo', id: '37293500' }
+
+// Example output for local videos from Directus
+{ service: 'directus', id: '09fe994b-01b5-4dea-9535-e7a14cfc0398' }
+```
