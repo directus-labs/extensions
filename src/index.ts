@@ -518,7 +518,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                 // strings
                 "string",
                 "text",
-                "uuid",
+                // "uuid",
                 // numbers
                 "bigInteger",
                 "integer",
