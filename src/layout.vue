@@ -339,6 +339,23 @@
         display: contents;
         margin: var(--content-padding);
         margin-bottom: var(--content-padding-bottom);
+
+        :deep(.append.cell) {
+            position: sticky;
+            right: 12px;
+            background: var(--theme--background);
+            overflow: visible;
+        }
+
+        :deep(.append.cell:after) {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 100%;
+            bottom: 0;
+            width: 12px;
+            background: var(--theme--background);
+        }
     }
 
     .v-table>:deep(table tbody td.cell:not(.select):not(.append):not(.manual)) {
