@@ -1,5 +1,6 @@
 <template>
-    <div ref="target" tabindex="0" class="spreadsheet-cell" :class="{ 'edit-mode': editMode }" @dblclick="enterCell">
+    <div ref="target" :tabindex="editMode && tabPress ? null : 0" class="spreadsheet-cell"
+        :class="{ 'edit-mode': editMode }" @dblclick="enterCell">
         <slot v-if="editMode" name="interface" />
         <slot v-else name="display" :display-item="mergedItemWithEdits" />
 
@@ -25,13 +26,13 @@
 
     const target = ref(null);
 
-    const { editMode, enterCell } = useEditMode({
+    const { editMode, enterCell, leaveCell } = useEditMode({
         onFocusCell() {
             ((target.value! as HTMLElement)?.querySelector('.v-input') as HTMLElement)?.click();
         }
     });
 
-    useCellNavigation(editMode);
+    const { tabPress } = useCellNavigation(editMode, enterCell, leaveCell);
 
     const { t } = useI18n();
     const { fieldHasEdits, mergedItemWithEdits } = useDisplayEdits();
@@ -43,7 +44,7 @@
         onKeyStroke(['Esc', 'Escape'], leaveCellAndFocus);
         onClickOutside(target, clickOutside);
 
-        return { editMode, enterCell };
+        return { editMode, enterCell, leaveCell };
 
         function enterCell() {
             if (editMode.value) return;
@@ -71,11 +72,28 @@
         }
     }
 
-    function useCellNavigation(preventNavigation: Ref<boolean>) {
+    function useCellNavigation(preventNavigation: Ref<boolean>, enterCell: any, leaveCell: any) {
         onKeyStroke(['Left', 'ArrowLeft'], (e) => cellNavigation(e, {}), { target });
         onKeyStroke(['Right', 'ArrowRight'], (e) => cellNavigation(e, { next: true }), { target });
         onKeyStroke(['Up', 'ArrowUp'], (e) => cellNavigation(e, { vertical: true }), { target });
         onKeyStroke(['Down', 'ArrowDown'], (e) => cellNavigation(e, { vertical: true, next: true }), { target });
+
+        const tabPress = ref(false);
+        onKeyStroke('Tab', () => tabPress.value = true);
+        onKeyStroke('Tab', () => tabPress.value = false, { eventName: 'keyup' });
+
+        onKeyStroke('Tab', (e) => {
+            e.preventDefault();
+            leaveCell();
+            cellNavigation(e, { next: e.shiftKey ? false : true });
+        }, { target });
+
+        onKeyStroke('Tab', (e) => {
+            e.preventDefault();
+            enterCell();
+        }, { target, eventName: 'keyup' });
+
+        return { tabPress };
 
         function cellNavigation(e: KeyboardEvent, { vertical = false, next = false }) {
             if (preventNavigation.value) return;
@@ -85,7 +103,7 @@
             const parent = vertical ? 'tr.table-row' : 'td.cell';
             const parentSibling = (e.target as HTMLElement)?.closest(parent)?.[next ? 'nextElementSibling' : 'previousElementSibling'];
             const cell = vertical
-                ? parentSibling?.querySelectorAll(`.spreadsheet-cell`)?.[props.column]
+                ? parentSibling?.querySelectorAll('.spreadsheet-cell')?.[props.column]
                 : parentSibling?.querySelector('.spreadsheet-cell');
 
             (cell as HTMLElement)?.focus()
