@@ -11,7 +11,7 @@ Similarly, community contributions (Pull Requests) are welcome for small enhance
 A couple of important notes before continuing:
 
 * Please see our docs on [how to publish an extension to the Marketplace](//docs.directus.io/extensions/marketplace/publishing.html) if you would like to publish your own extension
-* You will need to review the [Contributor License Agreement](https://github.com/directus-labs/extensions/blob/main/cla.md) (CLA) for this project and sign it by adding your GitHub username to [the contributors.yml file](https://github.com/directus-labs/extensions/blob//contributors.yml) in your first Pull Request
+* You will need to review the [Contributor License Agreement](https://github.com/directus-labs/extensions/blob/main/cla.md) (CLA) for this project and sign it by adding your GitHub username to [the contributors.yml file](https://github.com/directus-labs/extensions/blob/main/contributors.yml) in your first Pull Request
   * If you have contributed to the core [@directus/directus](https://github.com/directus/directus) project before, the CLA is the same for both projects
 * Any Pull Request that is opened without a relevant approved issue will be closed without further comment
 * All contributors are subject to our [Code of Conduct](https://docs.directus.io/contributing/code-of-conduct.html)
