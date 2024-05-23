@@ -6,9 +6,13 @@
 
 This repository is for our extensions published under the Directus Labs program. Unlike the core [@directus/directus](https://github.com/directus/directus) project, extensions here may not be actively developed after their initial release.
 
+<br>
+
 ## 📦 &nbsp;Extensions
 
-The extensions in this repository are all published to the Directus Marketplace. Some of the extensions may be not compatible with the sandbox requirements currently, and are only available on Directus instances with the `MARKETPLACE_TRUST` env set to `all`.
+The extensions in this repository are all published to the Directus Marketplace.
+
+Some of the published extensions may not be compatible with the sandbox requirements currently, and are only available on Directus instances with the `MARKETPLACE_TRUST` env set to `all`.
 
 | Extension | Type | Version | Sandboxed |
 | --------- | :--: | :-----: | :-------: |
@@ -33,6 +37,8 @@ The extensions in this repository are all published to the Directus Marketplace.
 | [Conflict Monitor](//github.com/directus-labs/extensions/tree/main/packages/conflict-monitor) | Interface | Planned | N/A |
 
 -->
+
+<br>
 
 ## ❤️ &nbsp;Contributing
 
