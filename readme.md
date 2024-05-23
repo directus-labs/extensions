@@ -42,10 +42,10 @@ Some of the published extensions may not be compatible with the sandbox requirem
 
 ## ❤️ &nbsp;Contributing
 
-Please read the [Contributing Guide](https://github.com/directus-labs/extensions/blob/main/contributing.md) for this project before submitting Pull Requests or Issues.
+Please read the [Contributing Guide](//github.com/directus-labs/extensions/blob/main/contributing.md) for this project before submitting Pull Requests or Issues.
 
-All security vulnerabilities should be reported in accordance with our [Security Policy](https://docs.directus.io/contributing/introduction/#reporting-security-vulnerabilities).
+All security vulnerabilities should be reported in accordance with our [Security Policy](//docs.directus.io/contributing/introduction.html#report-security-vulnerability).
 
-Directus is a premium open-source ([BSL 1.1](https://github.com/directus/directus/blob/main/license)) project, made possible with support from our passionate core team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!!
+Directus is a premium open-source ([BSL 1.1](//github.com/directus/directus/blob/main/license)) project, made possible with support from our passionate core team, talented contributors, and amazing [GitHub Sponsors](//github.com/sponsors/directus). Thank you all!!
 
 © 2004-2024, Monospace, Inc.
