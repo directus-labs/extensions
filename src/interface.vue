@@ -21,6 +21,7 @@
 <script setup lang="ts">
     import { ref, computed, watch, type Ref } from 'vue';
     import { useI18n } from "vue-i18n";
+    import getVideoId from 'get-video-id';
     import Plyr from './plyr.vue'
     import type { VideoService, VideoID, Video } from './types'
 
@@ -89,7 +90,8 @@
                 return idInput.value;
             },
             set(newValue) {
-                idInput.value = newValue;
+                const { id } = getVideoId(newValue as string ?? '');
+                idInput.value = id ?? newValue;
             }
         });
 
@@ -113,7 +115,7 @@
 
         return { fileDrawer, fileID, setFileSelection }
 
-        async function setFileSelection(selection: (string | number)[] | null) {
+        async function setFileSelection(selection: string[] | null) {
             if (!selection) return;
             fileID.value = selection[0] ?? null;
         }
