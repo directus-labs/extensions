@@ -128,12 +128,29 @@
 
 
 
+<style lang="scss">
+    .spreadsheet-cell {
+        --v-input-border-radius: 0;
+
+        .v-checkbox.block {
+            --theme--border-radius: 0;
+        }
+    }
+</style>
+
 <style lang="scss" scoped>
     .spreadsheet-cell {
         display: flex;
         align-items: center;
-        width: 100%;
-        height: 100%;
+        position: relative;
+        margin-left: calc(-1 * var(--theme--border-width));
+        margin-right: calc(-1 * var(--theme--border-width));
+        width: calc(100% + var(--theme--border-width) * 2);
+        height: calc(100% + var(--theme--border-width) * 2);
+
+        > :deep(.v-input) {
+            --v-input-border-radius: 0;
+        }
 
         &:not(.edit-mode) {
             overflow: hidden;
@@ -142,11 +159,6 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             border: var(--theme--border-width) solid transparent;
-            border-radius: var(--v-input-border-radius, var(--theme--border-radius));
-
-            &:hover {
-                border-color: var(--theme--border-color-subdued);
-            }
 
             &:focus,
             &:focus-within {
@@ -189,10 +201,6 @@
         & :deep(.v-form .v-select .v-input) {
             min-width: 120px;
         }
-    }
-
-    .spreadsheet-cell {
-        position: relative;
 
         &:focus {
             .edit-dot {
