@@ -1,0 +1,14 @@
+{
+	"name": "@directus-labs/extensions",
+	"private": true,
+	"homepage": "https://github.com/directus-labs/extensions",
+	"license": "MIT",
+	"scripts": {
+		"dev": "pnpm --stream -r dev"
+	},
+	"packageManager": "pnpm@9.0.6",
+	"engines": {
+		"node": ">=18.18.0",
+		"pnpm": "~9.1"
+	}
+}
