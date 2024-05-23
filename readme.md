@@ -42,7 +42,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 
 ## ❤️ &nbsp;Contributing
 
-Please read the [Contributing Guide](https://github.com/directus-labs/extensions/blob/main/contributing.md) for this project before submitting Pull Requests.
+Please read the [Contributing Guide](https://github.com/directus-labs/extensions/blob/main/contributing.md) for this project before submitting Pull Requests or Issues.
 
 All security vulnerabilities should be reported in accordance with our [Security Policy](https://docs.directus.io/contributing/introduction/#reporting-security-vulnerabilities).
 
