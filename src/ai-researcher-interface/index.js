@@ -22,6 +22,16 @@ export default {
 						interface: 'input',
 					},
 				},
+        { 
+					field: 'systemprompt',
+					name: 'System Prompt',
+					type: 'string',
+					meta: {
+						required: true,
+						width: 'full',
+						interface: 'input',
+					},
+				},
       ]
     }
   },
