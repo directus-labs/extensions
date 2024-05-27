@@ -1,9 +1,10 @@
 <template>
-    <div ref="target" tabindex="0" class="spreadsheet-cell" :class="{ 'edit-mode': editMode }" @dblclick="enterCell">
+    <div ref="target" :tabindex="editMode && tabPress ? null : 0" class="spreadsheet-cell"
+        :class="{ 'edit-mode': editMode }" @dblclick="enterCell">
         <slot v-if="editMode" name="interface" />
         <slot v-else name="display" :display-item="mergedItemWithEdits" />
 
-        <div v-if="!editMode && fieldHasEdits" v-tooltip="t('unsaved_changes')" class="edit-dot"></div>
+        <div v-if="!editMode && fieldHasEdits" v-tooltip="t('unsaved_changes')" class="edit-marker"></div>
     </div>
 </template>
 
@@ -25,13 +26,13 @@
 
     const target = ref(null);
 
-    const { editMode, enterCell } = useEditMode({
+    const { editMode, enterCell, leaveCell } = useEditMode({
         onFocusCell() {
             ((target.value! as HTMLElement)?.querySelector('.v-input') as HTMLElement)?.click();
         }
     });
 
-    useCellNavigation(editMode);
+    const { tabPress } = useCellNavigation(editMode, enterCell, leaveCell);
 
     const { t } = useI18n();
     const { fieldHasEdits, mergedItemWithEdits } = useDisplayEdits();
@@ -43,7 +44,7 @@
         onKeyStroke(['Esc', 'Escape'], leaveCellAndFocus);
         onClickOutside(target, clickOutside);
 
-        return { editMode, enterCell };
+        return { editMode, enterCell, leaveCell };
 
         function enterCell() {
             if (editMode.value) return;
@@ -71,11 +72,28 @@
         }
     }
 
-    function useCellNavigation(preventNavigation: Ref<boolean>) {
+    function useCellNavigation(preventNavigation: Ref<boolean>, enterCell: any, leaveCell: any) {
         onKeyStroke(['Left', 'ArrowLeft'], (e) => cellNavigation(e, {}), { target });
         onKeyStroke(['Right', 'ArrowRight'], (e) => cellNavigation(e, { next: true }), { target });
         onKeyStroke(['Up', 'ArrowUp'], (e) => cellNavigation(e, { vertical: true }), { target });
         onKeyStroke(['Down', 'ArrowDown'], (e) => cellNavigation(e, { vertical: true, next: true }), { target });
+
+        const tabPress = ref(false);
+        onKeyStroke('Tab', () => tabPress.value = true);
+        onKeyStroke('Tab', () => tabPress.value = false, { eventName: 'keyup' });
+
+        onKeyStroke('Tab', (e) => {
+            e.preventDefault();
+            leaveCell();
+            cellNavigation(e, { next: e.shiftKey ? false : true });
+        }, { target });
+
+        onKeyStroke('Tab', (e) => {
+            e.preventDefault();
+            enterCell();
+        }, { target, eventName: 'keyup' });
+
+        return { tabPress };
 
         function cellNavigation(e: KeyboardEvent, { vertical = false, next = false }) {
             if (preventNavigation.value) return;
@@ -85,7 +103,7 @@
             const parent = vertical ? 'tr.table-row' : 'td.cell';
             const parentSibling = (e.target as HTMLElement)?.closest(parent)?.[next ? 'nextElementSibling' : 'previousElementSibling'];
             const cell = vertical
-                ? parentSibling?.querySelectorAll(`.spreadsheet-cell`)?.[props.column]
+                ? parentSibling?.querySelectorAll('.spreadsheet-cell')?.[props.column]
                 : parentSibling?.querySelector('.spreadsheet-cell');
 
             (cell as HTMLElement)?.focus()
@@ -110,12 +128,29 @@
 
 
 
+<style lang="scss">
+    .spreadsheet-cell {
+        --v-input-border-radius: 0;
+
+        .v-checkbox.block {
+            --theme--border-radius: 0;
+        }
+    }
+</style>
+
 <style lang="scss" scoped>
     .spreadsheet-cell {
         display: flex;
         align-items: center;
-        width: 100%;
-        height: 100%;
+        position: relative;
+        margin-left: calc(-1 * var(--theme--border-width));
+        margin-right: calc(-1 * var(--theme--border-width));
+        width: calc(100% + var(--theme--border-width) * 2);
+        height: calc(100% + var(--theme--border-width) * 2);
+
+        > :deep(.v-input) {
+            --v-input-border-radius: 0;
+        }
 
         &:not(.edit-mode) {
             overflow: hidden;
@@ -124,11 +159,6 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             border: var(--theme--border-width) solid transparent;
-            border-radius: var(--v-input-border-radius, var(--theme--border-radius));
-
-            &:hover {
-                border-color: var(--theme--border-color-subdued);
-            }
 
             &:focus,
             &:focus-within {
@@ -171,27 +201,24 @@
         & :deep(.v-form .v-select .v-input) {
             min-width: 120px;
         }
-    }
-
-    .spreadsheet-cell {
-        position: relative;
 
         &:focus {
-            .edit-dot {
+            .edit-marker {
                 display: none;
             }
         }
 
-        .edit-dot {
+        .edit-marker {
             position: absolute;
-            left: 1px;
-            top: 50%;
-            margin-top: -2px;
+            right: 0;
+            top: 0;
             display: block;
-            width: 4px;
-            height: 4px;
-            border-radius: 4px;
-            background-color: var(--theme--foreground-subdued);
+            /* Triangle */
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 8px solid var(--theme--primary);
         }
     }
 </style>

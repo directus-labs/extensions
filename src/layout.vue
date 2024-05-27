@@ -313,6 +313,34 @@
         return { cssHeight }
     }
 
+    const { columnStyle } = useCloneFromTableComponent();
+    function useCloneFromTableComponent() {
+        const columnStyle = computed<{ header: string; rows: string }>(() => {
+            return {
+                header: generate('auto'),
+                rows: generate(),
+            };
+
+            function generate(useVal?: 'auto') {
+                let gridTemplateColumns = tableHeadersWritable.value
+                    .map((header) => {
+                        return header.width ? useVal ?? `${header.width}px` : '160px';
+                    })
+                    .reduce((acc, val) => (acc += ' ' + val), '');
+
+                if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
+                if (sortAllowed.value) gridTemplateColumns = '36px ' + gridTemplateColumns;
+
+                // DIFFERENT FROM ORIGINAL
+                gridTemplateColumns += ' 0 1fr';
+
+                return gridTemplateColumns;
+            }
+        });
+
+        return { columnStyle };
+    }
+
     const editsWritable = useSync(props, 'edits', emit);
 
     const { confirmLeave, discardAndLeave } = useConfirmLeave();
@@ -339,6 +367,79 @@
         display: contents;
         margin: var(--content-padding);
         margin-bottom: var(--content-padding-bottom);
+    }
+
+    .v-table {
+        & :deep(thead) {
+            --grid-columns: v-bind(columnStyle.header);
+        }
+
+        & :deep(tbody) {
+            --grid-columns: v-bind(columnStyle.rows);
+        }
+
+        & :deep(.append.cell) {
+            position: sticky;
+            right: 12px;
+            background: var(--theme--background);
+            overflow: visible;
+            justify-content: flex-start;
+            z-index: 2;
+        }
+
+        & :deep(.append.cell:after) {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 100%;
+            bottom: 0;
+            width: 12px;
+            background: var(--theme--background);
+        }
+
+        & :deep(.table-header .append.cell) {
+            padding-left: 12px !important;
+        }
+
+        & :deep(.cell.select),
+        & :deep(.cell.manual:not(.append)) {
+            padding-left: 0 !important;
+        }
+
+        & :deep(.table-row .cell),
+        & :deep(.table-header .cell) {
+            border-bottom: none;
+        }
+
+        & :deep(.table-header .cell:not(.select):not(.append):not(.manual):not(.spacer)) {
+            border-bottom: calc(var(--theme--border-width) / 2) solid var(--theme--border-color-subdued);
+        }
+
+        & :deep(.table-row .cell:not(.select):not(.append):not(.manual):not(.spacer)) {
+            border: calc(var(--theme--border-width) / 2) solid var(--theme--border-color-subdued);
+        }
+
+        & :deep(.table-row .cell.append) {
+            border-left: calc(var(--theme--border-width) / 2) solid var(--theme--border-color-subdued);
+        }
+
+        & :deep(.table-row>.cell:nth-last-child(3)) {
+            border-right: var(--theme--border-width) solid var(--theme--border-color-subdued) !important;
+        }
+
+        & :deep(.table-row:first-child .cell:not(.select):not(.append):not(.manual):not(.spacer)) {
+            border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+        }
+
+        & :deep(.table-row:last-child>.cell:not(.select):not(.append):not(.manual):not(.spacer)) {
+            border-bottom: calc(var(--theme--border-width) * 1.5) solid var(--theme--border-color-subdued);
+        }
+
+        & :deep(.table-row>.cell:first-child:not(.manual):not(.select)),
+        & :deep(.table-row>.cell.manual+.cell:not(.select)),
+        & :deep(.table-row>.cell.select+.cell:not(.manual)) {
+            border-left: calc(var(--theme--border-width) * 1.5) solid var(--theme--border-color-subdued) !important;
+        }
     }
 
     .v-table>:deep(table tbody td.cell:not(.select):not(.append):not(.manual)) {

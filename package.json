@@ -1,7 +1,7 @@
 {
     "name": "directus-extension-spreadsheet-layout",
     "version": "1.0.0",
-    "description": "A table layout that allows you to edit item fields directly inline, just like in a spreadsheet",
+    "description": "A spreadsheet layout that allows you to edit item fields directly inline, just like in a spreadsheet",
     "license": "MIT",
     "author": "Directus Labs",
     "contributors": [
