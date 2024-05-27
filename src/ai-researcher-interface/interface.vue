@@ -40,7 +40,7 @@ async function fetchData() {
     },
   },
   );
-
+  
   const result = (response.data.content).split(" ");
   
   const delay = (delayInMS) => {
