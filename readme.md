@@ -29,7 +29,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component) | Bundle | 1.0.2 | N/A |
 | [Spreadsheet](//github.com/directus-labs/extensions/tree/main/packages/spreadsheet-layout) | Layout | 1.0.0 | N/A |
 | [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component) | Bundle | 1.0.0 | N/A |
-| [Video Player](//github.com/directus-labs/extensions/tree/main/packages/video-interface) | Interface | 1.0.0 | N/A |
+| [Video Player](//github.com/directus-labs/extensions/tree/main/packages/video-player-interface) | Interface | 1.0.0 | N/A |
 
 <!-- Tentatively Upcoming - no promises!
 
