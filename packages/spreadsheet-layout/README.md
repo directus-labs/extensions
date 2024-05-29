@@ -2,7 +2,7 @@
 
 A spreadsheet layout that allows you to edit item fields directly inline, just like in a spreadsheet.
 
-![](https://raw.githubusercontent.com/directus-labs/extension-spreadsheet-layout/main/docs/preview.png)
+![](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/spreadsheet-layout/docs/preview.png)
 
 ## Installation & Setup
 
