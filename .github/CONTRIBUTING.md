@@ -27,7 +27,7 @@ cd extensions && pnpm install
 
 ### Start the development environment
 
-A simple development environment has been provided in the project repo. To use it, make sure you have mkcert and Docker (with Compose) installed on your development system.
+A development environment has been provided in the project repo. To use it, make sure you have mkcert and Docker (with Compose) installed on your development system.
 
 1. Add `127.0.0.1 extensions.directus.labs` to your `/etc/hosts` file
 2. Run `pnpm mkcert` in the project directory to generate TLS files
