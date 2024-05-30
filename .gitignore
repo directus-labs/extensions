@@ -4,3 +4,4 @@ dist
 **/.gitignore
 .env
 .local
+packages/.registry
