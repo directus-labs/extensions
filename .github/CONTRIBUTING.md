@@ -22,15 +22,20 @@ There are plenty of other ways to contribute to the Directus project as well if 
 
 ```sh
 git clone git@github.com:directus-labs/extensions.git
-cd extensions
-pnpm install
+cd extensions && pnpm install
 ```
 
 ### Start the development environment
 
-Using the `docker-compose.yml` file.
+A development environment has been provided in the project repo. To use it, make sure you have mkcert and Docker (with Compose) installed on your development system.
 
-Developing ...
+1. Add `127.0.0.1 extensions.directus.labs` to your `/etc/hosts` file
+2. Run `pnpm mkcert` in the project directory to generate TLS files
+3. Run `docker compose up -d` in the project directory
+
+You can navigate to <https://extensions.directus.labs> and login with `admin@directus.dev` and `password` for the credentials.
+
+If you are developing a new extension, you will need to have the extension created and the branch with the new extension checkout before starting the containers. After the initial load, extensions will be automatically be reloaded when the code changes. You may need to hard refresh the browser for changes to show.
 
 ## Add a New Extension
 
