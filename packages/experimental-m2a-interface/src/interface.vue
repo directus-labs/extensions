@@ -75,7 +75,7 @@
 
             label.value = firstActionButton.innerText ?? '';
 
-            await delay(50);
+            await delay(100);
             firstActionButton.click();
             await nextTick();
 
