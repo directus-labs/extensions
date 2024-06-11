@@ -6,7 +6,7 @@
     </div>
 
     <Teleport v-if="!!targetBuilder" :to="targetBuilder">
-        <div v-if="buttonMatrix" class="btn-matrix">
+        <div v-if="buttonMatrix.length" class="btn-matrix">
             <v-divider v-if="label" inline-title class="label">{{ label }}</v-divider>
 
             <div class="grid">
@@ -75,6 +75,7 @@
 
             label.value = firstActionButton.innerText ?? '';
 
+            await delay(50);
             firstActionButton.click();
             await nextTick();
 
@@ -112,9 +113,10 @@
             button.style.position = 'absolute';
         }
 
-        function hideAndClosePopup(popup: HTMLElement) {
+        async function hideAndClosePopup(popup: HTMLElement) {
             popup.style.visibility = 'hidden';
-            setTimeout(() => document.body.click(), 100);
+            await delay(100);
+            document.body.click();
         }
 
         async function triggerClick(index: number) {
@@ -126,6 +128,10 @@
             const popup = document.querySelector(popupId);
 
             (popup?.querySelectorAll('.v-list-item.link.clickable')?.[index] as HTMLElement)?.click();
+        }
+
+        function delay(ms: number) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
         }
     }
 </script>
