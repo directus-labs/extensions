@@ -29,7 +29,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component) | Bundle | 1.0.2 | N/A |
 | [Spreadsheet](//github.com/directus-labs/extensions/tree/main/packages/spreadsheet-layout) | Layout | 1.0.0 | N/A |
 | [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component) | Bundle | 1.0.0 | N/A |
-| [Video Player](//github.com/directus-labs/extensions/tree/main/packages/video-interface) | Interface | 1.0.0 | N/A |
+| [Video Player](//github.com/directus-labs/extensions/tree/main/packages/video-player-interface) | Interface | 1.0.0 | N/A |
 
 <!-- Tentatively Upcoming - no promises!
 
@@ -42,7 +42,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 
 ## ❤️ &nbsp;Contributing
 
-Please read the [Contributing Guide](//github.com/directus-labs/extensions/blob/main/contributing.md) for this project before submitting Pull Requests or Issues.
+Please read the [Contributing Guide](//github.com/directus-labs/extensions/blob/main/.github/CONTRIBUTING.md) for this project before submitting Pull Requests or Issues.
 
 All security vulnerabilities should be reported in accordance with our [Security Policy](//docs.directus.io/contributing/introduction.html#report-security-vulnerability).
 
