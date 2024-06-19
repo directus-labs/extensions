@@ -11,7 +11,10 @@ export default defineOperationApi<Options>({
 	handler: async ({ url }: { url: string }) => {
 		const response = await request(url);
 		if(response.status != 200) throw new Error('An error occurred when accessing feed.')
-		const parser = new XMLParser();
+		const parser = new XMLParser({
+			ignoreAttributes: false,
+			attributeNamePrefix : "_"
+		});
 		return parser.parse(response.data)
 	},
 });
