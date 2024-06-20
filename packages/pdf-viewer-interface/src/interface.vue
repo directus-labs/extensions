@@ -2,11 +2,13 @@
     <v-button @click="activeDialog = true" :disabled="!fileIsValid">{{ t(button_label) }}</v-button>
 
     <v-dialog v-model="activeDialog" @esc="activeDialog = false">
-        <v-card>
-            <div>{{ file_field }}</div>
-            <div>{{ fileID }}</div>
-            <div>{{ fileURL }}</div>
-        </v-card>
+        <pdf-viewer :url="fileURL">
+            <template #nav>
+                <v-button v-tooltip.left="t('cancel')" icon rounded secondary @click="activeDialog = false">
+                    <v-icon name="close" />
+                </v-button>
+            </template>
+        </pdf-viewer>
     </v-dialog>
 </template>
 
@@ -16,6 +18,7 @@
     import { inject, ref, computed } from 'vue';
     import { useI18n } from 'vue-i18n';
     import { defaultButtonLabel } from './default-button-label';
+    import PdfViewer from './pdf-viewer.vue'
 
     const props = withDefaults(defineProps<{
         file_field?: string;
@@ -28,7 +31,7 @@
 
     const activeDialog = ref(false);
 
-    const { fileID, fileURL, fileIsValid } = useSelectedFile();
+    const { fileURL, fileIsValid } = useSelectedFile();
 
     function useSelectedFile() {
         const fieldValues = inject('values', ref<Record<string, any>>({}));
@@ -42,16 +45,6 @@
         });
         const fileIsValid = computed(() => !!fileID.value);
 
-        return { fileID, fileURL, fileIsValid };
+        return { fileURL, fileIsValid };
     }
 </script>
-
-
-
-<style scoped>
-    .v-card::v-deep {
-        --v-card-min-width: calc(100vw - 40px) !important;
-        max-height: calc(100vh - 40px) !important;
-        height: 100%;
-    }
-</style>
