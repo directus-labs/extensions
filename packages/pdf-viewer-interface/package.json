@@ -1,12 +1,19 @@
 {
     "name": "@directus-labs/pdf-viewer-interface",
     "description": "View PDF files from within the item editor",
-    "icon": "extension",
+    "icon": "picture_as_pdf",
     "version": "1.0.0",
     "license": "MIT",
     "author": "Directus Labs",
-    "contributors": [],
+    "contributors": [
+        {
+            "name": "formfcw",
+            "email": "dev@formfcw.com"
+        }
+    ],
     "keywords": [
+        "pdf-js",
+        "pdf-viewer",
         "directus",
         "directus-extension",
         "directus-extension-interface"
