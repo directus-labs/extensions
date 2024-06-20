@@ -53,7 +53,7 @@ async function updateSearchSettings(value: SearchConfig) {
 }
 
 async function createGlobalSearchSettings() {
-    if(!globalSearchSettingsField) return;
+    if(globalSearchSettingsField) return;
 	try {
 		await fieldsStore.createField('directus_settings', {
 			type: 'json',
