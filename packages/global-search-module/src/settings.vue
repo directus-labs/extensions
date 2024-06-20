@@ -1,0 +1,176 @@
+<script setup lang="ts">
+import { useStores } from '@directus/extensions-sdk';
+import { clone, merge } from 'lodash';
+import { ref, computed, watch, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useMagicKeys } from '@vueuse/core';
+import { ZodError } from 'zod';
+import type { ValidationError } from '@directus/types';
+
+import { fields } from './settings-fields';
+import SearchNavigation from './components/navigation.vue';
+import { SearchConfig, defaultSettings } from './types';
+import { zodErrorToValidationErrors } from './utils/errors';
+
+const { t } = useI18n();
+const { useUserStore, useSettingsStore, useFieldsStore } = useStores();
+
+const fieldsStore = useFieldsStore();
+const settingsStore = useSettingsStore();
+const userStore = useUserStore();
+
+const globalSearchSettings = computed(() => settingsStore.settings.global_search_settings);
+const globalSearchSettingsField = fieldsStore.getField('directus_settings', 'global_search_settings');
+
+const initialValues = ref(clone(settingsStore.settings.global_search_settings));
+const edits: Ref<Partial<SearchConfig> | null> = ref(null);
+const hasEdits = computed(() => {
+	return edits.value !== null && Object.keys(edits.value).length > 0;
+});
+const saving = ref(false);
+const validationErrors = ref<ValidationError[]>([]);
+
+async function updateSearchSettings(value: SearchConfig) {
+	if (!value) return;
+	validationErrors.value = [];
+	saving.value = true;
+
+	try {
+		const result = SearchConfig.parse(merge({}, initialValues.value, value));
+		await settingsStore.updateSettings({
+			global_search_settings: result,
+		});
+		await settingsStore.hydrate();
+		edits.value = null;
+		saving.value = false;
+		initialValues.value = clone(settingsStore.settings.global_search_settings);
+	} catch (error) {
+		if (error instanceof ZodError) {
+			validationErrors.value = zodErrorToValidationErrors(error, 'global_search_settings');
+		}
+		saving.value = false;
+	}
+}
+
+async function createGlobalSearchSettings() {
+    if(!globalSearchSettingsField) return;
+	try {
+		await fieldsStore.createField('directus_settings', {
+			type: 'json',
+			meta: {
+				interface: 'input-code',
+				special: ['cast-json'],
+				display: 'raw',
+			},
+			field: 'global_search_settings',
+			schema: {
+				default_value: {},
+			},
+		});
+		await updateSearchSettings(defaultSettings);
+		await settingsStore.hydrate();
+		initialValues.value = clone(settingsStore.settings.global_search_settings);
+	} catch (error) {
+		// @TODO: Handle error
+	}
+}
+
+// Cmnd + S to save
+const { meta, s } = useMagicKeys();
+watch([meta, s], ([mVal, sVal]) => {
+	if (mVal && sVal && hasEdits.value) {
+		// @TODO: Fix this type error
+		updateSearchSettings(edits.value as any);
+	}
+});
+</script>
+
+<template>
+	<private-view title="Settings">
+		<!-- Header Icon -->
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded disabled icon secondary>
+				<v-icon name="search" />
+			</v-button>
+		</template>
+
+		<!-- Navigation -->
+		<template #navigation>
+			<search-navigation />
+		</template>
+
+		<template #headline>
+			<v-breadcrumb :items="[{ name: 'Global Search', to: { name: 'global-search-index' } }]" />
+		</template>
+
+		<!-- Actions -->
+		<template #actions>
+			<v-button
+				v-tooltip.bottom="hasEdits ? t('save') : t('not_allowed')"
+				rounded
+				icon
+				:loading="saving"
+				:disabled="!hasEdits"
+				@click="updateSearchSettings(edits)"
+			>
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
+		<!-- Main Content -->
+		<main class="container">
+			<template v-if="globalSearchSettings">
+				<section v-if="!userStore?.currentUser?.role?.admin_access">
+					<v-info icon="block" title="Unauthorized Access" type="danger" center>
+						You do not have permission to access this page. Please contact an admin to configure search settings.
+					</v-info>
+				</section>
+				<section v-if="userStore?.currentUser?.role?.admin_access">
+					<v-form
+						v-model="edits"
+						:initial-values="initialValues"
+						:fields="fields"
+						:validation-errors="validationErrors"
+					/>
+				</section>
+			</template>
+
+			<section v-else-if="globalSearchSettingsField">
+				<v-info icon="block" title="Settings Field Error" type="danger" center>
+					<p>There's an error with the structure of the global search settings.</p>
+					<v-button @click="updateSearchSettings(defaultSettings)" style="margin-top: 12px" secondary>
+						Reset Global Search Settings
+					</v-button>
+				</v-info>
+			</section>
+
+			<section v-else-if="!globalSearchSettingsField">
+				<v-info icon="block" title="Settings Field Missing" type="danger" center>
+					<p>The global search settings field is missing from Directus project settings.</p>
+					<v-button @click="createGlobalSearchSettings" kind="primary" style="margin-top: 12px">
+						Create Global Search Settings
+					</v-button>
+				</v-info>
+			</section>
+		</main>
+
+		<!-- Sidebar -->
+		<template #sidebar>
+			<sidebar-detail icon="info" title="Information" close>
+				<div
+					v-md="`**Global Search** –– \n Search for keywords across many different collections and fields.`"
+					class="page-description"
+				/>
+			</sidebar-detail>
+		</template>
+	</private-view>
+</template>
+
+<style scoped>
+.container {
+	padding: var(--content-padding);
+	padding-top: 0;
+	width: 100%;
+	max-width: 1024px;
+}
+</style>

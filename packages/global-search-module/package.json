@@ -1,0 +1,44 @@
+{
+	"name": "@directus-labs/global-search-module",
+	"description": "Global search module for Directus to search across collections.",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-module"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "module",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "11.0.8",
+		"@directus/types": "^11.1.3",
+		"@types/diacritics": "^1.3.3",
+		"@types/lodash": "^4.17.5",
+		"typescript": "^5.4.5",
+		"vue": "^3.4.29"
+	},
+	"dependencies": {
+		"@directus/utils": "^11.0.9",
+		"@vueuse/core": "^10.11.0",
+		"date-fns": "^3.6.0",
+		"diacritics": "^1.3.0",
+		"lodash": "^4.17.21",
+		"vue-i18n": "^9.13.1",
+		"vue-router": "^4.3.3",
+		"zod": "^3.23.8"
+	}
+}
