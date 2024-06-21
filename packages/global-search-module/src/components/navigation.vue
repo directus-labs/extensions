@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
+import { useIsAdmin } from '../composables/use-is-admin';
 const route = useRoute();
 
 defineOptions({
@@ -7,17 +8,19 @@ defineOptions({
 	inheritAttrs: false,
 });
 
+const isAdmin = useIsAdmin();
+
 const pages = [
 	{ title: 'Search', name: 'global-search-index', icon: 'search' },
-	{ title: 'Settings', name: 'global-search-settings', icon: 'settings' },
+  ...(isAdmin.value ? [{ title: 'Settings', name: 'global-search-settings', icon: 'settings' }] : [])
 ];
 </script>
 
 <template>
-	<v-list nav v-if="pages">
+	<v-list nav>
 		<v-list-item
 			v-for="item in pages"
-			:key="item.slug"
+			:key="item.name"
 			:to="{ name: item.name }"
 			:active="route.name === item.name"
 		>

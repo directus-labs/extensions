@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/extensions-sdk';
 import { Ref, unref, computed } from 'vue';
-import VHighlights from './highlights.vue';
+import Highlights from './highlights.vue';
 
 const props = defineProps<{
 	collection: string;
-	searchValue: Ref<string>;
+	query: Ref<string>;
 	displayTemplate: string;
 	descriptionField: string;
 	hits: any[];
@@ -26,15 +26,14 @@ const displayTemplate = computed(() => {
 			:key="`${collection}-${hit[primaryKeyField.field]}`"
 			block
 			clickable
-			:query="searchValue"
+			:query="query"
 			:title="hit.name"
 			:to="`/content/${collection}/${hit[primaryKeyField.field]}`"
-
 		>
 			<v-icon :name="info.icon" left />
 			<div>
 				<render-template :collection="info.collection" :item="hit" :template="displayTemplate" :fields />
-				<v-highlights v-if="hit[descriptionField]" :text="hit[descriptionField]" :query="searchValue" class="hit-description" />
+				<highlights v-if="hit[descriptionField]" :text="hit[descriptionField]" :query="query" class="hit-description" />
 			</div>
 		</v-list-item>
 	</v-detail>

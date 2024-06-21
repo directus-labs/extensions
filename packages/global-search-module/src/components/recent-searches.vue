@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useStorage } from '@vueuse/core';
-import { orderBy, groupBy } from 'lodash';
+import { orderBy, groupBy } from 'lodash-es';
 import { format, isThisYear, isToday, isYesterday } from 'date-fns';
 import { useI18n } from 'vue-i18n';
 
