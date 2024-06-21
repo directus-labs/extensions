@@ -1,6 +1,9 @@
 import { defineModule } from '@directus/extensions-sdk';
 import ModuleComponent from './module.vue';
 import Settings from './settings.vue';
+import { getDirectusRouter } from './utils/get-directus-router';
+import { injectCommandPalette } from './utils/inject-command-palette';
+import { injectSearchBar } from './utils/inject-search-bar';
 
 declare global {
 	interface Window {
@@ -9,16 +12,14 @@ declare global {
 }
 
 function handleCmdK(event: KeyboardEvent, router: { name: string; }[]) {
-	if (event.metaKey && event.key === 'k') {
+	if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
 		router.push({ name: 'global-search-index' });
 	}
 }
 
 function addCmdKListener() {
 	if (!window.globalSearchListenerAdded) {
-        // @ts-ignore @TODO: not sure the best way to type this
-		const app = document.getElementById('app')?.__vue_app__
-		const router = app.config?.globalProperties?.$router;
+		const router = getDirectusRouter();
 
 		if (router) {
 			window.addEventListener('keydown', (event) => handleCmdK(event, router));
@@ -44,7 +45,10 @@ export default defineModule({
 		},
 	],
 	preRegisterCheck() {
-		addCmdKListener();
+		// TODO only inject if module is actually enabled in project settings
+		// addCmdKListener();
+		injectSearchBar();
+		injectCommandPalette();
 		return true;
 	},
 });

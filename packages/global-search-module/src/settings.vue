@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useStores } from '@directus/extensions-sdk';
-import { clone, merge } from 'lodash';
+import { clone, merge } from 'lodash-es';
 import { ref, computed, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useMagicKeys } from '@vueuse/core';
 import { ZodError } from 'zod';
 import type { ValidationError } from '@directus/types';
+import { useIsAdmin } from './composables/use-is-admin';
 
 import { fields } from './settings-fields';
 import SearchNavigation from './components/navigation.vue';
@@ -13,11 +14,12 @@ import { SearchConfig, defaultSettings } from './types';
 import { zodErrorToValidationErrors } from './utils/errors';
 
 const { t } = useI18n();
-const { useUserStore, useSettingsStore, useFieldsStore } = useStores();
+const { useSettingsStore, useFieldsStore } = useStores();
 
 const fieldsStore = useFieldsStore();
 const settingsStore = useSettingsStore();
-const userStore = useUserStore();
+
+const isAdmin = useIsAdmin();
 
 const globalSearchSettings = computed(() => settingsStore.settings.global_search_settings);
 const globalSearchSettingsField = fieldsStore.getField('directus_settings', 'global_search_settings');
@@ -120,12 +122,12 @@ watch([meta, s], ([mVal, sVal]) => {
 		<!-- Main Content -->
 		<main class="container">
 			<template v-if="globalSearchSettings">
-				<section v-if="!userStore?.currentUser?.role?.admin_access">
+				<section v-if="!isAdmin">
 					<v-info icon="block" title="Unauthorized Access" type="danger" center>
 						You do not have permission to access this page. Please contact an admin to configure search settings.
 					</v-info>
 				</section>
-				<section v-if="userStore?.currentUser?.role?.admin_access">
+				<section v-if="isAdmin">
 					<v-form
 						v-model="edits"
 						:initial-values="initialValues"

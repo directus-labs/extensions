@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { toArray } from '@directus/utils';
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import { remove as removeDiacritics } from 'diacritics';
 import { computed } from 'vue';
 
@@ -145,8 +145,7 @@ const parts = computed<HighlightPart[]>(() => {
 
 <style scoped>
 mark {
-	background-color: var(--v-highlight-color, var(--background-mark));
-    color: var(--theme--foreground);
-	border-radius: 2px;
+  color: var(--theme--primary);
+  background-color: transparent;
 }
 </style>
