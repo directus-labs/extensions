@@ -4,7 +4,7 @@
 		v-if="haveFilesAccess"
 		:model-value="props.show"
 		icon="image"
-		:title="('upload_from_device')"
+		title="Insert image"
 		:cancelable="true"
 		@update:model-value="emit('update:modelValue', false)"
 		@cancel="emit('update:modelValue', false)"

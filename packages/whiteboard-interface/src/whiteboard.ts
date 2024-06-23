@@ -351,6 +351,7 @@ export class Whiteboard {
     fabric.Image.fromURL(url, (oImg) => {
       oImg.scaleToHeight(this.canvas.height / 2);
       this.canvas.add(oImg);
+      oImg.set('erasable', false);
       oImg.center();
       oImg.setCoords();
       this.canvas.renderAll();
@@ -414,7 +415,8 @@ export class Whiteboard {
       width: 0,
       height: 0,
       angle: 0,
-      fill: this.color
+      fill: this.color,
+      erasable: false
     }
     if (this.currentTool == 'textbox') {
       config.fontFamily = getStyleVar("--theme--fonts--sans--font-family");
