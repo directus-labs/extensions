@@ -75,14 +75,24 @@
 
             label.value = firstActionButton.innerText ?? '';
 
-            await delay(100);
-            firstActionButton.click();
-            await nextTick();
+            const maxTries = 20;
+            let tryCount = 0;
+            let popup;
+
+            do {
+                await delay(!!tryCount ? 50 : 0);
+                tryCount++;
+
+                firstActionButton.click();
+                await nextTick();
+
+                popup = findAndHandlePopup();
+            }
+            while (!popup && tryCount < maxTries);
+
+            if (!popup) return;
 
             hideActionButton(firstAction!);
-
-            const popup = findAndHandlePopup();
-            if (!popup) return;
 
             createButtonMatrix(popup);
             hideAndClosePopup(popup);
@@ -93,7 +103,7 @@
             if (!popup) return;
 
             (popup as HTMLElement).dataset.hacked = 'hacked';
-            popupId = `#${popup.id}`;
+            popupId = popup.id;
 
             return popup as HTMLElement;
         }
@@ -115,7 +125,7 @@
 
         async function hideAndClosePopup(popup: HTMLElement) {
             popup.style.visibility = 'hidden';
-            await delay(100);
+            await delay(150);
             document.body.click();
         }
 
@@ -125,7 +135,7 @@
             firstActionButton?.click();
             await nextTick();
 
-            const popup = document.querySelector(popupId);
+            const popup = document.getElementById(popupId);
 
             (popup?.querySelectorAll('.v-list-item.link.clickable')?.[index] as HTMLElement)?.click();
         }
