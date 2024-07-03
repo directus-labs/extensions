@@ -1,0 +1,42 @@
+{
+	"name": "@directus-labs/multilevel-autocomplete-api-interface",
+	"description": "Get data from nested API queries.",
+	"icon": "extension",
+	"version": "1.0.0",
+	"license": "MIT",
+	"author": "Directus Labs",
+	"contributors": [],
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-interface"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "interface",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "11.0.6",
+		"@directus/format-title": "10.1.2",
+		"@directus/types": "11.1.1",
+		"@directus/utils": "11.0.8",
+		"@types/lodash": "4.17.5",
+		"lodash": "4.17.21",
+		"micromustache": "8.0.3",
+		"sass": "1.77.1",
+		"typescript": "^5.4.5",
+		"vue": "^3.4.27",
+		"vue-i18n": "9.13.1"
+	}
+}

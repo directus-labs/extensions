@@ -1,0 +1,43 @@
+{
+    "name": "@directus-labs/pdf-viewer-interface",
+    "description": "View PDF files from within the item editor",
+    "icon": "picture_as_pdf",
+    "version": "1.0.0",
+    "license": "MIT",
+    "author": "Directus Labs",
+    "contributors": [
+        {
+            "name": "formfcw",
+            "email": "dev@formfcw.com"
+        }
+    ],
+    "keywords": [
+        "pdf-js",
+        "pdf-viewer",
+        "directus",
+        "directus-extension",
+        "directus-extension-interface"
+    ],
+    "type": "module",
+    "files": [
+        "dist"
+    ],
+    "directus:extension": {
+        "type": "interface",
+        "path": "dist/index.js",
+        "source": "src/index.ts",
+        "host": "^10.10.0"
+    },
+    "scripts": {
+        "build": "directus-extension build",
+        "dev": "directus-extension build -w --no-minify",
+        "link": "directus-extension link"
+    },
+    "devDependencies": {
+        "@directus/extensions-sdk": "^11.0.8",
+        "typescript": "^5.4.5",
+        "vue": "^3.4.27",
+        "vue-i18n": "^9.13.1",
+        "vue-pdf-embed": "^2.0.4"
+    }
+}

@@ -110,6 +110,18 @@ importers:
         specifier: ^3.4.21
         version: 3.4.27(typescript@5.4.5)
 
+  packages/experimental-m2a-interface:
+    devDependencies:
+      '@directus/extensions-sdk':
+        specifier: 11.0.6
+        version: 11.0.6(@types/node@20.12.12)(@unhead/vue@1.9.11(vue@3.4.27(typescript@5.4.5)))(knex@3.1.0)(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(sass@1.77.4)(terser@5.31.0)(typescript@5.4.5)(vue-router@4.3.2(vue@3.4.27(typescript@5.4.5)))
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+      vue:
+        specifier: ^3.4.27
+        version: 3.4.27(typescript@5.4.5)
+
   packages/meter-component:
     devDependencies:
       '@directus/extensions-sdk':
@@ -120,6 +132,18 @@ importers:
         version: 5.4.5
       vue:
         specifier: ^3.4.25
+        version: 3.4.27(typescript@5.4.5)
+
+  packages/pdf-viewer-interface:
+    devDependencies:
+      '@directus/extensions-sdk':
+        specifier: 11.0.6
+        version: 11.0.6(@types/node@20.12.12)(@unhead/vue@1.9.11(vue@3.4.27(typescript@5.4.5)))(knex@3.1.0)(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(sass@1.77.4)(terser@5.31.0)(typescript@5.4.5)(vue-router@4.3.2(vue@3.4.27(typescript@5.4.5)))
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+      vue:
+        specifier: ^3.4.27
         version: 3.4.27(typescript@5.4.5)
 
   packages/spreadsheet-layout:
@@ -2558,6 +2582,57 @@ snapshots:
       execa: 7.2.0
       fs-extra: 11.2.0
       inquirer: 9.2.20
+      ora: 6.3.1
+      rollup: 3.29.4
+      rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
+      rollup-plugin-styles: 4.0.0(rollup@3.29.4)
+      vite: 4.5.2(@types/node@20.12.12)(sass@1.77.4)(terser@5.31.0)
+      vue: 3.4.27(typescript@5.4.5)
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@unhead/vue'
+      - better-sqlite3
+      - debug
+      - knex
+      - less
+      - lightningcss
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - pinia
+      - pino
+      - sass
+      - sqlite3
+      - stylus
+      - sugarss
+      - supports-color
+      - tedious
+      - terser
+      - typescript
+      - vue-router
+
+  '@directus/extensions-sdk@11.0.6(@types/node@20.12.12)(@unhead/vue@1.9.11(vue@3.4.27(typescript@5.4.5)))(knex@3.1.0)(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(sass@1.77.4)(terser@5.31.0)(typescript@5.4.5)(vue-router@4.3.2(vue@3.4.27(typescript@5.4.5)))':
+    dependencies:
+      '@directus/composables': 10.1.13(vue@3.4.27(typescript@5.4.5))
+      '@directus/constants': 11.0.4
+      '@directus/extensions': 1.0.6(@unhead/vue@1.9.11(vue@3.4.27(typescript@5.4.5)))(knex@3.1.0)(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue-router@4.3.2(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
+      '@directus/themes': 0.3.8(@unhead/vue@1.9.11(vue@3.4.27(typescript@5.4.5)))(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
+      '@directus/types': 11.1.2(knex@3.1.0)(vue@3.4.27(typescript@5.4.5))
+      '@directus/utils': 11.0.8(vue@3.4.27(typescript@5.4.5))
+      '@rollup/plugin-commonjs': 25.0.7(rollup@3.29.4)
+      '@rollup/plugin-json': 6.1.0(rollup@3.29.4)
+      '@rollup/plugin-node-resolve': 15.2.3(rollup@3.29.4)
+      '@rollup/plugin-replace': 5.0.5(rollup@3.29.4)
+      '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
+      '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@20.12.12)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+      chalk: 5.3.0
+      commander: 10.0.1
+      esbuild: 0.17.19
+      execa: 7.2.0
+      fs-extra: 11.2.0
+      inquirer: 9.2.22
       ora: 6.3.1
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
