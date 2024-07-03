@@ -402,14 +402,14 @@ export default defineInterface({
 							"region": "{{ values[0] }}",
 							"country": {
 								"name": "{{ steps[1].text }}",
-								"code": "{{ steps[1].value.cca2 }}",
+								"code": "{{ steps[1].value }}",
 							},
 						}, null, 2),
 						template: JSON.stringify({
 							"region": "{{ values[0] }}",
 							"country": {
 								"name": "{{ steps[1].text }}",
-								"code": "{{ steps[1].value.cca2 }}",
+								"code": "{{ steps[1].value }}",
 							},
 						}, null, 2),
 					},
