@@ -266,6 +266,16 @@ export default defineInterface({
 						'placeholder': 'result.predictions',
 						'font': 'monospace',
 					},
+					conditions: [
+						{
+							rule: {
+								source: {
+									_neq: Source.request,
+								},
+							},
+							hidden: true,
+						},
+					],
 				},
 			},
 			{
@@ -279,6 +289,16 @@ export default defineInterface({
 						'placeholder': 'structured_main_text',
 						'font': 'monospace',
 					},
+					conditions: [
+						{
+							rule: {
+								source: {
+									_neq: Source.request,
+								},
+							},
+							hidden: true,
+						},
+					],
 				},
 			},
 			{
@@ -292,6 +312,16 @@ export default defineInterface({
 						'placeholder': 'structured_main_value',
 						'font': 'monospace',
 					},
+					conditions: [
+						{
+							rule: {
+								source: {
+									_neq: Source.request,
+								},
+							},
+							hidden: true,
+						},
+					],
 				},
 			},
 			{
@@ -372,14 +402,14 @@ export default defineInterface({
 							"region": "{{ values[0] }}",
 							"country": {
 								"name": "{{ steps[1].text }}",
-								"code": "{{ steps[1].value.cca2 }}",
+								"code": "{{ steps[1].value }}",
 							},
 						}, null, 2),
 						template: JSON.stringify({
 							"region": "{{ values[0] }}",
 							"country": {
 								"name": "{{ steps[1].text }}",
-								"code": "{{ steps[1].value.cca2 }}",
+								"code": "{{ steps[1].value }}",
 							},
 						}, null, 2),
 					},

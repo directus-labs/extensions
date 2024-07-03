@@ -8,10 +8,16 @@ View PDF files from within the item editor.
 
 Refer to the [Official Guide](https://docs.directus.io/extensions/installing-extensions.html) for details on installing the extension from the Marketplace or manually.
 
-Make sure to update your **CSP directives** as follows:
+Make sure to update your environment variables to include **CSP directives** as follows:
 
 ```env
 CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC=array:'self' data:
+```
+
+In a `docker-compose.yml` file, add the following the the `environment` section:
+
+```yaml
+CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC: "array:'self' data:"
 ```
 
 ## Usage
