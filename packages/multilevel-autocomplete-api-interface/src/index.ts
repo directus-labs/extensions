@@ -266,6 +266,16 @@ export default defineInterface({
 						'placeholder': 'result.predictions',
 						'font': 'monospace',
 					},
+					conditions: [
+						{
+							rule: {
+								source: {
+									_neq: Source.request,
+								},
+							},
+							hidden: true,
+						},
+					],
 				},
 			},
 			{
@@ -279,6 +289,16 @@ export default defineInterface({
 						'placeholder': 'structured_main_text',
 						'font': 'monospace',
 					},
+					conditions: [
+						{
+							rule: {
+								source: {
+									_neq: Source.request,
+								},
+							},
+							hidden: true,
+						},
+					],
 				},
 			},
 			{
@@ -292,6 +312,16 @@ export default defineInterface({
 						'placeholder': 'structured_main_value',
 						'font': 'monospace',
 					},
+					conditions: [
+						{
+							rule: {
+								source: {
+									_neq: Source.request,
+								},
+							},
+							hidden: true,
+						},
+					],
 				},
 			},
 			{
