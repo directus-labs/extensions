@@ -25,7 +25,7 @@
 		"build": "directus-extension build",
 		"dev": "directus-extension build -w --no-minify",
 		"link": "directus-extension link",
-		"postinstall": "cd node_modules/fabric && node build.js modules=ALL requirejs exclude=gestures,accessors"
+		"postinstall": "pnpm install uglify-js -g && cd node_modules/fabric && node build.js modules=ALL requirejs exclude=gestures,accessors"
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "11.0.6",
