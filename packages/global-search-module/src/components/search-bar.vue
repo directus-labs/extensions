@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { OPEN_SEARCH_EVENT } from '../constants';
+import { OPEN_SEARCH_EVENT } from "../constants";
 
 function onClick() {
   window.dispatchEvent(new CustomEvent(OPEN_SEARCH_EVENT));
@@ -10,9 +10,9 @@ function onClick() {
   <div class="search-bar" @click="onClick">
     <span>Search...</span>
     <span class="keys">
-    <kbd>⌘</kbd>
-    <kbd>K</kbd>
-  </span>
+      <kbd>⌘</kbd>
+      <kbd>K</kbd>
+    </span>
   </div>
 </template>
 
@@ -27,6 +27,7 @@ function onClick() {
   padding: 6px 12px;
   border-radius: var(--theme--border-radius);
   margin-left: 24px;
+  color: var(--theme--foreground-subdued);
 
   transition: all var(--fast) var(--transition);
 }

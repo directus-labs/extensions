@@ -1,11 +1,13 @@
 <script setup lang="ts">
-const active = defineModel<boolean>('active')
+const active = defineModel<boolean>("active");
 </script>
 
 <template>
-  <div class="overlay-wrapper" :class="{ active }" >
-    <div class="overlay" @click="active = !active" />
-    <div v-if="active" class="content"><slot /></div>
+  <div class="overlay-wrapper" :class="{ active }">
+    <div class="overlay" @click="active = false" />
+    <div v-if="active" class="content">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -43,5 +45,4 @@ const active = defineModel<boolean>('active')
     position: relative;
   }
 }
-
 </style>

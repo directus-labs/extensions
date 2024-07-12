@@ -1,21 +1,30 @@
-import { computed } from 'vue';
-import { useStores } from '@directus/extensions-sdk';
-import { SearchConfig } from '../types';
+import { useStores } from "@directus/extensions-sdk";
+import { uniqBy } from "lodash-es";
+import { computed } from "vue";
+import { systemCollections } from "../system-collections";
+import { SearchConfig } from "../types";
 
-export function useSettings() {
-  const { useSettingsStore } = useStores();
+export function useSettings(stores?: ReturnType<typeof useStores>) {
+  const { useSettingsStore } = stores ?? useStores();
   const settingsStore = useSettingsStore();
 
   const settings = computed(() => {
-    const result = SearchConfig.safeParse(settingsStore.settings.global_search_settings);
+    const result = SearchConfig.safeParse(
+      settingsStore.settings.global_search_settings,
+    );
+
     if (result.success) {
       return result.data;
     }
+
     return null;
   });
 
   const collections = computed(() => {
-    return settings.value?.collections ?? [];
+    return uniqBy(
+      [...(settings.value?.collections ?? []), ...systemCollections],
+      "collection",
+    );
   });
 
   const valid = computed(() => {
