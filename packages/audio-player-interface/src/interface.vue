@@ -34,7 +34,7 @@
     const { sourceInput, inputIsClickable, inputPlaceholder, onInputClick } = useInputField(service, fileDrawer);
     const { source, clearSource } = useAudioSource(service, sourceInput, fileID);
 
-    watch(() => props.value, setServiceAndSource);
+    watch(() => props.value, setServiceAndSource, { immediate: true });
     watch([service, source], emitInputValue);
 
     function setServiceAndSource() {
