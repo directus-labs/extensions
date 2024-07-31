@@ -1,7 +1,7 @@
 {
-    "name": "directus-extension-audio-interface",
+    "name": "@directus-labs/audio-player-interface",
     "version": "1.0.0",
-    "description": "An interface to select an audio source and display an audio player from an URL or a local file from Directus",
+    "description": "An interface to play audio from a URL or local file from Directus",
     "license": "MIT",
     "author": "Directus Labs",
     "contributors": [
