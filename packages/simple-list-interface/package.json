@@ -1,0 +1,35 @@
+{
+	"name": "@directus-labs/simple-list-interface",
+	"description": "Input a simple list of items with full keyboard support.",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-interface"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "interface",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "11.0.9",
+		"typescript": "^5.5.4",
+		"vue": "^3.4.35"
+	},
+	"dependencies": {
+		"vue-i18n": "^9.13.1",
+		"vuedraggable": "4.1.0"
+	}
+}
