@@ -1,0 +1,49 @@
+{
+	"name": "@directus-labs/plausible-analytics-bundle",
+	"description": "Embed Plausible Analytics into your Directus project.",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "interface",
+				"name": "plausible-interface",
+				"source": "src/plausible-interface/index.ts"
+			},
+			{
+				"type": "panel",
+				"name": "plausible-panel",
+				"source": "src/plausible-panel/index.ts"
+			}
+		],
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"add": "directus-extension add"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "11.0.8",
+		"typescript": "^5.5.2",
+		"vue": "^3.4.30"
+	},
+	"dependencies": {
+		"browser": "link:@directus/utils/browser"
+	}
+}
