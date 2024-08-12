@@ -2,7 +2,7 @@ export default {
 	id: 'directus-labs-focal-point-detection-operation',
 	name: 'AI Focal Point Detection',
 	icon: 'image_search',
-	description: 'Use OpenAI\'s Vision APIs to determine the point of interest in an image',
+	description: 'Use OpenAI\'s GPT-4o API to determine the point of interest in an image',
 	overview: ({ url }) => [
 		{
 			label: 'URL',
@@ -33,4 +33,4 @@ export default {
 			},
 		}
 	],
-};
+}
