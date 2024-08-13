@@ -1,35 +1,40 @@
 {
-	"name": "@directus-labs/input-rich-text-html",
-	"description": "Please enter a description for your extension",
-	"icon": "extension",
-	"version": "1.0.0",
-	"keywords": [
-		"directus",
-		"directus-extension",
-		"directus-extension-interface"
-	],
-	"type": "module",
-	"files": [
-		"dist"
-	],
-	"directus:extension": {
-		"type": "interface",
-		"path": "dist/index.js",
-		"source": "src/index.ts",
-		"host": "^10.10.0"
-	},
-	"scripts": {
-		"build": "directus-extension build",
-		"dev": "directus-extension build -w --no-minify",
-		"link": "directus-extension link"
-	},
-	"devDependencies": {
-		"@directus/extensions-sdk": "12.0.0",
-		"@tinymce/tinymce-vue": "^6.0.1",
-		"mime": "^4.0.4",
-		"sass": "^1.77.8",
-		"typescript": "^5.5.4",
-		"vue": "^3.4.37",
-		"vue-i18n": "^9.13.1"
-	}
+    "name": "custom-input-rich-text-html",
+    "description": "Please enter a description for your extension",
+    "icon": "extension",
+    "version": "1.0.0",
+    "keywords": [
+        "directus",
+        "directus",
+        "directus-extension",
+        "directus-extension-interface",
+        "rich-text-editor",
+        "rte",
+        "wysiwyg",
+        "tinymce"
+    ],
+    "type": "module",
+    "files": [
+        "dist"
+    ],
+    "directus:extension": {
+        "type": "interface",
+        "path": "dist/index.js",
+        "source": "src/index.ts",
+        "host": "^10.10.0"
+    },
+    "scripts": {
+        "build": "directus-extension build",
+        "dev": "directus-extension build -w --no-minify",
+        "link": "directus-extension link"
+    },
+    "devDependencies": {
+        "@directus/extensions-sdk": "12.0.0",
+        "@tinymce/tinymce-vue": "^6.0.1",
+        "mime": "^4.0.4",
+        "sass": "^1.77.8",
+        "typescript": "^5.5.4",
+        "vue": "^3.4.37",
+        "vue-i18n": "^9.13.1"
+    }
 }
