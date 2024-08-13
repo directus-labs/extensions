@@ -25,7 +25,11 @@
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "12.0.0",
+		"@tinymce/tinymce-vue": "^6.0.1",
+		"mime": "^4.0.4",
+		"sass": "^1.77.8",
 		"typescript": "^5.5.4",
-		"vue": "^3.4.37"
+		"vue": "^3.4.37",
+		"vue-i18n": "^9.13.1"
 	}
 }
