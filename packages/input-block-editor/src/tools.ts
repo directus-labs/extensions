@@ -13,6 +13,8 @@ import UnderlineTool from '@editorjs/underline';
 import { Alignment } from './alignment';
 import ToggleBlock from 'editorjs-toggle-block';
 import { AttachesTool, ImageTool } from './plugins';
+// EXAMPLE (Part 3/4): add marker tool
+// import Marker from "@editorjs/marker";
 
 export type UploaderConfig = {
 	baseURL: string | undefined;
@@ -96,6 +98,11 @@ export default function getTools(
 		alignment: {
 			class: Alignment,
 		},
+        // EXAMPLE (Part 4/4): add marker tool
+        // marker: {
+        //     class: Marker,
+        //     shortcut: "CMD+SHIFT+M",
+        // },
 	};
 
 	for (const toolName of selection) {

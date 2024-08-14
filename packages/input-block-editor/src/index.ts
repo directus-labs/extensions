@@ -70,6 +70,14 @@ export default defineInterface({
                 interface: "select-multiple-dropdown",
                 options: {
                     choices: [
+                        // EXAMPLE (Part 1/4): add marker tool
+                        // Install `npm add -D @editorjs/marker`
+
+                        // EXAMPLE (Part 2/4): add marker tool
+                        // {
+                        //     value: "marker",
+                        //     text: "Marker",
+                        // },
                         {
                             value: "header",
                             text: "$t:interfaces.input-block-editor.tools_options.header",
