@@ -178,6 +178,9 @@
             toolbarString += ' styles';
         }
 
+        // EXAMPLE (Part 1/2): adding a custom toolbar button
+        // toolbarString += ' myCustomToolbarButton';
+
         return {
             skin: false,
             content_css: false,
@@ -293,6 +296,12 @@
                 }
             }
         });
+
+        // EXAMPLE (Part 2/2): adding a custom toolbar button
+        // editor.ui.registry.addButton('myCustomToolbarButton', {
+        //     text: 'My Custom Button',
+        //     onAction: () => alert('Button clicked!')
+        // });
     }
 
     function setFocus(val: boolean) {
