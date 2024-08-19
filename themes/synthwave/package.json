@@ -1,0 +1,29 @@
+{
+	"name": "directus-extension-synthwave-theme",
+	"description": "A dark 80s-inspired retro-futurstic theme.",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-custom-theme"
+	],
+	"type": "module",
+	"files": ["dist"],
+	"license": "MIT",
+	"directus:extension": {
+		"type": "theme",
+		"path": "dist/index.js",
+		"source": "src/index.js",
+		"host": "^10.3.4"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "10.3.4",
+		"vue": "^3.4.21"
+	}
+}
