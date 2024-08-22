@@ -13,7 +13,8 @@ This repository is for our extensions published under the Directus Labs program.
 The extensions in this repository are all published to the Directus Marketplace.
 
 Some of the published extensions may not be compatible with the sandbox requirements currently, and are only available on Directus instances with the `MARKETPLACE_TRUST` env set to `all`.
-                                                                                                                   |   Type    | Sandboxed |
+
+|                                                                                                                                       |   Type    | Sandboxed |
 | ------------------------------------------------------------------------------------------------------------------------------------- | :-------: | :-------: |
 | [AI Alt Text Writer](//github.com/directus-labs/extensions/tree/main/packages/ai-alt-text-writer)                                     | Operation |    ✅     |
 | [AI Focal Point Detection](//github.com/directus-labs/extensions/tree/main/packages/ai-focal-point-detection-operation)               | Operation |    ✅     |
