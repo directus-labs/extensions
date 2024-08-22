@@ -13,8 +13,7 @@ This repository is for our extensions published under the Directus Labs program.
 The extensions in this repository are all published to the Directus Marketplace.
 
 Some of the published extensions may not be compatible with the sandbox requirements currently, and are only available on Directus instances with the `MARKETPLACE_TRUST` env set to `all`.
-
-| Extension                                                                                                                             |   Type    | Sandboxed |
+                                                                                                                   |   Type    | Sandboxed |
 | ------------------------------------------------------------------------------------------------------------------------------------- | :-------: | :-------: |
 | [AI Alt Text Writer](//github.com/directus-labs/extensions/tree/main/packages/ai-alt-text-writer)                                     | Operation |    ✅     |
 | [AI Focal Point Detection](//github.com/directus-labs/extensions/tree/main/packages/ai-focal-point-detection-operation)               | Operation |    ✅     |
@@ -28,7 +27,8 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [AI Writer](//github.com/directus-labs/extensions/tree/main/packages/ai-writer-operation)                                             | Operation |    ✅     |
 | [RSS to JSON](//github.com/directus-labs/extensions/tree/main/packages/rss-to-json-operation)                                         | Operation |    ✅     |
 | [Spreadsheet](//github.com/directus-labs/extensions/tree/main/packages/spreadsheet-layout)                                            |  Layout   |    N/A    |
-| [Video Player](//github.com/directus-labs/extensions/tree/main/packages/video-interface)                                              | Interface |    N/A    |
+| [Video Player](//github.com/directus-labs/extensions/tree/main/packages/video-player-interface)                                       | Interface |    N/A    |
+| [Audio Player](//github.com/directus-labs/extensions/tree/main/packages/audio-player-interface)                                       | Interface |    N/A    |
 | [PDF Viewer](//github.com/directus-labs/extensions/tree/main/packages/pdf-viewer-interface)                                           | Interface |    N/A    |
 | [Whiteboard](//github.com/directus-labs/extensions/tree/main/packages/whiteboard-interface)                                           | Interface |    N/A    |
 | [Multilevel Autocomplete Input (API)](//github.com/directus-labs/extensions/tree/main/packages/multilevel-autocomplete-api-interface) | Interface |    N/A    |
@@ -47,7 +47,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 
 ## ❤️ &nbsp;Contributing
 
-Please read the [Contributing Guide](//github.com/directus-labs/extensions/blob/main/contributing.md) for this project before submitting Pull Requests or Issues.
+Please read the [Contributing Guide](//github.com/directus-labs/extensions/blob/main/.github/CONTRIBUTING.md) for this project before submitting Pull Requests or Issues.
 
 All security vulnerabilities should be reported in accordance with our [Security Policy](//docs.directus.io/contributing/introduction.html#report-security-vulnerability).
 
