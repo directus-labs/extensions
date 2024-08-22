@@ -1,0 +1,63 @@
+{
+	"name": "@directus-labs/rss-to-json-operation",
+	"description": "Return RSS Feeds as JSON Objects in Flows",
+	"icon": "rss_feed",
+	"version": "1.0.2",
+	"license": "MIT",
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "Kevin Lewis",
+			"email": "kevin@directus.io"
+		}
+	],
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-operation"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "operation",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"source": {
+			"app": "src/app.ts",
+			"api": "src/api.ts"
+		},
+		"host": "^10.10.0",
+		"sandbox": {
+			"enabled": true,
+			"requestedScopes": {
+				"log": {},
+				"request": {
+					"methods": [
+						"GET"
+					],
+					"urls": [
+						"https://*"
+					]
+				}
+			}
+		}
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "11.0.8",
+		"@types/node": "^20.14.5",
+		"typescript": "^5.4.5",
+		"vue": "^3.4.29"
+	},
+	"dependencies": {
+		"fast-xml-parser": "^4.4.0"
+	}
+}

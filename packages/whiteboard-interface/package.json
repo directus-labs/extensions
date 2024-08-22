@@ -1,0 +1,41 @@
+{
+	"name": "@directus-labs/whiteboard-interface",
+	"description": "Add a field to your collection for drawing sketches and ideas",
+	"icon": "extension",
+	"version": "1.0.0",
+	"license": "MIT",
+	"author": "Directus Labs",
+	"contributors": [],
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-interface"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "interface",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"postinstall": "pnpm install uglify-js -g && cd node_modules/fabric && node build.js modules=ALL requirejs exclude=gestures,accessors"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "11.0.6",
+		"typescript": "^5.4.5",
+		"vue": "^3.4.27"
+	},
+	"dependencies": {
+		"@types/fabric": "^5.3.7",
+		"fabric": "^5.3.0",
+		"sass": "^1.76.0",
+		"tinycolor2": "^1.6.0"
+	}
+}
