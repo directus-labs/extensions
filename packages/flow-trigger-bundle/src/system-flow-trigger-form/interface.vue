@@ -100,13 +100,14 @@ const fields = computed(() => {
 					name: 'Collection',
 					type: 'string',
 					meta: {
-						required: requireSelection,
+						required: true,
+						readonly: (collections.value.length === 0),
 						width: 'half',
 						interface: 'select-dropdown',
 						options: {
-							placeholder: 'Select a Collection',
+							placeholder: (collections.value.length === 0) ? 'No collections available' : 'Select a collection',
 							choices: collections.value,
-							disabled: (collections.value.length === 0),
+							allowNone: false,
 						},
 					},
 				},

@@ -21,8 +21,7 @@ const props = withDefaults(
 	},
 );
 
-const i18n = useI18n();
-const { t } = i18n;
+const { t } = useI18n();
 
 const api = useApi();
 
@@ -140,11 +139,10 @@ async function runFlow() {
 	const collection = trigger.collection;
 	const keys = trigger.keys;
 	const values = unref(confirmValues) ?? {};
-	const requireSelection = flow.options?.requireSelection !== false;
 
 	try {
 		if (
-			requireSelection &&
+			flow.options?.requireSelection === false &&
 			keys?.length === 0
 		) {
 			await api.post(`/flows/trigger/${flowId}`, { ...values, collection });
@@ -167,6 +165,7 @@ async function runFlow() {
 
 function resetConfirm() {
 	selectedTrigger.value = null;
+	confirmDetails.value = null;
 	confirmValues.value = null;
 }
 
@@ -179,7 +178,7 @@ function unexpectedError(error: unknown) {
 	console.warn(error);
 
 	notificationStore.add({
-		title: i18n['global'].t(`errors.${code}`),
+		title: t(`errors.${code}`),
 		type: 'error',
 		code,
 		dialog: true,
