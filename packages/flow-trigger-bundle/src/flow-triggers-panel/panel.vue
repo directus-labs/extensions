@@ -3,14 +3,7 @@ import { ref, unref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
 import formatTitle from '@directus/format-title';
-
-type Trigger = {
-	flowId: string | null;
-	text?: string;
-	icon?: string;
-	collection?: string;
-	keys?: string[];
-};
+import { Trigger } from '../lib/types';
 
 type TriggerList = TriggerListItem[];
 
@@ -80,11 +73,6 @@ const displayCustomConfirmDialog = computed(
 	() => selectedTrigger.value && confirmDetails.value,
 );
 
-const resetConfirm = () => {
-	selectedTrigger.value = null;
-	confirmValues.value = null;
-};
-
 function getConfirmButtonText() {
 	return t('run_flow');
 }
@@ -94,11 +82,9 @@ function getButtonText(trigger: Trigger) {
 		return trigger.text;
 	}
 
-	if (trigger.flowId) {
-		const flow = unref(flowMap).get(trigger.flowId);
-		if (flow) {
-			return flow.name;
-		}
+	const flow = getFlow(trigger.flowId);
+	if (flow) {
+		return flow.name;
 	}
 
 	return t('run_flow');
@@ -109,11 +95,9 @@ function getButtonIcon(trigger: Trigger) {
 		return trigger.icon;
 	}
 
-	if (trigger.flowId) {
-		const flow = unref(flowMap).get(trigger.flowId);
-		if (flow) {
-			return flow.icon;
-		}
+	const flow = getFlow(trigger.flowId);
+	if (flow) {
+		return flow.icon;
 	}
 
 	return 'bolt';
@@ -138,7 +122,7 @@ function confirmRunFlow() {
 	}
 }
 
-const runFlow = async () => {
+async function runFlow() {
 	const trigger = unref(selectedTrigger);
 	if (!trigger) {
 		return;
@@ -156,20 +140,14 @@ const runFlow = async () => {
 	const collection = trigger.collection;
 	const keys = trigger.keys;
 	const values = unref(confirmValues) ?? {};
-
-	console.log({
-		flowId,
-		collection,
-		keys,
-		values,
-	});
+	const requireSelection = flow.options?.requireSelection !== false;
 
 	try {
 		if (
-			flow.options?.requireSelection === false &&
+			requireSelection &&
 			keys?.length === 0
 		) {
-			await api.post(`/flows/trigger/${flowId}`, { ...values, collection, keys });
+			await api.post(`/flows/trigger/${flowId}`, { ...values, collection });
 		} else {
 			await api.post(`/flows/trigger/${flowId}`, { ...values, collection, keys });
 		}
@@ -185,7 +163,12 @@ const runFlow = async () => {
 		selectedTrigger.value = null;
 		runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 	}
-};
+}
+
+function resetConfirm() {
+	selectedTrigger.value = null;
+	confirmValues.value = null;
+}
 
 function unexpectedError(error: unknown) {
 	const code =
@@ -225,9 +208,10 @@ async function onTriggerClick(trigger: Trigger) {
 
 <template>
 	<div class="panel-flows" :class="{ 'has-header': props.showHeader }">
-		<div v-for="{ trigger } in triggers" class="trigger">
+		<div v-for="{ trigger } in props.triggers" class="trigger">
 			<v-button
 				full-width
+				:loading="runningFlows.includes(trigger.flowId)"
 				@click="onTriggerClick(trigger)"
 			>
 				<v-icon :name="getButtonIcon(trigger)" small left />

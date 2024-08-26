@@ -2,10 +2,10 @@ import { definePanel } from '@directus/extensions-sdk';
 import PanelComponent from './panel.vue';
 
 export default definePanel({
-	id: 'flows-panel',
+	id: 'flow-triggers-panel',
 	name: 'Flows',
-	icon: 'bolt',
 	description: 'Configure one or more flows to be triggered by a button.',
+	icon: 'bolt',
 	component: PanelComponent,
 	options: [
 		{

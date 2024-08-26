@@ -4,8 +4,8 @@ import InterfaceComponent from './interface.vue';
 export default defineInterface({
 	id: 'system-flow-trigger-form',
 	name: 'Flow',
-	icon: 'bolt',
 	description: 'Build a flow trigger.',
+	icon: 'bolt',
 	component: InterfaceComponent,
 	options: null,
 	types: ['json'],
