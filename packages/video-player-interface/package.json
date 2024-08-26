@@ -1,6 +1,6 @@
 {
     "name": "directus-extension-video-interface",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "An interface to select and display a video from YouTube, Vimeo or a local file from Directus",
     "license": "MIT",
     "author": "Directus Labs",
