@@ -21,7 +21,7 @@
 		"entries": [
 			{
 				"type": "panel",
-				"name": "flow-triggers-pane",
+				"name": "flow-triggers-panel",
 				"source": "src/flow-triggers-panel/index.ts"
 			},
 			{
