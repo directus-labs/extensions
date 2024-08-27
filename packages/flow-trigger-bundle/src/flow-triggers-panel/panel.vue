@@ -25,9 +25,10 @@ const { t } = useI18n();
 
 const api = useApi();
 
-const { useFlowsStore, useNotificationsStore } = useStores();
+const { useFlowsStore, useNotificationsStore, usePermissionsStore } = useStores();
 const flowsStore = useFlowsStore();
 const notificationStore = useNotificationsStore();
+const permissionsStore = usePermissionsStore();
 
 const flowMap = computed(() => {
 	const map = new Map<string, any>();
@@ -203,11 +204,17 @@ async function onTriggerClick(trigger: Trigger) {
 	selectedTrigger.value = trigger;
 	confirmRunFlow();
 }
+
+const triggers = computed(() => {
+	return props.triggers?.filter(({ trigger }) => {
+		return trigger.collection && permissionsStore.hasPermission(trigger.collection, 'read');
+	});
+});
 </script>
 
 <template>
 	<div class="panel-flows" :class="{ 'has-header': props.showHeader }">
-		<div v-for="{ trigger } in props.triggers" class="trigger">
+		<div v-for="{ trigger } in triggers" class="trigger">
 			<v-button
 				full-width
 				:loading="runningFlows.includes(trigger.flowId)"
