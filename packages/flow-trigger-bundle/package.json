@@ -30,11 +30,6 @@
 				"source": "src/flow-triggers-interface/index.ts"
 			},
 			{
-				"type": "display",
-				"name": "flow-trigger-display",
-				"source": "src/flow-trigger-display/index.ts"
-			},
-			{
 				"type": "interface",
 				"name": "system-flow-trigger-form",
 				"source": "src/system-flow-trigger-form/index.ts"
