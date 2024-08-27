@@ -120,6 +120,7 @@ const fields = computed(() => {
 						width: 'half',
 						interface: 'tags',
 						options: {
+							placeholder: 'Add an ID and press Enter...',
 							iconRight: 'vpn_key',
 						},
 					},
