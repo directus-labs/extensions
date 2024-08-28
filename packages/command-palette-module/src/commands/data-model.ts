@@ -1,6 +1,7 @@
 import { formatTitle } from "@directus/format-title";
 import { Collection } from "@directus/types";
-import { defineCommands } from "../command-palette/registry";
+import { CommandActionContext } from "../command-palette";
+import { CommandConfig, defineCommands } from "../command-palette/registry";
 import { isAdminFromStores } from "../utils/is-admin";
 
 export const dataModelCommands = defineCommands({
@@ -29,16 +30,28 @@ export const dataModelCommands = defineCommands({
           router.push("/settings/data-model/+");
         },
       },
-      ...collectionStore.allCollections.map(({ collection }: Collection) => ({
-        id: `edit-collection:${collection}`,
-        name: `Configure ${formatTitle(collection)}`,
-        icon: "settings",
-        keywords: ["data", "model"],
-        group: `collection:${collection}`,
-        action: ({ router }) => {
-          router.push(`/settings/data-model/${collection}`);
-        },
-      })),
+      ...collectionStore.allCollections.map(
+        ({ collection, meta }: Collection) =>
+          editCollectionCommand(collection, {
+            group: meta?.hidden ? "data-model" : `collection:${collection}`,
+          }),
+      ),
     ];
   },
 });
+
+function editCollectionCommand(
+  collection: string,
+  overrides?: Partial<CommandConfig>,
+) {
+  return {
+    id: `edit-collection:${collection}`,
+    name: `Configure ${formatTitle(collection)}`,
+    icon: "settings",
+    keywords: ["data", "model"],
+    action: ({ router }: CommandActionContext) => {
+      router.push(`/settings/data-model/${collection}`);
+    },
+    ...overrides,
+  };
+}
