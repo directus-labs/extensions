@@ -68,6 +68,6 @@ To install the extension, take a look at the [Official Guide](https://docs.dire
 To enable embedding, you’ll need to update your CSP directives within your [Directus Config](https://docs.directus.io/self-hosted/config-options.html#security) as follows:
 
 ```
-CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC='https://*.plausible.io'
-CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC: "array:'self', plausible.io 'unsafe-eval' 'unsafe-inline'"
+CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC='https://*.plausible.io, https://plausible.io'
+CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC="array:'self', plausible.io 'unsafe-eval' 'unsafe-inline'"
 ```
