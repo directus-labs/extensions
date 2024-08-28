@@ -1,0 +1,31 @@
+{
+	"name": "@directus-labs/solarized-theme",
+	"description": "Solarized light theme for Directus",
+	"icon": "extension",
+	"version": "1.0.2",
+	"license": "MIT",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-custom-theme"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "theme",
+		"path": "dist/index.js",
+		"source": "src/index.js",
+		"host": "^10.3.3"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "10.3.3",
+		"vue": "^3.4.19"
+	}
+}
