@@ -1,7 +1,7 @@
 {
-    "name": "directus-extension-video-interface",
-    "version": "1.0.1",
-    "description": "An interface to select and display a video from YouTube, Vimeo or a local file from Directus",
+    "name": "@directus-labs/audio-player-interface",
+    "version": "1.0.0",
+    "description": "An interface to play audio from a URL or local file from Directus",
     "license": "MIT",
     "author": "Directus Labs",
     "contributors": [
@@ -10,14 +10,14 @@
             "email": "dev@formfcw.com"
         }
     ],
-    "icon": "smart_display",
+    "icon": "play_circle",
     "keywords": [
-        "vimeo",
-        "youtube",
-        "video",
-        "video-extension",
-        "video-select",
-        "inline-video",
+        "mp3",
+        "audio-player",
+        "audio",
+        "audio-extension",
+        "audio-select",
+        "inline-audio",
         "directus",
         "directus-extension",
         "directus-extension-interface"
@@ -38,8 +38,7 @@
         "link": "directus-extension link"
     },
     "devDependencies": {
-        "@directus/extensions-sdk": "11.0.4",
-        "get-video-id": "^4.1.5",
+        "@directus/extensions-sdk": "^11.0.9",
         "typescript": "^5.4.5",
         "vue": "^3.4.27",
         "vue-i18n": "^9.13.1"
