@@ -16,6 +16,7 @@ export default definePanel({
 				width: 'full',
 				interface: 'input',
 				note: 'Create a shared link for your Plausible dashboard and paste the URL here.<br />This URL can be found in the Plausible settings for the domain.<br /> Learn more in the [Plausible documentation](https://plausible.io/docs/shared-links).',
+				required: true,
 				options: {
 					placeholder: 'https://plausible.io/share/yourdomain.net?auth=fadfhlkadjl83c'
 				}
