@@ -15,7 +15,10 @@ export default definePanel({
 			meta: {
 				width: 'full',
 				interface: 'input',
-				note: 'Create a shared link for your Plausible dashboard and paste the URL here.<br />`(https://plausible.io/share/yourdomain.net?auth=fadfhlkadjl83c)`<br />This URL can be found in the Plausible settings for the domain.<br /> Learn more in the [Plausible documentation](https://plausible.io/docs/shared-links).',
+				note: 'Create a shared link for your Plausible dashboard and paste the URL here.<br />This URL can be found in the Plausible settings for the domain.<br /> Learn more in the [Plausible documentation](https://plausible.io/docs/shared-links).',
+                options: {
+                    placeholder: 'https://plausible.io/share/yourdomain.net?auth=fadfhlkadjl83c'
+                }
 			},
 		},
 	],
