@@ -44,6 +44,6 @@
 		"vue": "^3.4.30"
 	},
 	"dependencies": {
-		"browser": "link:@directus/utils/browser"
+		"@directus/utils": "^12.0.0"
 	}
 }
