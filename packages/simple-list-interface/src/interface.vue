@@ -37,7 +37,7 @@ const showAddNew = computed(() => {
 });
 
 const addLabel = computed(() => {
-    return t(props.addLabel);
+	return t(props.addLabel);
 });
 
 watch(
@@ -230,7 +230,7 @@ function onDragEnd() {
 								if (el) inputRefs[index] = el.$el.querySelector('input');
 							}
 						"
-                        :disabled="disabled"
+						:disabled="disabled"
 						:model-value="element ?? ''"
 						:small="size === 'small'"
 						@update:model-value="(value) => updateItem(index, value)"
