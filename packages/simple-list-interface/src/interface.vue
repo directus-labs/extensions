@@ -23,7 +23,6 @@ const emit = defineEmits<{
 	(e: 'input', value: (string | null)[]): void;
 }>();
 
-console.log('props', props);
 const { t } = useI18n();
 
 const localItems = ref<(string | null)[]>([]);
@@ -53,7 +52,6 @@ watch(
 					? parsedValue.map((item) => (item === undefined ? null : item))
 					: [];
 			} catch (error) {
-				console.error('Failed to parse JSON value:', error);
 				localItems.value = [];
 			}
 		} else if (newValue === null || newValue === undefined) {
@@ -232,6 +230,7 @@ function onDragEnd() {
 								if (el) inputRefs[index] = el.$el.querySelector('input');
 							}
 						"
+                        :disabled="disabled"
 						:model-value="element ?? ''"
 						:small="size === 'small'"
 						@update:model-value="(value) => updateItem(index, value)"
