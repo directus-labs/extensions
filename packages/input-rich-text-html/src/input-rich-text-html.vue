@@ -158,7 +158,7 @@
     );
 
     const editorOptions = computed(() => {
-        let styleFormats = null;
+        let styleFormats: CustomFormat[] | null = null;
 
         if (Array.isArray(props.customFormats) && props.customFormats.length > 0) {
             styleFormats = props.customFormats;
