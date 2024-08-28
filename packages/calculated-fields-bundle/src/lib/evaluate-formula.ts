@@ -35,14 +35,19 @@ function evaluateBinaryExpression(
 
   switch (node.operator) {
     case "+":
+      // @ts-ignore
       return left + right;
     case "-":
+      // @ts-ignore
       return left - right;
     case "*":
+      // @ts-ignore
       return left * right;
     case "/":
+      // @ts-ignore
       return left / right;
     case "%":
+      // @ts-ignore
       return left % right;
     case "<":
       return left < right;

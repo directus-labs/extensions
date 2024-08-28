@@ -100,7 +100,7 @@ FieldKey "field name"
   = RelationFieldKey
 
 SimpleFieldKey "simple field name"
-  = [a-zA-Z_\-]+ { return text() }
+  = [a-zA-Z_\-][a-zA-Z0-9_\-]* { return text() }
 
 RelationFieldKey "relational field name"
   = head:SimpleFieldKey tail:("." SimpleFieldKey)* { return [head, ...tail.map(([_, k]) => k)].join('.')}

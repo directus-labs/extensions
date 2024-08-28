@@ -1,14 +1,14 @@
 import { Node } from "../types";
 import { walkAst } from "./walk-ast";
 
-export function extractFieldsFromAst(root: Node) {
-  const fields = new Set<string>();
+export function extractReferencesFromAst(root: Node) {
+  const references = new Set<string>();
 
   walkAst(root, (node) => {
     if (node.type === "Reference") {
-      fields.add(node.field);
+      references.add(node.field);
     }
   });
 
-  return fields;
+  return references;
 }
