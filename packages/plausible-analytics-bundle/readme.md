@@ -71,3 +71,4 @@ To enable embedding, you’ll need to update your CSP directives within your [
 CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC='https://*.plausible.io, https://plausible.io'
 CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC="array:'self', plausible.io 'unsafe-eval' 'unsafe-inline'"
 ```
+Note: Chrome is the recommended browser for using this extension. You may encounter issues with other browsers.
