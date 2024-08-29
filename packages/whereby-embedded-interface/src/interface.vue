@@ -96,13 +96,15 @@ const menuItems = computed(() => {
 });
 
 const componentState = computed(() => {
-	if (!props.value || !props.value.roomUrl) {
-		return 'no-data';
-	} else if (isExpired.value) {
-		return 'expired';
-	} else {
-		return 'valid';
-	}
+  if (!props.value || !props.value.roomUrl) {
+    return "no-data";
+  }
+
+  if (isExpired.value) {
+    return "expired";
+  }
+
+  return "valid";
 });
 
 const avatarUrl = computed(() => {
