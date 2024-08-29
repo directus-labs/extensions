@@ -31,10 +31,10 @@ To install the extension, take a look at the [Official Guide](https://docs.direc
 To enable the Whereby interface to work, you’ll need to update your CSP directives within your [Directus Config](https://docs.directus.io/self-hosted/config-options.html#security) as follows:
 
 ```
-CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC='https://*.whereby.com'
+CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC="https://*.whereby.com"
 CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC="array:'self', https://*.whereby.com 'unsafe-eval' 'unsafe-inline'"
-CONTENT_SECURITY_POLICY_DIRECTIVES__CONNECT_SRC: "'self' https://*.whereby.com https://api.whereby.dev wss://*.whereby.com"
-CONTENT_SECURITY_POLICY_DIRECTIVES__IMG_SRC: "'self' data: blob: https://*.whereby.com"
+CONTENT_SECURITY_POLICY_DIRECTIVES__CONNECT_SRC="'self' https://*.whereby.com https://api.whereby.dev wss://*.whereby.com"
+CONTENT_SECURITY_POLICY_DIRECTIVES__IMG_SRC="'self' data: blob: https://*.whereby.com"
 
 ```
 
