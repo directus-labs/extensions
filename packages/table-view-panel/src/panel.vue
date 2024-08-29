@@ -241,7 +241,7 @@ export default defineComponent({
 
 		async function saveChanges(item: Record<string, any>): Promise<void> {
 			try {
-				await api.patch(`/itemss/${(props.collection)}/${viewItem.value}`, item);
+				await api.patch(`/items/${(props.collection)}/${viewItem.value}`, item);
 				notificationStore.add({
 					title: t('item_update_success', 1),
 				});
