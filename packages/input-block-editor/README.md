@@ -11,6 +11,8 @@ In this example, we will add the Editor.js [marker tool extension](https://githu
 
     https://github.com/directus-labs/extensions/blob/main/packages/input-block-editor/src/index.ts#L77-L80
 
+    > **NOTE:** To have this option and the tool enabled by default, be sure to add `marker` to the `schema.default_value` array: https://github.com/directus-labs/extensions/blob/main/packages/input-block-editor/src/index.ts#L57
+
 3. Import the package
 
     https://github.com/directus-labs/extensions/blob/main/packages/input-block-editor/src/tools.ts#L17
