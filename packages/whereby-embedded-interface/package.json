@@ -30,7 +30,6 @@
 	},
 	"dependencies": {
 		"@vueuse/core": "^11.0.3",
-		"@whereby.com/browser-sdk": "^3.5.0",
 		"date-fns": "^3.6.0"
 	}
 }
