@@ -4,18 +4,10 @@ import PanelComponent from './panel.vue';
 export default definePanel({
 	id: 'directus-panel-table',
 	name: 'Table View',
-	icon: 'box',
+	icon: 'table',
 	description: 'Output data in a table',
 	component: PanelComponent,
-	// query: (options) => {
-	// 	if (!options.collection) return;
-	// 	return {
-	// 		collection: options.collection,
-	// 	};
-	// },
 	options: ({ options }): Array<Object> => {
-		console.log('Options:');
-		console.log(options);
 		const collection = options?.['collection'];
 
 		return [
@@ -25,6 +17,10 @@ export default definePanel({
 				name: '$t:collection',
 				meta: {
 					interface: 'system-collection',
+					options: {
+						includeSystem: true,
+						includeSingleton: false,
+					},
 					required: true,
 					width: 'full',
 				},
@@ -37,9 +33,11 @@ export default definePanel({
 					interface: 'system-field',
 					options: {
 						collectionField: 'collection',
+						allowPrimaryKey: true,
+						placeholder: '$t:primary_key',
 						multiple: false,
 					},
-					required: true,
+					required: false,
 					width: 'half',
 				},
 			},
@@ -52,20 +50,20 @@ export default definePanel({
 					options: {
 						choices: [
 							{
-								value: 'sort_asc',
+								value: 'asc',
 								text: '$t:sort_asc',
 							},
 							{
-								value: 'sort_desc',
+								value: 'desc',
 								text: '$t:sort_desc',
 							},
 						],
 					},
-					required: true,
+					required: false,
 					width: 'half',
 				},
 				schema: {
-					default_value: 'sort_desc',
+					default_value: 'desc',
 				},
 			},
 			{
