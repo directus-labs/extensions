@@ -63,36 +63,37 @@ const openUrl = (url: string) => {
 	window.open(url, '_blank');
 };
 
-const menuItems = computed(() => [
-	{
-		icon: 'content_copy',
-		text: 'Copy Room URL',
-		action: () => copyToClipboard(props.value?.roomUrl || ''),
-	},
-	{
-		icon: 'open_in_new',
-		text: 'Open Room URL',
-		action: () => openUrl(props.value?.roomUrl || ''),
-	},
-	...(props.value?.hostRoomUrl
-		? [
-				{
-					icon: 'admin_panel_settings',
-					text: 'Open Host Room URL',
-					action: () => openUrl(props.value?.hostRoomUrl ?? ''),
-				},
-			]
-		: []),
-	...(props.value?.viewerRoomUrl
-		? [
-				{
-					icon: 'visibility',
-					text: 'Open Viewer Room URL',
-					action: () => openUrl(props.value?.viewerRoomUrl ?? ''),
-				},
-			]
-		: []),
-]);
+const menuItems = computed(() => {
+  const items = [
+    {
+      icon: "content_copy",
+      text: "Copy Room URL",
+      action: () => copyToClipboard(props.value?.roomUrl || ""),
+    },
+    {
+      icon: "open_in_new",
+      text: "Open Room URL",
+      action: () => openUrl(props.value?.roomUrl || ""),
+    },
+  ];
+
+  if (props.value?.hostRoomUrl) {
+    items.push({
+      icon: "admin_panel_settings",
+      text: "Open Host Room URL",
+      action: () => openUrl(props.value?.hostRoomUrl ?? ""),
+    });
+  }
+
+  if (props.value?.viewerRoomUrl) {
+    items.push({
+      icon: "visibility",
+      text: "Open Viewer Room URL",
+      action: () => openUrl(props.value?.viewerRoomUrl ?? ""),
+    });
+  }
+  return items;
+});
 
 const componentState = computed(() => {
 	if (!props.value || !props.value.roomUrl) {
