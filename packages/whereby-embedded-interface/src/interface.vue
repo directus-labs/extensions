@@ -114,7 +114,7 @@ const avatarUrl = computed(() => {
 	<div class="whereby-container interface bordered">
 		<div class="header">
 			<p class="selectable id">{{ roomName }}</p>
-			<div class="expiration" :class="{ expired: isExpired }">Expires: {{ expirationDate }}</div>
+			<div class="expiration" :class="{ expired: isExpired }">{{ isExpired ? 'Expired': 'Expires' }} {{ expirationDate }}</div>
 			<v-menu :disabled="componentState === 'no-data'" show-arrow placement="bottom-end">
 				<template #activator="{ toggle }">
 					<v-icon name="more_vert" clickable @click="toggle" />
