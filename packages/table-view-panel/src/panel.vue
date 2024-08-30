@@ -222,11 +222,7 @@ export default defineComponent({
 		}
 
 		async function sortKey(sort_field: string, sort_direction: string): Promise<Array<string>> {
-			if(!sort_field) return [primaryKeyField.field];
-			tableSort.value = {
-				by: sort_field,
-				desc: sort_direction == 'desc'
-			};
+			//if(!sort_field) sort_field = primaryKeyField.field;
 			return [`${sort_direction != 'asc'?'-':''}${sort_field}`];
 		}
 
@@ -259,12 +255,14 @@ export default defineComponent({
 
 		async function sortTrigger(sort: any): Promise<void> {
 			if(!sort){
+				tableSort.value = {};
 				fetchData({
 					sort_field: sortField.value,
 					sort_direction: sortDirection.value,
 					refresh: true,
 				});
 			} else {
+				tableSort.value = sort;
 				fetchData({
 					sort_field: sort.by,
 					sort_direction: (sort.desc ? 'desc' : 'asc'),
