@@ -1,0 +1,56 @@
+{
+	"name": "@directus-labs/resend-operation",
+	"description": "Resend API operation for Directus Flows. Send emails, update domains, and more.",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-operation"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "operation",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"source": {
+			"app": "src/app.ts",
+			"api": "src/api.ts"
+		},
+		"host": "^10.10.0",
+		"sandbox": {
+			"enabled": true,
+			"requestedScopes": {
+				"log": {},
+				"request": {
+					"methods": [
+						"GET",
+						"POST",
+						"PATCH",
+						"DELETE"
+					],
+					"urls": [
+						"https://api.resend.com/**"
+					]
+				}
+			}
+		}
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "12.0.1",
+		"@directus/types": "^12.0.0",
+		"@types/node": "^22.3.0",
+		"typescript": "^5.5.4",
+		"vue": "^3.4.38"
+	}
+}
