@@ -2,6 +2,8 @@
 	<div class="panel-table" :class="{ 'has-header': showHeader }">
 		<v-info type="danger" icon="error" :center="true" v-if="!collection" title="No Collection Selected"></v-info>
 		<v-info type="warning" icon="warning" :center="true" v-else-if="fields.length == 0" title="No Fields Selected"></v-info>
+		<v-notice type="danger" icon="error" v-else-if="!canRead"><strong>Forbidden:</strong> You do not have permissions to see this table</v-notice>
+		<v-notice type="danger" icon="error" v-else-if="hasError"><strong>{{ errorResponse?.title }}</strong> {{ errorResponse?.message }}</v-notice>
 		<template v-else>
 			<v-table
 				:sort="tableSort"
@@ -28,12 +30,9 @@
 					/>
 				</template>
 			</v-table>
-			<v-notice type="danger" icon="error" v-if="!canRead"><strong>Forbidden:</strong> You do not have permissions to see this table</v-notice>
-			<v-notice type="warning" icon="warning" v-else-if="tableData.length == 0 && !isLoading"><strong>No Items</strong></v-notice>
-			<v-notice type="danger" icon="error" v-else-if="hasError"><strong>{{ errorResponse?.title }}</strong> {{ errorResponse?.message }}</v-notice>
+			<div v-if="tableData.length == 0 && !isLoading" class="no-item-message">No Items</div>
 
 			<drawer-item
-				v-if="canRead"
 				:disabled="!canUpdate"
 				:active="viewItem !== null"
 				:collection="collection"
@@ -361,6 +360,20 @@ export default defineComponent({
 .panel-table table thead tr {
 	position: sticky;
 	top: 0;
+}
+
+.panel-table tr.no-items-text {
+	display: none;
+}
+
+.panel-table .no-item-message {
+	position: absolute;
+	top: 3.5em;
+	right: 0;
+	left: 0;
+	text-align: center;
+	padding: 2em;
+	color: var(--theme--foreground-subdued);
 }
 
 .panel-table .v-notice {
