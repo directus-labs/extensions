@@ -34,6 +34,7 @@ export default defineLayout({
 		const startDateField = syncRefProperty(layoutOptions, 'startDateField', undefined);
 		const endDateField = syncRefProperty(layoutOptions, 'endDateField', undefined);
 		const dependenciesField = syncRefProperty(layoutOptions, 'dependenciesField', undefined);
+		const viewMode = syncRefProperty(layoutOptions, 'viewMode', undefined);
 
 		const { collection, filter, search, selection, selectMode, readonly } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection as any);
@@ -85,6 +86,7 @@ export default defineLayout({
 			startDateField,
 			endDateField,
 			dependenciesField,
+			viewMode,
 			error, totalPages, itemCount, totalCount, getItems, getTotalCount, getItemCount
 		};
 	},

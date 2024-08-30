@@ -5,7 +5,7 @@
 				<button class="gantt-toolbar-item" @click="gotoToday">Today</button>
 			</div>
 			<div class="gantt-toolbar-group">
-				<button class="gantt-toolbar-item" v-for="mode in viewModes" @click="changeViewMode(mode)" :class="{'active': mode == currentMode}">{{ mode }}</button>
+				<button class="gantt-toolbar-item" v-for="mode in viewModes" @click="changeViewMode(mode)" :class="{'active': mode == viewModeWritable}">{{ mode }}</button>
 			</div>
 		</div>
 		<div @mousedown="mouseDown" @mouseup="mouseUp" ref="target" class="gantt-target"></div>
@@ -20,14 +20,13 @@
 	import { onMounted, toRefs, ref, computed, watch, unref } from 'vue';
 	import Gantt from '../vendor/frappe-gantt.mjs';
 	import { useRouter } from "vue-router";
-	import { useApi, useSync } from '@directus/extensions-sdk'
+	import { useApi, useSync, useStores } from '@directus/extensions-sdk'
 
 	var gantt;
 
-	const emit = defineEmits(['update:selection']);
+	const emit = defineEmits(['update:selection', 'update:viewMode']);
 	const api = useApi();
 	const router = useRouter();
-	const currentMode = ref("Day")
 	const viewModes = ref(["Hour", "Quarter Day", "Half Day", "Day", "Week", "Month", "Year"])
 
 	const props = defineProps<{
@@ -39,6 +38,7 @@
 		startDateField?: string,
 		endDateField?: string,
 		dependenciesField?: string,
+		viewMode?: string,
 		primaryKeyField: any,
 		items: any,
 		loading: Boolean,
@@ -62,27 +62,54 @@
 		readonly
 	} = toRefs(props);
 
+	const viewModeWritable = useSync(props, 'viewMode', emit);
 	const selection = useSync(props, 'selection', emit);
-
 	const target = ref();
+	const { useNotificationsStore } = useStores();
+	const notificationsStore = useNotificationsStore();
+	console.log(notificationsStore)
 	
 	const getUnreactiveTasks = () => {
-		if (!labelField.value || !startDateField.value || !endDateField.value) return []; 
-		var newItems = props.items.map(item => ({
-			id: "item-"+String(item[primaryKeyField.value.field]),
-			originalID: item[primaryKeyField.value.field],
-			name: item[labelField.value as string],
-			start: new Date(item[startDateField.value as string]),
-			end: new Date(item[endDateField.value as string]),
-			progress: 0,
-			readonly: readonly.value,
-			dependencies: (() => {
-				if (dependenciesField.value && item[dependenciesField.value as string]) {
-					return ["item-"+String(item[dependenciesField.value as string])];
-				}
-				return [];
-			})()
-		}))
+		if (!labelField.value || !startDateField.value || !endDateField.value) return [];
+
+		var newItems:any = [];
+		var invalidDateIntervalItems:any = [];
+
+		props.items.forEach(item => {
+			var start = new Date(item[startDateField.value as string]);
+			var end = new Date(item[endDateField.value as string]);
+			if (start > end) {
+				invalidDateIntervalItems.push(item)
+				return;
+			}
+			newItems.push({
+				id: "item-"+String(item[primaryKeyField.value.field]),
+				originalID: item[primaryKeyField.value.field],
+				name: item[labelField.value as string],
+				start,
+				end,
+				progress: 0,
+				readonly: readonly.value,
+				dependencies: (() => {
+					if (dependenciesField.value && item[dependenciesField.value as string]) {
+						return ["item-"+String(item[dependenciesField.value as string])];
+					}
+					return [];
+				})()
+			})
+		})
+
+		if (invalidDateIntervalItems.length > 0) {
+			notificationsStore.add({
+					title: "Some items could not be displayed - it is impossible for an item to end before it starts",
+					text: "Affected items: " + invalidDateIntervalItems.map(item => item[labelField.value as string]).join(", "),
+					type: 'warning',
+					persist: true,
+					closeable: true
+				})
+
+		}
+
 		newItems.sort((a,b) => a.start - b.start);
 		return newItems;
 	}
@@ -95,7 +122,7 @@
 
 	const changeViewMode = (mode) => {
 		if (gantt) {
-			currentMode.value = mode;
+			viewModeWritable.value = mode;
 			gantt.change_view_mode(mode);
 		}
 	}
@@ -152,7 +179,7 @@
 			bar_corner_radius: 5,
 			arrow_curve: 5,
 			padding: 19,
-			view_mode: "Day",
+			view_mode: props.viewMode ?? "Day",
 			language: "en",
 			header_height: 65,
 			column_width: 30,
@@ -167,10 +194,41 @@
 			auto_move_label: false,
 			today_button: false,
 			view_mode_select: false,
+			view_mode_padding: {
+				MONTH: ['6m', '6m'],
+				YEAR: ['5y', '5y']
+			},
 			on_date_change: async function(task, start, end) {
+
+				var startDate = new Date(task.start);
+				var endDate = new Date(task.end);
+
+				startDate.setFullYear(start.getFullYear())
+				endDate.setFullYear(end.getFullYear())
+
+				if (viewModeWritable.value) {
+
+					if (["Hour", "Quarter Day", "Half Day", "Day", "Week", "Month"].indexOf(viewModeWritable.value) !== -1) {
+						startDate.setMonth(start.getMonth())
+						startDate.setDate(start.getDate())
+						endDate.setMonth(end.getMonth())
+						endDate.setDate(end.getDate())
+					}
+					
+					if (["Hour", "Quarter Day", "Half Day"].indexOf(viewModeWritable.value) !== -1) {
+						startDate.setHours(start.getHours())
+						startDate.setMinutes(start.getMinutes())
+						startDate.setSeconds(start.getSeconds())
+						endDate.setHours(end.getHours())
+						endDate.setMinutes(end.getMinutes())
+						endDate.setSeconds(end.getSeconds())
+					}
+
+				}
+
 				const itemChanges = {
-					[startDateField.value as string]: start,
-					[endDateField.value as string]: end,
+					[startDateField.value as string]: startDate,
+					[endDateField.value as string]: endDate,
 				};
 				var edit = await api.patch(`/items/${collection.value}/${task.originalID}`, itemChanges)
 				if (edit.status !== 200) {
@@ -183,6 +241,7 @@
 
 <style lang="scss">
 	@import url('../vendor/frappe-gantt.css');
+	
 	.gantt-layout {
 		height: calc(100% - (var(--header-bar-height) + 48px));
 		padding: var(--content-padding);
@@ -261,6 +320,7 @@
 			border-radius: 999px;
 		}
 		.grid-header {
+			position: absolute;
 			border-bottom: 1px solid var(--theme--form--field--input--border-color);
 		}
 		.gantt-container .grid-header {
