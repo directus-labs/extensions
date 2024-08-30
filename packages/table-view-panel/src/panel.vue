@@ -1,10 +1,9 @@
 <template>
 	<div class="panel-table" :class="{ 'has-header': showHeader }">
-		<v-info type="warning" icon="warning" :center="true" v-if="!tableData && !isLoading" title="No Items"></v-info>
+		<v-info type="danger" icon="error" :center="true" v-if="!collection" title="No Collection Selected"></v-info>
 		<v-info type="warning" icon="warning" :center="true" v-else-if="fields.length == 0" title="No Fields Selected"></v-info>
-		<v-info type="danger" icon="error" :center="true" v-else-if="hasError" :title="errorResponse.title">{{ errorResponse.message }}</v-info>
-		<v-table
-			v-else
+		<template v-else>
+			<v-table
 				:sort="tableSort"
 				:headers="tableHeaders"
 				:items="tableData"
@@ -16,34 +15,39 @@
 				@click:row="editRow"
 				@update:sort="sortTrigger"
 			>
-			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
-				<render-display
-					:value="get(item, header.value)"
-					:display="header.display"
-					:options="header.display_options"
-					:interface="header.interface"
-					:interface-options="header.interface_options"
-					:type="header.type"
-					:collection="header.collection"
-					:field="header.value"
-				/>
-			</template>
-		</v-table>
+				<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
+					<render-display
+						:value="get(item, header.value)"
+						:display="header.display"
+						:options="header.display_options"
+						:interface="header.interface"
+						:interface-options="header.interface_options"
+						:type="header.type"
+						:collection="header.collection"
+						:field="header.value"
+					/>
+				</template>
+			</v-table>
+			<v-notice type="danger" icon="error" v-if="!canRead"><strong>Forbidden:</strong> You do not have permissions to see this table</v-notice>
+			<v-notice type="warning" icon="warning" v-else-if="tableData.length == 0 && !isLoading"><strong>No Items</strong></v-notice>
+			<v-notice type="danger" icon="error" v-else-if="hasError"><strong>{{ errorResponse?.title }}</strong> {{ errorResponse?.message }}</v-notice>
 
-		<drawer-item
-			:disabled="!canUpdate"
-			:active="viewItem !== null"
-			:collection="collection"
-			:primary-key="viewItem || '+'"
-			@input="saveChanges"
-			@update:active="cancelEdit"
-		/>
-		<v-dialog v-model="responseDialog" @esc="responseDialog = false">
-			<v-sheet class="panel-table-dialog">
-				<v-info type="danger" icon="error" :title="errorResponse.title">{{ errorResponse.message }}</v-info>
-				<v-button @click="responseDialog = false">Dismiss</v-button>
-			</v-sheet>
-		</v-dialog>
+			<drawer-item
+				v-if="canRead"
+				:disabled="!canUpdate"
+				:active="viewItem !== null"
+				:collection="collection"
+				:primary-key="viewItem || '+'"
+				@input="saveChanges"
+				@update:active="cancelEdit"
+			/>
+			<v-dialog v-model="responseDialog" @esc="responseDialog = false">
+				<v-sheet class="panel-table-dialog">
+					<v-info type="danger" icon="error" :title="errorResponse?.title">{{ errorResponse?.message }}</v-info>
+					<v-button @click="responseDialog = false">Dismiss</v-button>
+				</v-sheet>
+			</v-dialog>
+		</template>
 	</div>
 </template>
 
@@ -96,7 +100,7 @@ export default defineComponent({
 		const canRead = hasPermission(props.collection, 'read');
 		const canUpdate = hasPermission(props.collection, 'update');
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(props.collection);
-		const sortField = ref(props.sort_field || primaryKeyField.field);
+		const sortField = ref(props.sort_field || primaryKeyField?.field);
 		const sortDirection = ref(props.sort_direction || 'desc');
 
 		const tableData = ref<Array<Record<string, any>>>([]);
@@ -116,17 +120,17 @@ export default defineComponent({
 		const itemEdits = ref<Record<string, any>>({});
 
 		async function fetchData(options: Record<string, any>): Promise<void> {
-			if(!options.sort_field || !options.sort_direction || !props.collection) return;
+			if(!props.collection) return;
 			hasError.value = false;
 			isLoading.value = true;
-			const fields: string[] = [primaryKeyField.field, ...props.fields];
+			const fields: string[] = [primaryKeyField?.field, ...props.fields].filter((field) => field != null);
 			try{
 				const response = await api.get(`/items/${props.collection}`,{
 					params: {
 						limit: props.limit ? props.limit : 10,
 						filter: props.filter,
 						fields: fields,
-						sort: await sortKey(options.sort_field, options.sort_direction),
+						sort: await sortKey(options?.sort_field, options?.sort_direction),
 					}
 				});
 				
@@ -169,16 +173,13 @@ export default defineComponent({
 
 				if(!options.refresh){
 					await fetchHeaders();
-				} else {
-					props.fields.forEach((item, idx) => {
-						tableHeaders.value[idx].width = tableCellWidth.value[item] !== undefined && tableCellWidth.value[item] < 24 ? tableCellWidth.value[item] * 10 + (tableHeaders.value[idx].type == 'date' ? 30 : 20 ) : 390;
-					});
 				}
 				isLoading.value = false;
 			} catch(error) {
 				errorResponse.value.title = error.code || 'UNKNOWN';
 				errorResponse.value.message = error.message || t('errors.UNKNOWN');
 				hasError.value = true;
+				isLoading.value = false;
 			};
 		}
 
@@ -222,7 +223,7 @@ export default defineComponent({
 		}
 
 		async function sortKey(sort_field: string, sort_direction: string): Promise<Array<string>> {
-			//if(!sort_field) sort_field = primaryKeyField.field;
+			if(!sort_field) return [];
 			return [`${sort_direction != 'asc'?'-':''}${sort_field}`];
 		}
 
@@ -291,7 +292,7 @@ export default defineComponent({
 			],
 			() => {
 				fetchData({
-					sort_field: props.sort_field || primaryKeyField.field,
+					sort_field: props.sort_field || primaryKeyField?.field,
 					sort_direction: props.sort_direction || 'desc',
 					refresh: false
 				});
@@ -360,6 +361,17 @@ export default defineComponent({
 .panel-table table thead tr {
 	position: sticky;
 	top: 0;
+}
+
+.panel-table .v-notice {
+	position: absolute;
+	right: 1em;
+	bottom: 1em;
+	left: 1em;
+}
+
+.panel-table .v-notice strong {
+	margin-right: 0.5em;
 }
 
 .panel-table-dialog.v-sheet {
