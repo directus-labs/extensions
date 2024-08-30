@@ -1,5 +1,5 @@
 {
-	"name": "resend-operation",
+	"name": "@directus-labs/resend-operation",
 	"description": "Resend API operation for Directus Flows. Send emails, update domains, and more.",
 	"icon": "extension",
 	"version": "1.0.0",
