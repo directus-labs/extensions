@@ -144,8 +144,8 @@ importers:
   packages/flow-trigger-bundle:
     dependencies:
       '@directus/format-title':
-        specifier: 10.1.2
-        version: 10.1.2
+        specifier: 11.0.0
+        version: 11.0.0
       '@directus/types':
         specifier: 11.1.1
         version: 11.1.1(knex@3.1.0)(vue@3.4.38(typescript@5.5.4))
@@ -563,6 +563,10 @@ packages:
 
   '@directus/format-title@10.1.2':
     resolution: {integrity: sha512-8tr4Xch/8fKj6EVnLhIjo6JJyXKzfgSFIBaOZ7OUIrpQ+nP61T+MVXJL3q27J4J3WPZ9aDUhzbuzlBZCjY95sA==}
+    engines: {node: '>=18'}
+
+  '@directus/format-title@11.0.0':
+    resolution: {integrity: sha512-M4Xvwsc8M0x/ZvmxDmSmoechTQ/HRAFjj+PYi5Psn0/XhZ9vU3E8dadEXQDm0UGb30jdt0nrWBSU2+L5AgEwDw==}
     engines: {node: '>=18'}
 
   '@directus/schema@11.0.1':
@@ -3939,6 +3943,8 @@ snapshots:
       - tedious
 
   '@directus/format-title@10.1.2': {}
+
+  '@directus/format-title@11.0.0': {}
 
   '@directus/schema@11.0.1':
     dependencies:

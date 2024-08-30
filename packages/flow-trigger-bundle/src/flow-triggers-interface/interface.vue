@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, unref, computed } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useApi, useStores } from '@directus/extensions-sdk';
-import formatTitle from '@directus/format-title';
 import { PrimaryKey } from '@directus/types';
 import { Trigger } from '../lib/types';
+import { useFlowTriggers } from '../composables/use-flow-triggers';
 
 type TriggerList = TriggerListItem[];
 
@@ -26,88 +25,27 @@ const props = withDefaults(
 
 const { t } = useI18n();
 
-const api = useApi();
-
-const { useFlowsStore, useNotificationsStore } = useStores();
-const flowsStore = useFlowsStore();
-const notificationStore = useNotificationsStore();
-
-const flowMap = computed(() => {
-	const map = new Map<string, any>();
-
-	for (const flow of flowsStore.flows) {
-		map.set(flow.id, flow);
-	}
-
-	return map;
+const {
+	getFlow,
+	runFlow,
+	runningFlows,
+	onTriggerClick,
+	getButtonText,
+	getButtonIcon,
+	confirmDetails,
+	confirmValues,
+	displayCustomConfirmDialog,
+	isConfirmButtonDisabled,
+	getConfirmButtonText,
+	resetConfirm,
+} = useFlowTriggers({
+	collection: (_) => props.collection,
+	keys: (_) => props.primaryKey ? [props.primaryKey] : undefined,
 });
-
-const runningFlows = ref<string[]>([]);
-
-const selectedTrigger = ref<Trigger | null>(null);
-
-const confirmValues = ref<Record<string, any> | null>();
-const confirmDetails = ref<{
-	description: string;
-	fields: Record<string, any>[];
-} | null>(null);
-
-const isConfirmButtonDisabled = computed(() => {
-	if (!selectedTrigger.value) {
-		return true;
-	}
-
-	for (const field of confirmDetails.value?.fields || []) {
-		if (
-			field.meta?.required &&
-			(!confirmValues.value ||
-				confirmValues.value[field.field] === null ||
-				confirmValues.value[field.field] === undefined)
-		) {
-			return true;
-		}
-	}
-
-	return false;
-});
-
-const displayCustomConfirmDialog = computed(
-	() => selectedTrigger.value && confirmDetails.value,
-);
 
 const displayInterface = computed(
 	() => props.triggers && props.triggers.some(({ trigger }) => !getButtonDisabled(trigger)),
 );
-
-function getConfirmButtonText() {
-	return t('run_flow');
-}
-
-function getButtonText(trigger: Trigger) {
-	if (trigger.text) {
-		return trigger.text;
-	}
-
-	const flow = getFlow(trigger.flowId);
-	if (flow) {
-		return flow.name;
-	}
-
-	return t('run_flow');
-}
-
-function getButtonIcon(trigger: Trigger) {
-	if (trigger.icon) {
-		return trigger.icon;
-	}
-
-	const flow = getFlow(trigger.flowId);
-	if (flow) {
-		return flow.icon;
-	}
-
-	return 'bolt';
-}
 
 function getButtonDisabled(trigger: Trigger) {
 	if (props.disabled) {
@@ -125,108 +63,6 @@ function getButtonDisabled(trigger: Trigger) {
 	}
 
 	return false;
-}
-
-function confirmRunFlow() {
-	const flow = getFlow(selectedTrigger.value?.flowId);
-	if (!flow) {
-		return;
-	}
-
-	if (!Boolean(flow.options?.requireConfirmation)) {
-		runFlow();
-	} else {
-		confirmDetails.value = {
-			description: flow.options.confirmationDescription,
-			fields: (flow.options.fields ?? []).map((field: Record<string, any>) => ({
-				...field,
-				name: !field.name && field.field ? formatTitle(field.field) : field.name,
-			})),
-		};
-	}
-}
-
-async function runFlow() {
-	const trigger = unref(selectedTrigger);
-	if (!trigger) {
-		return;
-	}
-
-	const flow = getFlow(trigger.flowId);
-	if (!flow) {
-		return;
-	}
-
-	const flowId = flow.id;
-
-	runningFlows.value = [...runningFlows.value, flowId];
-
-	const collection = props.collection;
-	const keys = props.primaryKey ? [props.primaryKey] : [];
-	const values = unref(confirmValues) ?? {};
-
-	try {
-		if (
-			flow.options?.requireSelection === false &&
-			keys?.length === 0
-		) {
-			await api.post(`/flows/trigger/${flowId}`, { ...values, collection });
-		} else {
-			await api.post(`/flows/trigger/${flowId}`, { ...values, collection, keys });
-		}
-
-		notificationStore.add({
-			title: t('run_flow_success', { flow: flow.name }),
-		});
-
-		resetConfirm();
-	} catch (error) {
-		unexpectedError(error);
-	} finally {
-		selectedTrigger.value = null;
-		runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
-	}
-}
-
-function resetConfirm() {
-	selectedTrigger.value = null;
-	confirmDetails.value = null;
-	confirmValues.value = null;
-}
-
-function unexpectedError(error: unknown) {
-	const code =
-		(error as any)?.response?.data?.errors?.[0]?.extensions?.code ||
-		(error as any)?.extensions?.code ||
-		'UNKNOWN';
-	
-	console.warn(error);
-
-	notificationStore.add({
-		title: t(`errors.${code}`),
-		type: 'error',
-		code,
-		dialog: true,
-		error,
-	});
-}
-
-function getFlow(flowId?: string | null) {
-	if (!flowId) {
-		return null;
-	}
-
-	const flow = unref(flowMap).get(flowId);
-	if (!flow) {
-		return null;
-	}
-
-	return flow;
-}
-
-async function onTriggerClick(trigger: Trigger) {
-	selectedTrigger.value = trigger;
-	confirmRunFlow();
 }
 </script>
 
