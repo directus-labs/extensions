@@ -1,6 +1,6 @@
 # **Whereby Embedded Interface for Directus**
 
-![Whereby Interface Preview](https://raw.githubusercontent.com/directus-labs/whereby-embedded-interface/main/docs/whereby-interface.png)
+![Whereby Interface Preview](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/whereby-embedded-interface/docs/whereby-interface.png)
 
 The Whereby Embedded Interface allows you to seamlessly integrate Whereby's video meeting capabilities directly into your Directus project.
 
@@ -38,7 +38,7 @@ CONTENT_SECURITY_POLICY_DIRECTIVES__IMG_SRC="'self' data: blob: https://*.whereb
 
 ```
 
-![Whereby Interface Setup](https://raw.githubusercontent.com/directus-labs/whereby-embedded-interface/main/docs/whereby-interface-setup.png)
+![Whereby Interface Setup](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/whereby-embedded-interface/docs/whereby-interface-setup.png)
 
 1. Install the Whereby Embedded Interface extension in your Directus project.
 2. Create a field in your desired collection with the type "JSON".
@@ -70,7 +70,7 @@ There are multiple ways to populate the Whereby room data in your Directus insta
 
     That operation may look something like this.
 
-    ![Sample Directus Flow that demonstrates how to populate Whereby Room Data](https://raw.githubusercontent.com/directus-labs/whereby-embedded-interface/main/docs/whereby-flow-example.png)
+    ![Sample Directus Flow that demonstrates how to populate Whereby Room Data](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/whereby-embedded-interface/docs/whereby-flow-example.png)
 
 3. Update the item data with the Whereby room information.
 
