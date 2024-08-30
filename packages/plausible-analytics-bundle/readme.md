@@ -20,7 +20,7 @@ This bundle includes:
 
 ### **Configuration Options**
 
-![plausible-interface-config.png](https://raw.githubusercontent.com/directus-labs/extensions/packages/plausible-analytics-bundle/main/docs/plausible-interface-config.png)
+![plausible-interface-config.png](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/plausible-analytics-bundle/docs/plausible-interface-config.png)
 
 **Shared Link URL** (*required)
 
