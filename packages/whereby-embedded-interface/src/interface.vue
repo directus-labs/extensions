@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useStores } from '@directus/extensions-sdk';
 import { formatRelative, isPast } from 'date-fns';
 import { useClipboard } from '@vueuse/core';
+import { useI18n } from 'vue-i18n';
 import { getPublicURL } from './get-root-path';
 
 interface Props {
@@ -18,12 +19,15 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits(['input']);
 
 const valuesLoaded = ref(false);
 const { useUserStore } = useStores();
 const userStore = useUserStore();
+const { t } = useI18n();
 
 const loadMeeting = ref(false);
+const showDialog = ref(false);
 
 const { copy: copyToClipboard } = useClipboard();
 
@@ -51,7 +55,7 @@ const expirationDate = computed(() => {
 		return formatRelative(new Date(props.value.endDate), new Date());
 	}
 
-	return 'Not set';
+	return '';
 });
 
 const isExpired = computed(() => {
@@ -59,82 +63,137 @@ const isExpired = computed(() => {
 });
 
 const openUrl = (url: string) => {
-    if (!url) return;
+	if (!url) return;
 	window.open(url, '_blank');
 };
 
 const menuItems = computed(() => {
-  const items = [
-    {
-      icon: "content_copy",
-      text: "Copy Room URL",
-      action: () => copyToClipboard(props.value?.roomUrl || ""),
-    },
-    {
-      icon: "open_in_new",
-      text: "Open Room URL",
-      action: () => openUrl(props.value?.roomUrl || ""),
-    },
-  ];
+	const items = [
+		{
+			icon: 'edit',
+			text: 'Edit Room URL',
+			action: () => {
+				showDialog.value = true;
+			},
+		},
+	];
 
-  if (props.value?.hostRoomUrl) {
-    items.push({
-      icon: "admin_panel_settings",
-      text: "Open Host Room URL",
-      action: () => openUrl(props.value?.hostRoomUrl ?? ""),
-    });
-  }
+	if (props.value?.roomUrl) {
+		items.push(
+			{
+				icon: 'content_copy',
+				text: 'Copy Room URL',
+				action: () => copyToClipboard(props.value?.roomUrl || ''),
+			},
+			{
+				icon: 'open_in_new',
+				text: 'Open Room URL',
+				action: () => openUrl(props.value?.roomUrl || ''),
+			},
+		);
+	}
 
-  if (props.value?.viewerRoomUrl) {
-    items.push({
-      icon: "visibility",
-      text: "Open Viewer Room URL",
-      action: () => openUrl(props.value?.viewerRoomUrl ?? ""),
-    });
-  }
-  return items;
+	if (props.value?.hostRoomUrl) {
+		items.push({
+			icon: 'admin_panel_settings',
+			text: 'Open Host Room URL',
+			action: () => openUrl(props.value?.hostRoomUrl ?? ''),
+		});
+	}
+
+	if (props.value?.viewerRoomUrl) {
+		items.push({
+			icon: 'visibility',
+			text: 'Open Viewer Room URL',
+			action: () => openUrl(props.value?.viewerRoomUrl ?? ''),
+		});
+	}
+
+	return items;
 });
 
 const componentState = computed(() => {
-  if (!props.value || !props.value.roomUrl) {
-    return "no-data";
-  }
+	if (!props.value || !props.value.roomUrl) {
+		return 'no-data';
+	}
 
-  if (isExpired.value) {
-    return "expired";
-  }
+	if (isExpired.value) {
+		return 'expired';
+	}
 
-  return "valid";
+	return 'valid';
 });
 
 const avatarUrl = computed(() => {
 	const baseUrl = getPublicURL();
 	return `${baseUrl}assets/${userStore.currentUser?.avatar?.id}`;
 });
+
+const dialogForm = ref({
+	hostRoomUrl: props.value?.hostRoomUrl || '',
+});
+
+const dialogFields = [
+	{
+		field: 'hostRoomUrl',
+		name: 'Host Room URL',
+		type: 'string',
+		meta: {
+			label: 'Host Room URL',
+			required: true,
+			placeholder:
+				'https://your-subdomain.whereby.com/test-room8774y0?roomKey=eyJhbGciOdfadfadfzI1NiIsInR5cCI6IkpXVCJ9',
+			note: 'Add the Host Room URL from Whereby. This is the URL that you use to start the meeting. The  standard Room URL that guests use to join the meeting will be extracted from this URL.',
+		},
+	},
+];
+
+const updateRoomUrl = () => {
+	const newHostRoomUrl = dialogForm.value.hostRoomUrl;
+	// Strip the query parameters from the host room URL to get the viewer room URL
+	const viewerRoomUrl = newHostRoomUrl.split('?')[0];
+	// Extract the room name from the viewer room URL
+	const roomName = '/' + viewerRoomUrl.split('/').pop() || '';
+	// Other properties can't be determined from the URL, so we keep the existing values
+	emit('input', { ...props.value, hostRoomUrl: newHostRoomUrl, roomUrl: viewerRoomUrl, roomName });
+	showDialog.value = false;
+};
+
+watch(
+	() => props.value,
+	(newValue) => {
+		dialogForm.value.hostRoomUrl = newValue?.hostRoomUrl || '';
+	},
+	{ deep: true },
+);
 </script>
 
 <template>
 	<div class="whereby-container interface bordered">
 		<div class="header">
 			<p class="selectable id">{{ roomName }}</p>
-			<div class="expiration" :class="{ expired: isExpired }">{{ isExpired ? 'Expired': 'Expires' }} {{ expirationDate }}</div>
-			<v-menu :disabled="componentState === 'no-data'" show-arrow placement="bottom-end">
+			<div v-if="expirationDate" class="expiration" :class="{ expired: isExpired }">
+				{{ isExpired ? 'Expired' : 'Expires' }} {{ expirationDate }}
+			</div>
+			<v-menu show-arrow placement="bottom-end">
 				<template #activator="{ toggle }">
 					<v-icon name="more_vert" clickable @click="toggle" />
 				</template>
 				<v-list>
 					<v-list-item v-for="(item, index) in menuItems" :key="index" clickable @click="item.action">
-						<v-icon :name="item.icon" />
+						<v-icon :name="item.icon" class="icon" />
 						{{ item.text }}
 					</v-list-item>
 				</v-list>
 			</v-menu>
 		</div>
-
 		<div v-if="componentState === 'no-data'" class="info-box">
 			<v-info type="danger" title="Missing Whereby Data" icon="warning">
 				There is no Whereby data available or some required data is missing. Please contact an administrator.
 			</v-info>
+			<v-button class="start-meeting" kind="secondary" size="large" block @click="showDialog = true">
+				Manually Add Room URL
+			</v-button>
 		</div>
 
 		<div v-else-if="componentState === 'valid' && !loadMeeting" class="info-box">
@@ -164,6 +223,19 @@ const avatarUrl = computed(() => {
 				:externalId="userStore.currentUser?.id"
 			></whereby-embed>
 		</template>
+
+		<v-dialog v-model="showDialog" @esc="showDialog = false">
+			<v-card>
+				<v-card-title>Edit Room URLs</v-card-title>
+				<v-card-text>
+					<v-form v-model="dialogForm" :fields="dialogFields" primary-key="+" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="showDialog = false">{{ t('cancel') }}</v-button>
+					<v-button @click="updateRoomUrl">{{ t('save') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
@@ -221,5 +293,9 @@ const avatarUrl = computed(() => {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+}
+
+.icon {
+	margin-right: 8px;
 }
 </style>
