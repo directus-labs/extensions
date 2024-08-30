@@ -226,7 +226,7 @@ watch(
 
 		<v-dialog v-model="showDialog" @esc="showDialog = false">
 			<v-card>
-				<v-card-title>Edit Room URLs</v-card-title>
+				<v-card-title>Edit Room URL</v-card-title>
 				<v-card-text>
 					<v-form v-model="dialogForm" :fields="dialogFields" primary-key="+" />
 				</v-card-text>
