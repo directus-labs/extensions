@@ -1,6 +1,7 @@
 # Plausible Analytics Bundle
 
-![plausible-bundle.png](https://raw.githubusercontent.com/directus-labs/extensions/packages/plausible-analytics-bundle/main/docs/plausible-bundle.png)
+![plausible-bundle.png](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/plausible-analytics-bundle/docs/plausible-bundle.png)
+
 
 [Plausible](https://plausible.io/?ref=directus) is an intuitive, privacy-friendly analytics alternative to Google Analytics.
 
@@ -15,7 +16,7 @@ This bundle includes:
 
 ## Interface
 
-![plausible-interface-example.png](https://raw.githubusercontent.com/directus-labs/extensions/packages/plausible-analytics-bundle/main/docs/plausible-interface-example.png)
+![plausible-interface-example.png](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/plausible-analytics-bundle/docs/plausible-interface-example.png)
 
 ### **Configuration Options**
 
@@ -42,11 +43,11 @@ Can pull values dynamically based on your item page.
 
 ## Panel
 
-![plausible-panel-example.png](https://raw.githubusercontent.com/directus-labs/extensions/packages/plausible-analytics-bundle/main/docs/plausible-panel-example.png)
+![plausible-panel-example.png](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/plausible-analytics-bundle/docs/plausible-panel-example.png)
 
 ### **Configuration Options**
 
-![plausible-panel-config.png](https://raw.githubusercontent.com/directus-labs/extensions/packages/plausible-analytics-bundle/main/docs/plausible-panel-config.png)
+![plausible-panel-config.png](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/plausible-analytics-bundle/docs/plausible-panel-config.png)
 
 **Shared Link URL** (* required)
 

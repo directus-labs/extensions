@@ -1,6 +1,6 @@
 # Resend Email Operation
 
-![Resend Email Operation](https://raw.githubusercontent.com/directus-labs/resend-operation/main/docs/resend-operation.png)
+![Resend Email Operation](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/resend-operation/docs/resend-operation.png)
 
 The Resend Email Operation allows you to seamlessly integrate Resend's powerful email API into your Directus flows. This operation provides a comprehensive interface for sending emails, managing domains, API keys, audiences, and contacts, all within your Directus environment.
 

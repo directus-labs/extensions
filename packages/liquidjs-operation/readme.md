@@ -1,6 +1,6 @@
 # Liquid Template Operation
 
-![Liquid Template Operation](https://raw.githubusercontent.com/directus-labs/liquidjs-operation/main/docs/liquid-operation.png)
+![Liquid Template Operation](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/liquidjs-operation/docs/liquid-operation.png)
 
 
 The Liquid Template Rendering Operation allows you to dynamically generate content using the powerful [LiquidJS](https://liquidjs.com/index.html) templating language. This operation is perfect for creating personalized emails, generating dynamic content, or any scenario where you need to combine data with templates within a flow.
@@ -19,11 +19,11 @@ The Liquid Template Rendering Operation allows you to dynamically generate conte
 ## Configuration Options
 
 Sample Saved Template Configuration
-![Sample Saved Template Configuration](https://raw.githubusercontent.com/directus-labs/liquidjs-operation/main/docs/liquid-operation-saved-template.png)
+![Sample Saved Template Configuration](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/liquidjs-operation/docs/liquid-operation-saved-template.png)
 
 
 Sample Custom Template Configuration
-![Sample Custom Template Configuration](https://raw.githubusercontent.com/directus-labs/liquidjs-operation/main/docs/liquid-operation-custom-template.png)
+![Sample Custom Template Configuration](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/liquidjs-operation/docs/liquid-operation-custom-template.png)
 
 
 ### Template Mode
