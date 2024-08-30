@@ -2,8 +2,8 @@
 	<div class="panel-table" :class="{ 'has-header': showHeader }">
 		<v-info type="danger" icon="error" :center="true" v-if="!collection" title="No Collection Selected"></v-info>
 		<v-info type="warning" icon="warning" :center="true" v-else-if="fields.length == 0" title="No Fields Selected"></v-info>
-		<v-notice type="danger" icon="error" v-else-if="!canRead"><strong>Forbidden:</strong> You do not have permissions to see this table</v-notice>
-		<v-notice type="danger" icon="error" v-else-if="hasError"><strong>{{ errorResponse?.title }}</strong> {{ errorResponse?.message }}</v-notice>
+		<v-info type="danger" icon="error" :center="true" v-else-if="!canRead" title="Forbidden">You do not have permissions to see this table</v-info>
+		<v-info type="danger" icon="error" v-else-if="hasError" :title="errorResponse?.title">{{ errorResponse?.message }}</v-info>
 		<template v-else>
 			<v-table
 				:sort="tableSort"
@@ -374,17 +374,6 @@ export default defineComponent({
 	text-align: center;
 	padding: 2em;
 	color: var(--theme--foreground-subdued);
-}
-
-.panel-table .v-notice {
-	position: absolute;
-	right: 1em;
-	bottom: 1em;
-	left: 1em;
-}
-
-.panel-table .v-notice strong {
-	margin-right: 0.5em;
 }
 
 .panel-table-dialog.v-sheet {
