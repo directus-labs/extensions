@@ -27,6 +27,7 @@
 		"@directus/extensions-sdk": "^11.0.9",
 		"lodash": "^4.17.21",
 		"typescript": "^5.5.4",
-		"vue": "^3.4.35"
+		"vue": "^3.4.35",
+		"vue-i18n": "^9.14.0"
 	}
 }
