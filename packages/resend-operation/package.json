@@ -1,6 +1,6 @@
 {
 	"name": "resend-operation",
-	"description": "Please enter a description for your extension",
+	"description": "Resend API operation for Directus Flows. Send emails, update domains, and more.",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [
