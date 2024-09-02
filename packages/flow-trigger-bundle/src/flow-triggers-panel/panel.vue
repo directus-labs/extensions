@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStores } from '@directus/extensions-sdk';
-import { Trigger } from '../lib/types';
+import { Trigger } from '../types/trigger';
 import { useFlowTriggers } from '../composables/use-flow-triggers';
 
 type TriggerList = TriggerListItem[];

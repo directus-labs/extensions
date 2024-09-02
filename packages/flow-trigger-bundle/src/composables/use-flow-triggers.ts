@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
 import formatTitle from '@directus/format-title';
 import type { PrimaryKey } from '@directus/types';
-import type { Trigger } from "../lib/types.js";
+import type { Trigger } from "../types/trigger.js";
 
 type FlowTriggerContext = {
 	collection: (trigger: Trigger) => string | undefined;
