@@ -2,9 +2,9 @@
 
 The Flow Trigger Bundle enhances the accessibility of manual flow triggers within Directus Data Studio by providing configurable panels and interfaces for triggering flows directly. This bundle includes a Flows Panel and a Flows Interface, each designed to streamline the execution of manual flows within the Directus environment.
 
-<img width="4656" alt="flow-trigger-bundle-panel" src="https://github.com/user-attachments/assets/cb07abbc-c298-4a99-b927-65abdfa67318">
+![Flow Trigger Panel Sample](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/flow-trigger-bundle/docs/flow-trigger-panel-sample.png)
 
-<img width="4656" alt="flow-trigger-bundle-interface" src="https://github.com/user-attachments/assets/e1008087-c61e-4015-b09a-ee448abb0cad">
+![Flow Trigger Interface Sample](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/flow-trigger-bundle/docs/flow-trigger-interface-sample.png)
 
 ## Installation
 
