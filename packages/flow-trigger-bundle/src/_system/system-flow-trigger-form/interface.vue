@@ -24,9 +24,12 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
-const { useFlowsStore, useCollectionsStore } = useStores();
+const { useFlowsStore, useCollectionsStore, usePermissionsStore } = useStores();
 const flowsStore = useFlowsStore();
 const collectionsStore = useCollectionsStore();
+const permissionsStore = usePermissionsStore();
+
+const canReadFlows = permissionsStore.hasPermission('directus_flows', 'read');
 
 const internalValue = reactive<Value>(props.value ?? { flowId: null });
 
@@ -186,7 +189,10 @@ function updateInternalValue(value: Value) {
 
 <template>
 	<template v-if="manualFlows.length < 1">
-		<v-notice v-if="props.collection" type="warning">
+		<v-notice v-if="!canReadFlows" type="warning">
+			You do not have permission to view flows.
+		</v-notice>
+		<v-notice v-else-if="props.collection" type="warning">
 			No manual flows are available for this collection.
 		</v-notice>
 		<v-notice v-else type="warning">
