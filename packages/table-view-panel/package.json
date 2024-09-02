@@ -1,6 +1,6 @@
 {
-	"name": "directus-extension-panel-table",
-	"description": "Please enter a description for your extension",
+	"name": "@directus-labs/table-view-panel",
+	"description": "Display a full table in your insights dashboard.",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [
