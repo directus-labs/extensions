@@ -2,7 +2,7 @@
 
 Output data from across multiple tables using this extension.
 
-![Choose Collection to Include](./docs/table-view-panel-feature.jpg)
+![Choose Collection to Include](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/table-view-panel/docs/table-view-panel-feature.jpg)
 
 ## Usage
 
@@ -38,8 +38,7 @@ Refer to the Official Guide for details on installing the extension from the Mar
 5. Save the panel and position/resize as required
 6. Save the dashboard
 
-![Choose Collection to Include](./docs/table-view-panel-customize.jpg)
-
+![Choose Collection to Include](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/table-view-panel/docs/table-view-panel-customize.jpg)
 
 ## Permissions
 
