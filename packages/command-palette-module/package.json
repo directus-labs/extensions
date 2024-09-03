@@ -2,7 +2,7 @@
 	"name": "@directus-labs/command-palette-module",
 	"description": "Command palette module for Directus.",
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": [
 		"directus",
 		"directus-extension",
