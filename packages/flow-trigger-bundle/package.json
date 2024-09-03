@@ -1,6 +1,6 @@
 {
 	"name": "@directus-labs/flow-trigger-bundle",
-	"description": "Please enter a description for your extension",
+	"description": "Configure one or more flows to be triggered in the editor or dashboards.",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [

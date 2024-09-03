@@ -1,14 +1,12 @@
 # Flow Trigger Bundle
 
-The Flow Trigger Bundle enhances the accessibility of manual flow triggers within Directus Data Studio by providing configurable panels and interfaces for triggering flows directly. This bundle includes a Flows Panel and a Flows Interface, each designed to streamline the execution of manual flows within the Directus environment.
+The Flow Trigger Bundle enhances manual flow triggers within the Directus Data Studio by providing configurable panels and interfaces for triggering flows directly. This bundle includes a Flows Panel and a Flows Interface, each designed to streamline the execution of manual flows within the Directus environment.
 
-![Flow Trigger Panel Sample](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/flow-trigger-bundle/docs/flow-trigger-panel-sample.png)
-
-![Flow Trigger Interface Sample](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/flow-trigger-bundle/docs/flow-trigger-interface-sample.png)
+![Flow Trigger Interface Sample](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/flow-trigger-bundle/docs/screenshots.png)
 
 ## Installation
 
-Refer to the [Official Guide](https://docs.directus.io/extensions/installing-extensions.html) for details on installing the extension from the Marketplace or manually.
+Refer to the [Official Guide](https://docs.directus.io/extensions/installing-extensions) for details on installing the extension from the Marketplace or manually.
 
 ## Usage
 
@@ -24,9 +22,9 @@ The Flows Interface enables users to configure and trigger manual flows directly
 
 The interface also supports native flow confirmation dialogs, ensuring that users can safely execute their flows.
 
-## Instructions
+## Configuration
 
-### Flows Panel Configuration
+### Flows Panel
 
 1. Add the Flows Panel to your dashboard.
 2. Configure one or more manual flows you wish to trigger.
@@ -35,7 +33,7 @@ The interface also supports native flow confirmation dialogs, ensuring that user
 5. Arrange the flow trigger buttons in the desired order.
 6. Save and use the panel to trigger flows based on your configuration.
 
-### Flows Interface Configuration
+### Flows Interface
 
 1. Add the Flows Interface to your collection editor.
 2. Select one or more manual flows to trigger within this interface.
