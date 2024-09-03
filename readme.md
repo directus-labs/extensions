@@ -25,6 +25,8 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [AI Translator](//github.com/directus-labs/extensions/tree/main/packages/ai-translator-operation)                                     | Operation |    ✅     |
 | [AI Writer](//github.com/directus-labs/extensions/tree/main/packages/ai-writer-operation)                                             | Operation |    ✅     |
 | [RSS to JSON](//github.com/directus-labs/extensions/tree/main/packages/rss-to-json-operation)                                         | Operation |    ✅     |
+| [LiquidJS Template](//github.com/directus-labs/extensions/tree/main/packages/liquidjs-operation)                                      | Operation |    ✅     |
+| [Resend](//github.com/directus-labs/extensions/tree/main/packages/resend-operation)                                                   | Operation |    ✅     |
 | [Spreadsheet](//github.com/directus-labs/extensions/tree/main/packages/spreadsheet-layout)                                            |  Layout   |    N/A    |
 | [Video Player](//github.com/directus-labs/extensions/tree/main/packages/video-player-interface)                                       | Interface |    N/A    |
 | [Audio Player](//github.com/directus-labs/extensions/tree/main/packages/audio-player-interface)                                       | Interface |    N/A    |
@@ -32,7 +34,9 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Whiteboard](//github.com/directus-labs/extensions/tree/main/packages/whiteboard-interface)                                           | Interface |    N/A    |
 | [Multilevel Autocomplete Input (API)](//github.com/directus-labs/extensions/tree/main/packages/multilevel-autocomplete-api-interface) | Interface |    N/A    |
 | [Experimental M2A Interface](//github.com/directus-labs/extensions/tree/main/packages/experimental-m2a-interface)                     | Interface |    N/A    |
-| [Simple List Interface](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface)                          | Interface |    N/A    |
+| [Simple List](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface)                                         | Interface |    N/A    |
+| [Whereby Embed](//github.com/directus-labs/extensions/tree/main/packages/whereby-embedded-interface)                                  | Interface |    N/A    |
+| [Plausible Analytics](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle)                            |  Bundle   |    N/A    |
 | [Table View](//github.com/directus-labs/extensions/tree/main/packages/table-view-panel)                                               |   Panel   |    N/A    |
 | [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component)                                           |  Bundle   |    N/A    |
 | [Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component)                                           |  Bundle   |    N/A    |
