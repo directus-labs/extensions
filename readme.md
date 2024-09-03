@@ -36,8 +36,9 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Experimental M2A Interface](//github.com/directus-labs/extensions/tree/main/packages/experimental-m2a-interface)                     | Interface |    N/A    |
 | [Simple List](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface)                                         | Interface |    N/A    |
 | [Whereby Embed](//github.com/directus-labs/extensions/tree/main/packages/whereby-embedded-interface)                                  | Interface |    N/A    |
-| [Plausible Analytics](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle)                            |  Bundle   |    N/A    |
 | [Table View](//github.com/directus-labs/extensions/tree/main/packages/table-view-panel)                                               |   Panel   |    N/A    |
+| [Command Bar](//github.com/directus-labs/extensions/tree/main/packages/command-bar-module)                                            |  Module   |    N/A    |
+| [Plausible Analytics](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle)                            |  Bundle   |    N/A    |
 | [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component)                                           |  Bundle   |    N/A    |
 | [Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component)                                           |  Bundle   |    N/A    |
 
