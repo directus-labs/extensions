@@ -1,0 +1,33 @@
+{
+	"name": "@directus-labs/table-view-panel",
+	"description": "Display a full table in your insights dashboard.",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-custom-panel"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "panel",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "^11.0.9",
+		"lodash": "^4.17.21",
+		"typescript": "^5.5.4",
+		"vue": "^3.4.35",
+		"vue-i18n": "^9.14.0"
+	}
+}
