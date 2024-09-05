@@ -8,7 +8,7 @@ services:
       - 443:443
       - 443:443/udp
     environment:
-      - CADDY_INGRESS_NETWORKS=extensions_sandbox
+      - CADDY_INGRESS_NETWORKS=${COMPOSE_PROJECT_NAME}_sandbox
     networks:
       - sandbox
     volumes:

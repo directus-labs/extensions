@@ -1,0 +1,56 @@
+{
+	"name": "@directus-labs/flow-trigger-bundle",
+	"description": "Configure one or more flows to be triggered in the editor or dashboards.",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "panel",
+				"name": "flow-triggers-panel",
+				"source": "src/flow-triggers-panel/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "flow-triggers-interface",
+				"source": "src/flow-triggers-interface/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "system-flow-trigger-form",
+				"source": "src/_system/system-flow-trigger-form/index.ts"
+			}
+		],
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"add": "directus-extension add"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "12.0.1",
+		"typescript": "^5.5.4",
+		"vue": "^3.4.38"
+	},
+	"dependencies": {
+		"@directus/format-title": "11.0.0",
+		"@directus/types": "11.1.1",
+		"vue-i18n": "9.13.1"
+	}
+}
