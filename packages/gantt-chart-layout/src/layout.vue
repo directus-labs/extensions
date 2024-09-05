@@ -34,6 +34,7 @@
 			type: String,
 			required: true,
 		},
+		fieldsInCollection: any,
 		labelField?: string,
 		startDateField?: string,
 		endDateField?: string,
@@ -53,6 +54,7 @@
 	}>()
 
 	const { collection, items, loading, 
+		fieldsInCollection,
 		primaryKeyField, 
 		labelField,
 		startDateField, 
@@ -67,7 +69,8 @@
 	const target = ref();
 	const { useNotificationsStore } = useStores();
 	const notificationsStore = useNotificationsStore();
-	console.log(notificationsStore)
+	const startDateType = fieldsInCollection.value.find(field => field.field == startDateField.value)?.type
+	const endDateType = fieldsInCollection.value.find(field => field.field == endDateField.value)?.type
 	
 	const getUnreactiveTasks = () => {
 		if (!labelField.value || !startDateField.value || !endDateField.value) return [];
@@ -100,14 +103,18 @@
 		})
 
 		if (invalidDateIntervalItems.length > 0) {
-			notificationsStore.add({
+			// We create a hash of any errors to ensure that we don't repeat the same error message
+			var errorHash = invalidDateIntervalItems.map(item => item[primaryKeyField.value.field]).sort((a,b) => a < b).join(",").split("").reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+			if (!sessionStorage.getItem("gantt-err-"+errorHash)) {
+				sessionStorage.setItem("gantt-err-"+errorHash, "true")
+				notificationsStore.add({
 					title: "Some items could not be displayed - it is impossible for an item to end before it starts",
 					text: "Affected items: " + invalidDateIntervalItems.map(item => item[labelField.value as string]).join(", "),
 					type: 'warning',
 					persist: true,
 					closeable: true
-				})
-
+				})	
+			}
 		}
 
 		newItems.sort((a,b) => a.start - b.start);
@@ -198,37 +205,45 @@
 				MONTH: ['6m', '6m'],
 				YEAR: ['5y', '5y']
 			},
-			on_date_change: async function(task, start, end) {
+			on_date_change: async function(task, start:Date, end:Date) {
 
 				var startDate = new Date(task.start);
 				var endDate = new Date(task.end);
 
-				startDate.setFullYear(start.getFullYear())
-				endDate.setFullYear(end.getFullYear())
+				startDate.setUTCFullYear(start.getUTCFullYear())
+				endDate.setUTCFullYear(end.getUTCFullYear())
 
 				if (viewModeWritable.value) {
 
 					if (["Hour", "Quarter Day", "Half Day", "Day", "Week", "Month"].indexOf(viewModeWritable.value) !== -1) {
-						startDate.setMonth(start.getMonth())
-						startDate.setDate(start.getDate())
-						endDate.setMonth(end.getMonth())
-						endDate.setDate(end.getDate())
+						startDate.setUTCMonth(start.getUTCMonth())
+						startDate.setUTCDate(start.getUTCDate())
+						endDate.setUTCMonth(end.getUTCMonth())
+						endDate.setUTCDate(end.getUTCDate())
 					}
 					
 					if (["Hour", "Quarter Day", "Half Day"].indexOf(viewModeWritable.value) !== -1) {
-						startDate.setHours(start.getHours())
-						startDate.setMinutes(start.getMinutes())
-						startDate.setSeconds(start.getSeconds())
-						endDate.setHours(end.getHours())
-						endDate.setMinutes(end.getMinutes())
-						endDate.setSeconds(end.getSeconds())
+						startDate.setUTCHours(start.getUTCHours())
+						startDate.setUTCMinutes(start.getUTCMinutes())
+						startDate.setUTCSeconds(start.getUTCSeconds())
+						endDate.setUTCHours(end.getUTCHours())
+						endDate.setUTCMinutes(end.getUTCMinutes())
+						endDate.setUTCSeconds(end.getUTCSeconds())
 					}
 
 				}
 
+				// Fix for fields using the data type 'dateTime', as they don't contain 
+				// timezone information and JavaScript prefers UTC, there will be an offset 
+				// if we don't send it in local time. Using toLocaleString('sv') is a quick
+				// way to get a proper formatting without using external libraries, so it is
+				// not because of the origin of the developer writing this code.
+				var startDateString = startDateType == 'dateTime' ? startDate.toLocaleString('sv').replace(' ', 'T') : startDate.toISOString();
+				var endDateString = endDateType == 'dateTime' ? endDate.toLocaleString('sv').replace(' ', 'T') : endDate.toISOString();
+
 				const itemChanges = {
-					[startDateField.value as string]: startDate,
-					[endDateField.value as string]: endDate,
+					[startDateField.value as string]: startDateString,
+					[endDateField.value as string]: endDateString
 				};
 				var edit = await api.patch(`/items/${collection.value}/${task.originalID}`, itemChanges)
 				if (edit.status !== 200) {
