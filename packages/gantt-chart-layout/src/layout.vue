@@ -76,9 +76,14 @@
 		if (!labelField.value || !startDateField.value || !endDateField.value) return [];
 
 		var newItems:any = [];
+		var missingDateItems:any = [];
 		var invalidDateIntervalItems:any = [];
 
 		props.items.forEach(item => {
+			if (!item[startDateField.value as string] || !item[endDateField.value as string]) {
+				missingDateItems.push(item)
+				return;
+			}
 			var start = new Date(item[startDateField.value as string]);
 			var end = new Date(item[endDateField.value as string]);
 			if (start > end) {
@@ -102,11 +107,26 @@
 			})
 		})
 
+		if (missingDateItems.length > 0) {
+			// We create a hash of any errors to ensure that we don't repeat the same error message
+			var errorHash = missingDateItems.map(item => item[primaryKeyField.value.field]).sort((a,b) => a < b).join(",").split("").reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+			if (!sessionStorage.getItem("gantt-md-"+errorHash)) {
+				sessionStorage.setItem("gantt-md-"+errorHash, "true")
+				notificationsStore.add({
+					title: "Some items could not be displayed - they are missing either a start of end date",
+					text: "Affected items: " + missingDateItems.map(item => item[labelField.value as string]).join(", "),
+					type: 'warning',
+					persist: true,
+					closeable: true
+				})	
+			}
+		}
+
 		if (invalidDateIntervalItems.length > 0) {
 			// We create a hash of any errors to ensure that we don't repeat the same error message
 			var errorHash = invalidDateIntervalItems.map(item => item[primaryKeyField.value.field]).sort((a,b) => a < b).join(",").split("").reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
-			if (!sessionStorage.getItem("gantt-err-"+errorHash)) {
-				sessionStorage.setItem("gantt-err-"+errorHash, "true")
+			if (!sessionStorage.getItem("gantt-idi-"+errorHash)) {
+				sessionStorage.setItem("gantt-idi-"+errorHash, "true")
 				notificationsStore.add({
 					title: "Some items could not be displayed - it is impossible for an item to end before it starts",
 					text: "Affected items: " + invalidDateIntervalItems.map(item => item[labelField.value as string]).join(", "),
