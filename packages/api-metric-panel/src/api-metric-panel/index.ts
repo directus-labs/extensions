@@ -38,6 +38,7 @@ export default definePanel({
 				meta: {
 					width: 'half',
 					interface: 'input',
+					required: true,
 					options: {
 						placeholder: '$t:operations.request.url_placeholder',
 					},
@@ -296,22 +297,22 @@ export default definePanel({
 											{
 												text: '$t:operators.gt',
 												value: '>',
-												disabled: !options!.fieldIsNumber,
+												disabled: !options?.fieldIsNumber || true,
 											},
 											{
 												text: '$t:operators.gte',
 												value: '>=',
-												disabled: !options!.fieldIsNumber,
+												disabled: !options?.fieldIsNumber || true,
 											},
 											{
 												text: '$t:operators.lt',
 												value: '<',
-												disabled: !options!.fieldIsNumber,
+												disabled: !options?.fieldIsNumber || true,
 											},
 											{
 												text: '$t:operators.lte',
 												value: '<=',
-												disabled: !options!.fieldIsNumber,
+												disabled: !options?.fieldIsNumber || true,
 											},
 										],
 									},
