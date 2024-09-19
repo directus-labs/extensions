@@ -9,11 +9,117 @@ export default definePanel({
 	icon: 'functions',
 	component: PanelApiMetric,
 	options: ({ options }) => {
-
-		const fieldIsNumber = true; 
-
-
 		return [
+			{
+				field: 'method',
+				name: '$t:operations.request.method',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{ value: 'GET', text: 'GET' },
+							{ value: 'POST', text: 'POST' },
+							{ value: 'PATCH', text: 'PATCH' },
+							{ value: 'DELETE', text: 'DELETE' },
+						],
+						allowOther: true,
+					},
+				},
+				schema: {
+					default_value: 'GET',
+				},
+			},
+			{
+				field: 'url',
+				name: '$t:operations.request.url',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'input',
+					options: {
+						placeholder: '$t:operations.request.url_placeholder',
+					},
+				},
+			},
+			{
+				field: 'resultsPath',
+				name: '$t:interfaces.input-autocomplete-api.results_path',
+				type: 'string',
+				meta: {
+					interface: 'input',
+					options: {
+						placeholder: 'result.predictions',
+						font: 'monospace',
+					},
+					width: 'full',
+				},
+			},
+			{
+				field: 'fieldIsNumber',
+				name: 'Field is number',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'headers',
+				name: '$t:operations.request.headers',
+				type: 'json',
+				meta: {
+					width: 'full',
+					interface: 'list',
+					options: {
+						fields: [
+							{
+								field: 'header',
+								name: '$t:operations.request.header',
+								type: 'string',
+								meta: {
+									width: 'half',
+									interface: 'input',
+									required: true,
+									options: {
+										placeholder: '$t:operations.request.header_placeholder',
+									},
+								},
+							},
+							{
+								field: 'value',
+								name: '$t:value',
+								type: 'string',
+								meta: {
+									width: 'half',
+									interface: 'input',
+									required: true,
+									options: {
+										placeholder: '$t:operations.request.value_placeholder',
+									},
+								},
+							},
+						],
+					},
+				},
+			},
+			{
+				field: 'body',
+				name: '$t:request_body',
+				type: 'text',
+				meta: {
+					width: 'full',
+					interface: 'input-multiline',
+					options: {
+						font: 'monospace',
+						placeholder: '$t:any_string_or_json',
+					},
+				},
+			},
 			{
 				field: 'styleDivider',
 				type: 'alias',
@@ -190,22 +296,22 @@ export default definePanel({
 											{
 												text: '$t:operators.gt',
 												value: '>',
-												disabled: !fieldIsNumber,
+												disabled: !options!.fieldIsNumber,
 											},
 											{
 												text: '$t:operators.gte',
 												value: '>=',
-												disabled: !fieldIsNumber,
+												disabled: !options!.fieldIsNumber,
 											},
 											{
 												text: '$t:operators.lt',
 												value: '<',
-												disabled: !fieldIsNumber,
+												disabled: !options!.fieldIsNumber,
 											},
 											{
 												text: '$t:operators.lte',
 												value: '<=',
-												disabled: !fieldIsNumber,
+												disabled: !options!.fieldIsNumber,
 											},
 										],
 									},
