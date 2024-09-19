@@ -23,6 +23,11 @@
 				"type": "endpoint",
 				"name": "api-metric-endpoint",
 				"source": "src/api-metric-endpoint/index.ts"
+			},
+			{
+				"type": "panel",
+				"name": "api-metric-panel",
+				"source": "src/api-metric-panel/index.ts"
 			}
 		],
 		"host": "^10.10.0"
@@ -36,6 +41,7 @@
 	"devDependencies": {
 		"@directus/extensions-sdk": "12.0.2",
 		"@types/node": "^22.5.5",
-		"typescript": "^5.6.2"
+		"typescript": "^5.6.2",
+		"vue": "^3.5.6"
 	}
 }
