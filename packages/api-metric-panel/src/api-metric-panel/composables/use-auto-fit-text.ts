@@ -64,6 +64,7 @@ export function useAutoFontFit(parent: Ref<HTMLElement | null>, child: Ref<HTMLE
 		// Function to update font size
 		const setFontSize = (size: number) => {
 			childContainer.style.fontSize = `${size}px`;
+			childContainer.style.setProperty('--v-icon-size', `${size}px`);
 		};
 
 		let fontSize;
