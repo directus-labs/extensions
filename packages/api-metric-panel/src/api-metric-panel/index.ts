@@ -160,6 +160,24 @@ export default definePanel({
 				},
 			},
 			{
+				field: 'iconLeft',
+				name: '$t:icon_left',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'select-icon',
+				},
+			},
+			{
+				field: 'iconRight',
+				name: '$t:icon_right',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'select-icon',
+				},
+			},
+			{
 				field: 'numberStyle',
 				type: 'string',
 				name: '$t:style',
