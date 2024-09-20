@@ -3,6 +3,14 @@
 	"description": "A panel which allows to display a metric value from an external API",
 	"icon": "extension",
 	"version": "1.0.0",
+	"license": "MIT",
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "Dominic Marcelino",
+			"email": "dominic.marcelino@utomic.media"
+		}
+	],
 	"keywords": [
 		"directus",
 		"directus-extension",
@@ -45,5 +53,8 @@
 		"typescript": "^5.6.2",
 		"vue": "^3.5.6",
 		"vue-i18n": "^9.14.0"
+	},
+	"dependencies": {
+		"@directus/errors": "^1.0.0"
 	}
 }
