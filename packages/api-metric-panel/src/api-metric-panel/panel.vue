@@ -5,6 +5,7 @@ import type { Style, Notation, Unit } from './utils/format-number';
 import { useAutoFontFit } from './composables/use-auto-fit-text';
 import { formatNumber } from './utils/format-number';
 import { useI18n } from 'vue-i18n';
+import { useSdk } from '@directus/extensions-sdk';
 
 
 type Header = {
@@ -36,13 +37,12 @@ interface Props {
 	fontStyle?: string | undefined;
 	fontSize?: string;
 	font?: 'sans-serif' | 'serif' | 'monospace';
-	metric?: number | string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	showHeader: false,
 	method: 'GET',
-	resultsPath: '.',
+	resultsPath: undefined,
 	fieldIsNumber: false,
 	headers: () => [] as Header[],
 	prefix: '',
@@ -58,13 +58,15 @@ const props = withDefaults(defineProps<Props>(), {
 	fontStyle: 'normal',
 	fontSize: 'auto',
 	font: 'sans-serif',
-	metric: undefined,
 });
+
+type MetricType = string | number | Record<string, any> | null;
 
 const { locale } = useI18n();
 
 const labelContainer = ref<HTMLDivElement | null>(null);
 const labelText = ref<HTMLParagraphElement | null>(null);
+const metric = ref<MetricType>(null);
 
 const { adjustFontSize } = useAutoFontFit(labelContainer, labelText);
 
@@ -96,7 +98,7 @@ function unmountResizeObserver() {
 }
 
 async function updateFit() {
-	if (props.fontSize !== 'auto' || !props.metric) {
+	if (props.fontSize !== 'auto' || !metric.value) {
 		unmountResizeObserver();
 		return;
 	}
@@ -120,6 +122,25 @@ async function updateFit() {
 	adjustFontSize();
 }
 
+async function fetchMetric() {
+	if (!props.url) {
+		return;
+	}
+	const client = useSdk();
+	
+	const response = await client.request(() => ({
+		method: 'POST',
+		body: JSON.stringify({
+			requestUrl: props.url,
+			requestMethod: props.method,
+			requestHeaders: props.headers,
+			requestBody: props.body,
+			resultsPath: props.resultsPath,
+		}),
+	}));
+
+	metric.value = response;
+}
 onMounted(() => {
 	updateFit();
 });
@@ -132,19 +153,14 @@ onBeforeUnmount(() => {
 	unmountResizeObserver();
 });
 
-const metric = computed(() => {
-	if (!props.metric) return null;
 
-	if (props.fieldIsNumber && !isNaN(Number(props.metric)) ) {
-		return Number(props.metric);
+function displayValue(value: MetricType) {
+	if (value === null || value === undefined) {
+		return '...Loading';
 	}
 
-	return props.metric;
-});
-
-function displayValue(value: number | string) {
-	if (value === null || value === undefined) {
-		return 0;
+	if (typeof value !== 'string' && typeof value !== 'number') {
+		return 'Not a number';
 	}
 
 	return formatNumber(Number(value), locale.value, {
