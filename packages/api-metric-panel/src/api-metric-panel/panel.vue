@@ -26,6 +26,8 @@ interface Props {
 	body?: string | null;
 	prefix?: string | null;
 	suffix?: string | null;
+	iconLeft?: string;
+	iconRight?: string;
 	numberStyle?: Style;
 	notation?: Notation;
 	unit?: Unit;
@@ -47,6 +49,8 @@ const props = withDefaults(defineProps<Props>(), {
 	headers: () => [] as Header[],
 	prefix: '',
 	suffix: '',
+	iconLeft: undefined,
+	iconRight: undefined,
 	numberStyle: 'decimal',
 	notation: 'standard',
 	unit: undefined,
@@ -250,9 +254,11 @@ const color = computed(() => {
 			</template>
 
 			<template v-else>
+				<v-icon v-if="iconLeft" :name="iconLeft" />
 				{{ prefix }}
 				{{ displayValue(metric) }}
 				{{ suffix }}
+				<v-icon v-if="iconRight" :name="iconRight" />
 			</template>
 		</p>
 	</div>
