@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n';
 import { useSdk, useStores } from '@directus/extensions-sdk';
 
 
-type Header = {
+export type Header = {
 	header: string;
 	value: string;
 };
@@ -129,23 +129,47 @@ async function updateFit() {
 	adjustFontSize();
 }
 
+
+function createUrlParams(): string {
+  const params = new URLSearchParams();
+
+  if (props.url && props.url.trim() !== '') {
+    params.append('requestUrl', props.url);
+	}
+	
+  if (props.method) {
+    params.append('requestMethod', props.method);
+	}
+	
+  if (props.headers && props.headers.length > 0) {
+    params.append('requestHeaders', JSON.stringify(props.headers));
+	}
+	
+  if (props.body && Object.keys(props.body).length > 0) {
+    params.append('requestBody', JSON.stringify(props.body));
+	}
+
+	if (props.resultsPath) {
+    params.append('resultsPath', props.resultsPath);
+  }
+
+  return params.toString();
+}
+
+
 async function fetchMetric() {
 	if (!props.url) {
 		return;
 	}
+
+	const urlParams = createUrlParams();
 	
 	const response = await client.request(() => ({
-		method: 'POST',
-		body: JSON.stringify({
-			requestUrl: props.url,
-			requestMethod: props.method,
-			requestHeaders: props.headers,
-			requestBody: props.body,
-			resultsPath: props.resultsPath,
-		}),
+		path: `/api-metric-endpoint?${urlParams}`,
+		method: 'GET',
 	}));
 
-	metric.value = response;
+	metric.value = response.body.data;
 }
 
 onMounted(() => {

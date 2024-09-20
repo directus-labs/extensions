@@ -111,6 +111,13 @@ importers:
         version: 3.4.38(typescript@5.6.2)
 
   packages/api-metric-panel:
+    dependencies:
+      '@directus/errors':
+        specifier: ^1.0.0
+        version: 1.0.0
+      axios:
+        specifier: ^1.7.5
+        version: 1.7.5
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.2
@@ -598,6 +605,9 @@ packages:
   '@directus/constants@12.0.0':
     resolution: {integrity: sha512-mzVUldDJJ4WbfFnWHSGtZKrofSAyuKli3KRZ/9spGhyhJuzCory+QKEtYrWyhxFUeV3ZwODxD5RHKHP5l3ya5Q==}
 
+  '@directus/errors@1.0.0':
+    resolution: {integrity: sha512-J9LA2ro4STS7JGsE5ERb01hTD/otQlRkw4PhbTF/7BXbhTVkagEYrBkCoqjMOysFB+zPHqii5Dc7RVNsjraxzA==}
+
   '@directus/extensions-sdk@11.0.1':
     resolution: {integrity: sha512-GV4xZ+xfdHxVfBE+zJ/1YQoIyM1qVrjPLu5ZdmjR2c0jqkGnIOCYj0Ugq7kHXw52Z3Qmz93IdBZ+qczEgyGTHA==}
     engines: {node: '>=12.20.0'}
@@ -796,6 +806,9 @@ packages:
 
   '@directus/schema@12.1.0':
     resolution: {integrity: sha512-56qIDmw6yHR8UFIfwUOEyHJ169uxdl4Sa4YncnQyaANOvuKmpXwxmZ5nf0zQmSx8S7TJZ8kc1NhpyKMMpr80NA==}
+
+  '@directus/storage@11.0.0':
+    resolution: {integrity: sha512-BXR3mw8sr1QZYJ38EdDdDEnb6NOmslEQ4pqPl66fKKxDodr0wO5YewqoHp8VxqW13FWNC7Gf3Q/tvf5OlQ+/Ug==}
 
   '@directus/system-data@1.0.1':
     resolution: {integrity: sha512-sm2gO9SUcRle5rCsmS4qby2K8OfvewnU9/Iao7brGyexLjXDrvfxBB2danNWVLw1qE+UrLX/R+caVrxQ4ZaMkw==}
@@ -2884,6 +2897,9 @@ packages:
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
+  ms@2.1.3:
+    resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+
   mute-stream@1.0.0:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -4181,6 +4197,11 @@ snapshots:
 
   '@directus/constants@12.0.0': {}
 
+  '@directus/errors@1.0.0':
+    dependencies:
+      '@directus/storage': 11.0.0
+      ms: 2.1.3
+
   '@directus/extensions-sdk@11.0.1(@types/node@20.12.12)(@unhead/vue@1.10.0(vue@3.4.38(typescript@5.5.4)))(knex@3.1.0)(pinia@2.2.2(typescript@5.5.4)(vue@3.4.38(typescript@5.5.4)))(sass@1.77.8)(terser@5.31.6)(typescript@5.5.4)(vue-router@4.4.3(vue@3.4.38(typescript@5.5.4)))':
     dependencies:
       '@directus/composables': 10.1.11(vue@3.4.21(typescript@5.5.4))
@@ -5280,6 +5301,8 @@ snapshots:
       - sqlite3
       - supports-color
       - tedious
+
+  '@directus/storage@11.0.0': {}
 
   '@directus/system-data@1.0.1': {}
 
@@ -8100,6 +8123,8 @@ snapshots:
   mkdirp@1.0.4: {}
 
   ms@2.1.2: {}
+
+  ms@2.1.3: {}
 
   mute-stream@1.0.0: {}
 
