@@ -5,7 +5,7 @@ import type { Style, Notation, Unit } from './utils/format-number';
 import { useAutoFontFit } from './composables/use-auto-fit-text';
 import { formatNumber } from './utils/format-number';
 import { useI18n } from 'vue-i18n';
-import { useSdk } from '@directus/extensions-sdk';
+import { useSdk, useStores } from '@directus/extensions-sdk';
 
 
 type Header = {
@@ -63,6 +63,9 @@ const props = withDefaults(defineProps<Props>(), {
 type MetricType = string | number | Record<string, any> | null;
 
 const { locale } = useI18n();
+const client = useSdk();
+const { useInsightsStore } = useStores();
+const insightsStore = useInsightsStore();
 
 const labelContainer = ref<HTMLDivElement | null>(null);
 const labelText = ref<HTMLParagraphElement | null>(null);
@@ -126,7 +129,6 @@ async function fetchMetric() {
 	if (!props.url) {
 		return;
 	}
-	const client = useSdk();
 	
 	const response = await client.request(() => ({
 		method: 'POST',
@@ -141,16 +143,29 @@ async function fetchMetric() {
 
 	metric.value = response;
 }
+
 onMounted(() => {
 	updateFit();
+	fetchMetric();
 });
 
 onUpdated(() => {
 	updateFit();
+	fetchMetric();
 });
+
+const unsubscribeInsightsStore = insightsStore.$onAction(
+  ({name, store, args, after, onError,}) => {
+		if (name === 'refresh') {
+			console.log('Refresh');
+			fetchMetric();
+		}
+	}
+)
 
 onBeforeUnmount(() => {
 	unmountResizeObserver();
+	unsubscribeInsightsStore();
 });
 
 
