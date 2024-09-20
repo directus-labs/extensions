@@ -4,6 +4,11 @@ A panel which allows to display a metric value from an external API.
 ## Installation & Setup
 To install the extension, take a look at the [Official Guide](https://docs.directus.io/extensions/installing-extensions.html).
 
+
+> [!NOTE]  
+> The selected metric will be available through the API for any user with app-access.
+
+
 ## Settings
 Once added to a dashboard you can define from where the data should be fetched.
 
