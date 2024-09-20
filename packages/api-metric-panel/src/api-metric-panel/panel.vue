@@ -179,13 +179,11 @@ onMounted(() => {
 
 onUpdated(() => {
 	updateFit();
-	fetchMetric();
 });
 
 const unsubscribeInsightsStore = insightsStore.$onAction(
   ({name, store, args, after, onError,}) => {
 		if (name === 'refresh') {
-			console.log('Refresh');
 			fetchMetric();
 		}
 	}
