@@ -15,11 +15,9 @@ import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
 import { abbreviateNumber } from '@directus/shared/utils';
 import formatTitle from '@directus/format-title';
-//import { cssVar } from '@directus/shared/utils/browser';
 import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import ApexCharts from 'apexcharts'
 import { get } from 'lodash';
-//import { isNil } from 'lodash';
 
 export default defineComponent({
 	props: {
