@@ -1,6 +1,6 @@
 {
-	"name": "gantt-chart-layout",
-	"description": "Please enter a description for your extension",
+	"name": "@directus-labs/gantt-chart-layout",
+	"description": "Display items in a gantt chart to plot timelines and dependencies.",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [
@@ -16,7 +16,7 @@
 		"type": "layout",
 		"path": "dist/index.js",
 		"source": "src/index.ts",
-		"host": "^10.10.0"
+		"host": "^10.0.0 || ^11.0.0"
 	},
 	"scripts": {
 		"build": "directus-extension build",
