@@ -12,7 +12,7 @@ export default defineInterface({
   id: "calculated",
   name: "Calculated",
   icon: "functions",
-  description: "Display a calculated value",
+  description: "Automatically compute values based on field values.",
   component: InterfaceComponent,
   options({ collection, field }) {
     let relationsStore: any = null;

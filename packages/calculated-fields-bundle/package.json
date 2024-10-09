@@ -1,6 +1,6 @@
 {
-	"name": "calculated-fields-bundle",
-	"description": "Please enter a description for your extension",
+	"name": "@directus-labs/calculated-fields-bundle",
+	"description": "Automatically compute values based on field values.",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [
