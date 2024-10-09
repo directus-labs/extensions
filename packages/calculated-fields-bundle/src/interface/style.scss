@@ -1,0 +1,23 @@
+/* style overrides used in the interface options */
+[data-interface-options="calculated"] {
+  &[data-field="parseError"] .v-notice {
+    font-family: var(--theme--fonts--monospace--font-family);
+    white-space: pre;
+
+    > div {
+      overflow-y: auto;
+    }
+  }
+
+  &.system-display-template {
+    --theme--form--field--input--height: 100%;
+
+    .content {
+      white-space: pre-wrap;
+
+      span {
+        white-space: pre-wrap;
+      }
+    }
+  }
+}
