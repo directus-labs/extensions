@@ -42,6 +42,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Plausible Analytics](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle)                            |  Bundle   |    N/A    |
 | [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component)                                           |  Bundle   |    N/A    |
 | [Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component)                                           |  Bundle   |    N/A    |
+| [Calculated Fields](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle)                                |  Bundle   |    N/A    |
 
 <!-- Tentatively Upcoming - no promises!
 
