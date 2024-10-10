@@ -1,8 +1,8 @@
 {
 	"name": "@directus-labs/calculated-fields-bundle",
-	"description": "Automatically compute values based on field values.",
+	"description": "Automatically calculate values based on field values.",
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": [
 		"directus",
 		"directus-extension",
@@ -25,7 +25,7 @@
 				"source": "src/interface/index.ts"
 			}
 		],
-		"host": "^10.10.0"
+		"host": "^10.10.0"y b
 	},
 	"scripts": {
 		"build": "directus-extension build",

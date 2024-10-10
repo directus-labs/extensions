@@ -1,10 +1,10 @@
-# Computed Fields Bundle
+# Calculated Fields Bundle
 
-Automatically compute values based on other field values. 
+Automatically calculate values based on other field values. 
 
 Currently only an interface is provided in this bundle. Values are only visible in the interface and not in API responses.
 
-![A number of examples showing how computed fields can be used to derive values from other fields.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/calculated-fields-bundle/screenshot.png)
+![A number of examples showing how calculated fields can be used to derive values from other fields.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/calculated-fields-bundle/screenshot.png)
 
 ## Features
 
