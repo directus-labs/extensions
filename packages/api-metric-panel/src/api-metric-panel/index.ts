@@ -298,7 +298,7 @@ export default definePanel({
 								name: '$t:operator',
 								type: 'string',
 								schema: {
-									default_value: '>=',
+									default_value: '=',
 								},
 								meta: {
 									interface: 'select-dropdown',
@@ -315,22 +315,22 @@ export default definePanel({
 											{
 												text: '$t:operators.gt',
 												value: '>',
-												disabled: !options?.fieldIsNumber || true,
+												disabled: !options?.fieldIsNumber,
 											},
 											{
 												text: '$t:operators.gte',
 												value: '>=',
-												disabled: !options?.fieldIsNumber || true,
+												disabled: !options?.fieldIsNumber,
 											},
 											{
 												text: '$t:operators.lt',
 												value: '<',
-												disabled: !options?.fieldIsNumber || true,
+												disabled: !options?.fieldIsNumber,
 											},
 											{
 												text: '$t:operators.lte',
 												value: '<=',
-												disabled: !options?.fieldIsNumber || true,
+												disabled: !options?.fieldIsNumber,
 											},
 										],
 									},

@@ -66,7 +66,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 type MetricType = string | number | Record<string, any> | null;
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const client = useSdk();
 const { useInsightsStore } = useStores();
 const insightsStore = useInsightsStore();
@@ -182,8 +182,8 @@ onUpdated(() => {
 });
 
 const unsubscribeInsightsStore = insightsStore.$onAction(
-  ({name, store, args, after, onError,}) => {
-		if (name === 'refresh') {
+	({ name, store, args, after, onError, }) => {
+		if (name === 'refresh' || name === 'saveChanges') {
 			fetchMetric();
 		}
 	}
@@ -197,7 +197,7 @@ onBeforeUnmount(() => {
 
 function displayValue(value: MetricType) {
 	if (value === null || value === undefined) {
-		return '...Loading';
+		return t('loading');
 	}
 
 	if (typeof value !== 'string' && typeof value !== 'number') {

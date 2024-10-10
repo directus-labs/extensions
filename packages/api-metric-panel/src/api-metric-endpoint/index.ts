@@ -3,18 +3,10 @@ import { InvalidPayloadError, ForbiddenError, UnexpectedResponseError } from '@d
 import type { Request } from 'express';
 import axios from 'axios';
 import type { Header } from '../api-metric-panel/panel.vue';
-
+import type { Accountability } from '@directus/types'; 
 
 interface DirectusRequest extends Request {
-	accountability?: {
-		role: string | null,
-		user: string | null,
-		roles: string[],
-		admin: boolean,
-		app: boolean,
-		ip: string,
-		userAgent: string,
-  };
+	accountability?: Accountability;
 }
 
 
