@@ -2,7 +2,7 @@
 
 Present a series of X and Y cooradinates as dots on a graph. You can also group data into categories which are presented in different colors.
 
-![Scatter Plot Panel](./docs/directus-panel-scatter-plot.jpg)
+![Scatter Plot Panel](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/scatter-plot-panel/docs/directus-panel-scatter-plot.jpg)
 
 ## Usage
 
@@ -30,7 +30,7 @@ You can change the following options:
 
 ## Installation
 
-Refer to the Official Guide for details on installing the extension from the Marketplace or manually.
+Refer to the [Official Guide](https://docs.directus.io/extensions/installing-extensions.html) for details on installing the extension from the Marketplace or manually.
 
 ## How to add this Panel
 
@@ -42,7 +42,7 @@ Refer to the Official Guide for details on installing the extension from the Mar
 6. Save the panel and position/resize as required
 7. Save the dashboard
 
-![Customise the panel](./docs/directus-panel-scatter-plot-customize.jpg)
+![Customise the panel](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/scatter-plot-panel/docs/directus-panel-scatter-plot-customize.jpg)
 
 
 ## Permissions
