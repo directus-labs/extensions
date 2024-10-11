@@ -13,10 +13,11 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
-import { abbreviateNumber } from '@directus/shared/utils';
+import { abbreviateNumber } from '@directus/utils';
 import formatTitle from '@directus/format-title';
-import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 import ApexCharts from 'apexcharts'
+import { format } from 'date-fns';
 import { get } from 'lodash';
 
 export default defineComponent({
@@ -43,7 +44,7 @@ export default defineComponent({
 		},
 		series: {
 			type: String,
-			default: '',
+			default: null,
 		},
 		xAxis: {
 			type: String,
@@ -113,6 +114,7 @@ export default defineComponent({
 			if (!props.xAxis || !props.yAxis) return;
 
 			const xField = fieldsStore.getField(props.collection, props.xAxis);
+			const yField = fieldsStore.getField(props.collection, props.yAxis);
 			const showToolTip = props.showMarker;
 			const type: string = ["timestamp", "dateTime", "date"].includes(xField.type) ? 'datetime' : 'numeric';
 
@@ -150,7 +152,7 @@ export default defineComponent({
 				} else {
 					series = [
 						{
-							name: props.collection,
+							name: formatTitle(props.collection),
 							data: response.data.data.map((item: Record<string, any>) => {
 								return [get(item, props.xAxis), get(item, props.yAxis)];
 							}),
@@ -158,7 +160,6 @@ export default defineComponent({
 					];
 				}
 
-				const colors = props.series || props.color == null ? [] : [props.color];
 				const isSparkline = props.width < 12 || props.height < 10;
 
 				const axisStyle = {
@@ -188,7 +189,7 @@ export default defineComponent({
 				}
 
 				chart.value = new ApexCharts(chartEl.value, {
-					colors: colors,
+					colors: props.series || props.color == null ? [] : [props.color],
 					chart: {
 						type: 'scatter',
 						animation: {
@@ -204,6 +205,12 @@ export default defineComponent({
 						},
 						selection: {
 							enabled: false,
+							fill: {
+								opacity: 0.5
+							},
+							stroke: {
+								opacity: 0
+							},
 						},
 						zoom: {
 							enabled: false,
@@ -216,10 +223,31 @@ export default defineComponent({
 					},
 					series: series,
 					markers: {
+						size: 8,
 						fillOpacity: 0.5,
+						strokeOpacity: 0,
+						hover: {
+							size: 8,
+						},
 					},
 					tooltip: {
 						enabled: showToolTip,
+						x: {
+							formatter: (value: any) => {
+								let formattedValue = type == 'datetime' ? format(value, (xField.type == 'date' ? "MMM d" : "PPp")) : value > 10000
+									? abbreviateNumber(value, 1)
+									: n(value, 'decimal', {
+											minimumFractionDigits: 0,
+											maximumFractionDigits: 2,
+									} as any);
+								return `${xField.name}: ${formattedValue}`;
+							},
+						},
+						y: {
+							formatter: (value: any) => {
+								return `${yField.name} ${value}`;
+							},
+						},
 					},
 					grid: {
 						borderColor: 'var(--theme--border-color-subdued)',
@@ -240,6 +268,9 @@ export default defineComponent({
 					xaxis: {
 						type: type,
 						labels: xLabels,
+						tooltip: {
+							enabled: false
+						},
 						crosshairs: {
 							stroke: {
 								color: 'var(--theme--form--field--input--border-color)',
