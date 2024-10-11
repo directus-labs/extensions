@@ -46,6 +46,7 @@ export default definePanel({
 					options: {
 						collectionField: 'collection',
 						placeholder: '$t:select_a_field',
+						allowNone: true,
 					},
 					width: 'half',
 				},
