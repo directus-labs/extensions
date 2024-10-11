@@ -16,7 +16,7 @@
 		"type": "panel",
 		"path": "dist/index.js",
 		"source": "src/index.ts",
-		"host": "^9.23.3"
+		"host": "^10.0.0 || ^11.0.0"
 	},
 	"scripts": {
 		"build": "directus-extension build",
@@ -26,7 +26,9 @@
 	"devDependencies": {
 		"@directus/extensions-sdk": "9.23.3",
 		"@directus/format-title": "^11.0.0",
+		"@directus/utils": "^12.0.1",
 		"apexcharts": "^3.53.0",
+		"date-fns": "^4.1.0",
 		"lodash": "^4.17.21",
 		"typescript": "^5.6.2",
 		"vue": "^3.5.3"
