@@ -8,24 +8,24 @@ This is a bundle extension that includes an interface and a display.
 
 **UI**
 
-![Example view of the meter interface.](https://raw.githubusercontent.com/directus-labs/extension-meter-component/main/docs/interface-example.png)
+![Example view of the meter interface.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/meter-component/docs/interface-example.png)
 
 
 **Settings**
 
-![Settings screen for the meter interface.](https://raw.githubusercontent.com/directus-labs/extension-meter-component/main/docs/interface-settings.png)
+![Settings screen for the meter interface.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/meter-component/docs/interface-settings.png)
 
 
 ## Display
 
 **UI**
 
-![Example view of the meter display.](https://raw.githubusercontent.com/directus-labs/extension-meter-component/main/docs/display-example.png)
+![Example view of the meter display.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/meter-component/docs/display-example.png)
 
 
 **Settings**
 
-![Settings screen for the meter display.](https://raw.githubusercontent.com/directus-labs/extension-meter-component/main/docs/display-settings.png)
+![Settings screen for the meter display.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/meter-component/docs/display-settings.png)
 
 
 ## Quick Overview Video

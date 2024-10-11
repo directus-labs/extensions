@@ -28,6 +28,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [LiquidJS Template](//github.com/directus-labs/extensions/tree/main/packages/liquidjs-operation)                                      | Operation |    ✅     |
 | [Resend](//github.com/directus-labs/extensions/tree/main/packages/resend-operation)                                                   | Operation |    ✅     |
 | [Spreadsheet](//github.com/directus-labs/extensions/tree/main/packages/spreadsheet-layout)                                            |  Layout   |    N/A    |
+| [Gantt Chart](//github.com/directus-labs/extensions/tree/main/packages/gantt-chart-layout)                                            |  Layout   |    N/A    |
 | [Video Player](//github.com/directus-labs/extensions/tree/main/packages/video-player-interface)                                       | Interface |    N/A    |
 | [Audio Player](//github.com/directus-labs/extensions/tree/main/packages/audio-player-interface)                                       | Interface |    N/A    |
 | [PDF Viewer](//github.com/directus-labs/extensions/tree/main/packages/pdf-viewer-interface)                                           | Interface |    N/A    |
@@ -41,6 +42,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Plausible Analytics](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle)                            |  Bundle   |    N/A    |
 | [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component)                                           |  Bundle   |    N/A    |
 | [Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component)                                           |  Bundle   |    N/A    |
+| [Calculated Fields](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle)                                |  Bundle   |    N/A    |
 
 <!-- Tentatively Upcoming - no promises!
 
