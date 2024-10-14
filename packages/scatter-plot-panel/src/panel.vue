@@ -140,7 +140,7 @@ export default defineComponent({
 						if(!(category in category_data)){
 							category_data[category] = [];
 						}
-						category_data[category].push([type == 'datetime' ? new Date(x_value):x_value, y_value]);
+						category_data[category].push([type == 'datetime' ? new Date(x_value):String(x_value), y_value]);
 					});
 					categories = Object.keys(category_data);
 					series = categories.map((category: string) => {
@@ -182,6 +182,7 @@ export default defineComponent({
 						day: 'dd MMM',
 						hour: 'HH:mm'
 					};
+					xLabels.datetimeUTC = false;
 				} else {
 					xLabels.formatter = function(val: string) {
 						return xField.type == 'integer' ? parseInt(val) : parseFloat(val).toFixed(1);
@@ -234,7 +235,7 @@ export default defineComponent({
 						enabled: showToolTip,
 						x: {
 							formatter: (value: any) => {
-								let formattedValue = type == 'datetime' ? format(value, (xField.type == 'date' ? "MMM d" : "PPp")) : value > 10000
+								let formattedValue = type == 'datetime' ? format(value, (xField.type == 'date' ? "MMM d" : "MMM d, p")) : value > 10000
 									? abbreviateNumber(value, 1)
 									: n(value, 'decimal', {
 											minimumFractionDigits: 0,
