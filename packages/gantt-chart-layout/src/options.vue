@@ -27,8 +27,10 @@ const props = withDefaults(
 const { collection: collectionKey } = toRefs(props);
 const collection = useCollection(collectionKey);
 
+console.log(collection.fields.value);
+
 const dateFields = computed(() => collection.fields.value.filter(f => ['timestamp', 'dateTime', 'date'].includes(f.type)));
-const relationFields = computed(() => collection.fields.value.filter(f => ['m2o'].includes(f.field)));
+const relationFields = computed(() => collection.fields.value.filter(f => f.meta?.special?.includes('m2o')));
 const stringFields = computed(() => collection.fields.value.filter(f => ['string', 'text'].includes(f.type)));
 
 const labelFieldWritable = useSync(props, 'labelField', emit);
