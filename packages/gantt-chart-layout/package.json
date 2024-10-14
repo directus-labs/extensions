@@ -2,7 +2,7 @@
 	"name": "@directus-labs/gantt-chart-layout",
 	"description": "Display items in a gantt chart to plot timelines and dependencies.",
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": [
 		"directus",
 		"directus-extension",

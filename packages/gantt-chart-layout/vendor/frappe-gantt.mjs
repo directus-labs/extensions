@@ -692,13 +692,19 @@ var Gantt = (function () {
       let timeout;
       $.on(this.group, "mouseenter", (e) => timeout = setTimeout(() => {
         this.show_popup(e.clientX ?? e.offsetX);
-        document.querySelector(`#${task_id}-highlight`).style.display = 'block';
+        const highlight = document.querySelector(`#${task_id}-highlight`)
+        if (highlight) {
+          highlight.style.display = 'block';
+        }
       }, 200));
 
       $.on(this.group, "mouseleave", () => {
         clearTimeout(timeout);
         this.gantt.popup?.hide?.();
-        document.querySelector(`#${task_id}-highlight`).style.display = 'none';
+        const highlight = document.querySelector(`#${task_id}-highlight`)
+        if (highlight) { 
+          highlight.style.display = 'none';
+        }
       });
 
 
@@ -1788,9 +1794,11 @@ var Gantt = (function () {
         this.$current_highlight = this.create_el({ top, left, height, classes: 'current-highlight', append_to: this.$container });
         let $today = document.getElementById(date_utils.format(date).replaceAll(' ', '_'));
 
-        $today.classList.add('current-date-highlight');
-        $today.style.top = +$today.style.top.slice(0, -2) - 4 + 'px';
-        $today.style.left = +$today.style.left.slice(0, -2) - 8 + 'px';
+        if ($today) {
+          $today.classList.add('current-date-highlight');
+          $today.style.top = +$today.style.top.slice(0, -2) - 4 + 'px';
+          $today.style.left = +$today.style.left.slice(0, -2) - 8 + 'px';
+        }
       }
     }
 
