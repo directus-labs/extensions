@@ -24,7 +24,7 @@
 		"link": "directus-extension link"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "9.23.3",
+		"@directus/extensions-sdk": "^12.1.0",
 		"@directus/format-title": "^11.0.0",
 		"@directus/utils": "^12.0.1",
 		"apexcharts": "^3.53.0",
