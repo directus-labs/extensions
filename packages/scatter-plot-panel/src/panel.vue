@@ -140,7 +140,7 @@ export default defineComponent({
 						if(!(category in category_data)){
 							category_data[category] = [];
 						}
-						category_data[category].push([type == 'datetime' ? new Date(x_value):String(x_value), y_value]);
+						category_data[category].push([type == 'datetime' ? new Date(x_value):(x_value==x_value*1?x_value*1:x_value), y_value]);
 					});
 					categories = Object.keys(category_data);
 					series = categories.map((category: string) => {
@@ -154,13 +154,16 @@ export default defineComponent({
 						{
 							name: formatTitle(props.collection),
 							data: response.data.data.map((item: Record<string, any>) => {
-								return [get(item, props.xAxis), get(item, props.yAxis)];
+								const x_value = get(item, props.xAxis);
+								const y_value = get(item, props.yAxis);
+								return [type == 'datetime' ? new Date(x_value):(x_value==x_value*1?x_value*1:x_value), y_value];
 							}),
 						},
 					];
 				}
 
 				const isSparkline = props.width < 12 || props.height < 10;
+				console.log(series);
 
 				const axisStyle = {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
