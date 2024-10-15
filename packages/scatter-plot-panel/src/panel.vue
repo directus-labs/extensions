@@ -163,7 +163,6 @@ export default defineComponent({
 				}
 
 				const isSparkline = props.width < 12 || props.height < 10;
-				console.log(series);
 
 				const axisStyle = {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
