@@ -44,7 +44,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component)                                           | Bundle    | N/A       |
 | [Calculated Fields](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle)                                | Bundle    | N/A       |
 | [Flow Trigger](//github.com/directus-labs/extensions/tree/main/packages/flow-trigger-bundle)                                          | Bundle    | N/A       |
-| [API Metric Pane;](//github.com/directus-labs/extensions/tree/main/packages/api-metric-panel)                                         | Bundle    | ❌        |
+| [API Metric Panel](//github.com/directus-labs/extensions/tree/main/packages/api-metric-panel)                                         | Bundle    | ❌        |
 
 <!-- Tentatively Upcoming - no promises!
 
