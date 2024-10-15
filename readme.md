@@ -38,13 +38,13 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Simple List](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface)                                         | Interface | N/A       |
 | [Whereby Embed](//github.com/directus-labs/extensions/tree/main/packages/whereby-embedded-interface)                                  | Interface | N/A       |
 | [Table View](//github.com/directus-labs/extensions/tree/main/packages/table-view-panel)                                               | Panel     | N/A       |
-| [API Metric](//github.com/directus-labs/extensions/tree/main/packages/api-metric-panel)                                               | Panel     | ❌        |
 | [Command Palette](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module)                                    | Module    | N/A       |
 | [Plausible Analytics](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle)                            | Bundle    | N/A       |
 | [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component)                                           | Bundle    | N/A       |
 | [Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component)                                           | Bundle    | N/A       |
 | [Calculated Fields](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle)                                | Bundle    | N/A       |
 | [Flow Trigger](//github.com/directus-labs/extensions/tree/main/packages/flow-trigger-bundle)                                          | Bundle    | N/A       |
+| [API Metric Pane;](//github.com/directus-labs/extensions/tree/main/packages/api-metric-panel)                                         | Bundle    | ❌        |
 
 <!-- Tentatively Upcoming - no promises!
 
