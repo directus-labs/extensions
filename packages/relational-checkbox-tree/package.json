@@ -1,6 +1,6 @@
 {
 	"name": "relational-checkbox-tree-bundle",
-	"description": "Please enter a description for your extension",
+	"description": "This extension provides a relational checkbox tree interface for Directus.",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [
@@ -15,8 +15,8 @@
 	"directus:extension": {
 		"type": "bundle",
 		"path": {
-			"app": "/myproject/project/freelance/directus/latest/extensions/directus-extension-matt-relational-checkbox/app.js",
-			"api": "/myproject/project/freelance/directus/latest/extensions/directus-extension-matt-relational-checkbox/api.js"
+			"app": "app.js",
+			"api": "api.js"
 		},
 		"entries": [
 			{

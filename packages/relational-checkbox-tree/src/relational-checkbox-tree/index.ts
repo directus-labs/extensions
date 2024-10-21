@@ -26,6 +26,18 @@ export default defineInterface({
         },
       },
       {
+        field: "filter",
+        name: "Filter",
+        type: "json",
+        meta: {
+          interface: "system-filter",
+          options: {
+            collectionName: collection,
+          },
+          width: "full",
+        },
+      },
+      {
         field: "template",
         name: "Template",
         type: "string",
@@ -33,6 +45,33 @@ export default defineInterface({
           interface: "system-display-template",
           options: {
             collectionName: collection,
+          },
+          width: "full",
+        },
+      },
+      {
+        field: "sortField",
+        name: "Sort Field",
+        type: "string",
+        meta: {
+          interface: "system-field",
+          options: {
+            collectionName: collection,
+          },
+          width: "full",
+        },
+      },
+      {
+        field: "sortAs",
+        name: "Sort As",
+        type: "string",
+        meta: {
+          interface: "select-dropdown",
+          options: {
+            choices: [
+              { text: 'Ascending', value: 'asc' },
+              { text: 'Descending', value: 'desc' },
+            ]
           },
           width: "full",
         },

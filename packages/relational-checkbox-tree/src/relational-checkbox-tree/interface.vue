@@ -16,9 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, toRefs, PropType } from "vue";
-// import { useI18n } from 'vue-i18n';
-import { useApi, useStores } from "@directus/extensions-sdk";
+import { ref, computed, watch, toRefs } from "vue";
+import { useApi } from "@directus/extensions-sdk";
 import { getFieldsFromTemplate } from "@directus/utils";
 import { render } from "micromustache";
 
@@ -47,6 +46,9 @@ const props = withDefaults(
     disabled?: boolean;
     options: Array<IOptions>;
     template?: string;
+    filter?: any;
+    sortField?: string;
+    sortAs?: string;
   }>(),
   {
     value: () => [],
@@ -61,9 +63,7 @@ const emit = defineEmits(["input"]);
 
 // const { t } = useI18n();
 const api = useApi();
-const { useCollectionsStore } = useStores();
-const collectionsStore = useCollectionsStore();
-const { valueCombining, disabled, options, rootCollection, template: rootTemplate, value } = toRefs(props);
+const { valueCombining, disabled, options, rootCollection, template: rootTemplate, value, filter, sortAs, sortField } = toRefs(props);
 const choices = ref<IData[]>([]);
 
 const selectedValues = computed({
@@ -82,7 +82,6 @@ const generatedQueries = computed(() => {
     };
 
   const fields: string[] = [...getFieldsFromTemplate(rootTemplate.value).map((field) => `fields[]=${field}`)];
-  const queries = [];
 
   function processQuery(parent = "", opts: IOptions[]) {
     for (const option of opts) {
@@ -142,9 +141,22 @@ const generatedQueries = computed(() => {
   const deepFilter = {};
   processDeepFilter(deepFilter, options.value);
 
+  let sort = "id";
+  if (!sortField.value) {
+    if (!sortAs.value) {
+      sort = "id";
+    } else {
+      sort = sortAs.value === "asc" ? "id" : "-id";
+    }
+  } else {
+    sort = sortAs.value === "asc" ? sortField.value : `-${sortField.value}`;
+  }
+
   return {
     fields,
     deepFilter: JSON.stringify(deepFilter),
+    filter: filter.value ? JSON.stringify(filter.value) : '{}',
+    sort,
   };
 });
 
@@ -153,6 +165,8 @@ async function load() {
   const queries = [
     ...generatedQueries.value?.fields,
     `deep=${generatedQueries.value?.deepFilter}`,
+    `filter=${generatedQueries.value?.filter}`,
+    `sort=${generatedQueries.value?.sort}`,
   ];
 
   const {
