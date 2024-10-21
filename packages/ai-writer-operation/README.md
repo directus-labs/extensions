@@ -1,12 +1,19 @@
 # AI Writer Operation
 
-Generate text based on a written prompt within Directus Flows with this custom operation, powered by [OpenAI's Text Generation API]([https://.com](https://openai.com/product)).
+Generate text based on a written prompt within Directus Flows with this custom operation, powered by [OpenAI's Text Generation API]([https://.com](https://openai.com/product)), [Anthropic](https://www.anthropic.com/) [MistralAi  (via Replicate)](https://replicate.com/mistralai/mistral-7b-v0.1) and [Meta's LLama (via Replicate)](https://replicate.com/meta/meta-llama-3.1-405b-instruct).
 
-![The AI Writer operation, showing a masked OpenAI API Key field, model and prompt selection fields, and a multiline text input.](https://raw.githubusercontent.com/directus-labs/extension-ai-writer-operation/main/docs/options.png)
+![The AI Writer operation, showing a masked OpenAI API Key field, model and prompt selection fields, and a multiline text input.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-writer-operation/docs/options.png)
 
-This operation contains four required configuration options - an [OpenAI API Key](https://platform.openai.com/api-keys), a selection of which model and prompt to use, and a text input. The text input can contain references like `{{$last.data}}` to refer to data available in the current flow. The prompt can be customised further using the optional Messages repeater field. The operation returns a string of the transformed or generated text.
+## Configuration
+This operation contains some configuration options - an Api-Key, a selection of which model and prompt to use, and a text input. The text input can contain references like `{{$last.data}}` to refer to data available in the current flow. The prompt can be customised further using the optional Messages repeater field. The operation returns a string of the transformed or generated text.
 
-![The output showing a string that has been grammatically fixed.](https://raw.githubusercontent.com/directus-labs/extension-ai-writer-operation/main/docs/output.png)
+![The output showing a string that has been grammatically fixed.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-writer-operation/docs/output.png)
+
+### API-Keys
+You can generate your API-Keys on the follosing sites:
+- [OpenAI](https://platform.openai.com/api-keys)
+- [Anthropic](https://console.anthropic.com/settings/workspaces/default/keys)
+- [Replicate](https://replicate.com/account/api-tokens)
 
 ## Custom Prompts
 

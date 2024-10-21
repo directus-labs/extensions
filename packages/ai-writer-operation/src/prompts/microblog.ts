@@ -1,4 +1,6 @@
-export default {
+import type { Prompt } from '../types';
+
+export const microblog: Prompt = {
   text: 'Short Social Post',
   value: 'microblog',
   icon: 'tag',

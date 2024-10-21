@@ -1,4 +1,6 @@
-export default {
+import type { Prompt } from '../types';
+
+export const seo: Prompt = {
   text: 'Create SEO Description',
   value: 'seo',
   icon: 'travel_explore',

@@ -1,4 +1,6 @@
-export default {
+import type { Prompt } from '../types';
+
+export const condenser: Prompt = {
   text: 'Make Shorter',
   value: 'condenser',
   icon: 'short_text',

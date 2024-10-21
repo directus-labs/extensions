@@ -1,4 +1,6 @@
-export default {
+import type { Prompt } from '../types';
+
+export const editor: Prompt = {
   text: 'Fix Spelling & Grammar',
   value: 'editor',
   icon: 'edit',
