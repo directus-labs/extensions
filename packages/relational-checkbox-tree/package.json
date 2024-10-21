@@ -1,32 +1,49 @@
 {
-	"name": "relational-checkbox-tree",
+	"name": "relational-checkbox-tree-bundle",
 	"description": "Please enter a description for your extension",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [
 		"directus",
 		"directus-extension",
-		"directus-extension-interface"
+		"directus-extension-bundle"
 	],
 	"type": "module",
 	"files": [
 		"dist"
 	],
 	"directus:extension": {
-		"type": "interface",
-		"path": "dist/index.js",
-		"source": "src/index.js",
+		"type": "bundle",
+		"path": {
+			"app": "/myproject/project/freelance/directus/latest/extensions/directus-extension-matt-relational-checkbox/app.js",
+			"api": "/myproject/project/freelance/directus/latest/extensions/directus-extension-matt-relational-checkbox/api.js"
+		},
+		"entries": [
+			{
+				"type": "interface",
+				"name": "relational-checkbox-tree",
+				"source": "src/relational-checkbox-tree/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "relational-checkbox-tree-options",
+				"source": "src/relational-checkbox-tree-options/index.ts"
+			}
+		],
 		"host": "^10.10.0"
 	},
 	"scripts": {
 		"build": "directus-extension build",
 		"dev": "directus-extension build -w --no-minify",
-		"link": "directus-extension link"
+		"link": "directus-extension link",
+		"add": "directus-extension add"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "12.0.2",
-		"@directus/utils": "^12.0.1",
+		"@directus/extensions-sdk": "12.1.0",
+		"@directus/format-title": "^11.0.0",
 		"micromustache": "^8.0.3",
-		"vue": "^3.5.11"
+		"sass": "^1.80.3",
+		"typescript": "^5.6.3",
+		"vue": "^3.5.12"
 	}
 }

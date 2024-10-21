@@ -1,0 +1,75 @@
+import { defineInterface } from '@directus/extensions-sdk';
+import InterfaceComponent from './interface.vue';
+
+export default defineInterface({
+	id: "nested-m2m-tree",
+  name: "$t:interfaces.nested-m2m-tree.name",
+  icon: "account_tree",
+	description: 'This is my custom interface!',
+	component: InterfaceComponent,
+  types: ["json"],
+  group: "relational",
+  options: ({ field }) => {
+    const collection = field?.meta?.options?.rootCollection;
+
+    return [
+      {
+        field: "rootCollection",
+        name: "Root Collection",
+        type: "string",
+        meta: {
+          interface: "system-collection",
+          options: {
+            includeSystem: false,
+          },
+          width: "full",
+        },
+      },
+      {
+        field: "template",
+        name: "Template",
+        type: "string",
+        meta: {
+          interface: "system-display-template",
+          options: {
+            collectionName: collection,
+          },
+          width: "full",
+        },
+      },
+      {
+        field: "options",
+        type: "json",
+        name: "Levels",
+        meta: {
+          width: "full",
+          interface: "relational-checkbox-tree-options",
+          options: {
+            parentCollection: collection,
+          },
+        },
+      },
+      {
+        field: "valueCombining",
+        type: "string",
+        name: "Value Combining",
+        meta: {
+          interface: "select-dropdown",
+          options: {
+            choices: [
+              { text: "$t:all", value: "all" },
+              { text: "$t:branch", value: "branch" },
+              { text: "$t:leaf", value: "leaf" },
+              { text: "$t:indeterminate", value: "indeterminate" },
+              { text: "$t:exclusive", value: "exclusive" },
+            ],
+          },
+          width: "half",
+        },
+        schema: {
+          default_value: "all",
+        },
+      },
+    ];
+  },
+});

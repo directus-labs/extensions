@@ -7,6 +7,8 @@ export default defineInterface({
 	icon: 'box',
 	description: 'This is my custom interface!',
 	component: InterfaceComponent,
+	types: ["json"],
+  group: "relational",
 	options: [
     {
       field: "parentCollection",
@@ -21,6 +23,4 @@ export default defineInterface({
       },
     },
   ],
-	types: ["json"],
-  group: "relational"
 });
