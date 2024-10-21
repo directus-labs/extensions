@@ -2,6 +2,7 @@ import { Provider } from './Provider';
 import { InvalidPayloadError, UnexpectedResponseError } from '@directus/errors';
 import { request, sleep } from 'directus:api';
 import type { AiWriterOperationOptions } from '../api';
+import type { RequestBody } from '../types';
 
 export class Replicate extends Provider {
   
@@ -27,7 +28,7 @@ export class Replicate extends Provider {
   public async messageRequest(): Promise<string> {
     const messages = this.getMessages();
     
-    const requestBody: Record<string, any> = {
+    const requestBody: RequestBody = {
       input: {
         system_prompt: messages.filter(message => message.role !== 'user').map(message => message.content).join('. '),
         prompt: messages.filter(message => message.role === 'user').map(message => message.content).join('. '),

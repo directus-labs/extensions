@@ -10,11 +10,4 @@ export type message = {
   content: string,
 };
 
-export type RequestBody = {
-	model: string,
-	messages: message[],
-	max_tokens?: number,
-	response_format?: {
-		type: string
-  },
-}
+export type RequestBody = Record<string, any>;
