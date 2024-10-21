@@ -31,7 +31,8 @@ export class Replicate extends Provider {
       input: {
         system_prompt: messages.filter(message => message.role !== 'user').map(message => message.content).join('. '),
         prompt: messages.filter(message => message.role === 'user').map(message => message.content).join('. '),
-      }
+        max_tokens: this.options.maxToken || 0,
+      },
     };
 
     const response = await request(this.endpoint, {

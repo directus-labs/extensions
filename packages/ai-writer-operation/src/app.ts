@@ -174,6 +174,20 @@ export default defineOperationApp({
 				},
 			},
 			{
+				field: 'maxToken',
+				name: 'Max Token',
+				type: 'integer',
+				meta: {
+					required: true,
+					interface: 'input',
+					width: 'half',
+					note: 'Based on the provider & model this will be either the total max token or the max complection tokens.'
+				},
+				schema: {
+					default_value: 1024,
+				}
+			},
+			{
 				field: 'promptKey',
 				name: 'Prompt',
 				type: 'string',

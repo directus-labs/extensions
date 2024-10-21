@@ -21,6 +21,7 @@ export class OpenAi extends Provider {
     const requestBody: RequestBody = {
       model: this.options.model!,
       messages,
+      max_completion_tokens: this.options.maxToken || 0,
     };
 
     if (this.options.json_mode) {

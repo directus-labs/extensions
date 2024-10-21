@@ -15,6 +15,7 @@ export type AiWriterOperationOptions = {
 	json_mode?: boolean,
 	text?: string | null,
 	thread?: message[] | null,
+	maxToken?: number | null,
 };
 
 

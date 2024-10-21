@@ -21,7 +21,7 @@ export class Anthropic extends Provider {
     const requestBody: RequestBody = {
       model: this.options.model!,
       messages,
-      max_tokens: 1024,
+      max_tokens: this.options.maxToken || 0,
     };
 
     const response = await request(this.endpoint, {
