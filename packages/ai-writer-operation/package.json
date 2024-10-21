@@ -1,9 +1,16 @@
 {
 	"name": "@directus-labs/ai-writer-operation",
-	"description": "Use OpenAI's Text Generation API to generate text.",
+	"description": "Use OpenAI, Claude, Meta and Mistral Text Generation APIs to generate text.",
 	"icon": "extension",
 	"version": "1.2.0",
 	"license": "MIT",
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "Dominic Marcelino",
+			"email": "dominic.marcelino@utomic.media"
+		}
+	],
 	"keywords": [
 		"directus",
 		"directus-extension",
@@ -49,7 +56,7 @@
 		"link": "directus-extension link"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "11.0.1",
-		"vue": "^3.4.21"
+		"@directus/extensions-sdk": "^12.1.0",
+		"vue": "^3.5.12"
 	}
 }
