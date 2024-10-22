@@ -2,6 +2,8 @@
 
 Create an interactive tour for your form.
 
+![Demo of the Tour Group Interface](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/tour-group-interface/docs/demo.gif)
+
 ## Installation
 
 Refer to the [Official Guide](https://docs.directus.io/extensions/installing-extensions.html) for details on installing the extension from the Marketplace or manually.
