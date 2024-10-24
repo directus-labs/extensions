@@ -9,7 +9,10 @@ const props = withDefaults(
 	defineProps<{
 		modelValue: Step | null;
 		scope: Scope;
+		method?: string;
 		url?: string;
+		headers?: any;
+		body?: any;
 		trigger?: 'debounce' | 'throttle';
 		rate?: number | string;
 		resultsPath?: string;
@@ -46,7 +49,19 @@ const fetchResultsRaw = async (inputValue: string) => {
 	});
 
 	try {
-		const data = await fetch(url).then((res) => res.json());
+		let reqOpt : any = {method:(props.method ? props.method : "GET")};
+		if(props.headers){
+			const fetchHeaders = new Headers();
+			for(const headerItem of props.headers){
+				fetchHeaders.append(headerItem.header,headerItem.value);
+			}
+			reqOpt = {...reqOpt,headers:fetchHeaders};
+		}
+		if(reqOpt.method !== "GET" && props.body){
+			reqOpt = {...reqOpt,body:(typeof(props.body) === 'string' ? props.body : JSON.stringify(props.body))};
+		}
+
+		const data = await fetch(url,reqOpt).then((res) => res.json());
 		const resultsArray = props.resultsPath ? get(data, props.resultsPath) : data;
 
 		if (Array.isArray(resultsArray) === false) {
