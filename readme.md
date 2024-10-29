@@ -23,6 +23,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [AI Text Intelligence](//github.com/directus-labs/extensions/tree/main/packages/ai-text-intelligence-operation)                       | Operation | ✅        |
 | [AI Transcription](//github.com/directus-labs/extensions/tree/main/packages/ai-transcription-operation)                               | Operation | ✅        |
 | [AI Translator](//github.com/directus-labs/extensions/tree/main/packages/ai-translator-operation)                                     | Operation | ✅        |
+| [AI Web Scraper](//github.com/directus-labs/extensions/tree/main/packages/ai-web-scraper-operation)                                   | Operation | ✅        |
 | [AI Writer](//github.com/directus-labs/extensions/tree/main/packages/ai-writer-operation)                                             | Operation | ✅        |
 | [RSS to JSON](//github.com/directus-labs/extensions/tree/main/packages/rss-to-json-operation)                                         | Operation | ✅        |
 | [LiquidJS Template](//github.com/directus-labs/extensions/tree/main/packages/liquidjs-operation)                                      | Operation | ✅        |
