@@ -24,6 +24,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [AI Transcription](//github.com/directus-labs/extensions/tree/main/packages/ai-transcription-operation)                               | Operation | ✅        |            |
 | [AI Translator](//github.com/directus-labs/extensions/tree/main/packages/ai-translator-operation)                                     | Operation | ✅        |            |
 | [AI Writer](//github.com/directus-labs/extensions/tree/main/packages/ai-writer-operation)                                             | Operation | ✅        |            |
+| [AI Web Scraper](//github.com/directus-labs/extensions/tree/main/packages/ai-web-scraper-operation)                                   | Operation | ✅        |            |
 | [RSS to JSON](//github.com/directus-labs/extensions/tree/main/packages/rss-to-json-operation)                                         | Operation | ✅        |            |
 | [LiquidJS Template](//github.com/directus-labs/extensions/tree/main/packages/liquidjs-operation)                                      | Operation | ✅        |            |
 | [Resend](//github.com/directus-labs/extensions/tree/main/packages/resend-operation)                                                   | Operation | ✅        |            |
@@ -38,6 +39,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Simple List](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface)                                         | Interface | N/A       |            |
 | [Whereby Embed](//github.com/directus-labs/extensions/tree/main/packages/whereby-embedded-interface)                                  | Interface | N/A       |            |
 | [Table View](//github.com/directus-labs/extensions/tree/main/packages/table-view-panel)                                               | Panel     | N/A       |            |
+| [Scatter Plot](//github.com/directus-labs/extensions/tree/main/packages/scatter-plot-panel)                                           | Panel     | N/A       |            |
 | [Command Palette](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module)                                    | Module    | N/A       | ⭐         |
 | [Plausible Analytics](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle)                            | Bundle    | N/A       |            |
 | [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component)                                           | Bundle    | N/A       |            |
