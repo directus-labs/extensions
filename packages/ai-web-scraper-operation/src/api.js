@@ -1,4 +1,4 @@
-import { request, log } from 'directus:api'
+import { request } from 'directus:api'
 
 export default {
 	id: 'directus-labs-ai-web-scraper',
