@@ -57,11 +57,11 @@ Some of the published extensions may not be compatible with the sandbox requirem
 
 ## 🔧 &nbsp;Boilerplates
 
-| Extension                                                                                    | System Name            | Type      |
-| -------------------------------------------------------------------------------------------- | :--------------------- | :-------- |
-| [WYSIWYG](//github.com/directus-labs/extensions/tree/main/boilerplates/input-rich-text-html) | `input-rich-text-html` | Interface |
-| [Block Editor](//github.com/directus-labs/extensions/tree/main/boilerplates/block-editor)    | `input-block-editor`   | Interface |
-| [Table](//github.com/directus-labs/extensions/tree/main/boilerplates/block-editor)           | `tabular`              | Layout    |
+| Extension                                                                                          | System Name            | Type      |
+| -------------------------------------------------------------------------------------------------- | :--------------------- | :-------- |
+| [WYSIWYG](//github.com/directus-labs/extensions/tree/main/boilerplates/input-rich-text-html)       | `input-rich-text-html` | Interface |
+| [Block Editor](//github.com/directus-labs/extensions/tree/main/boilerplates/input-block-editor)    | `input-block-editor`   | Interface |
+| [Table](//github.com/directus-labs/extensions/tree/main/boilerplates/tabular-layout)               | `tabular`              | Layout    |
 
 <br>
 
