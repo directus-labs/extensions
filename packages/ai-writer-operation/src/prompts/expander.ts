@@ -1,4 +1,6 @@
-export default {
+import type { Prompt } from '../types';
+
+export const expander: Prompt = {
   text: 'Make Longer',
   value: 'expander',
   icon: 'subject',
