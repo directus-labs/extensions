@@ -1,5 +1,5 @@
 {
-	"name": "directus-extension-scatter-plot-panel",
+	"name": "@directus-labs/scatter-plot-panel",
 	"description": "Present a series of X and Y cooradinates as dots on a graph",
 	"icon": "extension",
 	"version": "1.0.0",
