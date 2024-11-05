@@ -27,7 +27,6 @@
 		"sandbox": {
 			"enabled": true,
 			"requestedScopes": {
-				"log": {},
 				"request": {
 					"methods": [
 						"POST"
