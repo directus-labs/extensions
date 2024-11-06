@@ -1,16 +1,19 @@
 {
-    "name": "tabular-layout",
-    "description": "Please enter a description for your extension",
-    "icon": "extension",
+    "name": "directus-extension-tree-view-layout",
+    "description": "A tree view layout that allows you to nest items within a table",
+    "icon": "format_indent_increase",
     "version": "1.0.0",
     "keywords": [
         "directus",
         "directus-extension",
         "directus-extension-layout",
+        "directus-extension-tree-view-layout",
         "directus-extension-tabular-layout",
         "directus-extension-table-layout",
+        "tree-view-layout",
         "tabular-layout",
-        "table-layout"
+        "table-layout",
+        "nested-items"
     ],
     "type": "module",
     "files": [
@@ -28,7 +31,7 @@
         "link": "directus-extension link"
     },
     "devDependencies": {
-        "@directus/extensions-sdk": "12.1.1",
+        "@directus/extensions-sdk": "^12.1.2",
         "@json2csv/plainjs": "^7.0.6",
         "@types/file-saver": "^2.0.7",
         "@types/lodash": "^4.17.13",

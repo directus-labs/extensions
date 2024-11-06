@@ -24,9 +24,9 @@ import { saveAsCSV } from "./core-clones/utils/save-as-csv";
 import type { HeaderRaw, Sort } from "./core-clones/components/v-table/types";
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
-    id: "tabular-layout-boilerplate",
-    name: "Custom Table",
-    icon: "table_rows",
+    id: "directus-labs-tree-view-layout",
+    name: "Tree View",
+    icon: "format_indent_increase",
     component: Layout,
     slots: {
         options: Options,
