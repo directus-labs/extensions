@@ -24,6 +24,8 @@
     // import { useSync } from '@directus/composables';
     // import { useCollectionPermissions } from '@/composables/use-permissions';
     import { useStores, useSync } from "@directus/extensions-sdk";
+    // CUSTOMIZED TABLE COMPONENT
+    import CustomVTable from "./components/v-table.vue";
 
     defineOptions({ inheritAttrs: false });
 
@@ -154,7 +156,7 @@
 
 <template>
     <div class="custom-layout">
-        <v-table
+        <CustomVTable
             v-if="loading || (itemCount && itemCount > 0 && !error)"
             ref="table"
             v-model="selectionWritable"
@@ -345,7 +347,7 @@
                     </div>
                 </div>
             </template>
-        </v-table>
+        </CustomVTable>
 
         <slot
             v-else-if="error"
