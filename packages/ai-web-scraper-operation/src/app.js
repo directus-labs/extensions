@@ -40,6 +40,26 @@ export default {
 			},
 		},
 		{
+			field: 'country',
+			name: 'Country',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'input',
+        note: 'ISO 3166-1 alpha-2 country code. Defaults to <code>US</code>.',
+			},
+		},
+		{
+			field: 'languages',
+			name: 'Languages',
+			type: 'json',
+			meta: {
+				width: 'half',
+				interface: 'tags',
+        note: 'An array of languages/locales. Defaults to location language.',
+			},
+		},
+		{
 			field: 'includeTags',
 			name: 'Include Tags',
 			type: 'json',
@@ -161,7 +181,7 @@ export default {
 			name: 'Additional Formats',
 			type: 'json',
 			meta: {
-				width: 'full',
+				width: 'half',
 				interface: 'select-multiple-dropdown',
 				note: 'Basic page metadata will always be included.',
 				options: {
@@ -171,12 +191,23 @@ export default {
 						{ text: 'HTML', value: 'html' },
 						{ text: 'Raw HTML', value: 'rawHtml' },
 						{ text: 'Links', value: 'links' },
+						{ text: 'Scrape', value: 'scrape' },
 						{ text: 'Screenshot', value: 'screenshot' },
 						{ text: 'Extract', value: 'extract' },
 						{ text: 'Screenshot (Full Page)', value: 'screenshot@fullPage' },
 					]
 				}
 			},
-		}
+		},
+		{
+			field: 'mobile',
+			name: 'Mobile',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				note: 'Emulate scraping from a mobile device.',
+			},
+		},
 	],
 }
