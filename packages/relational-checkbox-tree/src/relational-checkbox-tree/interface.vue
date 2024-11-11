@@ -5,7 +5,7 @@
     </v-notice>
     <template v-else>
       <v-checkbox-tree
-        v-model="selectedValues"
+        :model-value="selectedValues"
         :value-combining="valueCombining"
         :disabled="disabled"
         :choices="choices"
@@ -52,6 +52,7 @@ const props = withDefaults(
     sortField?: string;
     sortAs?: string;
     pathMap?: Record<string, string>;
+    valueField?: string;
   }>(),
   {
     value: () => [],
@@ -78,13 +79,11 @@ const {
   sortAs,
   sortField,
   pathMap,
+  valueField,
 } = toRefs(props);
 const choices = ref<IData[]>([]);
 
-const selectedValues = computed({
-  get: () => value.value,
-  set: (value) => emitValue(value),
-});
+const selectedValues = computed(() => value.value);
 
 const generatedQueries = computed(() => {
   if (!options.value)
@@ -96,7 +95,10 @@ const generatedQueries = computed(() => {
       fields: [],
     };
 
-  const fields: string[] = [...getFieldsFromTemplate(rootTemplate.value).map((field) => `fields[]=${field}`)];
+  const fields: string[] = [
+    ...getFieldsFromTemplate(rootTemplate.value).map((field) => `fields[]=${field}`),
+    `fields[]=${valueField.value || 'id'}`,
+  ];
 
   function processQuery(parent = "", opts: IOptions[]) {
     for (const option of opts) {
@@ -194,6 +196,7 @@ async function load() {
       template: rootTemplate.value,
       children: options.value,
       pathMap: pathMap.value,
+      valueField: valueField.value,
     },
   ]);
 }

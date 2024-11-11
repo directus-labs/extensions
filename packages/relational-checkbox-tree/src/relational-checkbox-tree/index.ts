@@ -64,6 +64,19 @@ export default defineInterface({
         },
       },
       {
+        field: "valueField",
+        name: "Value Field",
+        type: "string",
+        meta: {
+          interface: "system-field",
+          options: {
+            collectionName: collection,
+            allowPrimaryKey: true,
+          },
+          width: "full",
+        },
+      },
+      {
         field: "sortField",
         name: "Sort Field",
         type: "string",
@@ -71,6 +84,7 @@ export default defineInterface({
           interface: "system-field",
           options: {
             collectionName: collection,
+            allowPrimaryKey: true,
           },
           width: "full",
         },

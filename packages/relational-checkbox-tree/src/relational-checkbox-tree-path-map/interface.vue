@@ -1,10 +1,16 @@
 <template>
   <!-- <input :value="value" @input="handleChange($event.target.value)" /> -->
-  <div v-for="field in fieldsTemplateJson" :key="field.field" class="mt-2 flex justify-between ml-2">
-    <div class="mr-2">
-      {{ field.field }}
+  <v-notice v-if="!fieldsTemplateJson.length" type="info">
+    The template does not contain any JSON fields.
+  </v-notice>
+
+  <div v-else>
+    <div v-for="field in fieldsTemplateJson" :key="field.field" class="mt-2 flex justify-between ml-2">
+      <div class="mr-2">
+        {{ field.field }}
+      </div>
+      <v-input :model-value="pathMap[field.field]" @update:model-value="($e) => onPathMapChange(field.field, $e)" />
     </div>
-    <v-input :model-value="pathMap[field.field]" @update:model-value="($e) => onPathMapChange(field.field, $e)" />
   </div>
 </template>
 
