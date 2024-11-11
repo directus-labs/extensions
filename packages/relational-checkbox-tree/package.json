@@ -28,6 +28,11 @@
 				"type": "interface",
 				"name": "relational-checkbox-tree-options",
 				"source": "src/relational-checkbox-tree-options/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "relational-checkbox-tree-path-map",
+				"source": "src/relational-checkbox-tree-path-map/index.ts"
 			}
 		],
 		"host": "^10.10.0"

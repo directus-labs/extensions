@@ -39,7 +39,6 @@
     </template>
 
     <div class="drawer-content">
-      <!-- <input :value="collectionName" @input="onInput" /> -->
       <div>
         <div>Collection Name</div>
         <div class="mt-2">
@@ -74,6 +73,19 @@
             :value="template"
             @input="($e) => (template = $e)"
           />
+          <div>
+            <div>Path Map</div>
+            <div
+              v-for="field in fieldsTemplateJson"
+              :key="field.field"
+              class="mt-2 flex justify-between ml-2"
+            >
+              <div class="mr-2">
+                {{ field.field }}
+              </div>
+              <v-input :model-value="pathMap[field.field]" @update:model-value="$e => onPathMapChange(field.field, $e)" />
+            </div>
+          </div>
         </div>
       </div>
       <div v-if="relatedCollectionDetail?.collection" class="mt-4">
@@ -133,6 +145,8 @@ interface IData {
 import { computed, defineComponent, PropType, ref, toRefs, watch } from "vue";
 import { useStores } from "@directus/extensions-sdk";
 import { formatTitle } from "@directus/format-title";
+import { getFieldsFromTemplate } from "@directus/utils";
+import { Field } from "@directus/types";
 
 export default defineComponent({
   props: {
@@ -177,6 +191,7 @@ export default defineComponent({
       sortField: string;
       valueField: string;
       sortAs: string;
+      pathMap: Record<string, string>;
     }>({
       collectionName: "",
       parentId: "",
@@ -187,6 +202,7 @@ export default defineComponent({
       sortField: "",
       valueField: "",
       sortAs: "asc",
+      pathMap: {},
     });
 
     const collectionName = computed({
@@ -245,6 +261,14 @@ export default defineComponent({
         edits.value.sortAs = value;
       },
     });
+    const pathMap = computed({
+      get: () => {
+        return edits.value.pathMap || {};
+      },
+      set: (value) => {
+        edits.value.pathMap = value;
+      },
+    });
 
     const relations = computed(() => {
       const collections: { text: string; value: string; collection: string }[] = [];
@@ -285,6 +309,19 @@ export default defineComponent({
         return null;
       }
       return relations.value.find((relation) => relation.value === collectionName.value);
+    });
+
+    const fieldsTemplateJson = computed(() => {
+      const fields = getFieldsFromTemplate(template.value);
+      const result: Field[] = [];
+      for (const field of fields) {
+        const fieldMeta: Field = fieldsStore.getField(relatedCollectionDetail.value?.collection, field);
+        if (fieldMeta?.type === 'json') {
+          result.push(fieldMeta);
+        }
+      }
+
+      return result;
     });
 
     watch([relatedCollectionDetail], () => {
@@ -339,7 +376,10 @@ export default defineComponent({
       onRemove,
       children,
       sortAs,
-      selectedIndex
+      selectedIndex,
+      fieldsTemplateJson,
+      pathMap,
+      onPathMapChange
     };
 
     function handleChange(value: string): void {
@@ -347,12 +387,6 @@ export default defineComponent({
     }
 
     function onSave(payload: never[]) {
-      console.log({
-        file: "interface.vue",
-        line: 349,
-        itemIndex: itemIndex.value,
-        selectedIndex: selectedIndex.value,
-      });
       if (selectedIndex.value === -1) {
         children.value.push(...payload);
       }
@@ -370,44 +404,24 @@ export default defineComponent({
         sortField: sortField.value,
         valueField: valueField.value,
         sortAs: sortAs.value,
+        pathMap: pathMap.value,
       };
 
       let index = itemIndex.value;
       if (index === -1) {
         index = selectedIndex.value;
       }
-      console.log({
-        file: "interface.vue",
-        line: 366,
-        itemIndex,
-        selectedIndex,
-        index
-       });
       if (index !== -1) {
         data.value[index] = payload as never;
-        console.log({
-          file: "interface.vue",
-          line: 379,
-          msg: 1
-         });
       } else {
         data.value.push(payload as never);
-        console.log({
-          file: "interface.vue",
-          line: 379,
-          msg: 2
-         });
       }
-      console.log({
-        file: "interface.vue",
-        line: 382,
-        data: data.value
-       });
       emit("save", data.value);
       editing.value = null;
       collectionName.value = "";
       filter.value = {};
       template.value = "";
+      pathMap.value = {};
       emit("input", data.value);
     }
 
@@ -438,6 +452,13 @@ export default defineComponent({
       }
       data.value.splice(index, 1);
     }
+
+    function onPathMapChange(field: string, value: string) {
+      pathMap.value = {
+        ...pathMap.value,
+        [field]: value,
+      };
+    }
   },
 });
 </script>
@@ -453,5 +474,19 @@ export default defineComponent({
 
 .mt-2 {
   margin-top: 0.5rem;
+}
+.flex {
+  display: flex;
+}
+.justify-between {
+  justify-content: space-between;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
 }
 </style>

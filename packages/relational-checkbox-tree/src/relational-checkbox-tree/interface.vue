@@ -20,6 +20,7 @@ import { ref, computed, watch, toRefs } from "vue";
 import { useApi } from "@directus/extensions-sdk";
 import { getFieldsFromTemplate } from "@directus/utils";
 import { render } from "micromustache";
+import get from "lodash/get";
 
 interface IOptions {
   collectionName: string;
@@ -29,6 +30,7 @@ interface IOptions {
   valueField?: string;
   sortField?: string;
   sortAs?: string;
+  pathMap?: Record<string, string>;
 }
 
 interface IData {
@@ -49,6 +51,7 @@ const props = withDefaults(
     filter?: any;
     sortField?: string;
     sortAs?: string;
+    pathMap?: Record<string, string>;
   }>(),
   {
     value: () => [],
@@ -56,6 +59,7 @@ const props = withDefaults(
     disabled: false,
     options: () => [],
     template: "{{id}}",
+    pathMap: () => ({}),
   }
 );
 
@@ -63,7 +67,18 @@ const emit = defineEmits(["input"]);
 
 // const { t } = useI18n();
 const api = useApi();
-const { valueCombining, disabled, options, rootCollection, template: rootTemplate, value, filter, sortAs, sortField } = toRefs(props);
+const {
+  valueCombining,
+  disabled,
+  options,
+  rootCollection,
+  template: rootTemplate,
+  value,
+  filter,
+  sortAs,
+  sortField,
+  pathMap,
+} = toRefs(props);
 const choices = ref<IData[]>([]);
 
 const selectedValues = computed({
@@ -122,14 +137,14 @@ const generatedQueries = computed(() => {
         if (option.filter) {
           result[option.collectionName]._filter = option.filter;
         }
-  
+
         const sortAs = option.sortAs || "asc";
         let sortField = option.sortField || "id";
         if (sortAs === "desc") {
           sortField = `-${sortField}`;
         }
         result[option.collectionName]._sort = sortField;
-  
+
         if (option.children) {
           processDeepFilter(result[option.collectionName], option.children);
         }
@@ -155,7 +170,7 @@ const generatedQueries = computed(() => {
   return {
     fields,
     deepFilter: JSON.stringify(deepFilter),
-    filter: filter.value ? JSON.stringify(filter.value) : '{}',
+    filter: filter.value ? JSON.stringify(filter.value) : "{}",
     sort,
   };
 });
@@ -178,6 +193,7 @@ async function load() {
       collectionName: rootCollection.value,
       template: rootTemplate.value,
       children: options.value,
+      pathMap: pathMap.value,
     },
   ]);
 }
@@ -191,6 +207,14 @@ function parseResult(data: any, opts: IOptions[]): IData[] {
     const option = opts[0];
     const template = option?.template || "{{id}}";
     const valueField = option?.valueField || "id";
+    const pathMap = option?.pathMap || {};
+
+    for (const field in pathMap) {
+      const path = pathMap[field];
+      if (path) {
+        item[field] = get(item[field], path);
+      }
+    }
     if (childrenKey) {
       const childrenRows = parseResult(item[childrenKey], option?.children || []);
       rows.push({

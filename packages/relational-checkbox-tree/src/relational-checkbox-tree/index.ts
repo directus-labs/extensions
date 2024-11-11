@@ -11,6 +11,7 @@ export default defineInterface({
   group: "relational",
   options: ({ field }) => {
     const collection = field?.meta?.options?.rootCollection;
+    const template = field?.meta?.options?.template;
 
     return [
       {
@@ -45,6 +46,19 @@ export default defineInterface({
           interface: "system-display-template",
           options: {
             collectionName: collection,
+          },
+          width: "full",
+        },
+      },
+      {
+        field: "pathMap",
+        name: "Path Map",
+        type: "json",
+        meta: {
+          interface: "relational-checkbox-tree-options-path-map",
+          options: {
+            collectionName: collection,
+            template,
           },
           width: "full",
         },
