@@ -3,7 +3,7 @@ import InterfaceComponent from './interface.vue';
 
 export default defineInterface({
 	id: "nested-m2m-tree",
-  name: "$t:interfaces.nested-m2m-tree.name",
+  name: "Checkbox (Relational Tree) or Relational Checkbox Tree",
   icon: "account_tree",
 	description: 'This is my custom interface!',
 	component: InterfaceComponent,
