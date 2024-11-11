@@ -1,8 +1,5 @@
 <template>
   <!-- <input :value="value" @input="handleChange($event.target.value)" /> -->
-  {{ collectionName }} {{ template }}
-
-  {{ pathMap }}
   <div v-for="field in fieldsTemplateJson" :key="field.field" class="mt-2 flex justify-between ml-2">
     <div class="mr-2">
       {{ field.field }}
