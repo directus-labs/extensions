@@ -87,7 +87,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .mt-2 {
   margin-top: 0.5rem;
 }
