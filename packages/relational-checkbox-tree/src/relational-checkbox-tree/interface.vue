@@ -97,7 +97,7 @@ const generatedQueries = computed(() => {
 
   const fields: string[] = [
     ...getFieldsFromTemplate(rootTemplate.value).map((field) => `fields[]=${field}`),
-    `fields[]=${valueField.value || 'id'}`,
+    `fields[]=${valueField.value || "id"}`,
   ];
 
   function processQuery(parent = "", opts: IOptions[]) {
@@ -215,7 +215,12 @@ function parseResult(data: any, opts: IOptions[]): IData[] {
     for (const field in pathMap) {
       const path = pathMap[field];
       if (path) {
-        item[field] = get(item[field], path);
+        const value = get(item[field], path);
+        if (Array.isArray(value)) {
+          item[field] = value.map((v) => (typeof v === "object" && v ? JSON.stringify(v) : v)).join(", ");
+        } else {
+          item[field] = value;
+        }
       }
     }
     if (childrenKey) {

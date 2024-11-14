@@ -7,7 +7,7 @@
   <div v-else>
     <div v-for="field in fieldsTemplateJson" :key="field.field" class="mt-2 flex justify-between ml-2">
       <div class="mr-2">
-        {{ field.field }}
+        {{ formatTitle(field.field) }}
       </div>
       <v-input :model-value="pathMap[field.field]" @update:model-value="($e) => onPathMapChange(field.field, $e)" />
     </div>
@@ -19,6 +19,7 @@ import { computed, defineComponent, toRefs } from "vue";
 import { getFieldsFromTemplate } from "@directus/utils";
 import { Field } from "@directus/types";
 import { useStores } from "@directus/extensions-sdk";
+import { formatTitle } from "@directus/format-title";
 
 export default defineComponent({
   props: {
@@ -74,6 +75,7 @@ export default defineComponent({
       fieldsTemplateJson,
       onPathMapChange,
       pathMap,
+      formatTitle,
     };
 
     function handleChange(value: string): void {

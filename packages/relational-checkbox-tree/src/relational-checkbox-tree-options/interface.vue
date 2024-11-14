@@ -23,15 +23,9 @@
     </v-list-item>
   </div>
   <div v-if="data.length <= 0" class="mt-4">
-    <v-button v-tooltip.bottom="'Add'" @click="editing = true"> Add </v-button>
+    <v-button v-tooltip.bottom="'Add'" @click="onButtonAddClick"> Add </v-button>
   </div>
-  <v-drawer
-    :title="parentCollection ? formatTitle(parentCollection) : '--'"
-    :model-value="editing"
-    icon="link"
-    @update:model-value="editing = null"
-    @cancel="editing = null"
-  >
+  <v-drawer :title="title" :model-value="editing" icon="link" @update:model-value="editing = null" @cancel="editing = null">
     <template #actions>
       <v-button v-tooltip.bottom="'Save'" icon rounded @click="onOk">
         <v-icon name="check" />
@@ -46,7 +40,7 @@
             v-if="!parentCollection"
             :includeSystem="false"
             :value="collectionName"
-            @input="($e) => (collectionName = $e)"
+            @input="($e) => onCollectionNameChange($e)"
           />
           <interface-select-dropdown v-else :choices="relations" :value="collectionName" @input="($e) => (collectionName = $e)" />
         </div>
@@ -75,19 +69,13 @@
           />
           <div>
             <div>Path Map</div>
-            <v-notice v-if="!fieldsTemplateJson.length" type="info" class="mt-2">
-              The template does not contain any JSON fields.
-            </v-notice>
+            <v-notice v-if="!fieldsTemplateJson.length" type="info" class="mt-2"> The template does not contain any JSON fields. </v-notice>
             <div v-else>
-              <div
-                v-for="field in fieldsTemplateJson"
-                :key="field.field"
-                class="mt-2 flex justify-between ml-2"
-              >
+              <div v-for="field in fieldsTemplateJson" :key="field.field" class="mt-2 flex justify-between ml-2">
                 <div class="mr-2">
-                  {{ field.field }}
+                  {{ formatTitle(field.field) }}
                 </div>
-                <v-input :model-value="pathMap[field.field]" @update:model-value="$e => onPathMapChange(field.field, $e)" />
+                <v-input :model-value="pathMap[field.field]" @update:model-value="($e) => onPathMapChange(field.field, $e)" />
               </div>
             </div>
           </div>
@@ -133,7 +121,6 @@
         :parent-collection="relatedCollectionDetail?.collection"
         @save="onSave"
         :value="children"
-        :itemIndex="selectedIndex"
       />
     </div>
   </v-drawer>
@@ -163,20 +150,15 @@ export default defineComponent({
       type: String,
       default: null,
     },
-    itemIndex: {
-      type: Number,
-      default: -1,
-    },
   },
   emits: ["input", "save"],
   setup(props, { emit }) {
-    const { parentCollection, value, itemIndex } = toRefs(props);
+    const { parentCollection, value } = toRefs(props);
     const { useCollectionsStore, useRelationsStore, useFieldsStore } = useStores();
     const relationsStore = useRelationsStore();
     const collectionsStore = useCollectionsStore();
     const fieldsStore = useFieldsStore();
     const editing = ref<boolean | null>(null);
-    const id = ref<string | null>(generateRandomString(10));
     const data = computed({
       get: () => {
         return value.value || [];
@@ -185,7 +167,6 @@ export default defineComponent({
         emit("input", value);
       },
     });
-    const selectedIndex = ref(-1);
     const edits = ref<{
       collectionName: string | null;
       parentId: string;
@@ -210,6 +191,14 @@ export default defineComponent({
       pathMap: {},
     });
 
+    const id = computed({
+      get: () => {
+        return edits.value.id || generateRandomString(10);
+      },
+      set: (value) => {
+        edits.value.id = value;
+      },
+    });
     const collectionName = computed({
       get: () => {
         return edits.value.collectionName || "";
@@ -231,6 +220,11 @@ export default defineComponent({
         return edits.value.template || "";
       },
       set: (value) => {
+        console.log({
+          file: "interface.vue",
+          line: 241,
+          value,
+        });
         edits.value.template = value;
       },
     });
@@ -321,7 +315,7 @@ export default defineComponent({
       const result: Field[] = [];
       for (const field of fields) {
         const fieldMeta: Field = fieldsStore.getField(relatedCollectionDetail.value?.collection, field);
-        if (fieldMeta?.type === 'json') {
+        if (fieldMeta?.type === "json") {
           result.push(fieldMeta);
         }
       }
@@ -329,33 +323,14 @@ export default defineComponent({
       return result;
     });
 
-    watch([relatedCollectionDetail], () => {
-      if (selectedIndex.value !== -1) {
-        return;
-      }
-      filter.value = {};
-      template.value = "";
-      valueField.value = "";
-      sortField.value = "";
-
-      if (relatedCollectionDetail.value?.collection) {
-        const collectionInfo = collectionsStore.getCollection(relatedCollectionDetail.value.collection);
-        if (collectionInfo) {
-          template.value = collectionInfo.meta?.display_template || "";
-          const primaryKey = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollectionDetail.value.collection);
-          if (primaryKey) {
-            valueField.value = primaryKey.field;
-            sortField.value = primaryKey.field;
-          }
-          // const fields = collectionInfo.fields;
-          // if (fields) {
-          //   const primaryField = fields.find((field) => field.primary);
-          //   if (primaryField) {
-          //     valueField.value = primaryField.field;
-          //   }
-          // }
+    const title = computed(() => {
+      if (parentCollection.value) {
+        if (collectionName.value) {
+          return `${formatTitle(parentCollection.value)} -> ${formatTitle(collectionName.value)}`;
         }
+        return formatTitle(parentCollection.value);
       }
+      return "--";
     });
 
     return {
@@ -381,10 +356,12 @@ export default defineComponent({
       onRemove,
       children,
       sortAs,
-      selectedIndex,
       fieldsTemplateJson,
       pathMap,
-      onPathMapChange
+      onPathMapChange,
+      onCollectionNameChange,
+      onButtonAddClick,
+      title,
     };
 
     function handleChange(value: string): void {
@@ -392,17 +369,13 @@ export default defineComponent({
     }
 
     function onSave(payload: never[]) {
-      if (selectedIndex.value === -1) {
-        children.value.push(...payload);
-      }
-      selectedIndex.value = -1;
+      children.value = payload;
     }
 
     function onOk() {
       const payload = {
         collectionName: collectionName.value,
-        parentId: id.value,
-        id: generateRandomString(10),
+        id: edits.value.id || generateRandomString(10),
         children: children.value,
         filter: filter.value,
         template: template.value,
@@ -412,10 +385,8 @@ export default defineComponent({
         pathMap: pathMap.value,
       };
 
-      let index = itemIndex.value;
-      if (index === -1) {
-        index = selectedIndex.value;
-      }
+      const index = data.value.findIndex((item) => item.id === edits.value.id);
+
       if (index !== -1) {
         data.value[index] = payload as never;
       } else {
@@ -447,14 +418,10 @@ export default defineComponent({
     function onEdit(index: number) {
       const item = data.value[index];
       edits.value = item;
-      selectedIndex.value = index;
       editing.value = true;
     }
 
     function onRemove(index: number) {
-      if (selectedIndex.value === index) {
-        selectedIndex.value = -1;
-      }
       data.value.splice(index, 1);
     }
 
@@ -462,6 +429,49 @@ export default defineComponent({
       pathMap.value = {
         ...pathMap.value,
         [field]: value,
+      };
+    }
+
+    function onCollectionNameChange(value: string) {
+      collectionName.value = value;
+      filter.value = {};
+      template.value = "";
+      valueField.value = "";
+      sortField.value = "";
+
+      if (relatedCollectionDetail.value?.collection) {
+        const collectionInfo = collectionsStore.getCollection(relatedCollectionDetail.value.collection);
+        if (collectionInfo) {
+          template.value = collectionInfo.meta?.display_template || "";
+          const primaryKey = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollectionDetail.value.collection);
+          if (primaryKey) {
+            valueField.value = primaryKey.field;
+            sortField.value = primaryKey.field;
+          }
+          // const fields = collectionInfo.fields;
+          // if (fields) {
+          //   const primaryField = fields.find((field) => field.primary);
+          //   if (primaryField) {
+          //     valueField.value = primaryField.field;
+          //   }
+          // }
+        }
+      }
+    }
+
+    function onButtonAddClick() {
+      editing.value = true;
+      edits.value = {
+        collectionName: "",
+        parentId: "",
+        id: "",
+        children: [],
+        filter: {},
+        template: "",
+        sortField: "",
+        valueField: "",
+        sortAs: "asc",
+        pathMap: {},
       };
     }
   },
