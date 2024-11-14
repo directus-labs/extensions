@@ -57,10 +57,6 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
-		series: {
-			type: String,
-			default: null,
-		},
 		color: {
 			type: String,
 			default: '#6644FF',
@@ -100,7 +96,6 @@ export default defineComponent({
 				() => props.datetimeStart,
 				() => props.datetimeEnd,
 				() => props.task,
-				() => props.series,
 				() => props.color,
 				() => props.width,
 				() => props.height,
@@ -126,7 +121,6 @@ export default defineComponent({
 			let fields: Array<string> = [props.datetimeStart, props.datetimeEnd];
 
 			if(props.label) fields.push(props.label);
-			if(props.series) fields.push(props.series);
 			if(props.task) fields.push(props.task);
 
 			try{
@@ -135,7 +129,7 @@ export default defineComponent({
 						limit: '-1',
 						filter: props.filter,
 						fields: fields,
-						sort: [props.series, props.label, props.datetimeStart],
+						sort: [props.label, props.datetimeStart],
 					}
 				});
 
@@ -145,39 +139,22 @@ export default defineComponent({
 					const x_value = formatTitle(get(item, props.label));
 					const y_value = [new Date(get(item, props.datetimeStart)).getTime(), new Date(get(item, props.datetimeEnd)).getTime()];
 
-					if (props.series) {
-						const category = formatTitle(get(item, props.series));
-						if(!(category in timeline_series_data)){
-							timeline_series_data[category] = [];
-						}
-						timeline_series_data[category].push({
-							x: x_value,
-							y: y_value,
-							task: props.task ? formatTitle(get(item, props.task)) : null,
-						});
-					} else {
-						timeline_data.push({
-							x: x_value,
-							y: y_value,
-							task: props.task ? formatTitle(get(item, props.task)) : null,
-						});
-					}
+					timeline_data.push({
+						x: x_value,
+						y: y_value,
+						task: props.task ? formatTitle(get(item, props.task)) : null,
+					});
 				});
 
-				series = props.series ? Object.keys(timeline_series_data).map((category: string) => {
-					return {
-						name: category,
-						data: timeline_series_data[category],
-					};
-				}) : [
+				series = [
 					{
 						name: formatTitle(props.collection),
 						data: timeline_data,
 					},
 				];
 
-				const colors = props.series || props.color == null ? {
-					colors: [],
+				const colors = props.color == null ? {
+					colors: ['var(--theme-primary)'],
 					fill: {
 						type: 'solid',
 						opacity: 0.8,
@@ -204,6 +181,8 @@ export default defineComponent({
 					fontWeight: 600,
 					fontSize: '10px',
 				};
+
+				const borderColor = 'var(--theme--border-color-subdued)';
 
 				chart.value = new ApexCharts(chartEl.value, {
 					...colors,
@@ -236,24 +215,25 @@ export default defineComponent({
 					plotOptions: {
 						bar: {
 							horizontal: true,
+							borderRadius: series.length > 1 ? 3 : 6,
 						}
 					},
 					dataLabels: {
 						enabled: props.showDataLabel,
-						formatter: function(val: Array<Date>, opt: Record<string,any>) {
-							var diff: number = differenceInDays(val[1], val[0]);
-							var task: string = opt.w.globals.initialSeries[opt.seriesIndex].data[opt.dataPointIndex].task;
-							return `${(diff > 7 || diff > task.length ? task : '')} ${diff} ${(diff > 1 ? ' days' : ' day')}`;
+						formatter: function(val: Array<number>, opt: Record<string,any>) {
+							var diff: number = val[0] && val[1] ? differenceInDays(val[1], val[0]) : 0;
+							var task: string | null = opt.w.globals.initialSeries[opt.seriesIndex].data[opt.dataPointIndex].task;
+							return `${(diff > 7 || (task !== null && diff > task.length) ? task+',' : '')} ${diff} ${(diff > 1 ? ' days' : ' day')}`;
 						}
 					},
 					tooltip: {
 						enabled: showToolTip,
-						custom: function({series, seriesIndex, dataPointIndex, w}) {
+						custom: function({series, seriesIndex, dataPointIndex, w}: Record<string,any>) {
 							var item: Record<string,any> = w.globals.initialSeries[seriesIndex];
 							var data: Record<string,any> = item.data[dataPointIndex];
 							var color = w.globals.colors[seriesIndex];
 							return '<div class="timeline-tooltip">' +
-							`<span><strong>${data.x}${data.task? ': '+data.task:''}</strong></span>` +
+							`<span><strong style="color: ${color ? color : 'var(--theme--primary'});">${data.x}${data.task? ': '+data.task:''}</strong></span>` +
 							`<br/><span>${format(data.y[0], "d MMM")} - ${format(data.y[1], "d MMM")}</span>` +
 							(item?.name ? `<br/><span><span class="timeline-series-circle" style="background-color: ${color};"></span> <em>${item.name}</em></span>` : '') +
 							'</div>';
@@ -277,20 +257,22 @@ export default defineComponent({
 					},
 					xaxis: {
 						type: 'datetime',
-						// labels: xLabels,
-						// crosshairs: {
-						// 	stroke: {
-						// 		color: 'var(--theme--form--field--input--border-color)',
-						// 	},
-						// },
+						axisBorder: {
+							color: borderColor,
+						},
+						axisTicks: {
+							color: borderColor,
+						},
 					},
 					yaxis: {
 						show: true,
 						axisBorder: {
 							show: true,
+							color: borderColor,
 						},
 						axisTicks: {
 							show: true,
+							color: borderColor,
 						},
 						forceNiceScale: true,
 						tickAmount: props.height - 4,
@@ -351,8 +333,11 @@ export default defineComponent({
 	line-height: 1.2;
 }
 
-.timeline-tooltip strong {
-	color: var(--theme--primary);
+.timeline-chart .apexcharts-tooltip {
+	background-color: var(--theme--background-normal) !important;
+	border-color: var(--theme--border-color) !important;
+	font-family: var(--theme--fonts--sans--font-family) !important;
+	color: var(--theme--foreground-accent) !important;
 }
 
 .timeline-series-circle {

@@ -14,9 +14,9 @@ export default definePanel({
 				field: 'collection',
 				type: 'string',
 				name: '$t:collection',
-				required: true,
 				meta: {
 					interface: 'system-collection',
+					required: true,
 					options: {
 						includeSystem: true,
 						includeSingleton: false,
@@ -41,9 +41,9 @@ export default definePanel({
 				field: 'dataLabels',
 				type: 'string',
 				name: '$t:displays.labels.labels',
-				required: true,
 				meta: {
 					interface: 'system-field',
+					required: true,
 					options: {
 						collectionField: 'collection',
 						placeholder: '$t:select_a_field',
@@ -56,9 +56,9 @@ export default definePanel({
 				field: 'dataValues',
 				type: 'string',
 				name: '$t:panels.time_series.value_field',
-				required: true,
 				meta: {
 					interface: 'system-field',
+					required: true,
 					options: {
 						collectionField: 'collection',
 						placeholder: '$t:select_a_field',
@@ -123,7 +123,7 @@ export default definePanel({
 				name: '$t:panels.linechart.show_marker',
 				type: 'boolean',
 				schema: {
-					default_value: true,
+					default_value: false,
 				},
 				meta: {
 					interface: 'boolean',

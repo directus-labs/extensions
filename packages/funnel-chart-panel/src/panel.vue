@@ -13,9 +13,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
-import { abbreviateNumber } from '@directus/shared/utils';
+import { abbreviateNumber } from '@directus/utils';
 import formatTitle from '@directus/format-title';
-import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 import ApexCharts from 'apexcharts'
 import { get } from 'lodash';
 
@@ -156,6 +156,8 @@ export default defineComponent({
 
 				const isSparkline = props.width < 12 || props.height < 10;
 
+				const borderColor = 'var(--theme--border-color-subdued)';
+
 				chart.value = new ApexCharts(chartEl.value, {
 					colors: props.color == null ? ['#6644FF'] : [props.color],
 					chart: {
@@ -190,6 +192,13 @@ export default defineComponent({
 							horizontal: true,
 							barHeight: '80%',
 							isFunnel: true,
+							colors: {
+								ranges: [{
+									from: -6,
+									to: 0,
+									color: props.color == null ? '#6644FF' : props.color,
+								}],
+							},
 						},
 					},
 					dataLabels: {
@@ -203,10 +212,11 @@ export default defineComponent({
 					},
 					tooltip: {
 						enabled: showToolTip,
-						custom: function({series, seriesIndex, dataPointIndex, w}) {
+						custom: function({series, seriesIndex, dataPointIndex, w}: Record<string,any>) {
 							var value: number = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
 							var label: string = w.globals.labels[dataPointIndex];
-							return `<div class="funnel-tooltip"><span><strong>${label}</strong></span>:&nbsp;<span>${(value > 10000 ? abbreviateNumber(value, 1) : value)}</span></div>`;
+							var color = w.globals.colors[seriesIndex];
+							return `<div class="funnel-tooltip"><span><strong style="color: ${color ? color : 'var(--theme--primary'});">${label}</strong></span>:&nbsp;<span>${(value > 10000 ? abbreviateNumber(value, 1) : value)}</span></div>`;
 						},
 					},
 					grid: {
@@ -227,6 +237,20 @@ export default defineComponent({
 					},
 					xaxis: {
 						categories: categories.value,
+						axisBorder: {
+							color: borderColor,
+						},
+						axisTicks: {
+							color: borderColor,
+						},
+					},
+					yaxis: {
+						axisBorder: {
+							color: borderColor,
+						},
+						axisTicks: {
+							color: borderColor,
+						},
 					},
 					legend: {
 						show: false,
@@ -259,7 +283,6 @@ export default defineComponent({
 	},
 });
 </script>
-
 <style scoped>
 .funnnel-chart {
 	height: 100%;
@@ -272,12 +295,14 @@ export default defineComponent({
 
 </style>
 <style>
+.funnnel-chart .apexcharts-tooltip {
+	background-color: var(--theme--background-normal) !important;
+	border-color: var(--theme--border-color) !important;
+	font-family: var(--theme--fonts--sans--font-family) !important;
+	color: var(--theme--foreground-accent) !important;
+}
 .funnel-tooltip {
 	padding: 12px;
 	line-height: 1.2;
-}
-
-.funnel-tooltip strong {
-	color: var(--theme--primary);
 }
 </style>

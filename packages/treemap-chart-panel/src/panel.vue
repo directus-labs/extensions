@@ -14,6 +14,7 @@
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
 import formatTitle from '@directus/format-title';
+import { abbreviateNumber } from '@directus/utils';
 import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 import ApexCharts from 'apexcharts'
 import { get } from 'lodash';
@@ -139,9 +140,9 @@ export default defineComponent({
 				});
 
 				response.data.data.forEach((item: Record<string, any>) => {
-					let label = get(item, props.dataLabels);
-					let category = props.series ? get(item, props.series) : props.collection;
-					let y_value = get(item[props.labelGrouping], props.dataValues);
+					let label: string = get(item, props.dataLabels);
+					let category: string = props.series ? get(item, props.series) : props.collection;
+					let y_value: number = get(item[props.labelGrouping], props.dataValues);
 
 					if(!(category in category_data)){
 						category_data[category] = [];
@@ -194,9 +195,23 @@ export default defineComponent({
 							enabled: isSparkline,
 						},
 					},
+					plotOptions: {
+						treemap: {
+							shadeIntensity: 0.2,
+						},
+					},
 					series: series,
 					tooltip: {
 						enabled: showToolTip,
+					},
+					dataLabels: {
+						enabled: props.showDataLabel,
+						formatter: function (text: string, opt: Record<string, any>) {
+							return `${text}: ${(opt.value > 10000 ? abbreviateNumber(opt.value, 1) : opt.value)}`;
+						},
+						dropShadow: {
+							enabled: true,
+						},
 					},
 					grid: {
 						borderColor: 'var(--theme--border-color-subdued)',
@@ -213,6 +228,15 @@ export default defineComponent({
 								left: 5,
 								right: 5,
 							},
+					},
+					xaxis: {
+						show: false,
+						axisTicks: {
+							show: false,
+						},
+					},
+					yaxis: {
+						show: false,
 					},
 					legend: {
 						show: !isSparkline,
@@ -254,5 +278,21 @@ export default defineComponent({
 
 .treemap-chart.has-header {
 	padding: 0 12px 12px;
+}
+</style>
+<style>
+.treemap-chart rect.apexcharts-treemap-rect {
+  stroke: var(--theme--background-subdued);
+}
+
+.treemap-chart path.apexcharts-legend-marker {
+  stroke: transparent;
+}
+
+.treemap-chart .apexcharts-tooltip {
+	background-color: var(--theme--background-normal) !important;
+	border-color: var(--theme--border-color) !important;
+	font-family: var(--theme--fonts--sans--font-family) !important;
+	color: var(--theme--foreground-accent) !important;
 }
 </style>
