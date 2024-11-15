@@ -8,7 +8,7 @@ export const create = (endpoint: string) => {
         path: `/crm/v3/objects/${endpoint}`,
         options: [
             {
-                field: 'associations',
+                field: 'c_associations',
                 name: 'Associations',
                 type: 'json',
                 meta: {
@@ -23,7 +23,7 @@ export const create = (endpoint: string) => {
                 },
             },
             {
-                field: 'properties',
+                field: 'c_properties',
                 name: 'Properties',
                 type: 'json',
                 meta: {
@@ -39,10 +39,10 @@ export const create = (endpoint: string) => {
             },
         ],
         handler: async (client: any, params: any) => {
-            const { associations, properties } = params;
+            const { c_associations, c_properties } = params;
             return client.fetchRequest(`/crm/v3/objects/${endpoint}`, 'POST', {
-                associations,
-                properties
+                associations: c_associations,
+                properties: c_properties
             });
         },
     };

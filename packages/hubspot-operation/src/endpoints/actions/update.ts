@@ -20,7 +20,7 @@ export const update = (endpoint: string) => {
                 },
             },
             {
-                field: 'properties',
+                field: 'u_properties',
                 name: 'Properties',
                 type: 'json',
                 meta: {
@@ -36,9 +36,9 @@ export const update = (endpoint: string) => {
             },
         ],
         handler: async (client: any, params: any) => {
-            const { id, properties } = params;
+            const { id, u_properties } = params;
             return client.fetchRequest(`/crm/v3/objects/${endpoint}/${id}`, 'PATCH', {
-                properties
+                properties: u_properties
             });
         },
     };

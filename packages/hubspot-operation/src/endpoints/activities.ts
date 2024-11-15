@@ -31,7 +31,7 @@ export const activities = {
 						width: 'half',
 						interface: 'input',
 						placeholder: '123456789',
-						note: 'The ID from Hubspot for the record you want to retrieve.',
+						note: 'The User ID from Hubspot for the logs you want to retrieve.',
 					},
 				},
 				{
@@ -47,21 +47,19 @@ export const activities = {
 				{
 					field: 'occurred_after',
 					name: 'Occurred After',
-					type: 'string',
+					type: 'dateTime',
 					meta: {
 						width: 'half',
 						interface: 'datetime',
-						note: 'The ID from Hubspot for the record you want to retrieve.',
 					},
 				},
 				{
 					field: 'occurred_before',
 					name: 'Occurred Before',
-					type: 'string',
+					type: 'dateTime',
 					meta: {
 						width: 'half',
 						interface: 'datetime',
-						note: 'The ID from Hubspot for the record you want to retrieve.',
 					},
 				},
 				{
@@ -71,13 +69,13 @@ export const activities = {
 					meta: {
 						width: 'half',
 						interface: 'input',
-						note: 'The ID from Hubspot for the record you want to retrieve.',
+						note: 'A HubSpot field to sort by such as userEmail, userId, category, subCategory or occurredAt',
 					},
 				},
 			],
 			handler: async (client: any, params: any) => {
 				const { limit, id, after, occurred_after, occurred_before, sort } = params;
-				return client.fetchRequest(`/account-info/v3/activity/audit-logs?limit=${limit}${after??`&after=${after}`}${id??`&actingUserId=${id}`}${occurred_after??`&occurredAfter=${occurred_after}`}${occurred_before??`&occurredBefore=${occurred_before}`}${sort??`&sort=${sort}`}`, 'GET');
+				return client.fetchRequest(`/account-info/v3/activity/audit-logs?limit=${limit??"10"}${after?`&after=${after}`:""}${id?`&actingUserId=${id}`:""}${occurred_after?`&occurredAfter=${occurred_after}`:""}${occurred_before?`&occurredBefore=${occurred_before}`:""}${sort?`&sort=${sort}`:""}`, 'GET');
 			},
 		},
 		login: {
@@ -125,7 +123,7 @@ export const activities = {
 			],
 			handler: async (client: any, params: any) => {
 				const { limit, id, after } = params;
-				return client.fetchRequest(`/account-info/v3/activity/login?limit=${limit}${after??`&after=${after}`}${id??`&userId=${id}`}`, 'GET');
+				return client.fetchRequest(`/account-info/v3/activity/login?limit=${limit??"10"}${after?`&after=${after}`:""}${id?`&userId=${id}`:""}`, 'GET');
 			},
 		},
 		security: {
@@ -173,7 +171,7 @@ export const activities = {
 			],
 			handler: async (client: any, params: any) => {
 				const { limit, id, after } = params;
-				return client.fetchRequest(`/account-info/v3/activity/security?limit=${limit}${after??`&after=${after}`}${id??`&userId=${id}`}`, 'GET');
+				return client.fetchRequest(`/account-info/v3/activity/security?limit=${limit??"10"}${after?`&after=${after}`:""}${id?`&userId=${id}`:""}`, 'GET');
 			},
 		},
 	},

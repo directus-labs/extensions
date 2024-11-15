@@ -19,8 +19,8 @@ export const read = (endpoint: string) => {
                 },
             },
             {
-                field: 'fields',
-                name: 'Fields',
+                field: 'r_fields',
+                name: 'Properties',
                 type: 'csv',
                 meta: {
                     width: 'full',
@@ -30,7 +30,7 @@ export const read = (endpoint: string) => {
             },
             {
                 field: 'revision_fields',
-                name: 'Fields with Revisions',
+                name: 'Properties with Revisions',
                 type: 'csv',
                 meta: {
                     width: 'full',
@@ -39,7 +39,7 @@ export const read = (endpoint: string) => {
                 },
             },
             {
-                field: 'associations',
+                field: 'r_associations',
                 name: 'Associations',
                 type: 'csv',
                 meta: {
@@ -62,8 +62,8 @@ export const read = (endpoint: string) => {
             },
         ],
         handler: async (client: any, params: any) => {
-            const { id, fields, revision_fields, associations, archived, id_property } = params;
-            return client.fetchRequest(`/crm/v3/objects/${endpoint}/${id}?archived=${archived}${fields??`&properties=${fields}`}${revision_fields??`&propertiesWithHistory=${revision_fields}`}${associations??`&associations=${associations}`}${id_property??`&idProperty=${id_property}`}`, 'GET');
+            const { id, r_fields, revision_fields, r_associations, archived, id_property } = params;
+            return client.fetchRequest(`/crm/v3/objects/${endpoint}/${id}?archived=${archived}${r_fields?`&properties=${r_fields.join(",")}`:""}${revision_fields?`&propertiesWithHistory=${revision_fields.join(",")}`:""}${r_associations?`&associations=${r_associations.join(",")}`:""}${id_property?`&idProperty=${id_property}`:""}`, 'GET');
         },
     };
 };

@@ -21,8 +21,8 @@ export const list = (endpoint: string) => {
                 },
             },
             {
-                field: 'fields',
-                name: 'Fields',
+                field: 'l_fields',
+                name: 'Properties',
                 type: 'csv',
                 meta: {
                     width: 'full',
@@ -42,8 +42,8 @@ export const list = (endpoint: string) => {
             }
         ],
         handler: async (client: any, params: any) => {
-            const { limit, fields, after } = params;
-            return client.fetchRequest(`/crm/v3/objects/${endpoint}?limit=${limit}${fields??`&properties=${fields}`}${after??`&after=${after}`}`, 'GET');
+            const { limit, l_fields, after } = params;
+            return client.fetchRequest(`/crm/v3/objects/${endpoint}?limit=${limit??"10"}${l_fields?`&properties=${l_fields.join(",")}`:""}${after?`&after=${after}`:""}`, 'GET');
         },
     };
 };
