@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import type { ShowSelect } from "@directus/extensions";
     import { clone, forEach, pick } from "lodash";
-    import { computed, ref, useSlots } from "vue";
+    import { computed, ref, useSlots, type Ref, type ComputedRef } from "vue";
     import Draggable from "vuedraggable";
     import TableHeader from "./table-header.vue";
     import TableRow from "./table-row.vue";
@@ -17,6 +17,8 @@
         ItemSelectEvent,
         Sort,
     } from "../core-clones/components/v-table/types";
+
+    type ItemWithDepth = Item & { depth: number };
 
     const HeaderDefaults: Header = {
         text: "",
@@ -174,6 +176,9 @@
         return props.modelValue.length > 0 && allItemsSelected.value === false;
     });
 
+    const controlIconWidth = 28;
+    const controlIconWidthCSS = `${controlIconWidth}px`;
+
     const columnStyle = computed<{ header: string; rows: string }>(() => {
         return {
             header: generate("auto"),
@@ -188,11 +193,10 @@
                         : "160px";
                 })
                 .reduce((acc, val) => (acc += " " + val), "");
+            const controlColumnWidth = getControlColumnWidth();
 
-            if (props.showSelect !== "none")
-                gridTemplateColumns = "36px " + gridTemplateColumns;
-            if (props.showManualSort)
-                gridTemplateColumns = "36px " + gridTemplateColumns;
+            if (!!controlColumnWidth)
+                gridTemplateColumns = `${controlColumnWidth}px ${gridTemplateColumns}`;
 
             gridTemplateColumns = gridTemplateColumns + " 1fr";
 
@@ -200,6 +204,20 @@
                 gridTemplateColumns += " min-content";
 
             return gridTemplateColumns;
+        }
+
+        function getControlColumnWidth() {
+            let controlColumnWidth = 0;
+
+            if (props.showSelect !== "none")
+                controlColumnWidth += controlIconWidth;
+
+            if (props.showManualSort) controlColumnWidth += controlIconWidth;
+
+            if (!!gridTemplateTreeColumnWidth.value)
+                controlColumnWidth += gridTemplateTreeColumnWidth.value;
+
+            return controlColumnWidth;
         }
     });
 
@@ -274,6 +292,108 @@
 
     function updateSort(newSort: Sort) {
         emit("update:sort", newSort?.by ? newSort : null);
+    }
+
+    const parentField = ref("parent");
+    const parentKey = ref("id");
+
+    const { sortedItems, gridTemplateTreeColumnWidth } = useTreeView({
+        internalItems,
+        parentField,
+        parentKey,
+        controlIconWidth,
+    });
+
+    function useTreeView({
+        internalItems: originalItems,
+        parentField,
+        parentKey,
+        controlIconWidth,
+    }: {
+        internalItems: ComputedRef;
+        parentField: Ref<string>;
+        parentKey: Ref<string>;
+        controlIconWidth: number;
+    }) {
+        const treeViewAble = computed(
+            () => !!parentField.value && props.showManualSort
+        );
+        const sortedItems = computed<Item[] | ItemWithDepth[]>(() => {
+            if (!treeViewAble.value) return originalItems.value;
+            return calculateDepthAndOrder(originalItems.value);
+        });
+        const maxDepths = computed(getMaxDepths);
+        const gridTemplateTreeColumnWidth = computed(calculateColumnWidth);
+
+        return {
+            sortedItems,
+            gridTemplateTreeColumnWidth,
+        };
+
+        function calculateColumnWidth() {
+            return maxDepths.value * controlIconWidth;
+        }
+
+        function getMaxDepths() {
+            return Math.max(
+                ...sortedItems.value.map((item) => item.depth ?? 0)
+            );
+        }
+
+        function calculateDepthAndOrder(data: Item[]) {
+            const map = {};
+
+            data.forEach((item) => {
+                map[item[parentKey.value]] = item;
+            });
+
+            for (const key in map) {
+                const item = map[key];
+                if (!("depth" in item)) setDepth(item);
+            }
+
+            const sortedResult: ItemWithDepth[] = [];
+
+            const rootItems = (Object.values(map) as ItemWithDepth[]).filter(
+                (item) => item.depth === 0
+            );
+            rootItems.sort((a, b) => a.sort - b.sort);
+            rootItems.forEach(addItem);
+
+            return sortedResult;
+
+            function setDepth(item) {
+                if (item[parentField.value]) {
+                    const parentId = item[parentField.value][parentKey.value];
+
+                    if (map[parentId]) {
+                        const parentItem = map[parentId];
+
+                        if (!("depth" in parentItem)) {
+                            setDepth(parentItem);
+                        }
+
+                        item.depth = parentItem.depth + 1;
+                    }
+                } else {
+                    item.depth = 0;
+                }
+            }
+
+            function addItem(item: ItemWithDepth) {
+                sortedResult.push(item);
+
+                const children = (Object.values(map) as ItemWithDepth[]).filter(
+                    (child) =>
+                        child[parentField.value] &&
+                        child[parentField.value][parentKey.value] ===
+                            item[parentKey.value]
+                );
+
+                children.sort((a, b) => a.sort - b.sort);
+                children.forEach(addItem);
+            }
+        }
     }
 </script>
 
@@ -362,7 +482,7 @@
             </tbody>
             <draggable
                 v-else
-                v-model="internalItems"
+                v-model="sortedItems"
                 :item-key="itemKey"
                 tag="tbody"
                 handle=".drag-handle"
@@ -375,6 +495,7 @@
                     <table-row
                         :headers="internalHeaders"
                         :item="element"
+                        :depth="element.depth ?? 0"
                         :show-select="disabled ? 'none' : showSelect"
                         :show-manual-sort="!disabled && showManualSort"
                         :is-selected="getSelectedState(element)"
@@ -558,5 +679,18 @@
     .disabled {
         --v-table-color: var(--theme--foreground-subdued);
         --v-table-background-color: var(--theme--background-subdued);
+    }
+
+    table {
+        border-bottom: var(--theme--border-width) solid
+            var(--theme--border-color-subdued);
+    }
+
+    table :deep(.cell.controls .manual),
+    table :deep(.cell.controls .select) {
+        margin: 0 2px;
+    }
+    table :deep(.depth-spacer) {
+        width: v-bind(controlIconWidthCSS);
     }
 </style>

@@ -207,29 +207,35 @@
         >
             <template #header>
                 <th
-                    v-if="showManualSort"
-                    class="manual cell"
-                    :class="{ 'sorted-manually': sort.by === manualSortKey }"
+                    class="cell controls"
                     scope="col"
-                    @click="toggleManualSort"
                 >
-                    <v-icon
-                        v-tooltip="t('toggle_manual_sorting')"
-                        name="sort"
-                        small
-                    />
-                </th>
+                    <button
+                        v-if="showManualSort"
+                        class="manual manual-btn"
+                        :class="{
+                            'sorted-manually': sort.by === manualSortKey,
+                        }"
+                        @click="toggleManualSort"
+                    >
+                        <v-icon
+                            v-tooltip="t('toggle_manual_sorting')"
+                            name="sort"
+                            small
+                        />
+                    </button>
 
-                <th
-                    v-if="showSelect !== 'none'"
-                    class="select cell"
-                    scope="col"
-                >
                     <v-checkbox
                         v-if="showSelect === 'multiple'"
+                        class="select"
                         :model-value="allItemsSelected"
                         :indeterminate="someItemsSelected"
                         @update:model-value="toggleSelectAll"
+                    />
+
+                    <span
+                        v-if="showResize"
+                        class="resize-handle visual-only"
                     />
                 </th>
             </template>
@@ -355,13 +361,17 @@
                 --v-table-background-color,
                 var(--theme--background)
             );
-            border-bottom: var(--theme--border-width) solid
-                var(--theme--border-color-subdued);
+            /* border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued); */
 
-            &.select,
             &.manual {
                 display: flex;
                 align-items: center;
+            }
+
+            &.controls {
+                display: flex;
+                align-items: center;
+                padding: 0;
             }
 
             .content {
@@ -447,11 +457,10 @@
         .manual {
             color: var(--theme--foreground-subdued);
             cursor: pointer;
+        }
 
-            .v-icon {
-                position: relative;
-                left: 2px;
-            }
+        .manual-btn {
+            width: 24px;
 
             &.sorted-manually {
                 color: var(--theme--foreground);
@@ -481,6 +490,10 @@
 
             &:hover::after {
                 background-color: var(--theme--primary);
+            }
+
+            &.visual-only {
+                pointer-events: none;
             }
         }
     }

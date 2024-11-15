@@ -9,6 +9,7 @@
         defineProps<{
             headers: Header[];
             item: Item;
+            depth?: number;
             showSelect: ShowSelect;
             showManualSort?: boolean;
             isSelected?: boolean;
@@ -18,6 +19,7 @@
             height?: number;
         }>(),
         {
+            depth: 0,
             showSelect: "none",
             showManualSort: false,
             isSelected: false,
@@ -44,33 +46,40 @@
         :class="{ subdued: subdued, clickable: hasClickListener }"
         @click="$emit('click', $event)"
     >
-        <td
-            v-if="showManualSort"
-            class="manual cell"
-            @click.stop
-        >
-            <v-icon
-                name="drag_handle"
-                class="drag-handle"
-                :class="{ 'sorted-manually': sortedManually }"
+        <td class="cell controls">
+            <div
+                v-for="index in depth"
+                :key="index"
+                class="depth-spacer"
             />
-        </td>
 
-        <td
-            v-if="showSelect !== 'none'"
-            class="select cell"
-            @click.stop
-        >
-            <v-checkbox
-                :icon-on="
-                    showSelect === 'one' ? 'radio_button_checked' : undefined
-                "
-                :icon-off="
-                    showSelect === 'one' ? 'radio_button_unchecked' : undefined
-                "
-                :model-value="isSelected"
-                @update:model-value="$emit('item-selected', $event)"
-            />
+            <div class="cell-style">
+                <v-icon
+                    v-if="showManualSort"
+                    @click.stop
+                    name="drag_handle"
+                    class="drag-handle manual"
+                    :class="{ 'sorted-manually': sortedManually }"
+                />
+
+                <v-checkbox
+                    v-if="showSelect !== 'none'"
+                    @click.stop
+                    class="select"
+                    :icon-on="
+                        showSelect === 'one'
+                            ? 'radio_button_checked'
+                            : undefined
+                    "
+                    :icon-off="
+                        showSelect === 'one'
+                            ? 'radio_button_unchecked'
+                            : undefined
+                    "
+                    :model-value="isSelected"
+                    @update:model-value="$emit('item-selected', $event)"
+                />
+            </div>
         </td>
 
         <td
@@ -122,16 +131,27 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             background-color: var(--v-table-background-color, transparent);
-            border-bottom: var(--theme--border-width) solid
+            border-top: var(--theme--border-width) solid
                 var(--theme--border-color-subdued);
 
             &:last-child {
                 padding: 0 12px;
             }
 
-            &.select {
+            &.controls {
+                padding: 0;
                 display: flex;
-                align-items: center;
+                border-top: 0;
+
+                .cell-style {
+                    display: flex;
+                    align-items: center;
+                    flex-grow: 1;
+                    height: 100%;
+                    padding: 8px 0;
+                    border-top: var(--theme--border-width) solid
+                        var(--theme--border-color-subdued);
+                }
             }
         }
 
@@ -142,6 +162,14 @@
         &.clickable:not(.subdued):hover .cell {
             background-color: var(--theme--background-subdued);
             cursor: pointer;
+
+            &.controls {
+                background-color: transparent;
+
+                .cell-style {
+                    background-color: var(--theme--background-subdued);
+                }
+            }
         }
 
         .drag-handle {
