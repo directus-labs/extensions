@@ -1,0 +1,50 @@
+{
+	"name": "@directus-labs/ai-web-scraper-operation",
+	"description": "Use Firecrawl's Web Scraping API to extract data from websites.",
+	"icon": "extension",
+	"version": "1.1.0",
+	"license": "MIT",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-operation"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "operation",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"source": {
+			"app": "src/app.js",
+			"api": "src/api.js"
+		},
+		"host": "^10.10.0 || ^11.0.0",
+		"sandbox": {
+			"enabled": true,
+			"requestedScopes": {
+				"request": {
+					"methods": [
+						"POST"
+					],
+					"urls": [
+						"https://api.firecrawl.dev/v1/scrape"
+					]
+				}
+			}
+		}
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "11.0.1",
+		"vue": "^3.4.21"
+	}
+}

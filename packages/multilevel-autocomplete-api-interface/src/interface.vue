@@ -176,7 +176,10 @@ watch(
 						<InputRequest
 							v-model="value.steps[index]"
 							:scope="scope"
+							:method="step.requestMethod"
 							:url="step.requestUrl"
+							:headers="step.requestHeaders"
+							:body="step.requestBody"
 							:trigger="step.requestTrigger"
 							:rate="step.requestRate"
 							:resultsPath="step.resultsPath"
