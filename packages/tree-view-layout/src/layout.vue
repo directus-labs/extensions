@@ -68,6 +68,7 @@
             field: "string",
             align: "left" | "center" | "right"
         ) => void;
+        parentField: string | null;
     }
 
     const props = withDefaults(defineProps<Props>(), {
@@ -178,6 +179,7 @@
             @click:row="onRowClick"
             @update:sort="onSortChange"
             @manual-sort="changeManualSort"
+            :parent-field
         >
             <template
                 v-for="header in tableHeaders"

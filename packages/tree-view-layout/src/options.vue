@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import { computed } from "vue";
     import { useI18n } from "vue-i18n";
     import type { Field } from "@directus/types";
     // CORE CHANGES
@@ -9,12 +10,17 @@
         fields: string[];
         activeFields: Field[];
         tableSpacing: "compact" | "cozy" | "comfortable";
+        parentField: string | null;
+        sortField: string;
+        collection: string;
+        fieldsInCollection: any;
     }
 
     const props = defineProps<Props>();
 
     const emit = defineEmits([
         "update:tableSpacing",
+        "update:parentField",
         "update:activeFields",
         "update:fields",
     ]);
@@ -22,9 +28,52 @@
     const { t } = useI18n();
 
     const tableSpacingWritable = useSync(props, "tableSpacing", emit);
+    const parentFieldWritable = useSync(props, "parentField", emit);
+
+    const selfReferencingM2oFields = computed(() => {
+        return props.fieldsInCollection?.filter(
+            (field) =>
+                field.type == "integer" &&
+                field.meta?.special?.includes("m2o") &&
+                field.schema?.foreign_key_table == props.collection
+        );
+    });
 </script>
 
 <template>
+    <div
+        v-if="!sortField"
+        class="field"
+    >
+        <v-notice type="warning"
+            >Specify a sort field in your data model settings!</v-notice
+        >
+    </div>
+
+    <div
+        v-else
+        class="field"
+    >
+        <div class="type-label">Parent (M2O)</div>
+
+        <v-notice
+            v-if="!selfReferencingM2oFields?.length"
+            type="warning"
+            >Create a M2O field that references this collection in your data
+            model settings!</v-notice
+        >
+
+        <v-select
+            v-else
+            v-model="parentFieldWritable"
+            :items="selfReferencingM2oFields"
+            item-text="name"
+            item-value="field"
+            show-deselect
+            :placeholder="t('select_a_field')"
+        />
+    </div>
+
     <div class="field">
         <div class="type-label">{{ t("layouts.tabular.spacing") }}</div>
         <v-select
@@ -64,5 +113,9 @@
         &:hover {
             --v-icon-color: var(--theme--foreground);
         }
+    }
+
+    .v-notice {
+        --v-notice-background-color: var(--theme--background-accent);
     }
 </style>

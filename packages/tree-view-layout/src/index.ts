@@ -116,6 +116,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             });
         });
 
+        const parentField = syncRefProperty(layoutOptions, "parent", null);
+
         return {
             tableHeaders,
             items,
@@ -136,6 +138,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             limit,
             activeFields,
             tableSpacing,
+            parentField,
             primaryKeyField,
             info,
             showingCount,

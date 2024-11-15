@@ -1,7 +1,14 @@
 <script setup lang="ts">
     import type { ShowSelect } from "@directus/extensions";
     import { clone, forEach, pick } from "lodash";
-    import { computed, ref, useSlots, type Ref, type ComputedRef } from "vue";
+    import {
+        computed,
+        ref,
+        useSlots,
+        toRef,
+        type Ref,
+        type ComputedRef,
+    } from "vue";
     import Draggable from "vuedraggable";
     import TableHeader from "./table-header.vue";
     import TableRow from "./table-row.vue";
@@ -51,6 +58,7 @@
             inline?: boolean;
             disabled?: boolean;
             clickable?: boolean;
+            parentField: string | null;
         }>(),
         {
             itemKey: "id",
@@ -294,29 +302,32 @@
         emit("update:sort", newSort?.by ? newSort : null);
     }
 
-    const parentField = ref("parent");
-    const parentKey = ref("id");
-
     const { sortedItems, gridTemplateTreeColumnWidth } = useTreeView({
         internalItems,
-        parentField,
-        parentKey,
+        parentField: toRef(props, "parentField"),
+        itemKey: toRef(props, "itemKey"),
+        sortKey: toRef(props, "manualSortKey"),
+        showManualSort: toRef(props, "showManualSort"),
         controlIconWidth,
     });
 
     function useTreeView({
         internalItems: originalItems,
         parentField,
-        parentKey,
+        itemKey,
+        sortKey,
+        showManualSort,
         controlIconWidth,
     }: {
         internalItems: ComputedRef;
-        parentField: Ref<string>;
-        parentKey: Ref<string>;
+        parentField: Ref<string | null>;
+        itemKey: Ref<string>;
+        sortKey: Ref<string | undefined>;
+        showManualSort: Ref<boolean>;
         controlIconWidth: number;
     }) {
         const treeViewAble = computed(
-            () => !!parentField.value && props.showManualSort
+            () => !!parentField.value && showManualSort.value && !!sortKey.value
         );
         const sortedItems = computed<Item[] | ItemWithDepth[]>(() => {
             if (!treeViewAble.value) return originalItems.value;
@@ -344,7 +355,7 @@
             const map = {};
 
             data.forEach((item) => {
-                map[item[parentKey.value]] = item;
+                map[item[itemKey.value]] = item;
             });
 
             for (const key in map) {
@@ -357,14 +368,16 @@
             const rootItems = (Object.values(map) as ItemWithDepth[]).filter(
                 (item) => item.depth === 0
             );
-            rootItems.sort((a, b) => a.sort - b.sort);
+            rootItems.sort((a, b) => a[sortKey.value!] - b[sortKey.value!]);
             rootItems.forEach(addItem);
 
             return sortedResult;
 
             function setDepth(item) {
-                if (item[parentField.value]) {
-                    const parentId = item[parentField.value][parentKey.value];
+                if (item[parentField.value!]) {
+                    const parentId =
+                        item[parentField.value!][itemKey.value] ??
+                        item[parentField.value!];
 
                     if (map[parentId]) {
                         const parentItem = map[parentId];
@@ -384,13 +397,18 @@
                 sortedResult.push(item);
 
                 const children = (Object.values(map) as ItemWithDepth[]).filter(
-                    (child) =>
-                        child[parentField.value] &&
-                        child[parentField.value][parentKey.value] ===
-                            item[parentKey.value]
+                    (child) => {
+                        if (!child[parentField.value!]) return false;
+
+                        const parentId =
+                            child[parentField.value!][itemKey.value] ??
+                            child[parentField.value!];
+
+                        return parentId === item[itemKey.value];
+                    }
                 );
 
-                children.sort((a, b) => a.sort - b.sort);
+                children.sort((a, b) => a[sortKey.value!] - b[sortKey.value!]);
                 children.forEach(addItem);
             }
         }

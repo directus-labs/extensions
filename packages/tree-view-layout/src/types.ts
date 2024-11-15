@@ -8,6 +8,7 @@ export type LayoutOptions = {
     };
     limit?: number;
     spacing?: "comfortable" | "cozy" | "compact";
+    parent?: string | null;
 };
 
 export type LayoutQuery = {
