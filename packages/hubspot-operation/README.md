@@ -6,19 +6,21 @@ The HubSpot Operation allows you to integrate their API into Directus flows.
 
 ## Endpoints
 
-- Activities
-- Calls
-- Communications
-- Companies
-- Contacts
-- Deals
-- Email
-- Leads
-- Meetings
-- Notes
-- Products
-- Tasks
-- Tickets
+- [`/account-info/v3/activity/audit-logs`](https://developers.hubspot.com/beta-docs/reference/api/settings/account-activity-api)
+- [`/account-info/v3/activity/login`](https://developers.hubspot.com/beta-docs/reference/api/settings/account-activity-api#get-%2Faccount-info%2Fv3%2Factivity%2Flogin)
+- [`/account-info/v3/activity/security`](https://developers.hubspot.com/beta-docs/reference/api/settings/account-activity-api#get-%2Faccount-info%2Fv3%2Factivity%2Fsecurity)
+- [`/crm/v3/objects/contacts`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/contacts)
+- [`/crm/v3/objects/communications`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/communications)
+- [`/crm/v3/objects/companies`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/companies)
+- [`/crm/v3/objects/contacts`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/contacts)
+- [`/crm/v3/objects/deals`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/deals)
+- [`/crm/v3/objects/email`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/email)
+- [`/crm/v3/objects/leads`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/leads)
+- [`/crm/v3/objects/meetings`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/meetings)
+- [`/crm/v3/objects/notes`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/notes)
+- [`/crm/v3/objects/products`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/products)
+- [`/crm/v3/objects/tasks`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/tasks)
+- [`/crm/v3/objects/tickets`](https://developers.hubspot.com/beta-docs/reference/api/crm/objects/tickets)
 
 ## Usage
 
@@ -120,6 +122,8 @@ Also known as "after", this field is used for pagination of the results. You can
   }
 ```
 
+_Note: paging will be absent if there are less results on the current page than the limit_
+
 ### Limit
 
 By default this is set to 10 entries. Change this value to retrieve more or less results.
@@ -135,7 +139,7 @@ The Activity endpoint has an additional datetime field. This will limit the scop
 
 ## Webhooks
 
-HubSpot offer a Webhook as part of the private app which can be linked to a Directus webhook flow for a more complete
+HubSpot offer a Webhook as part of the private app which can be linked to a Directus webhook flow for a more circular workflow.
 
 
 ## Security Considerations
