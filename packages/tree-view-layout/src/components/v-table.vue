@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import type { ShowSelect } from "@directus/extensions";
-    import { clone, forEach, pick } from "lodash";
+    import { clone, forEach, pick, cloneDeep } from "lodash";
     import {
         computed,
         ref,
@@ -306,7 +306,7 @@
         emit("update:sort", newSort?.by ? newSort : null);
     }
 
-    const { sortedItems, gridTemplateTreeColumnWidth } = useTreeView({
+    const { sortedItems, gridTemplateTreeColumnWidth, depthKey } = useTreeView({
         internalItems,
         parentField: toRef(props, "parentField"),
         itemKey: toRef(props, "itemKey"),
@@ -330,12 +330,13 @@
         showManualSort: Ref<boolean>;
         controlIconWidth: number;
     }) {
+        const depthKey = "--depth";
         const treeViewAble = computed(
             () => !!parentField.value && showManualSort.value && !!sortKey.value
         );
         const sortedItems = computed<Item[] | ItemWithDepth[]>(() => {
             if (!treeViewAble.value) return originalItems.value;
-            return calculateDepthAndOrder(originalItems.value);
+            return calculateDepthAndOrder(cloneDeep(originalItems.value));
         });
         const maxDepths = computed(getMaxDepths);
         const gridTemplateTreeColumnWidth = computed(calculateColumnWidth);
@@ -343,6 +344,7 @@
         return {
             sortedItems,
             gridTemplateTreeColumnWidth,
+            depthKey,
         };
 
         function calculateColumnWidth() {
@@ -351,7 +353,7 @@
 
         function getMaxDepths() {
             return Math.max(
-                ...sortedItems.value.map((item) => item.depth ?? 0)
+                ...sortedItems.value.map((item) => item[depthKey] ?? 0)
             );
         }
 
@@ -364,13 +366,13 @@
 
             for (const key in map) {
                 const item = map[key];
-                if (!("depth" in item)) setDepth(item);
+                if (!(depthKey in item)) setDepth(item);
             }
 
             const sortedResult: ItemWithDepth[] = [];
 
             const rootItems = (Object.values(map) as ItemWithDepth[]).filter(
-                (item) => item.depth === 0
+                (item) => item[depthKey] === 0
             );
             rootItems.sort((a, b) => a[sortKey.value!] - b[sortKey.value!]);
             rootItems.forEach(addItem);
@@ -386,14 +388,14 @@
                     if (map[parentId]) {
                         const parentItem = map[parentId];
 
-                        if (!("depth" in parentItem)) {
+                        if (!(depthKey in parentItem)) {
                             setDepth(parentItem);
                         }
 
-                        item.depth = parentItem.depth + 1;
+                        item[depthKey] = parentItem[depthKey] + 1;
                     }
                 } else {
-                    item.depth = 0;
+                    item[depthKey] = 0;
                 }
             }
 
@@ -517,7 +519,7 @@
                     <table-row
                         :headers="internalHeaders"
                         :item="element"
-                        :depth="element.depth ?? 0"
+                        :depth="element[depthKey] ?? 0"
                         :show-select="disabled ? 'none' : showSelect"
                         :show-manual-sort="!disabled && showManualSort"
                         :is-selected="getSelectedState(element)"
