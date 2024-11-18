@@ -1,6 +1,6 @@
 {
-    "name": "directus-extension-funnel-chart-panel",
-    "description": "Please enter a description for your extension",
+    "name": "@directus-labs/funnel-chart-panel",
+    "description": "Visualize data in stages using a funnel chart.",
     "icon": "extension",
     "version": "1.0.0",
     "keywords": [

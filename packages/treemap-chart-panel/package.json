@@ -1,6 +1,6 @@
 {
-	"name": "directus-extension-tree-map-chart-panel",
-	"description": "Please enter a description for your extension",
+	"name": "@directus-labs/treemap-chart-panel",
+	"description": "View treemaps for items with aggregations.",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [
