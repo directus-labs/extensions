@@ -184,6 +184,7 @@
         return props.modelValue.length > 0 && allItemsSelected.value === false;
     });
 
+    const controlColumnPadding = 12;
     const controlIconWidth = 28;
     const controlIconWidthCSS = `${controlIconWidth}px`;
 
@@ -224,6 +225,9 @@
 
             if (!!gridTemplateTreeColumnWidth.value)
                 controlColumnWidth += gridTemplateTreeColumnWidth.value;
+
+            if (!!controlColumnWidth)
+                controlColumnWidth += controlColumnPadding;
 
             return controlColumnWidth;
         }
