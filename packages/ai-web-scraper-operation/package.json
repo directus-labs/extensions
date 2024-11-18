@@ -2,7 +2,7 @@
 	"name": "@directus-labs/ai-web-scraper-operation",
 	"description": "Use Firecrawl's Web Scraping API to extract data from websites.",
 	"icon": "extension",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"license": "MIT",
 	"keywords": [
 		"directus",
