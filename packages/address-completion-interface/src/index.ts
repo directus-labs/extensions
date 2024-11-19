@@ -2,11 +2,11 @@ import { defineInterface } from '@directus/extensions-sdk';
 import InterfaceComponent from './interface.vue';
 
 export default defineInterface({
-	id: 'custom',
-	name: 'Custom',
+	id: 'directus-labs-address-completion-interface',
+	name: 'Address completion',
 	icon: 'box',
-	description: 'This is my custom interface!',
+	description: 'Use Google Places autocomplete Data API as an Address Completion interface!',
 	component: InterfaceComponent,
 	options: null,
-	types: ['string'],
+	types: ['geometry'],
 });

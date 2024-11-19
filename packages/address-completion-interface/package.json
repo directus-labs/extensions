@@ -1,8 +1,16 @@
 {
-	"name": "address-completion-interface",
-	"description": "Please enter a description for your extension",
+	"name": "@directus-labs/address-completion-interface",
+	"description": "Use Google Places autocomplete Data API as an Address Completion interface",
 	"icon": "extension",
 	"version": "1.0.0",
+	"license": "MIT",
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "Dominic Marcelino",
+			"email": "dominic.marcelino@utomic.media"
+		}
+	],
 	"keywords": [
 		"directus",
 		"directus-extension",
@@ -16,7 +24,7 @@
 		"type": "interface",
 		"path": "dist/index.js",
 		"source": "src/index.ts",
-		"host": "^10.10.0"
+		"host": "^10.0.0 || ^11.0.0"
 	},
 	"scripts": {
 		"build": "directus-extension build",
