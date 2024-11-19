@@ -7,6 +7,51 @@ export default defineInterface({
 	icon: 'box',
 	description: 'Use Google Places autocomplete Data API as an Address Completion interface!',
 	component: InterfaceComponent,
-	options: null,
+	options: [
+		{
+			field: 'apiKeyGMaps',
+			name: 'Google Maps API Key',
+			type: 'string',
+			meta: {
+				required: true,
+				options: {
+					masked: true,
+				},
+				width: 'full',
+				interface: 'input',
+			},
+		},
+		{
+			field: 'iconLeft',
+			name: '$t:icon_left',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'select-icon',
+			},
+		},
+		{
+			field: 'iconRight',
+			name: '$t:icon_right',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'select-icon',
+			},
+		},
+		{
+			field: 'displayMap',
+			name: 'Display map',
+			type: 'boolean',
+			meta: {
+				required: true,
+				width: 'half',
+				interface: 'checkbox',
+			},
+			schema: {
+				default_value: true,
+			},
+		},
+	],
 	types: ['geometry'],
 });
