@@ -113,35 +113,35 @@ async function onPlaceSelected(location: AutocompleteLocation) {
 
 <template>
 	<v-menu attached :disabled="disabled">
-			<template #activator="{ activate }">
-				<v-input
-					:placeholder="t('search')"
-					:model-value="searchInput"
-					:disabled="disabled"
-					@update:model-value="onInput"
-					@focus="activate"
-				>
-					<template v-if="iconLeft" #prepend>
-						<v-icon :name="iconLeft" />
-					</template>
-					
-					<template v-if="iconRight" #append>
-						<v-icon :name="iconRight" />
-					</template>
-				</v-input>
-			</template>
+		<template #activator="{ activate }">
+			<v-input
+				:placeholder="t('search')"
+				:model-value="searchInput"
+				:disabled="disabled"
+				@update:model-value="onInput"
+				@focus="activate"
+			>
+				<template v-if="iconLeft" #prepend>
+					<v-icon :name="iconLeft" />
+				</template>
+				
+				<template v-if="iconRight" #append>
+					<v-icon :name="iconRight" />
+				</template>
+			</v-input>
+		</template>
 
-			<v-list v-if="results.length > 0">
-				<v-list-item
-					v-for="result of results"
-					:key="result.placeId"
-					:class="selectedPlaceId === result.placeId ? 'selected' : ''"
-					@click="() => onPlaceSelected(result)"
-				>
-					{{ result.text }}
-				</v-list-item>
-			</v-list>
-		</v-menu>
+		<v-list v-if="results.length > 0">
+			<v-list-item
+				v-for="result of results"
+				:key="result.placeId"
+				:class="selectedPlaceId === result.placeId ? 'selected' : ''"
+				@click="() => onPlaceSelected(result)"
+			>
+				{{ result.text }}
+			</v-list-item>
+		</v-list>
+	</v-menu>
 </template>
 
 
