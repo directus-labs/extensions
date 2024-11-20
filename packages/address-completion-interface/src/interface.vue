@@ -58,19 +58,22 @@ const searchContainer = ref<HTMLElement | null>(null);
 const isDark = document.body.classList.contains('dark');
 const lang = getCurrentLanguage();
 
-let places: google.maps.PlacesLibrary;
-let maps: google.maps.MapsLibrary;
+let placesLibrary: google.maps.PlacesLibrary;
+let mapsLibrary: google.maps.MapsLibrary;
+let markerLibrary: google.maps.MarkerLibrary;
+let map: google.maps.Map;
 
 
 onMounted( async () => {
 	const loader = new Loader({
 		apiKey: props.apiKeyGMaps,
-		libraries: ['places', 'maps'],
+		libraries: ['places', 'maps', 'marker'],
 		version: 'weekly',
 	});
 
-	places = await loader.importLibrary("places");
-	maps = await loader.importLibrary("maps");
+	placesLibrary = await loader.importLibrary("places");
+	mapsLibrary = await loader.importLibrary("maps");
+	markerLibrary = await loader.importLibrary("marker");
 
 	setNewSessionToken();
 	initMap();
@@ -78,7 +81,7 @@ onMounted( async () => {
 
 
 function setNewSessionToken() {
-	sessionToken.value = new places.AutocompleteSessionToken();
+	sessionToken.value = new placesLibrary.AutocompleteSessionToken();
 }
 
 
@@ -100,7 +103,7 @@ async function makeAutocompleteRequest() {
 	};
 
 	try {
-		const { suggestions } = await places.AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+		const { suggestions } = await placesLibrary.AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
 
 		// Make sure to return a custom object, as the original object doesn't play well with vues reactivity (e.g the getter functions)
 		results.value = suggestions
@@ -123,6 +126,17 @@ async function makeAutocompleteRequest() {
 async function onPlaceSelected(location: AutocompleteLocation) {
 	searchInput.value = location.text;
 	selectedPlaceId.value = location.placeId;
+	const data = await location.place.fetchFields({
+		fields: ['location'],
+	});
+
+	const lat = data.place.location?.lat();
+	const lng = data.place.location?.lng();
+
+	if (lat && lng) {
+		const location = new google.maps.LatLng(lat, lng);
+		setMapLocation(location);
+	}
 	setNewSessionToken();
 }
 
@@ -132,7 +146,7 @@ function initMap() {
     return;
   }
 
-  const map = new maps.Map(mapContainer.value, {
+  map = new mapsLibrary.Map(mapContainer.value, {
     center: { lat: 0, lng: 0 },
 		zoom: 1,
 		streetViewControl: false,
@@ -140,7 +154,7 @@ function initMap() {
 			style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
 			position: google.maps.ControlPosition.TOP_RIGHT,
 		},
-
+		mapId: 'DEMO_MAP_ID', // a map ID is required for the new AdvancedMarker, the demo ID is provided by google, @see https://developers.google.com/maps/documentation/javascript/advanced-markers/migration?hl=en
 	});
 
 	if (searchContainer.value) {
@@ -148,6 +162,40 @@ function initMap() {
 		map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchContainer.value!);
 	}
 }
+
+
+function setMapLocation(location: google.maps.LatLng) {
+	if (!map) {
+		return;
+	}
+
+	_setMapCenter(location);
+	_setMapMarker(location);
+}
+
+
+function _setMapCenter(location: google.maps.LatLng) {
+	map.setCenter(location);
+
+	// Create bounds with some padding around the point
+	const bounds = new google.maps.LatLngBounds();
+	bounds.extend(location);
+
+
+	const PADDING = 0.01; // Adjust this value to change the zoom level
+	bounds.extend(new google.maps.LatLng(location.lat() + PADDING, location.lng() + PADDING));
+	bounds.extend(new google.maps.LatLng(location.lat() - PADDING, location.lng() - PADDING));
+
+	map.fitBounds(bounds);
+}
+
+function _setMapMarker(location: google.maps.LatLng) {
+	const setMarker = new markerLibrary.AdvancedMarkerElement({
+		position: location,
+		map,
+	});
+}
+
 </script>
 
 
