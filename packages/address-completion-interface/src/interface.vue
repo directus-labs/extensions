@@ -239,7 +239,7 @@ function getadressComponent(addressComponents: google.maps.places.Place['address
 		return address_component.types.includes(type);
 	});
 
-	if (component[0][valueKey]) {
+	if (component && component[0] && component[0][valueKey]) {
 		return component[0][valueKey];
 	}
 
