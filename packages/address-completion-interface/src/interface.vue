@@ -157,6 +157,7 @@ async function onPlaceSelected(location: AutocompleteLocation) {
 
 	if (lat && lng) {
 		const location = new google.maps.LatLng(lat, lng);
+		setMapLocation(location, placeData.place.viewport);
 
 		const geoData: GeoJsonFeature = {
 			geometry: {
@@ -223,7 +224,7 @@ function getadressComponent(addressComponents: google.maps.places.Place['address
 	return;
 }
 
-// TODO: in case that a locations exist, init it with it
+
 function initMap() {
   if (!mapContainer.value) {
     return;
@@ -243,32 +244,56 @@ function initMap() {
 	if (searchContainer.value) {
 		map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchContainer.value!);
 	}
+
+	setMapValue();
 }
 
 
-function setMapLocation(location: google.maps.LatLng) {
+function setMapValue() {
+	if (!props.value) {
+		return;
+	}
+
+	const { geometry, properties } = props.value;
+
+	if (geometry?.coordinates?.[1] && geometry?.coordinates?.[0]) {
+		setMapLocation(new google.maps.LatLng(geometry.coordinates[1], geometry.coordinates[0]), properties?.viewport);
+	}
+
+	if (properties?.displayName) {
+		searchInput.value = properties.displayName;
+	}
+}
+
+
+function setMapLocation(location: google.maps.LatLng, viewPort: google.maps.LatLngBounds | null | undefined) {
 	if (!map) {
 		return;
 	}
 
-	_setMapCenter(location);
+	_setMapCenter(location, viewPort);
 	_setMapMarker(location);
 }
 
 
-function _setMapCenter(location: google.maps.LatLng) {
+function _setMapCenter(location: google.maps.LatLng, viewPort: google.maps.LatLngBounds | null | undefined) {
 	map.setCenter(location);
 
-	// Create bounds with some padding around the point
-	const bounds = new google.maps.LatLngBounds();
-	bounds.extend(location);
+	if (viewPort) {
+		map.fitBounds(viewPort);
+	}
+	else {
+		// Create bounds with some padding around the point
+		const bounds = new google.maps.LatLngBounds();
+		bounds.extend(location);
 
 
-	const PADDING = 0.01;
-	bounds.extend(new google.maps.LatLng(location.lat() + PADDING, location.lng() + PADDING));
-	bounds.extend(new google.maps.LatLng(location.lat() - PADDING, location.lng() - PADDING));
+		const PADDING = 0.01;
+		bounds.extend(new google.maps.LatLng(location.lat() + PADDING, location.lng() + PADDING));
+		bounds.extend(new google.maps.LatLng(location.lat() - PADDING, location.lng() - PADDING));
 
-	map.fitBounds(bounds);
+		map.fitBounds(bounds);
+	}
 }
 
 function _setMapMarker(location: google.maps.LatLng) {
