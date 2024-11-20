@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Loader } from "@googlemaps/js-api-loader";
 import { getCurrentLanguage } from './utils/get-current-lang';
@@ -38,7 +38,7 @@ type GeoJsonFeature = {
 
 const props = defineProps({
 	value: {
-		type: String,
+		type: Object as PropType<GeoJsonFeature> | null,
 		default: null,
 	},
 	disabled: {
