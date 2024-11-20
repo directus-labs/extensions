@@ -241,7 +241,6 @@ function initMap() {
 	});
 
 	if (searchContainer.value) {
-		console.log('Push search container');
 		map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchContainer.value!);
 	}
 }
