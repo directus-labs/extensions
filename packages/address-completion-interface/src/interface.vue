@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, PropType } from 'vue';
+import { ref, onMounted, PropType, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Loader } from "@googlemaps/js-api-loader";
 import { getCurrentLanguage } from './utils/get-current-lang';
@@ -75,6 +75,7 @@ const searchInput = ref<string | null>(null);
 const selectedPlaceId = ref<string | null>(null);
 const mapContainer = ref<HTMLElement | null>(null);
 const searchContainer = ref<HTMLElement | null>(null);
+const hasMounted = ref(false);
 
 const isDark = document.body.classList.contains('dark');
 const lang = getCurrentLanguage();
@@ -83,6 +84,7 @@ let placesLibrary: google.maps.PlacesLibrary;
 let mapsLibrary: google.maps.MapsLibrary;
 let markerLibrary: google.maps.MarkerLibrary;
 let map: google.maps.Map;
+let marker: google.maps.marker.AdvancedMarkerElement | null = null;
 
 
 onMounted( async () => {
@@ -98,6 +100,26 @@ onMounted( async () => {
 
 	setNewSessionToken();
 	initMap();
+	hasMounted.value = true;
+});
+
+
+watch(() => props.value, (newValue) => {
+	if (!hasMounted.value) {
+		return;
+	}
+
+	if (!newValue) {
+		if (marker) {
+			marker.map = null;
+		}
+
+		searchInput.value = null;
+		
+		return;
+	}
+
+	setMapValue();
 });
 
 
@@ -297,7 +319,7 @@ function _setMapCenter(location: google.maps.LatLng, viewPort: google.maps.LatLn
 }
 
 function _setMapMarker(location: google.maps.LatLng) {
-	const setMarker = new markerLibrary.AdvancedMarkerElement({
+	marker = new markerLibrary.AdvancedMarkerElement({
 		position: location,
 		map,
 	});
