@@ -15,6 +15,27 @@ type AutocompleteLocation = {
 	place: google.maps.places.Place	,
 }
 
+type Coordinates = [number, number];
+
+type GeoProperties = {
+	displayName: string,
+	country: string, // ISO 3166-2
+	administrativeArea: string,
+	postalCode: string,
+	formated: string,
+	raw: google.maps.places.AddressComponent[],
+	viewport: google.maps.LatLngBounds,
+};
+
+type GeoJsonFeature = {
+  "geometry": {
+    "coordinates": Coordinates,
+    "type": "Point"
+  },
+  "properties": Partial<GeoProperties>,
+  "type": "Feature"
+};
+
 const props = defineProps({
 	value: {
 		type: String,
@@ -43,7 +64,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  'input': [string | null],
+	'input': [GeoJsonFeature | null],
 }>();
 
 const { t } = useI18n();
@@ -126,18 +147,80 @@ async function makeAutocompleteRequest() {
 async function onPlaceSelected(location: AutocompleteLocation) {
 	searchInput.value = location.text;
 	selectedPlaceId.value = location.placeId;
-	const data = await location.place.fetchFields({
-		fields: ['location'],
+
+	const placeData = await location.place.fetchFields({
+		fields: ['location', 'displayName', 'addressComponents', 'viewport', 'formattedAddress', 'displayName'],
 	});
 
-	const lat = data.place.location?.lat();
-	const lng = data.place.location?.lng();
+	const lat = placeData.place.location?.lat();
+	const lng = placeData.place.location?.lng();
 
 	if (lat && lng) {
 		const location = new google.maps.LatLng(lat, lng);
-		setMapLocation(location);
+
+		const geoData: GeoJsonFeature = {
+			geometry: {
+				coordinates: [lng, lat],
+				type: 'Point',
+			},
+			properties: getProperties(placeData.place),
+			type: 'Feature',
+		};
+
+		emit('input', geoData);
 	}
+
 	setNewSessionToken();
+}
+
+function getProperties(place: google.maps.places.Place): GeoProperties {
+	let properties = {} as GeoProperties;
+
+	if (place.addressComponents) {
+		const country = getadressComponent(place.addressComponents, 'country', 'shortText');
+		const postalCode = getadressComponent(place.addressComponents, 'postal_code', 'longText');
+		const administrativeArea = getadressComponent(place.addressComponents, 'administrative_area_level_1', 'longText');
+
+		properties = {
+			...properties,
+			...(country && { country }),
+			...(postalCode && { postalCode }),
+			...(administrativeArea && { administrativeArea })
+		};
+
+		properties.raw = place.addressComponents;
+	}
+
+	if (place.displayName) {
+		properties.displayName = place.displayName;
+	}
+
+	if (place.formattedAddress) {
+		properties.formated = place.formattedAddress;
+	}
+
+	if (properties) {
+		properties.viewport = place.viewport!;
+	}
+
+	return properties;
+}
+
+
+function getadressComponent(addressComponents: google.maps.places.Place['addressComponents'], type: string, valueKey: string) {
+	if (!addressComponents) {
+		return;
+	}
+
+	const component = addressComponents.filter(function(address_component) {
+		return address_component.types.includes(type);
+	});
+
+	if (component[0][valueKey]) {
+		return component[0][valueKey];
+	}
+
+	return;
 }
 
 // TODO: in case that a locations exist, init it with it
