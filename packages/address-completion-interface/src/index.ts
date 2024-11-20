@@ -52,6 +52,16 @@ export default defineInterface({
 				default_value: true,
 			},
 		},
+		{
+			field: 'autocompleteFetchOptions',
+			name: 'Autocomplete Fetch Options',
+			type: 'json',
+			meta: {
+				width: 'full',
+				interface: 'code',
+				note: 'Check the [documentation](https://developers.google.com/maps/documentation/javascript/reference/autocomplete-data#AutocompleteSuggestion.fetchAutocompleteSuggestions) for possible options',
+			},
+		}
 	],
 	types: ['geometry'],
 });

@@ -61,6 +61,10 @@ const props = defineProps({
 		type: String,
 		default: null,
 	},
+	autocompleteFetchOptions: {
+		type: Object,
+		default: () => ({}),
+	}
 });
 
 const emit = defineEmits<{
@@ -139,6 +143,7 @@ async function makeAutocompleteRequest() {
 		results.value = [];
 		return;
 	}
+	
 	const request = {
 		input: searchInput.value,
 		sessionToken: sessionToken.value!,
@@ -146,7 +151,7 @@ async function makeAutocompleteRequest() {
 	};
 
 	try {
-		const { suggestions } = await placesLibrary.AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+		const { suggestions } = await placesLibrary.AutocompleteSuggestion.fetchAutocompleteSuggestions({...request, ...props.autocompleteFetchOptions});
 
 		// Make sure to return a custom object, as the original object doesn't play well with vues reactivity (e.g the getter functions)
 		results.value = suggestions
