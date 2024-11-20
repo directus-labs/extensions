@@ -182,7 +182,7 @@ function _setMapCenter(location: google.maps.LatLng) {
 	bounds.extend(location);
 
 
-	const PADDING = 0.01; // Adjust this value to change the zoom level
+	const PADDING = 0.01;
 	bounds.extend(new google.maps.LatLng(location.lat() + PADDING, location.lng() + PADDING));
 	bounds.extend(new google.maps.LatLng(location.lat() - PADDING, location.lng() - PADDING));
 
@@ -200,7 +200,7 @@ function _setMapMarker(location: google.maps.LatLng) {
 
 
 <template>
-	<!-- Render map first, to prevent flickering on moving the search-input into the map -->
+	<!-- Render map first, to reduce content-shift on moving the search-input into the map -->
 	<div v-if="props.displayMap">
 		<div ref="mapContainer" class="map-container"></div>
 	</div>
@@ -282,6 +282,13 @@ function _setMapMarker(location: google.maps.LatLng) {
 	.search-container {
 		margin: 10px;
 		width: 80%;
+	}
+}
+
+/* The card-style selection container */
+:deep(.gm-style-mtc) { 
+	button {
+		width: 100%;
 	}
 }
 
