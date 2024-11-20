@@ -152,6 +152,11 @@ function initMap() {
 
 
 <template>
+	<!-- Render map first, to prevent flickering on moving the search-into into the map -->
+	<div v-if="props.displayMap">
+		<div ref="mapContainer" class="map-container"></div>
+	</div>
+
 	<div ref="searchContainer" class="search-container">
 		<v-menu attached :disabled="disabled">
 			<template #activator="{ activate }">
@@ -198,10 +203,6 @@ function initMap() {
 				</v-list-item>
 			</v-list>
 		</v-menu>
-	</div>
-
-	<div v-if="props.displayMap">
-		<div ref="mapContainer" class="map-container"></div>
 	</div>
 </template>
 
