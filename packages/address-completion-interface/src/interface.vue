@@ -152,7 +152,7 @@ function initMap() {
 
 
 <template>
-	<!-- Render map first, to prevent flickering on moving the search-into into the map -->
+	<!-- Render map first, to prevent flickering on moving the search-input into the map -->
 	<div v-if="props.displayMap">
 		<div ref="mapContainer" class="map-container"></div>
 	</div>
