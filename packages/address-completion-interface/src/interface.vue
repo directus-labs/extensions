@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Loader } from "@googlemaps/js-api-loader"
+import googleLogo from './assets/images/google_on_white_hdpi.png';
+import googleLogoDark from './assets/images/google_on_non_white_hdpi.png';
 
 type AutocompleteLocation = {
 	placeId: string,
@@ -46,6 +48,7 @@ const results = ref<AutocompleteLocation[]>([]);
 const sessionToken = ref<google.maps.places.AutocompleteSessionToken | null>(null);
 const searchInput = ref<string | null>(null);
 const selectedPlaceId = ref<string | null>(null);
+const isDark = document.body.classList.contains('dark');
 
 let places: google.maps.PlacesLibrary;
 
@@ -139,6 +142,20 @@ async function onPlaceSelected(location: AutocompleteLocation) {
 				@click="() => onPlaceSelected(result)"
 			>
 				{{ result.text }}
+			</v-list-item>
+
+			<!-- 
+				If we do not display the map, we need to include the google logo in here
+			 	@see https://developers.google.com/maps/documentation/javascript/place-autocomplete-data
+				@see https://developers.google.com/maps/documentation/javascript/policies#logo
+			-->
+			<v-list-item 
+				v-if="!props.displayMap"
+				:clickable="false" 
+				:disabled="true" 
+				class="google-logo"
+			>
+				<img :src="isDark ? googleLogoDark : googleLogo" alt="Google Logo" />
 			</v-list-item>
 		</v-list>
 	</v-menu>
