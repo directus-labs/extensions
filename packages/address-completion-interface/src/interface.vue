@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Loader } from "@googlemaps/js-api-loader"
+import { Loader } from "@googlemaps/js-api-loader";
+import { getCurrentLanguage } from './utils/get-current-lang';
+
+// @ts-ignore
 import googleLogo from './assets/images/google_on_white_hdpi.png';
+// @ts-ignore
 import googleLogoDark from './assets/images/google_on_non_white_hdpi.png';
 
 type AutocompleteLocation = {
@@ -49,6 +53,7 @@ const sessionToken = ref<google.maps.places.AutocompleteSessionToken | null>(nul
 const searchInput = ref<string | null>(null);
 const selectedPlaceId = ref<string | null>(null);
 const isDark = document.body.classList.contains('dark');
+const lang = getCurrentLanguage();
 
 let places: google.maps.PlacesLibrary;
 
@@ -82,6 +87,7 @@ async function makeAutocompleteRequest() {
 	const request = {
 		input: searchInput.value,
 		sessionToken: sessionToken.value!,
+    language: lang,
 	};
 
 	try {
