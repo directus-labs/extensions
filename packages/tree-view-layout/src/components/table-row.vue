@@ -10,6 +10,7 @@
             headers: Header[];
             item: Item;
             depth?: number;
+            hasChildren?: boolean;
             showSelect: ShowSelect;
             showManualSort?: boolean;
             isSelected?: boolean;
@@ -78,6 +79,13 @@
                     "
                     :model-value="isSelected"
                     @update:model-value="$emit('item-selected', $event)"
+                />
+
+                <v-icon
+                    v-if="hasChildren"
+                    @click.stop
+                    name="expand_more"
+                    class="collapse"
                 />
             </div>
         </td>
@@ -181,6 +189,14 @@
                 &:hover {
                     cursor: ns-resize;
                 }
+            }
+        }
+
+        .collapse {
+            --v-icon-color: var(--theme--foreground-subdued);
+
+            &:hover {
+                --v-icon-color: var(--theme--primary);
             }
         }
 

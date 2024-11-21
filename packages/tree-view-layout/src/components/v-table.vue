@@ -306,14 +306,15 @@
         emit("update:sort", newSort?.by ? newSort : null);
     }
 
-    const { sortedItems, gridTemplateTreeColumnWidth, depthKey } = useTreeView({
-        internalItems,
-        parentField: toRef(props, "parentField"),
-        itemKey: toRef(props, "itemKey"),
-        sortKey: toRef(props, "manualSortKey"),
-        showManualSort: toRef(props, "showManualSort"),
-        controlIconWidth,
-    });
+    const { sortedItems, gridTemplateTreeColumnWidth, depthKey, childrenKey } =
+        useTreeView({
+            internalItems,
+            parentField: toRef(props, "parentField"),
+            itemKey: toRef(props, "itemKey"),
+            sortKey: toRef(props, "manualSortKey"),
+            showManualSort: toRef(props, "showManualSort"),
+            controlIconWidth,
+        });
 
     function useTreeView({
         internalItems: originalItems,
@@ -331,6 +332,7 @@
         controlIconWidth: number;
     }) {
         const depthKey = "--depth";
+        const childrenKey = "--children";
         const treeViewAble = computed(
             () => !!parentField.value && showManualSort.value && !!sortKey.value
         );
@@ -345,6 +347,7 @@
             sortedItems,
             gridTemplateTreeColumnWidth,
             depthKey,
+            childrenKey,
         };
 
         function calculateColumnWidth() {
@@ -361,6 +364,7 @@
             const map = {};
 
             data.forEach((item) => {
+                item[childrenKey] = [];
                 map[item[itemKey.value]] = item;
             });
 
@@ -415,7 +419,10 @@
                 );
 
                 children.sort((a, b) => a[sortKey.value!] - b[sortKey.value!]);
-                children.forEach(addItem);
+                children.forEach((child) => {
+                    item[childrenKey].push(child[itemKey.value]);
+                    addItem(child);
+                });
             }
         }
     }
@@ -520,6 +527,7 @@
                         :headers="internalHeaders"
                         :item="element"
                         :depth="element[depthKey] ?? 0"
+                        :has-children="element[childrenKey]?.length"
                         :show-select="disabled ? 'none' : showSelect"
                         :show-manual-sort="!disabled && showManualSort"
                         :is-selected="getSelectedState(element)"
@@ -711,7 +719,8 @@
     }
 
     table :deep(.cell.controls .manual),
-    table :deep(.cell.controls .select) {
+    table :deep(.cell.controls .select),
+    table :deep(.cell.controls .collapse) {
         margin: 0 2px;
     }
     table :deep(.depth-spacer) {
