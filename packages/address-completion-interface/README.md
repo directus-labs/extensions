@@ -1,37 +1,48 @@
-# Address Completion Interface 
-This interface includes Google Maps address autocompletion inside of the Directus Editor.
+# Address Completion Interface for Directus
+A Directus interface that integrates Google Maps address autocompletion functionality into the Directus Editor.
 
 ![](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/address-completion-interface/docs/interface.png)
 
-## Installation & Setup
+## Features
+- Google Maps address autocompletion
+- Customizable autocompletion configuration
+- Display the result on a map (optionally)
+
+## Prerequisites
+- A Directus installation
+- Google Maps API key with appropriate permissions
+- Access to your Directus environment variables
+
+## Installation
 To install the extension, take a look at the [Official Guide](https://docs.directus.io/extensions/installing-extensions.html).
 
-### ENV-Variables
-Next you'll need to update your environment variables, in order to allow the app to load data from the google-APIs.
-
+## Configuration
+### 1. Environment Variables
+Add the following environment variables to your config file, in order to allow the app to load data from the google-APIs:
 
 ```env
 CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC=array:'self', 'unsafe-eval', https://*.googleapis.com
 CONTENT_SECURITY_POLICY_DIRECTIVES__IMG_SRC=array:'self', data:, https://*.gstatic.com, https://*.googleapis.com
-```
+````
 
-### Google Maps API-Key
-The interface needs a valid Google Maps Api-key. Check out the [google documentation](https://developers.google.com/maps/documentation/places/web-service/get-api-key) for detailed information. Make sure to enable the `Places API (new)` in your project
+### 2. Google Maps API Setup
+1. Obtain a Google Maps API key from the Google Cloud Console. View [Google documentation](https://developers.google.com/maps/documentation/places/web-service/get-api-key)
+2. Enable the following APIs in your Google Cloud project:
+   - Places API (New)
+   - Maps JavaScript API
 
-We recommend to:
-- Restrict key to your domain
-- Restrict services to:
-  - Places API (New)
-  - Maps JavaScript API
+**Recommended Security Measures:**
 
+- Restrict the API key to your domain
+- Enable only the required services (Places API and Maps JavaScript API)
 
-## Interface settings Config
+## Interface Configuration
 ![](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/address-completion-interface/docs/settings.png)
 
-### Autocomplete fetch config
-The interface-settings allow you to add a custom request-config for the autocomplete-API. Visit the [google docs](https://developers.google.com/maps/documentation/javascript/reference/autocomplete-data#AutocompleteRequest.includedRegionCodes) for all available options.
+### Autocomplete Settings
+You can customize the autocomplete behavior using the interface settings. The configuration accepts standard Google Places Autocomplete parameters as documented in the [Google Maps JavaScript API Reference](https://developers.google.com/maps/documentation/javascript/reference/autocomplete-data#AutocompleteRequest.includedRegionCodes).
 
-The following example allows to restrict the autocompletion results to US-based results only:
+Example Configuration:
 
 ```json
 {
@@ -40,3 +51,7 @@ The following example allows to restrict the autocompletion results to US-based 
     ]
 }
 ```
+This example restricts autocomplete results to US addresses only.
+
+### Support
+For issues and feature requests, please use the GitHub issues section of this repository.
