@@ -334,58 +334,66 @@ function _setMapMarker(location: google.maps.LatLng) {
 
 
 <template>
-	<!-- Render map first, to reduce content-shift on moving the search-input into the map -->
-	<div v-if="props.displayMap">
-		<div ref="mapContainer" class="map-container"></div>
-	</div>
+	<template v-if="!props.apiKeyGMaps">
+		<VNotice type="warning">
+			Please provide a valid Google Maps API key in the interface settings to use this component.
+		</VNotice>
+	</template>
 
-	<div ref="searchContainer" class="search-container">
-		<v-menu attached :disabled="disabled">
-			<template #activator="{ activate }">
-				<v-input
-					:placeholder="t('search')"
-					:model-value="searchInput"
-					:disabled="disabled"
-					:small="props.displayMap ? true : false"
-					@update:model-value="onInput"
-					@focus="activate"
-				>
-					<template v-if="iconLeft" #prepend>
-						<v-icon :name="iconLeft" />
-					</template>
-					
-					<template v-if="iconRight" #append>
-						<v-icon :name="iconRight" />
-					</template>
-				</v-input>
-			</template>
+	<template v-else>
+		<!-- Render map first, to reduce content-shift on moving the search-input into the map -->
+		<div v-if="props.displayMap">
+			<div ref="mapContainer" class="map-container"></div>
+		</div>
 
-			<v-list v-if="results.length > 0">
-				<v-list-item
-					v-for="result of results"
-					:key="result.placeId"
-					:class="selectedPlaceId === result.placeId ? 'selected' : ''"
-					@click="() => onPlaceSelected(result)"
-				>
-					{{ result.text }}
-				</v-list-item>
+		<div ref="searchContainer" class="search-container">
+			<v-menu attached :disabled="disabled">
+				<template #activator="{ activate }">
+					<v-input
+						:placeholder="t('search')"
+						:model-value="searchInput"
+						:disabled="disabled"
+						:small="props.displayMap ? true : false"
+						@update:model-value="onInput"
+						@focus="activate"
+					>
+						<template v-if="iconLeft" #prepend>
+							<v-icon :name="iconLeft" />
+						</template>
+						
+						<template v-if="iconRight" #append>
+							<v-icon :name="iconRight" />
+						</template>
+					</v-input>
+				</template>
 
-				<!-- 
-					If we do not display the map, we need to include the google logo in here
-					@see https://developers.google.com/maps/documentation/javascript/place-autocomplete-data
-					@see https://developers.google.com/maps/documentation/javascript/policies#logo
-				-->
-				<v-list-item 
-					v-if="!props.displayMap"
-					:clickable="false" 
-					:disabled="true" 
-					class="google-logo"
-				>
-					<img :src="isDark ? googleLogoDark : googleLogo" alt="Google Logo" />
-				</v-list-item>
-			</v-list>
-		</v-menu>
-	</div>
+				<v-list v-if="results.length > 0">
+					<v-list-item
+						v-for="result of results"
+						:key="result.placeId"
+						:class="selectedPlaceId === result.placeId ? 'selected' : ''"
+						@click="() => onPlaceSelected(result)"
+					>
+						{{ result.text }}
+					</v-list-item>
+
+					<!-- 
+						If we do not display the map, we need to include the google logo in here
+						@see https://developers.google.com/maps/documentation/javascript/place-autocomplete-data
+						@see https://developers.google.com/maps/documentation/javascript/policies#logo
+					-->
+					<v-list-item 
+						v-if="!props.displayMap"
+						:clickable="false" 
+						:disabled="true" 
+						class="google-logo"
+					>
+						<img :src="isDark ? googleLogoDark : googleLogo" alt="Google Logo" />
+					</v-list-item>
+				</v-list>
+			</v-menu>
+		</div>
+	</template>
 </template>
 
 
