@@ -63,5 +63,5 @@ export default defineInterface({
 			},
 		}
 	],
-	types: ['geometry', 'json'],
+	types: ['json'],
 });
