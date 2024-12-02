@@ -2,7 +2,7 @@
 	"name": "@directus-labs/ai-writer-operation",
 	"description": "Use OpenAI, Claude, Meta and Mistral Text Generation APIs to generate text.",
 	"icon": "extension",
-	"version": "1.3.0",
+	"version": "1.3.1",
 	"license": "MIT",
 	"author": "Directus Labs",
 	"contributors": [
