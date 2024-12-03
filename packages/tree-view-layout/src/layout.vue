@@ -336,6 +336,7 @@
                     <div
                         v-if="
                             loading === false &&
+                            limit > -1 &&
                             (items.length >= 25 || limit < 25)
                         "
                         class="per-page"
