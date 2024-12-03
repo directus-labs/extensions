@@ -5,7 +5,7 @@ export default defineOperationApp({
 	id: 'directus-labs-ai-writer-operation',
 	name: 'AI Writer',
 	icon: 'edit_square',
-	description: 'Use OpenAI\'s Text Generation API to generate text',
+	description: 'Use Anthropic, OpenAI, and Replicate APIs to generate text',
 	overview: ({ model, promptKey, aiProvider }) => [
 		{
 			label: 'AI  Provider',
