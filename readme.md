@@ -44,6 +44,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Funnel Chart](//github.com/directus-labs/extensions/tree/main/packages/funnel-chart-panel)                                           | Panel     | N/A       |            |
 | [Tree Map Chart](//github.com/directus-labs/extensions/tree/main/packages/treemap-chart-panel)                                        | Panel     | N/A       |            |
 | [Timeline Chart](//github.com/directus-labs/extensions/tree/main/packages/timeline-chart-panel)                                       | Panel     | N/A       |            |
+| [Cholopleth Map](//github.com/directus-labs/extensions/tree/main/packages/choropleth-map-panel)                                       | Panel     | N/A       |            |
 | [Command Palette](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module)                                    | Module    | N/A       | ⭐         |
 | [Plausible Analytics](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle)                            | Bundle    | N/A       |            |
 | [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component)                                           | Bundle    | N/A       |            |
