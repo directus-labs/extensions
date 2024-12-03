@@ -15,10 +15,7 @@
     import Sortable from "./sortable/sortable.vue";
     import TableHeader from "./table-header.vue";
     import TableRow from "./table-row.vue";
-    // CORE CHANGES
-    // import { i18n } from "@/lang";
-    // import { hideDragImage } from '@/utils/hide-drag-image';
-    // import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from "./types";
+    import { useSessionStorage } from "@vueuse/core";
     import {
         Header,
         HeaderRaw,
@@ -26,6 +23,10 @@
         ItemSelectEvent,
         Sort,
     } from "../core-clones/components/v-table/types";
+    // CORE CHANGES
+    // import { i18n } from "@/lang";
+    // import { hideDragImage } from '@/utils/hide-drag-image';
+    // import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from "./types";
 
     const HeaderDefaults: Header = {
         text: "",
@@ -59,6 +60,7 @@
             disabled?: boolean;
             clickable?: boolean;
             parentField: string | null;
+            collection: string;
         }>(),
         {
             itemKey: "id",
@@ -298,8 +300,8 @@
         itemDepth,
         itemParent,
         childrenKey,
-        collapsedParentsKey,
         collapsedKey,
+        collapsedParentsKey,
         onSortUpdate,
         onToggleChildren,
     } = useTreeView({
@@ -308,6 +310,7 @@
         itemKey: toRef(props, "itemKey"),
         sortKey: toRef(props, "manualSortKey"),
         showManualSort: toRef(props, "showManualSort"),
+        collection: toRef(props, "collection"),
         sortIsManual,
         controlIconWidth,
     });
@@ -318,6 +321,7 @@
         itemKey,
         sortKey,
         showManualSort,
+        collection,
         sortIsManual,
         controlIconWidth,
     }: {
@@ -326,18 +330,24 @@
         itemKey: Ref<string>;
         sortKey: Ref<string | undefined>;
         showManualSort: Ref<boolean>;
+        collection: Ref<string>;
         sortIsManual: ComputedRef<boolean>;
         controlIconWidth: number;
     }) {
         const itemDepth = "--depth";
         const itemParent = "--parentId";
-        const childrenKey = "--children";
-        const collapsedKey = "--collapsed";
-        const collapsedParentsKey = "--collapsed-parents";
         const treeViewAble = computed(isTreeViewAble);
         const depthChangeMax = ref(0);
         const maxDepths = computed(getMaxDepths);
         const gridTemplateTreeColumnWidth = computed(calculateColumnWidth);
+        const {
+            childrenKey,
+            collapsedKey,
+            collapsedParentsKey,
+            onToggleChildren,
+            isCollapsed,
+            initCollapsedChildren,
+        } = useCollapsible();
 
         watch(() => props.items, initTreeView, { immediate: true });
         watch(() => treeViewAble.value, initTreeView);
@@ -351,35 +361,11 @@
             itemDepth,
             itemParent,
             childrenKey,
-            collapsedParentsKey,
             collapsedKey,
+            collapsedParentsKey,
             onSortUpdate,
             onToggleChildren,
         };
-
-        function onToggleChildren(item: Item) {
-            if (!item[childrenKey]?.length) return;
-
-            item[collapsedKey] = !item[collapsedKey];
-            collapseChildren(item[itemKey.value], item[childrenKey]);
-        }
-
-        function collapseChildren(id: PrimaryKey, childrenIds: PrimaryKey[]) {
-            internalItems.value
-                .filter((internalItem) =>
-                    childrenIds.includes(internalItem[itemKey.value])
-                )
-                .forEach((childItem) => {
-                    const parentIndex =
-                        childItem[collapsedParentsKey]?.indexOf(id);
-
-                    if (parentIndex > -1) {
-                        childItem[collapsedParentsKey].splice(parentIndex, 1);
-                    } else {
-                        childItem[collapsedParentsKey].push(id);
-                    }
-                });
-        }
 
         function resetIfNoParentSelected(
             newParentField: string | null,
@@ -395,6 +381,7 @@
                     calculateTreeProps(cloneDeep(internalItems.value))
                 );
                 internalItems.value = sortedResult;
+                initCollapsedChildren();
 
                 if (orderChanged) onSortUpdate({ sort: true, parent: null });
             }
@@ -428,7 +415,7 @@
             data.forEach((item) => {
                 item[itemParent] = getParentId(item);
                 item[childrenKey] = [];
-                item[collapsedKey] = false;
+                item[collapsedKey] = isCollapsed(item[itemKey.value]);
                 item[collapsedParentsKey] = [];
 
                 map[item[itemKey.value]] = item;
@@ -545,6 +532,81 @@
             }
 
             emit("update:items", edits);
+        }
+
+        function useCollapsible() {
+            const childrenKey = "--children";
+            const collapsedKey = "--collapsed";
+            const collapsedParentsKey = "--collapsed-parents";
+            const collapsedState = useSessionStorage<PrimaryKey[]>(
+                `${collection.value}--tree-view-collapsed-items`,
+                []
+            );
+
+            return {
+                childrenKey,
+                collapsedKey,
+                collapsedParentsKey,
+                onToggleChildren,
+                isCollapsed,
+                initCollapsedChildren,
+            };
+
+            function isCollapsed(id: PrimaryKey) {
+                return collapsedState.value.includes(id);
+            }
+
+            function onToggleChildren(item: Item) {
+                if (!item[childrenKey]?.length) return;
+
+                item[collapsedKey] = toggleItem(item[itemKey.value]);
+                collapseChildren(item[itemKey.value], item[childrenKey]);
+            }
+
+            function toggleItem(id: PrimaryKey): boolean {
+                const index = collapsedState.value.indexOf(id);
+
+                if (index > -1) {
+                    collapsedState.value.splice(index, 1);
+                    return false;
+                }
+
+                collapsedState.value.push(id);
+                return true;
+            }
+
+            function initCollapsedChildren() {
+                collapsedState.value.forEach((collapsedId: PrimaryKey) => {
+                    const childrenIds = internalItems.value?.find(
+                        (item) => item[itemKey.value] === collapsedId
+                    )?.[childrenKey];
+
+                    collapseChildren(collapsedId, childrenIds);
+                });
+            }
+
+            function collapseChildren(
+                id: PrimaryKey,
+                childrenIds: PrimaryKey[]
+            ) {
+                internalItems.value
+                    .filter((internalItem) =>
+                        childrenIds.includes(internalItem[itemKey.value])
+                    )
+                    .forEach((childItem) => {
+                        const parentIndex =
+                            childItem[collapsedParentsKey]?.indexOf(id);
+
+                        if (parentIndex > -1) {
+                            childItem[collapsedParentsKey].splice(
+                                parentIndex,
+                                1
+                            );
+                        } else {
+                            childItem[collapsedParentsKey].push(id);
+                        }
+                    });
+            }
         }
     }
 </script>

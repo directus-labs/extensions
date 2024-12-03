@@ -180,6 +180,7 @@
             @update:sort="onSortChange"
             @update:items="saveEdits"
             :parent-field
+            :collection
         >
             <template
                 v-for="header in tableHeaders"
