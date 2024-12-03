@@ -11,6 +11,8 @@
             item: Item;
             indent?: number;
             sorting?: boolean;
+            childrenCollapsed?: boolean;
+            collapsed?: boolean;
             hasChildren?: boolean;
             showSelect: ShowSelect;
             showManualSort?: boolean;
@@ -32,7 +34,7 @@
         }
     );
 
-    defineEmits(["click", "item-selected"]);
+    defineEmits(["click", "item-selected", "toggle-children"]);
 
     const cssHeight = computed(() => {
         return {
@@ -50,7 +52,12 @@
 <template>
     <tr
         class="table-row"
-        :class="{ subdued: subdued, clickable: hasClickListener, sorting }"
+        :class="{
+            subdued: subdued,
+            clickable: hasClickListener,
+            sorting,
+            collapsed,
+        }"
         @click="$emit('click', $event)"
     >
         <td
@@ -87,9 +94,10 @@
 
                 <v-icon
                     v-if="hasChildren"
-                    @click.stop
+                    @click.stop="$emit('toggle-children')"
                     name="expand_more"
-                    class="collapse"
+                    class="collapse-btn"
+                    :class="{ 'children-collapsed': childrenCollapsed }"
                 />
             </div>
         </td>
@@ -205,11 +213,24 @@
             --v-icon-color: var(--theme--primary);
         }
 
-        .collapse {
+        &.collapsed {
+            visibility: hidden;
+            height: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .collapse-btn {
             --v-icon-color: var(--theme--foreground-subdued);
 
-            &:hover {
+            &:hover,
+            &.children-collapsed:hover {
                 --v-icon-color: var(--theme--primary);
+            }
+
+            &.children-collapsed {
+                --v-icon-color: var(--theme--foreground);
+                transform: rotate(90deg);
             }
         }
 

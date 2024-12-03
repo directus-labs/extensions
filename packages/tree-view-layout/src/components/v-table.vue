@@ -298,7 +298,10 @@
         itemDepth,
         itemParent,
         childrenKey,
+        collapsedParentsKey,
+        collapsedKey,
         onSortUpdate,
+        onToggleChildren,
     } = useTreeView({
         internalItems,
         parentField: toRef(props, "parentField"),
@@ -329,6 +332,8 @@
         const itemDepth = "--depth";
         const itemParent = "--parentId";
         const childrenKey = "--children";
+        const collapsedKey = "--collapsed";
+        const collapsedParentsKey = "--collapsed-parents";
         const treeViewAble = computed(isTreeViewAble);
         const depthChangeMax = ref(0);
         const maxDepths = computed(getMaxDepths);
@@ -346,8 +351,35 @@
             itemDepth,
             itemParent,
             childrenKey,
+            collapsedParentsKey,
+            collapsedKey,
             onSortUpdate,
+            onToggleChildren,
         };
+
+        function onToggleChildren(item: Item) {
+            if (!item[childrenKey]?.length) return;
+
+            item[collapsedKey] = !item[collapsedKey];
+            collapseChildren(item[itemKey.value], item[childrenKey]);
+        }
+
+        function collapseChildren(id: PrimaryKey, childrenIds: PrimaryKey[]) {
+            internalItems.value
+                .filter((internalItem) =>
+                    childrenIds.includes(internalItem[itemKey.value])
+                )
+                .forEach((childItem) => {
+                    const parentIndex =
+                        childItem[collapsedParentsKey]?.indexOf(id);
+
+                    if (parentIndex > -1) {
+                        childItem[collapsedParentsKey].splice(parentIndex, 1);
+                    } else {
+                        childItem[collapsedParentsKey].push(id);
+                    }
+                });
+        }
 
         function resetIfNoParentSelected(
             newParentField: string | null,
@@ -394,8 +426,10 @@
             const map = {};
 
             data.forEach((item) => {
-                item[childrenKey] = [];
                 item[itemParent] = getParentId(item);
+                item[childrenKey] = [];
+                item[collapsedKey] = false;
+                item[collapsedParentsKey] = [];
 
                 map[item[itemKey.value]] = item;
             });
@@ -469,8 +503,11 @@
                 children.sort(sortBySortKey);
                 children.forEach((child) => {
                     item[childrenKey].push(child[itemKey.value]);
-                    addItem(child);
+                    const childrenIds = addItem(child);
+                    item[childrenKey].push(...childrenIds);
                 });
+
+                return item[childrenKey];
             }
 
             function sortBySortKey(a: Item, b: Item): number {
@@ -620,6 +657,9 @@
                         :indent="currentDepth * controlIconWidth"
                         :sorting="isSorting || parentSorting"
                         :has-children="item[childrenKey]?.length"
+                        :children-collapsed="item[collapsedKey]"
+                        :collapsed="!!item[collapsedParentsKey]?.length"
+                        @toggle-children="onToggleChildren(item)"
                         :headers="internalHeaders"
                         :show-select="disabled ? 'none' : showSelect"
                         :show-manual-sort="!disabled && showManualSort"
