@@ -1,5 +1,5 @@
 {
-	"name": "choropleth-map-panel",
+	"name": "@directus-labs/choropleth-map-panel",
 	"description": "Display your data divided into colored geographical areas",
 	"icon": "extension",
 	"version": "1.0.0",
