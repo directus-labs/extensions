@@ -265,6 +265,7 @@ function initMap() {
 			style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
 			position: google.maps.ControlPosition.TOP_RIGHT,
 		},
+		keyboardShortcuts: false,
 		mapId: 'DEMO_MAP_ID', // a map ID is required for the new AdvancedMarker, the demo ID is provided by google, @see https://developers.google.com/maps/documentation/javascript/advanced-markers/migration?hl=en
 	});
 
