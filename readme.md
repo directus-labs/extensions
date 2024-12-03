@@ -28,6 +28,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [RSS to JSON](//github.com/directus-labs/extensions/tree/main/packages/rss-to-json-operation)                                         | Operation | ✅        |            |
 | [LiquidJS Template](//github.com/directus-labs/extensions/tree/main/packages/liquidjs-operation)                                      | Operation | ✅        |            |
 | [Resend](//github.com/directus-labs/extensions/tree/main/packages/resend-operation)                                                   | Operation | ✅        |            |
+| [Hubspot](//github.com/directus-labs/extensions/tree/main/packages/hubspot-operation)                                                 | Operation | ✅        |            |
 | [Spreadsheet](//github.com/directus-labs/extensions/tree/main/packages/spreadsheet-layout)                                            | Layout    | N/A       | ⭐         |
 | [Gantt Chart](//github.com/directus-labs/extensions/tree/main/packages/gantt-chart-layout)                                            | Layout    | N/A       | ⭐         |
 | [Video Player](//github.com/directus-labs/extensions/tree/main/packages/video-player-interface)                                       | Interface | N/A       |            |

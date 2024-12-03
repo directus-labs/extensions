@@ -1,5 +1,5 @@
 {
-	"name": "directus-extension-hubspot-operation",
+	"name": "@directus-labs/hubspot-operation",
 	"description": "Hubspot API operation for managing companies, contacts, activities, and deals.",
 	"icon": "extension",
 	"version": "1.0.0",
