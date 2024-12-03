@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import type { ShowSelect } from "@directus/extensions";
-    import { computed } from "vue";
+    import { computed, inject, type Ref } from "vue";
     // CORE CHANGES
     // import type { Header, Item } from "./types";
     import type { Header, Item } from "../core-clones/components/v-table/types";
@@ -9,7 +9,8 @@
         defineProps<{
             headers: Header[];
             item: Item;
-            depth?: number;
+            indent?: number;
+            sorting?: boolean;
             hasChildren?: boolean;
             showSelect: ShowSelect;
             showManualSort?: boolean;
@@ -20,7 +21,7 @@
             height?: number;
         }>(),
         {
-            depth: 0,
+            indent: 0,
             showSelect: "none",
             showManualSort: false,
             isSelected: false,
@@ -39,28 +40,31 @@
             renderTemplateImage: props.height - 16 + "px",
         };
     });
+
+    const { onSortStart, nestable } = inject("sortable") as {
+        onSortStart: (item: Item, event: MouseEvent) => void;
+        nestable: Ref<boolean>;
+    };
 </script>
 
 <template>
     <tr
         class="table-row"
-        :class="{ subdued: subdued, clickable: hasClickListener }"
+        :class="{ subdued: subdued, clickable: hasClickListener, sorting }"
         @click="$emit('click', $event)"
     >
-        <td class="cell controls">
-            <div
-                v-for="index in depth"
-                :key="index"
-                class="depth-spacer"
-            />
-
+        <td
+            class="cell controls"
+            :style="indent > 0 ? { paddingLeft: `${indent}px` } : null"
+        >
             <div class="cell-style">
                 <v-icon
                     v-if="showManualSort"
                     @click.stop
+                    @mousedown.prevent="onSortStart(item, $event)"
                     name="drag_handle"
                     class="drag-handle manual"
-                    :class="{ 'sorted-manually': sortedManually }"
+                    :class="{ 'sorted-manually': sortedManually, nestable }"
                 />
 
                 <v-checkbox
@@ -167,7 +171,7 @@
             opacity: 0.3;
         }
 
-        &.clickable:not(.subdued):hover .cell {
+        &.clickable:not(.subdued):not(.sorting):hover .cell {
             background-color: var(--theme--background-subdued);
             cursor: pointer;
 
@@ -185,11 +189,20 @@
 
             &.sorted-manually {
                 --v-icon-color: var(--theme--foreground);
+                cursor: ns-resize;
+
+                &.nestable {
+                    cursor: move;
+                }
 
                 &:hover {
-                    cursor: ns-resize;
+                    --v-icon-color: var(--theme--primary);
                 }
             }
+        }
+
+        &.sorting:not(.subdued) .drag-handle {
+            --v-icon-color: var(--theme--primary);
         }
 
         .collapse {

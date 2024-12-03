@@ -1,21 +1,23 @@
 <script setup lang="ts">
     import type { ShowSelect } from "@directus/extensions";
+
+    import type { PrimaryKey } from "@directus/types";
     import { clone, forEach, pick, cloneDeep } from "lodash";
     import {
         computed,
         ref,
         useSlots,
         toRef,
+        watch,
         type Ref,
         type ComputedRef,
     } from "vue";
-    import Draggable from "vuedraggable";
+    import Sortable from "./sortable/sortable.vue";
     import TableHeader from "./table-header.vue";
     import TableRow from "./table-row.vue";
     // CORE CHANGES
     // import { i18n } from "@/lang";
     // import { hideDragImage } from '@/utils/hide-drag-image';
-    import { hideDragImage } from "../core-clones/utils/hide-drag-image";
     // import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from "./types";
     import {
         Header,
@@ -24,8 +26,6 @@
         ItemSelectEvent,
         Sort,
     } from "../core-clones/components/v-table/types";
-
-    type ItemWithDepth = Item & { depth: number };
 
     const HeaderDefaults: Header = {
         text: "",
@@ -86,11 +86,10 @@
     const emit = defineEmits([
         "click:row",
         "update:sort",
-        "update:items",
         "item-selected",
         "update:modelValue",
-        "manual-sort",
         "update:headers",
+        "update:items",
     ]);
 
     const slots = useSlots();
@@ -163,15 +162,6 @@
         return `1 / span ${length}`;
     });
 
-    const internalItems = computed({
-        get: () => {
-            return props.items;
-        },
-        set: (value: Item[]) => {
-            emit("update:items", value);
-        },
-    });
-
     const allItemsSelected = computed<boolean>(() => {
         return (
             props.loading === false &&
@@ -182,55 +172,6 @@
 
     const someItemsSelected = computed<boolean>(() => {
         return props.modelValue.length > 0 && allItemsSelected.value === false;
-    });
-
-    const controlColumnPadding = 12;
-    const controlIconWidth = 28;
-    const controlIconWidthCSS = `${controlIconWidth}px`;
-
-    const columnStyle = computed<{ header: string; rows: string }>(() => {
-        return {
-            header: generate("auto"),
-            rows: generate(),
-        };
-
-        function generate(useVal?: "auto") {
-            let gridTemplateColumns = internalHeaders.value
-                .map((header) => {
-                    return header.width
-                        ? useVal ?? `${header.width}px`
-                        : "160px";
-                })
-                .reduce((acc, val) => (acc += " " + val), "");
-            const controlColumnWidth = getControlColumnWidth();
-
-            if (!!controlColumnWidth)
-                gridTemplateColumns = `${controlColumnWidth}px ${gridTemplateColumns}`;
-
-            gridTemplateColumns = gridTemplateColumns + " 1fr";
-
-            if (hasItemAppendSlot.value || hasHeaderAppendSlot.value)
-                gridTemplateColumns += " min-content";
-
-            return gridTemplateColumns;
-        }
-
-        function getControlColumnWidth() {
-            let controlColumnWidth = 0;
-
-            if (props.showSelect !== "none")
-                controlColumnWidth += controlIconWidth;
-
-            if (props.showManualSort) controlColumnWidth += controlIconWidth;
-
-            if (!!gridTemplateTreeColumnWidth.value)
-                controlColumnWidth += gridTemplateTreeColumnWidth.value;
-
-            if (!!controlColumnWidth)
-                controlColumnWidth += controlColumnPadding;
-
-            return controlColumnWidth;
-        }
     });
 
     function onItemSelected(event: ItemSelectEvent) {
@@ -288,67 +229,154 @@
         }
     }
 
-    interface EndEvent extends CustomEvent {
-        oldIndex: number;
-        newIndex: number;
-    }
-
-    function onSortChange(event: EndEvent) {
-        if (props.disabled) return;
-
-        const item = internalItems.value[event.oldIndex][props.itemKey];
-        const to = internalItems.value[event.newIndex][props.itemKey];
-
-        emit("manual-sort", { item, to });
-    }
-
     function updateSort(newSort: Sort) {
         emit("update:sort", newSort?.by ? newSort : null);
     }
 
-    const { sortedItems, gridTemplateTreeColumnWidth, depthKey, childrenKey } =
-        useTreeView({
-            internalItems,
-            parentField: toRef(props, "parentField"),
-            itemKey: toRef(props, "itemKey"),
-            sortKey: toRef(props, "manualSortKey"),
-            showManualSort: toRef(props, "showManualSort"),
-            controlIconWidth,
-        });
+    const controlColumnPadding = 12;
+    const controlIconWidth = 28;
+    const controlIconWidthCSS = `${controlIconWidth}px`;
+
+    const columnStyle = computed<{ header: string; rows: string }>(() => {
+        return {
+            header: generate("auto"),
+            rows: generate(),
+        };
+
+        function generate(useVal?: "auto") {
+            let gridTemplateColumns = internalHeaders.value
+                .map((header) => {
+                    return header.width
+                        ? useVal ?? `${header.width}px`
+                        : "160px";
+                })
+                .reduce((acc, val) => (acc += " " + val), "");
+            const controlColumnWidth = getControlColumnWidth();
+
+            if (!!controlColumnWidth)
+                gridTemplateColumns = `${controlColumnWidth}px ${gridTemplateColumns}`;
+
+            gridTemplateColumns = gridTemplateColumns + " 1fr";
+
+            if (hasItemAppendSlot.value || hasHeaderAppendSlot.value)
+                gridTemplateColumns += " min-content";
+
+            return gridTemplateColumns;
+        }
+
+        function getControlColumnWidth() {
+            let controlColumnWidth = 0;
+
+            if (props.showSelect !== "none")
+                controlColumnWidth += controlIconWidth;
+
+            if (props.showManualSort) controlColumnWidth += controlIconWidth;
+
+            if (!!gridTemplateTreeColumnWidth.value)
+                controlColumnWidth += gridTemplateTreeColumnWidth.value;
+
+            if (!!controlColumnWidth)
+                controlColumnWidth += controlColumnPadding;
+
+            return controlColumnWidth;
+        }
+    });
+
+    const internalItems = ref(props.items);
+    watch(
+        () => props.items,
+        (newItems) => (internalItems.value = newItems)
+    );
+
+    const sortIsManual = computed(
+        () => internalSort.value.by === props.manualSortKey
+    );
+
+    const {
+        gridTemplateTreeColumnWidth,
+        depthChangeMax,
+        itemDepth,
+        itemParent,
+        childrenKey,
+        onSortUpdate,
+    } = useTreeView({
+        internalItems,
+        parentField: toRef(props, "parentField"),
+        itemKey: toRef(props, "itemKey"),
+        sortKey: toRef(props, "manualSortKey"),
+        showManualSort: toRef(props, "showManualSort"),
+        sortIsManual,
+        controlIconWidth,
+    });
 
     function useTreeView({
-        internalItems: originalItems,
+        internalItems,
         parentField,
         itemKey,
         sortKey,
         showManualSort,
+        sortIsManual,
         controlIconWidth,
     }: {
-        internalItems: ComputedRef;
+        internalItems: Ref<Item[]>;
         parentField: Ref<string | null>;
         itemKey: Ref<string>;
         sortKey: Ref<string | undefined>;
         showManualSort: Ref<boolean>;
+        sortIsManual: ComputedRef<boolean>;
         controlIconWidth: number;
     }) {
-        const depthKey = "--depth";
+        const itemDepth = "--depth";
+        const itemParent = "--parentId";
         const childrenKey = "--children";
-        const treeViewAble = computed(
-            () => !!parentField.value && showManualSort.value && !!sortKey.value
-        );
-        const sortedItems = computed<Item[] | ItemWithDepth[]>(() => {
-            if (!treeViewAble.value) return originalItems.value;
-            return calculateDepthAndOrder(cloneDeep(originalItems.value));
-        });
+        const treeViewAble = computed(isTreeViewAble);
+        const depthChangeMax = ref(0);
         const maxDepths = computed(getMaxDepths);
         const gridTemplateTreeColumnWidth = computed(calculateColumnWidth);
 
+        watch(() => props.items, initTreeView, { immediate: true });
+        watch(() => treeViewAble.value, initTreeView);
+        watch(() => parentField.value, initTreeView);
+
+        watch(() => parentField.value, resetIfNoParentSelected);
+
         return {
-            sortedItems,
             gridTemplateTreeColumnWidth,
-            depthKey,
+            depthChangeMax,
+            itemDepth,
+            itemParent,
             childrenKey,
+            onSortUpdate,
         };
+
+        function resetIfNoParentSelected(
+            newParentField: string | null,
+            oldParentField: string | null
+        ) {
+            if (!newParentField && !!oldParentField)
+                internalItems.value = props.items;
+        }
+
+        function initTreeView() {
+            if (treeViewAble.value) {
+                const { sortedResult, orderChanged } = reorder(
+                    calculateTreeProps(cloneDeep(internalItems.value))
+                );
+                internalItems.value = sortedResult;
+
+                if (orderChanged) onSortUpdate({ sort: true, parent: null });
+            }
+        }
+
+        function isTreeViewAble() {
+            return (
+                !!internalItems.value?.length &&
+                !!parentField.value &&
+                showManualSort.value &&
+                !!sortKey.value &&
+                sortIsManual.value
+            );
+        }
 
         function calculateColumnWidth() {
             return maxDepths.value * controlIconWidth;
@@ -356,74 +384,130 @@
 
         function getMaxDepths() {
             return Math.max(
-                ...sortedItems.value.map((item) => item[depthKey] ?? 0)
+                ...internalItems.value.map((item) => item[itemDepth] ?? 0),
+                depthChangeMax.value
             );
         }
 
-        function calculateDepthAndOrder(data: Item[]) {
+        /** Calculates `[itemDepth]`, `[itemParent]` (id) and `[childrenKey]` */
+        function calculateTreeProps(data: Item[]) {
             const map = {};
 
             data.forEach((item) => {
                 item[childrenKey] = [];
+                item[itemParent] = getParentId(item);
+
                 map[item[itemKey.value]] = item;
             });
 
             for (const key in map) {
                 const item = map[key];
-                if (!(depthKey in item)) setDepth(item);
+                if (!(itemDepth in item)) setDepth(item);
             }
 
-            const sortedResult: ItemWithDepth[] = [];
+            return Object.values(map) as Item[];
 
-            const rootItems = (Object.values(map) as ItemWithDepth[]).filter(
-                (item) => item[depthKey] === 0
-            );
-            rootItems.sort((a, b) => a[sortKey.value!] - b[sortKey.value!]);
-            rootItems.forEach(addItem);
+            function getParentId(item: Item) {
+                if (!parentField.value) return null;
 
-            return sortedResult;
+                return (
+                    item[parentField.value]?.[itemKey.value] ??
+                    item[parentField.value]
+                );
+            }
 
             function setDepth(item) {
-                if (item[parentField.value!]) {
-                    const parentId =
-                        item[parentField.value!][itemKey.value] ??
-                        item[parentField.value!];
+                if (item[itemParent]) {
+                    const parentId = item[itemParent];
 
                     if (map[parentId]) {
                         const parentItem = map[parentId];
 
-                        if (!(depthKey in parentItem)) {
+                        if (!(itemDepth in parentItem)) {
                             setDepth(parentItem);
                         }
 
-                        item[depthKey] = parentItem[depthKey] + 1;
+                        item[itemDepth] = parentItem[itemDepth] + 1;
                     }
                 } else {
-                    item[depthKey] = 0;
+                    item[itemDepth] = 0;
                 }
             }
+        }
 
-            function addItem(item: ItemWithDepth) {
+        function reorder(items: Item[]) {
+            let sortedResult: Item[] = [];
+            let orderChanged = false;
+
+            const rootItems = items.filter((item) => item[itemDepth] === 0);
+            rootItems.sort(sortBySortKey);
+            rootItems.forEach(addItem);
+            applySortValues();
+
+            return { sortedResult, orderChanged };
+
+            function applySortValues() {
+                sortedResult = sortedResult.map((item: Item, index) => {
+                    const sortValue = index + 1;
+
+                    if (item[sortKey.value!] !== sortValue) {
+                        item[sortKey.value!] = sortValue;
+                        if (!orderChanged) orderChanged = true;
+                    }
+
+                    return item;
+                });
+            }
+
+            function addItem(item: Item) {
                 sortedResult.push(item);
 
-                const children = (Object.values(map) as ItemWithDepth[]).filter(
-                    (child) => {
-                        if (!child[parentField.value!]) return false;
-
-                        const parentId =
-                            child[parentField.value!][itemKey.value] ??
-                            child[parentField.value!];
-
-                        return parentId === item[itemKey.value];
-                    }
+                const children = items.filter(
+                    (child) => child[itemParent] === item[itemKey.value]
                 );
 
-                children.sort((a, b) => a[sortKey.value!] - b[sortKey.value!]);
+                children.sort(sortBySortKey);
                 children.forEach((child) => {
                     item[childrenKey].push(child[itemKey.value]);
                     addItem(child);
                 });
             }
+
+            function sortBySortKey(a: Item, b: Item): number {
+                return a[sortKey.value!] - b[sortKey.value!];
+            }
+        }
+
+        type SortUpdateParams = {
+            sort: boolean;
+            parent: null | { id: PrimaryKey; parent: PrimaryKey | null };
+        };
+
+        function onSortUpdate({ sort, parent }: SortUpdateParams) {
+            let edits = {};
+
+            if (sort) {
+                internalItems.value.forEach((item) => {
+                    edits[item[props.itemKey]] = {
+                        [props.manualSortKey!]: item[props.manualSortKey!],
+                    };
+                });
+            }
+
+            if (parent && parentField.value) {
+                edits = {
+                    ...edits,
+                    [parent.id]: {
+                        ...edits[parent.id],
+                        [parentField.value]:
+                            parent.parent !== null
+                                ? { [itemKey.value]: parent.parent }
+                                : null,
+                    },
+                };
+            }
+
+            emit("update:items", edits);
         }
     }
 </script>
@@ -511,42 +595,48 @@
                     </td>
                 </tr>
             </tbody>
-            <draggable
-                v-else
-                v-model="sortedItems"
-                :item-key="itemKey"
-                tag="tbody"
-                handle=".drag-handle"
-                :disabled="disabled || internalSort.by !== manualSortKey"
-                :set-data="hideDragImage"
-                v-bind="{ 'force-fallback': true }"
-                @end="onSortChange"
-            >
-                <template #item="{ element }">
+            <tbody v-else>
+                <sortable
+                    v-model:items="internalItems"
+                    v-model:depth-change-max="depthChangeMax"
+                    :item-key
+                    :item-sort="manualSortKey"
+                    :item-depth
+                    :item-parent="!!parentField ? itemParent : null"
+                    :snap-step="controlIconWidth"
+                    :disabled="disabled || !sortIsManual"
+                    v-slot="{
+                        item,
+                        selected: isSorting,
+                        parentSelected: parentSorting,
+                        onDragOver,
+                        currentDepth,
+                    }"
+                    @manual-sort="onSortUpdate"
+                >
                     <table-row
+                        @mouseover.prevent="onDragOver"
+                        :item
+                        :indent="currentDepth * controlIconWidth"
+                        :sorting="isSorting || parentSorting"
+                        :has-children="item[childrenKey]?.length"
                         :headers="internalHeaders"
-                        :item="element"
-                        :depth="element[depthKey] ?? 0"
-                        :has-children="element[childrenKey]?.length"
                         :show-select="disabled ? 'none' : showSelect"
                         :show-manual-sort="!disabled && showManualSort"
-                        :is-selected="getSelectedState(element)"
+                        :is-selected="getSelectedState(item)"
                         :subdued="loading || reordering"
-                        :sorted-manually="internalSort.by === manualSortKey"
+                        :sorted-manually="sortIsManual"
                         :has-click-listener="!disabled && clickable"
                         :height="rowHeight"
                         @click="
                             !disabled && clickable
-                                ? $emit('click:row', {
-                                      item: element,
-                                      event: $event,
-                                  })
+                                ? $emit('click:row', { item, event: $event })
                                 : null
                         "
                         @item-selected="
                             onItemSelected({
-                                item: element,
-                                value: !getSelectedState(element),
+                                item,
+                                value: !getSelectedState(item),
                             })
                         "
                     >
@@ -555,7 +645,7 @@
                             #[`item.${header.value}`]
                         >
                             <slot
-                                :item="element"
+                                :item="item"
                                 :name="`item.${header.value}`"
                             />
                         </template>
@@ -566,12 +656,12 @@
                         >
                             <slot
                                 name="item-append"
-                                :item="element"
+                                :item
                             />
                         </template>
                     </table-row>
-                </template>
-            </draggable>
+                </sortable>
+            </tbody>
         </table>
         <slot name="footer" />
     </div>

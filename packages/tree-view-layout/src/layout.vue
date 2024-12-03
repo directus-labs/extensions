@@ -10,7 +10,7 @@
     } from "vue";
     import { useI18n } from "vue-i18n";
     import type { ShowSelect } from "@directus/extensions";
-    import type { Field, Filter, Item } from "@directus/types";
+    import type { Field, Filter, Item, PrimaryKey } from "@directus/types";
     // CORE CLONES
     import { HeaderRaw } from "./core-clones/components/v-table/types";
     import {
@@ -56,7 +56,6 @@
         primaryKeyField?: Field;
         info?: Collection;
         sortField?: string;
-        changeManualSort: (data: any) => Promise<void>;
         resetPresetAndRefresh: () => Promise<void>;
         selectAll: () => void;
         filterUser?: Filter;
@@ -69,6 +68,7 @@
             align: "left" | "center" | "right"
         ) => void;
         parentField: string | null;
+        saveEdits: (edits: Record<PrimaryKey, Item>) => void;
     }
 
     const props = withDefaults(defineProps<Props>(), {
@@ -178,7 +178,7 @@
             selection-use-keys
             @click:row="onRowClick"
             @update:sort="onSortChange"
-            @manual-sort="changeManualSort"
+            @update:items="saveEdits"
             :parent-field
         >
             <template

@@ -5,8 +5,11 @@ import {
     useItems,
     useCollection,
     useSync,
+    useApi,
 } from "@directus/extensions-sdk";
-import type { Field } from "@directus/types";
+import { getEndpoint } from "@directus/utils";
+import { useI18n } from "vue-i18n";
+import type { Field, PrimaryKey, Item } from "@directus/types";
 import { debounce, flatten } from "lodash";
 import Actions from "./actions.vue";
 import Options from "./options.vue";
@@ -78,7 +81,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             totalPages,
             itemCount,
             totalCount,
-            changeManualSort,
             getItems,
             getItemCount,
             getTotalCount,
@@ -118,6 +120,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
         const parentField = syncRefProperty(layoutOptions, "parent", null);
 
+        const { saveEdits } = useSaveEdits();
+
         return {
             tableHeaders,
             items,
@@ -143,7 +147,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             info,
             showingCount,
             sortField,
-            changeManualSort,
             hideDragImage,
             refresh,
             resetPresetAndRefresh,
@@ -154,6 +157,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             fieldsWithRelationalAliased,
             aliasedFields,
             aliasedKeys,
+            saveEdits,
         };
 
         async function resetPresetAndRefresh() {
@@ -416,6 +420,53 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                 return {
                     display: field.meta.display,
                     options: field.meta.display_options,
+                };
+            }
+        }
+
+        function useSaveEdits() {
+            const api = useApi();
+            const { unexpectedError } = useUnexpectedError();
+
+            return { saveEdits };
+
+            async function saveEdits(edits: Record<PrimaryKey, Item>) {
+                try {
+                    for (const [id, payload] of Object.entries(edits)) {
+                        await api.patch(
+                            `${getEndpoint(collection.value!)}/${id}`,
+                            payload
+                        );
+                    }
+                } catch (error: any) {
+                    unexpectedError(error);
+                }
+
+                refresh();
+            }
+
+            // Based from the core: /app/src/utils/unexpected-error.ts
+            function useUnexpectedError() {
+                const { useNotificationsStore } = useStores();
+                const notificationStore = useNotificationsStore();
+                const { t } = useI18n();
+
+                return {
+                    unexpectedError(error: any) {
+                        const code =
+                            error.response?.data?.errors?.[0]?.extensions
+                                ?.code ||
+                            error?.extensions?.code ||
+                            "UNKNOWN";
+
+                        notificationStore.add({
+                            title: t(`errors.${code}`),
+                            type: "error",
+                            code,
+                            dialog: true,
+                            error,
+                        });
+                    },
                 };
             }
         }
