@@ -1,4 +1,4 @@
-import { computed, ref, toRefs, unref, watch } from "vue";
+import { computed, ref, toRefs, unref, watch, type ComputedRef } from "vue";
 import {
     defineLayout,
     useStores,
@@ -68,6 +68,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             )
         );
 
+        const { parentField, fieldsToQuery } = useTreeViewParent({
+            fieldsWithRelationalAliased,
+            primaryKeyField,
+        });
+
         const { onClick } = useLayoutClickHandler({
             props,
             selection,
@@ -88,7 +93,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             sort,
             limit,
             page,
-            fields: fieldsWithRelationalAliased,
+            fields: fieldsToQuery,
             alias: aliasQuery,
             filter,
             search,
@@ -117,8 +122,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                 totalItems: totalCount.value,
             });
         });
-
-        const parentField = syncRefProperty(layoutOptions, "parent", null);
 
         const { saveEdits } = useSaveEdits();
 
@@ -422,6 +425,40 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                     options: field.meta.display_options,
                 };
             }
+        }
+
+        function useTreeViewParent({
+            fieldsWithRelationalAliased,
+            primaryKeyField,
+        }: {
+            fieldsWithRelationalAliased: ComputedRef<string[]>;
+            primaryKeyField: ComputedRef<Field | null>;
+        }) {
+            const parentField = syncRefProperty(layoutOptions, "parent", null);
+
+            const fieldsToQuery = computed(() => {
+                if (
+                    !primaryKeyField.value ||
+                    fieldsWithRelationalAliased.value.find(
+                        (field) =>
+                            field === parentField.value ||
+                            field.startsWith(
+                                `${parentField.value}.${primaryKeyField.value?.field}`
+                            )
+                    )
+                )
+                    return fieldsWithRelationalAliased.value;
+
+                return [
+                    ...fieldsWithRelationalAliased.value,
+                    `${parentField.value}.${primaryKeyField.value.field}`,
+                ];
+            });
+
+            return {
+                parentField,
+                fieldsToQuery,
+            };
         }
 
         function useSaveEdits() {
