@@ -346,7 +346,7 @@ function _setMapMarker(location: google.maps.LatLng) {
 	<template v-else>
 		<!-- Render map first, to reduce content-shift on moving the search-input into the map -->
 		<div v-if="props.displayMap">
-			<div ref="mapContainer" class="map-container"></div>
+			<div ref="mapContainer" class="map-container" :class="isDark ? 'map-container-dark' : ''"></div>
 		</div>
 
 		<div ref="searchContainer" class="search-container">
@@ -423,6 +423,8 @@ function _setMapMarker(location: google.maps.LatLng) {
 .map-container {
 	height: 500px;
 	width: 100%;
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
 	.search-container {
 		margin: 10px;
@@ -431,9 +433,74 @@ function _setMapMarker(location: google.maps.LatLng) {
 }
 
 /* The card-style selection container */
-:deep(.gm-style-mtc) { 
+:deep(.gm-style-mtc) {
 	button {
 		width: 100%;
+
+		&[aria-expanded="true"] {
+			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus)) !important;
+		} 
+	}
+
+	ul {
+		background-color: var(--v-input-background-color, var(--theme--form--field--input--background)) !important;
+		color: var(--v-input-color, var(--theme--form--field--input--foreground)) !important;
+		border-radius: var(--v-input-border-radius, var(--theme--border-radius)) !important;
+		margin-top: 2px !important;
+
+		li {
+			background-color: inherit !important;
+			color: inherit !important;
+
+			&.selected,
+			&:hover {
+				background-color: var(--v-list-item-background-color-active, var(--v-list-background-color-active, var(--theme--background-normal))) !important;
+			}
+
+			&.ssQIHO-checkbox-menu-item {
+				display: flex;
+				flex-direction: row;
+				gap: 0.25rem;
+			}
+		}
+	
+	}
+}
+
+/* GMaps Controll buttons */
+:deep(button.gm-fullscreen-control),
+:deep(.gmnoprint button) {
+	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color)) !important;
+	border-radius: var(--v-input-border-radius, var(--theme--border-radius)) !important;
+	background-color: var(--v-input-background-color, var(--theme--form--field--input--background)) !important;
+	color: var(--v-input-color, var(--theme--form--field--input--foreground)) !important;
+	padding: 8px 12px !important;
+	height: 38px !important;
+}
+
+:deep(.gmnoprint) {
+	div {
+		background-color: transparent !important;
+		box-shadow: none !important;
+	}
+}
+
+/* Dark-mode */
+:deep(.map-container-dark) {
+	.gm-style-mtc {
+		li.ssQIHO-checkbox-menu-item {
+			/* There's no selector for the spanc with the checkbox-icon, so we need to do it like this */
+			span span {
+				filter: invert(1);
+			}
+		}
+	}
+
+	button.gm-fullscreen-control,
+	.gmnoprint button {
+		img {
+			filter: invert(1);
+		}
 	}
 }
 
