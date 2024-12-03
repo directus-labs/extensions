@@ -324,6 +324,9 @@ function _setMapCenter(location: google.maps.LatLng, viewPort: google.maps.LatLn
 }
 
 function _setMapMarker(location: google.maps.LatLng) {
+	if (marker) {
+		marker.map = null;
+	}
 	marker = new markerLibrary.AdvancedMarkerElement({
 		position: location,
 		map,
