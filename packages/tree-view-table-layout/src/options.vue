@@ -14,6 +14,7 @@
         sortField: string;
         collection: string;
         fieldsInCollection: any;
+        tableSort: { by: string; desc: boolean } | null;
     }
 
     const props = defineProps<Props>();
@@ -72,6 +73,24 @@
             show-deselect
             :placeholder="t('select_a_field')"
         />
+
+        <small
+            v-if="!parentFieldWritable"
+            class="type-note"
+            >Note that selecting a field can immediately update the sort values
+            of your items!</small
+        >
+
+        <small
+            v-if="parentFieldWritable && tableSort?.by !== 'sort'"
+            class="type-note"
+            >To use the Tree View Table features, be sure to click the
+            <v-icon
+                name="sort"
+                small
+            />
+            button to enable manual sorting!</small
+        >
     </div>
 
     <div class="field">
