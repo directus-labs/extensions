@@ -68,9 +68,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             )
         );
 
-        const { parentField, fieldsToQuery } = useTreeViewParent({
+        const { parentField, fieldsToQuery } = useTreeViewFieldsToQuery({
             fieldsWithRelationalAliased,
             primaryKeyField,
+            sortField,
         });
 
         const { onClick } = useLayoutClickHandler({
@@ -427,32 +428,51 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             }
         }
 
-        function useTreeViewParent({
+        function useTreeViewFieldsToQuery({
             fieldsWithRelationalAliased,
             primaryKeyField,
+            sortField,
         }: {
             fieldsWithRelationalAliased: ComputedRef<string[]>;
             primaryKeyField: ComputedRef<Field | null>;
+            sortField: ComputedRef<string | null>;
         }) {
             const parentField = syncRefProperty(layoutOptions, "parent", null);
 
             const fieldsToQuery = computed(() => {
-                if (
-                    !primaryKeyField.value ||
-                    fieldsWithRelationalAliased.value.find(
-                        (field) =>
-                            field === parentField.value ||
-                            field.startsWith(
-                                `${parentField.value}.${primaryKeyField.value?.field}`
-                            )
-                    )
-                )
-                    return fieldsWithRelationalAliased.value;
+                const fieldsToQuery = fieldsWithRelationalAliased.value;
+                addSortField();
+                addParentField();
 
-                return [
-                    ...fieldsWithRelationalAliased.value,
-                    `${parentField.value}.${primaryKeyField.value.field}`,
-                ];
+                return fieldsToQuery;
+
+                function addSortField() {
+                    if (
+                        sortField.value &&
+                        !fieldsToQuery.find(
+                            (field) => field === sortField.value
+                        )
+                    ) {
+                        fieldsToQuery.push(sortField.value);
+                    }
+                }
+
+                function addParentField() {
+                    if (
+                        primaryKeyField.value &&
+                        !fieldsToQuery.find(
+                            (field) =>
+                                field === parentField.value ||
+                                field.startsWith(
+                                    `${parentField.value}.${primaryKeyField.value?.field}`
+                                )
+                        )
+                    ) {
+                        fieldsToQuery.push(
+                            `${parentField.value}.${primaryKeyField.value.field}`
+                        );
+                    }
+                }
             });
 
             return {
