@@ -36,6 +36,8 @@ type GeoJsonFeature = {
   "type": "Feature"
 };
 
+type MapType = 'hybrid' | 'roadmap' | 'satellite' | 'terrain';
+
 const props = defineProps({
 	value: {
 		type: Object as PropType<GeoJsonFeature> | null,
@@ -83,7 +85,7 @@ const mapTypeSelectContainer = ref<HTMLElement | null>(null);
 const mapControlsContainer = ref<HTMLElement | null>(null);
 const hasMounted = ref(false);
 const isFullscreen = ref(false);
-const mapType = ref<'roadmap' | 'hybrid'>('roadmap');
+const mapType = ref<MapType>('roadmap');
 const controlsReady = ref(false);
 
 const isDark = document.body.classList.contains('dark');
@@ -377,7 +379,7 @@ function toggleFullscreen() {
 }
 
 
-function setMapType(newValue) {
+function setMapType(newValue: MapType) {
 	mapType.value = newValue;
 	map.setMapTypeId(google.maps.MapTypeId[newValue.toUpperCase()]);
 }
@@ -408,7 +410,15 @@ function setMapType(newValue) {
 						},
 						{
 							text: 'Sattelite',
+							value: 'satellite',
+						},
+						{
+							text: 'Hybrid',
 							value: 'hybrid',
+						},
+						{
+							text: 'Terrain',
+							value: 'terrain',
 						},
 					]"
 					@update:model-value="(newValue) => setMapType(newValue)"
@@ -558,16 +568,20 @@ function setMapType(newValue) {
 
 	.search-container {
 		width: calc(70% - 20px);
+		left: 0 !important;
 	}
 
 	.map-type-select-container {
 		width: calc(30% - 20px);
+		right: 0 !important;
 	}
 
 	.map-controls-container {
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
+		left: 0 !important;
+		top: 60px !important;
 
 		.map-controls-fullscreen {
 			margin-top: 1rem;
