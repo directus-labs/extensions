@@ -12,6 +12,7 @@ The extensions in this repository are all published to the Directus Marketplace.
 
 Some of the published extensions may not be compatible with the sandbox requirements currently, and are only available on Directus instances with the `MARKETPLACE_TRUST` env set to `all`.
 
+
 | Extension                                                                                                                             | Type      | Sandboxed | Maintained |
 | ------------------------------------------------------------------------------------------------------------------------------------- | --------- | --------- | ---------- |
 | [AI Alt Text Writer](//github.com/directus-labs/extensions/tree/main/packages/ai-alt-text-writer)                                     | Operation | ✅        |            |
@@ -40,6 +41,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Simple List](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface)                                         | Interface | N/A       |            |
 | [Whereby Embed](//github.com/directus-labs/extensions/tree/main/packages/whereby-embedded-interface)                                  | Interface | N/A       |            |
 | [Address Completion](//github.com/directus-labs/extensions/tree/main/packages/address-completion-interface)                           | Interface | N/A       |            |
+| [Tour Group](//github.com/directus-labs/extensions/tree/main/packages/tour-group-interface)                                           | Interface | N/A       | ⭐         |
 | [Table View](//github.com/directus-labs/extensions/tree/main/packages/table-view-panel)                                               | Panel     | N/A       |            |
 | [Scatter Plot](//github.com/directus-labs/extensions/tree/main/packages/scatter-plot-panel)                                           | Panel     | N/A       |            |
 | [Funnel Chart](//github.com/directus-labs/extensions/tree/main/packages/funnel-chart-panel)                                           | Panel     | N/A       |            |
