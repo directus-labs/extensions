@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, PropType, watch } from 'vue';
+import { ref, onMounted, onUnmounted, PropType, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Loader } from "@googlemaps/js-api-loader";
 import { getCurrentLanguage } from './utils/get-current-lang';
@@ -84,6 +84,7 @@ const mapControlsContainer = ref<HTMLElement | null>(null);
 const hasMounted = ref(false);
 const isFullscreen = ref(false);
 const mapType = ref<'roadmap' | 'hybrid'>('roadmap');
+const controlsReady = ref(false);
 
 const isDark = document.body.classList.contains('dark');
 const lang = getCurrentLanguage();
@@ -109,6 +110,12 @@ onMounted( async () => {
 	setNewSessionToken();
 	initMap();
 	hasMounted.value = true;
+});
+
+onUnmounted(() => {
+  if (map) {
+    google.maps.event.clearListeners(map, 'tilesloaded');
+  }
 });
 
 
@@ -269,17 +276,24 @@ function initMap() {
 		mapId: 'DEMO_MAP_ID', // a map ID is required for the new AdvancedMarker, the demo ID is provided by google, @see https://developers.google.com/maps/documentation/javascript/advanced-markers/migration?hl=en
 	});
 
-	if (searchContainer.value) {
-		map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchContainer.value);
-	}
+	map.addListener('tilesloaded', () => {
+		if (searchContainer.value) {
+			map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchContainer.value);
+		}
 
-	if (mapControlsContainer.value) {
-		map.controls[google.maps.ControlPosition.LEFT_CENTER].push(mapControlsContainer.value);
-	}
+		if (mapControlsContainer.value) {
+			map.controls[google.maps.ControlPosition.LEFT_CENTER].push(mapControlsContainer.value);
+		}
 
-	if (mapTypeSelectContainer.value) {
-		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(mapTypeSelectContainer.value);
-	}
+		if (mapTypeSelectContainer.value) {
+			map.controls[google.maps.ControlPosition.TOP_RIGHT].push(mapTypeSelectContainer.value);
+		}
+
+		// Wait to make sure the controls are ready, this prevents a layout shift
+		setTimeout(() => {
+			controlsReady.value = true;
+		}, 75);
+	});
 
 	setMapValue();
 }
@@ -383,7 +397,7 @@ function setMapType(newValue) {
 		<div v-if="props.displayMap">
 			<div ref="mapContainer" class="map-container"></div>
 
-			<div ref="mapTypeSelectContainer" class="map-type-select-container">
+			<div ref="mapTypeSelectContainer" v-show="controlsReady" class="map-type-select-container">
 				<VSelect
 					class="small"
 					:model-value="mapType"
@@ -402,7 +416,7 @@ function setMapType(newValue) {
 				/>
 			</div>
 
-			<div ref="mapControlsContainer" class="map-controls-container">
+			<div ref="mapControlsContainer" v-show="controlsReady" class="map-controls-container">
 				<VButton 
 					icon
 					small
@@ -433,7 +447,7 @@ function setMapType(newValue) {
 			</div>
 		</div>
 
-		<div ref="searchContainer" class="search-container">
+		<div ref="searchContainer" v-show="mapContainer && controlsReady || !mapContainer" class="search-container">
 			<v-menu attached :disabled="disabled">
 				<template #activator="{ activate }">
 					<v-input
