@@ -38,6 +38,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Experimental M2A Interface](//github.com/directus-labs/extensions/tree/main/packages/experimental-m2a-interface)                     | Interface | N/A       |            |
 | [Simple List](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface)                                         | Interface | N/A       |            |
 | [Whereby Embed](//github.com/directus-labs/extensions/tree/main/packages/whereby-embedded-interface)                                  | Interface | N/A       |            |
+| [Address Completion](//github.com/directus-labs/extensions/tree/main/packages/address-completion-interface)                           | Interface | N/A       |            |
 | [Table View](//github.com/directus-labs/extensions/tree/main/packages/table-view-panel)                                               | Panel     | N/A       |            |
 | [Scatter Plot](//github.com/directus-labs/extensions/tree/main/packages/scatter-plot-panel)                                           | Panel     | N/A       |            |
 | [Funnel Chart](//github.com/directus-labs/extensions/tree/main/packages/funnel-chart-panel)                                           | Panel     | N/A       |            |
