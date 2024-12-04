@@ -421,6 +421,7 @@ function setMapType(newValue) {
 					icon
 					small
 					secondary
+					:tooltip="t('zoom')"
 					@click="zoomMap(1)"
 				>
 					<v-icon name="add" />
@@ -430,6 +431,7 @@ function setMapType(newValue) {
 					icon
 					small
 					secondary
+					:tooltip="t('zoom')"
 					@click="zoomMap(-1)"
 				>
 					<v-icon name="remove" />
@@ -440,6 +442,7 @@ function setMapType(newValue) {
 					small
 					secondary
 					class="map-controls-fullscreen"
+					:tooltip="t('wysiwyg_options.fullscreen')"
 					@click="toggleFullscreen"
 				>
 					<v-icon :name="isFullscreen ? 'fullscreen_exit' : 'fullscreen'" />
