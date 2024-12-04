@@ -1,18 +1,31 @@
 {
-    "name": "directus-extension-tree-view-layout",
-    "description": "A tree view layout that allows you to nest items within a table",
-    "icon": "format_indent_increase",
+    "name": "directus-extension-tree-view-table-layout",
     "version": "1.0.0",
+    "description": "A tree view layout that allows you to nest items within a table",
+    "license": "MIT",
+    "author": "Directus Labs",
+    "contributors": [
+        {
+            "name": "formfcw",
+            "email": "dev@formfcw.com"
+        }
+    ],
+    "icon": "format_indent_increase",
     "keywords": [
         "directus",
         "directus-extension",
         "directus-extension-layout",
+        "directus-extension-tree-view-table-layout",
         "directus-extension-tree-view-layout",
         "directus-extension-tabular-layout",
         "directus-extension-table-layout",
+        "tree-view-table-layout",
+        "tree-view-table",
         "tree-view-layout",
         "tabular-layout",
         "table-layout",
+        "hierachical-table",
+        "nested-table",
         "nested-items"
     ],
     "type": "module",

@@ -27,8 +27,8 @@ import { saveAsCSV } from "./core-clones/utils/save-as-csv";
 import type { HeaderRaw, Sort } from "./core-clones/components/v-table/types";
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
-    id: "directus-labs-tree-view-layout",
-    name: "Tree View",
+    id: "directus-labs-tree-view-table-layout",
+    name: "Tree View Table",
     icon: "format_indent_increase",
     component: Layout,
     slots: {
