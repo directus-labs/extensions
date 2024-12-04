@@ -1,0 +1,53 @@
+{
+	"name": "relational-checkbox-tree-bundle",
+	"description": "This extension provides a relational checkbox tree interface for Directus.",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "app.js",
+			"api": "api.js"
+		},
+		"entries": [
+			{
+				"type": "interface",
+				"name": "relational-checkbox-tree",
+				"source": "src/relational-checkbox-tree/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "relational-checkbox-tree-options",
+				"source": "src/relational-checkbox-tree-options/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "relational-checkbox-tree-path-map",
+				"source": "src/relational-checkbox-tree-path-map/index.ts"
+			}
+		],
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"add": "directus-extension add"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "12.1.0",
+		"@directus/format-title": "^11.0.0",
+		"micromustache": "^8.0.3",
+		"typescript": "^5.6.3",
+		"vue": "^3.5.12"
+	}
+}
