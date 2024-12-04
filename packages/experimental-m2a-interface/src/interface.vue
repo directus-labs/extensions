@@ -9,8 +9,22 @@
         <div v-if="buttonMatrix.length" class="btn-matrix">
             <v-divider v-if="label" inline-title class="label">{{ label }}</v-divider>
 
+            <v-input
+                v-if="props.enableSearch"
+                v-model="searchQuery"
+                :placeholder="props.searchPlaceholder"
+                class="search-input"
+            >
+                <template #prepend><v-icon name="search" /></template>
+            </v-input>
+
             <div class="grid">
-                <v-button v-for="button, index in buttonMatrix" @click="triggerClick(index)" secondary full-width>
+                <v-button
+                    v-for="(button, index) in filteredButtonMatrix"
+                    @click="triggerClick(index)"
+                    secondary
+                    full-width
+                >
                     <v-icon :name="button.icon"></v-icon>
                     <v-text-overflow :text="button.label" />
                 </v-button>
@@ -22,7 +36,7 @@
 
 
 <script setup lang="ts">
-    import { ref, onMounted, watch, nextTick, type Ref } from 'vue';
+    import { ref, onMounted, watch, nextTick, type Ref, computed } from 'vue';
 
     type MaybeHTML = HTMLElement | null | undefined;
     type MaybeHTMLRef = Ref<MaybeHTML>;
@@ -30,16 +44,34 @@
 
     interface Props {
         value: string;
-        target: 'above' | 'below',
-        field: any,
-    };
+        target: 'above' | 'below';
+        enableSearch?: boolean;
+        searchPlaceholder?: string;
+    }
 
-    const props = withDefaults(defineProps<Props>(), { target: 'below' });
+    const props = withDefaults(defineProps<Props>(), {
+        target: 'below',
+        enableSearch: false,
+        searchPlaceholder: 'Search...',
+    });
+
+    console.log(props);
 
     const el = ref<HTMLElement>();
 
     const { targetBuilder } = useNearestBuilderField(el, { onFound: () => removeParentDomElement(el) });
     const { label, buttonMatrix, triggerClick } = useButtonMatrix(targetBuilder);
+
+    const searchQuery = ref('');
+
+    const filteredButtonMatrix = computed(() => {
+        if (!searchQuery.value) return buttonMatrix.value;
+
+        const query = searchQuery.value.toLowerCase();
+        return buttonMatrix.value.filter(button =>
+            button.label.toLowerCase().includes(query)
+        );
+    });
 
     function useNearestBuilderField(el: MaybeHTMLRef, { onFound }: { onFound: Function }) {
         const targetBuilder: MaybeHTMLRef = ref();
@@ -93,7 +125,6 @@
             if (!popup) return;
 
             hideActionButton(firstAction!);
-
             createButtonMatrix(popup);
             hideAndClosePopup(popup);
         }
@@ -130,14 +161,19 @@
         }
 
         async function triggerClick(index: number) {
-            if (!popupId) return;
-
             firstActionButton?.click();
             await nextTick();
 
-            const popup = document.getElementById(popupId);
+            const popup = document.querySelector('.v-menu-popper.active');
+            if (!popup) return;
 
-            (popup?.querySelectorAll('.v-list-item.link.clickable')?.[index] as HTMLElement)?.click();
+            const items = popup?.querySelectorAll('.v-list-item.link.clickable');
+            const targetItem = items?.[index] as HTMLElement;
+            if (targetItem) targetItem.click();
+
+            await nextTick();
+            (popup as HTMLElement).style.visibility = 'hidden';
+            document.body.click();
         }
 
         function delay(ms: number) {
@@ -188,5 +224,9 @@
 
     .v-divider :deep(.type-text) {
         color: var(--theme--foreground-subdued);
+    }
+
+    .search-input {
+        margin-bottom: 12px;
     }
 </style>
