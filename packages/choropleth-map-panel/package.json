@@ -1,0 +1,36 @@
+{
+	"name": "@directus-labs/choropleth-map-panel",
+	"description": "Display your data divided into colored geographical areas",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-panel"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "panel",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "12.1.2",
+		"@types/d3": "^7.4.3",
+		"typescript": "^5.6.3",
+		"vue": "^3.5.12"
+	},
+	"dependencies": {
+		"d3": "^7.9.0",
+		"topojson-client": "^3.1.0"
+	}
+}

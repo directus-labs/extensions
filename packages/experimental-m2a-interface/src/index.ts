@@ -57,6 +57,38 @@ export default defineInterface({
                 },
             },
         },
+        {
+            field: "enableSearch",
+            name: "Enable Search",
+            type: "boolean",
+            meta: {
+                width: "half",
+                interface: "boolean",
+            },
+            schema: {
+                default_value: false,
+            },
+        },
+        {
+            field: "searchPlaceholder",
+            name: "Search Placeholder",
+            type: "string",
+            meta: {
+                width: "half",
+                interface: "input",
+                hidden: true,
+                conditions: [
+                    {
+                        rule: { enableSearch: { _eq: true } },
+                        hidden: false,
+                    },
+                ],
+            },
+            schema: {
+                default_value: "Search...",
+            },
+        },
+
     ],
 });
 
