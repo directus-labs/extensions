@@ -79,7 +79,11 @@ const searchInput = ref<string | null>(null);
 const selectedPlaceId = ref<string | null>(null);
 const mapContainer = ref<HTMLElement | null>(null);
 const searchContainer = ref<HTMLElement | null>(null);
+const mapTypeSelectContainer = ref<HTMLElement | null>(null);
+const mapControlsContainer = ref<HTMLElement | null>(null);
 const hasMounted = ref(false);
+const isFullscreen = ref(false);
+const mapType = ref<'roadmap' | 'hybrid'>('roadmap');
 
 const isDark = document.body.classList.contains('dark');
 const lang = getCurrentLanguage();
@@ -260,17 +264,21 @@ function initMap() {
   map = new mapsLibrary.Map(mapContainer.value, {
     center: { lat: 0, lng: 0 },
 		zoom: 1,
-		streetViewControl: false,
-		mapTypeControlOptions: {
-			style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-			position: google.maps.ControlPosition.TOP_RIGHT,
-		},
 		keyboardShortcuts: false,
+		disableDefaultUI: true,
 		mapId: 'DEMO_MAP_ID', // a map ID is required for the new AdvancedMarker, the demo ID is provided by google, @see https://developers.google.com/maps/documentation/javascript/advanced-markers/migration?hl=en
 	});
 
 	if (searchContainer.value) {
-		map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchContainer.value!);
+		map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchContainer.value);
+	}
+
+	if (mapControlsContainer.value) {
+		map.controls[google.maps.ControlPosition.LEFT_CENTER].push(mapControlsContainer.value);
+	}
+
+	if (mapTypeSelectContainer.value) {
+		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(mapTypeSelectContainer.value);
 	}
 
 	setMapValue();
@@ -334,6 +342,32 @@ function _setMapMarker(location: google.maps.LatLng) {
 	});
 }
 
+function zoomMap(zoomValue: number) {
+	map.setZoom(map.getZoom()! + zoomValue);
+}
+
+
+function toggleFullscreen() {
+	if (!mapContainer.value?.requestFullscreen || !document.exitFullscreen) {
+		return;
+	}
+
+	if (isFullscreen.value) {
+		document.exitFullscreen();
+		isFullscreen.value = false;
+		return;
+	}
+	
+	mapContainer.value.requestFullscreen();
+	isFullscreen.value = true;
+}
+
+
+function setMapType(newValue) {
+	mapType.value = newValue;
+	map.setMapTypeId(google.maps.MapTypeId[newValue.toUpperCase()]);
+}
+
 </script>
 
 
@@ -347,7 +381,56 @@ function _setMapMarker(location: google.maps.LatLng) {
 	<template v-else>
 		<!-- Render map first, to reduce content-shift on moving the search-input into the map -->
 		<div v-if="props.displayMap">
-			<div ref="mapContainer" class="map-container" :class="isDark ? 'map-container-dark' : ''"></div>
+			<div ref="mapContainer" class="map-container"></div>
+
+			<div ref="mapTypeSelectContainer" class="map-type-select-container">
+				<VSelect
+					class="small"
+					:model-value="mapType"
+					:items="[
+						{
+							text: 'Map',
+							value: 'roadmap',
+						},
+						{
+							text: 'Sattelite',
+							value: 'hybrid',
+						},
+					]"
+					@update:model-value="(newValue) => setMapType(newValue)"
+					:closeOnContentClick="true"
+				/>
+			</div>
+
+			<div ref="mapControlsContainer" class="map-controls-container">
+				<VButton 
+					icon
+					small
+					secondary
+					@click="zoomMap(1)"
+				>
+					<v-icon name="add" />
+				</VButton>
+				
+				<VButton 
+					icon
+					small
+					secondary
+					@click="zoomMap(-1)"
+				>
+					<v-icon name="remove" />
+				</VButton>
+
+				<VButton 
+					icon
+					small
+					secondary
+					class="map-controls-fullscreen"
+					@click="toggleFullscreen"
+				>
+					<v-icon :name="isFullscreen ? 'fullscreen_exit' : 'fullscreen'" />
+				</VButton>			
+			</div>
 		</div>
 
 		<div ref="searchContainer" class="search-container">
@@ -402,6 +485,28 @@ function _setMapMarker(location: google.maps.LatLng) {
 
 
 <style lang="scss" scoped>
+:deep(.v-select) {
+	/* 
+	 * Small style in sync with input-small
+	 * @see https://github.com/directus/directus/blob/28aaf739ba75980f4cb5ed1fa8c31b900dd97765/app/src/components/v-input.vue#L434-L440 
+	*/
+	&.small {
+		.v-input {
+			height: 38px;
+
+			.input {
+				padding: 8px 12px;
+			}
+		}
+	}
+}
+
+:deep(.v-button.secondary) {
+	button {
+		background-color: var(--theme--form--field--input--background);
+	}
+}
+
 .v-list {
 	.v-list-item {
 		&.selected,
@@ -427,91 +532,30 @@ function _setMapMarker(location: google.maps.LatLng) {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
-	.search-container {
+	.search-container,
+	.map-type-select-container,
+	.map-controls-container {
 		margin: 10px;
-		width: 80%;
-	}
-}
-
-/* The card-style selection container */
-:deep(.gm-style-mtc) {
-	button {
-		width: 100%;
-
-		&[aria-expanded="true"] {
-			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus)) !important;
-		} 
+		font-size: 15px; /* Align with the #main-content base font-size  */
 	}
 
-	ul {
-		background-color: var(--v-input-background-color, var(--theme--form--field--input--background)) !important;
-		color: var(--v-input-color, var(--theme--form--field--input--foreground)) !important;
-		border-radius: var(--v-input-border-radius, var(--theme--border-radius)) !important;
-		margin-top: 2px !important;
-
-		li {
-			background-color: inherit !important;
-			color: inherit !important;
-
-			&.selected,
-			&:hover {
-				background-color: var(--v-list-item-background-color-active, var(--v-list-background-color-active, var(--theme--background-normal))) !important;
-			}
-
-			&.ssQIHO-checkbox-menu-item {
-				display: flex;
-				flex-direction: row;
-				gap: 0.25rem;
-			}
-		}
-	
+	.search-container {
+		width: calc(70% - 20px);
 	}
-}
 
-/* GMaps Controll buttons */
-:deep(button.gm-fullscreen-control),
-:deep(.gmnoprint button) {
-	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color)) !important;
-	border-radius: var(--v-input-border-radius, var(--theme--border-radius)) !important;
-	background-color: var(--v-input-background-color, var(--theme--form--field--input--background)) !important;
-	color: var(--v-input-color, var(--theme--form--field--input--foreground)) !important;
-	padding: 8px 12px !important;
-	height: 38px !important;
-}
-
-:deep(.gmnoprint) {
-	div {
-		background-color: transparent !important;
-		box-shadow: none !important;
+	.map-type-select-container {
+		width: calc(30% - 20px);
 	}
-}
 
-/* Dark-mode */
-:deep(.map-container-dark) {
-	.gm-style-mtc {
-		li.ssQIHO-checkbox-menu-item {
-			/* There's no selector for the spanc with the checkbox-icon, so we need to do it like this */
-			span span {
-				filter: invert(1);
-			}
+	.map-controls-container {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+
+		.map-controls-fullscreen {
+			margin-top: 1rem;
 		}
 	}
-
-	button.gm-fullscreen-control,
-	.gmnoprint button {
-		img {
-			filter: invert(1);
-		}
-	}
-}
-
-.search-control {
-  margin: 10px;
-  min-width: 300px;
-
-  :deep(.v-menu) {
-    z-index: 1000;
-  }
 }
 
 </style>
