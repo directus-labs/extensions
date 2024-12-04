@@ -8,8 +8,6 @@
                 v-if="tourReady"
                 @click="startTour"
                 class="tour-group-nav-btn"
-                v-tooltip="buttonTooltip"
-                icon
                 x-small
                 secondary
             >
@@ -17,6 +15,7 @@
                     :name="buttonIcon"
                     small
                 />
+                <span>{{ buttonTooltip }}</span>
             </v-button>
         </teleport>
 
@@ -297,13 +296,23 @@
         --v-icon-color: var(--theme--primary);
         --v-icon-color-hover: var(--v-icon-color);
     }
+
+    .tour-group-nav-btn :deep(.button) {
+        padding: 0 8px;
+    }
+
+    .tour-group-nav-btn :deep(.button .content) {
+        gap: 6px;
+    }
 </style>
 
 <style>
     .tour-group-nav-bar {
         display: flex;
+        flex-wrap: wrap;
         gap: 4px;
         margin-bottom: -8px;
+        grid-column: start/full;
     }
 
     @import "driver.js/dist/driver.css";

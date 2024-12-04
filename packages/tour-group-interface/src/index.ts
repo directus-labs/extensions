@@ -198,7 +198,7 @@ export default defineInterface({
                 },
                 {
                     field: "buttonTooltip",
-                    name: "Button Tooltip",
+                    name: "Button Label",
                     meta: {
                         width: "half",
                         interface: "system-input-translated-string",
