@@ -1,5 +1,5 @@
 {
-    "name": "tour-group-interface",
+    "name": "@directus-labs/tour-group-interface",
     "version": "1.0.0",
     "description": "Create an interactive tour for your form.",
     "license": "MIT",
