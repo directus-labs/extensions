@@ -34,7 +34,7 @@
         }
     );
 
-    defineEmits(["click", "item-selected", "toggle-children"]);
+    const emit = defineEmits(["click", "item-selected", "toggle-children"]);
 
     const cssHeight = computed(() => {
         return {
@@ -47,6 +47,38 @@
         onSortStart: (item: Item, event: MouseEvent) => void;
         nestable: Ref<boolean>;
     };
+
+    const { onMouseDown, onClick } = usePreventClickAfterDragging({
+        mouseDownHandler: onSortStart,
+        clickHandler: (event: MouseEvent) => emit("click", event),
+    });
+
+    function usePreventClickAfterDragging({ mouseDownHandler, clickHandler }) {
+        let dragging = false;
+
+        return {
+            onMouseDown,
+            onClick,
+        };
+
+        function onMouseDown(item: Item, event: MouseEvent) {
+            dragging = true;
+            mouseDownHandler(item, event);
+
+            document.addEventListener("mouseup", onMouseUp);
+
+            function onMouseUp() {
+                document.removeEventListener("mouseup", onMouseUp);
+                // this does the trick
+                setTimeout(() => (dragging = false), 0);
+            }
+        }
+
+        function onClick(event: MouseEvent) {
+            if (dragging) return;
+            clickHandler(event);
+        }
+    }
 </script>
 
 <template>
@@ -58,7 +90,7 @@
             sorting,
             collapsed,
         }"
-        @click="$emit('click', $event)"
+        @click="onClick"
     >
         <td
             class="cell controls"
@@ -68,7 +100,7 @@
                 <v-icon
                     v-if="showManualSort"
                     @click.stop
-                    @mousedown.prevent="onSortStart(item, $event)"
+                    @mousedown.prevent="onMouseDown(item, $event)"
                     name="drag_handle"
                     class="drag-handle manual"
                     :class="{ 'sorted-manually': sortedManually, nestable }"
