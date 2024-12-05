@@ -2,6 +2,8 @@
 
 A tree view layout that allows you to nest items within a table.
 
+![Demo of the Tree View Table Layout](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/tree-view-table-layout/docs/demo.gif)
+
 ## Installation
 
 Refer to the [Official Guide](https://docs.directus.io/extensions/installing-extensions.html) for details on installing the extension from the Marketplace or manually.
