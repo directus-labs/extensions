@@ -82,7 +82,7 @@
             >
 
             <small
-                v-if="parentFieldWritable && tableSort?.by !== 'sort'"
+                v-if="parentFieldWritable && tableSort?.by !== sortField"
                 class="type-note"
                 >To use the Tree View Table features, be sure to click the
                 <v-icon
