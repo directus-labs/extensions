@@ -64,33 +64,34 @@
             model settings!</v-notice
         >
 
-        <v-select
-            v-else
-            v-model="parentFieldWritable"
-            :items="selfReferencingM2oFields"
-            item-text="name"
-            item-value="field"
-            show-deselect
-            :placeholder="t('select_a_field')"
-        />
-
-        <small
-            v-if="!parentFieldWritable"
-            class="type-note"
-            >Note that selecting a field can immediately update the sort values
-            of your items!</small
-        >
-
-        <small
-            v-if="parentFieldWritable && tableSort?.by !== 'sort'"
-            class="type-note"
-            >To use the Tree View Table features, be sure to click the
-            <v-icon
-                name="sort"
-                small
+        <template v-else>
+            <v-select
+                v-model="parentFieldWritable"
+                :items="selfReferencingM2oFields"
+                item-text="name"
+                item-value="field"
+                show-deselect
+                :placeholder="t('select_a_field')"
             />
-            button to enable manual sorting!</small
-        >
+
+            <small
+                v-if="!parentFieldWritable"
+                class="type-note"
+                >Note that selecting a field can immediately update the sort
+                values of your items!</small
+            >
+
+            <small
+                v-if="parentFieldWritable && tableSort?.by !== 'sort'"
+                class="type-note"
+                >To use the Tree View Table features, be sure to click the
+                <v-icon
+                    name="sort"
+                    small
+                />
+                button to enable manual sorting!</small
+            >
+        </template>
     </div>
 
     <div class="field">
