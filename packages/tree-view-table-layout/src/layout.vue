@@ -23,7 +23,7 @@
     // CORE CHANGES
     // import { useSync } from '@directus/composables';
     // import { useCollectionPermissions } from '@/composables/use-permissions';
-    import { useStores, useSync } from "@directus/extensions-sdk";
+    import { useSync } from "@directus/extensions-sdk";
     // CUSTOMIZED TABLE COMPONENT
     import CustomVTable from "./components/v-table.vue";
 
@@ -95,10 +95,13 @@
     const { t } = useI18n();
     const { collection } = toRefs(props);
 
+    // CORE CHANGE
+    const system = inject<Record<string, any>>("system")!;
+
     // CORE CHANGES
     const { sortAllowed } = useCollectionPermissions(collection);
     function useCollectionPermissions(collection: Ref<string>) {
-        const { usePermissionsStore } = useStores();
+        const { usePermissionsStore } = system.stores;
         const permissionsStore = usePermissionsStore();
 
         return {
@@ -133,7 +136,8 @@
     const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
         [25, 50, 100, 250, 500, 1000],
         (value) => String(value),
-        props.limit
+        props.limit,
+        system
     );
 
     if (limitWritable.value !== selectedSize) {
@@ -142,7 +146,11 @@
 
     const fieldsWritable = useSync(props, "fields", emit);
 
-    const { getFromAliasedItem } = useAliasFields(fieldsWritable, collection);
+    const { getFromAliasedItem } = useAliasFields(
+        fieldsWritable,
+        collection,
+        system
+    );
 
     function addField(fieldKey: string) {
         fieldsWritable.value = [...fieldsWritable.value, fieldKey];
