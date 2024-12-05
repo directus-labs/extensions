@@ -5,6 +5,7 @@ import {
     unref,
     watch,
     provide,
+    type Ref,
     type ComputedRef,
 } from "vue";
 import {
@@ -18,7 +19,7 @@ import {
 } from "@directus/extensions-sdk";
 import { getEndpoint } from "@directus/utils";
 import { useI18n } from "vue-i18n";
-import type { Field, PrimaryKey, Item } from "@directus/types";
+import type { Field, PrimaryKey, Item, Filter } from "@directus/types";
 import { debounce, flatten } from "lodash";
 import Actions from "./actions.vue";
 import Options from "./options.vue";
@@ -137,6 +138,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             });
         });
 
+        const { isFiltered } = useFilteringTreeView({ filterUser, search });
+
         const { saveEdits } = useSaveEdits();
 
         return {
@@ -175,6 +178,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             aliasedFields,
             aliasedKeys,
             saveEdits,
+            isFiltered,
         };
 
         async function resetPresetAndRefresh() {
@@ -503,6 +507,28 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                 newParentField: string | null | undefined
             ) {
                 if (!!newParentField) refresh();
+            }
+        }
+
+        function useFilteringTreeView({
+            filterUser,
+            search,
+        }: {
+            filterUser: Ref<Filter | null>;
+            search: Ref<string | null | undefined>;
+        }) {
+            const isFiltered = computed(
+                () => !!filterUser.value || !!search.value
+            );
+
+            watch(() => isFiltered.value, turnOffManualSortOnFilter);
+
+            return {
+                isFiltered,
+            };
+
+            function turnOffManualSortOnFilter(filterIsActive: boolean) {
+                if (filterIsActive) onSortChange(null);
             }
         }
 

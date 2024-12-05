@@ -69,6 +69,7 @@
         ) => void;
         parentField: string | null;
         saveEdits: (edits: Record<PrimaryKey, Item>) => void;
+        isFiltered: boolean;
     }
 
     const props = withDefaults(defineProps<Props>(), {
@@ -180,7 +181,7 @@
             :loading="loading"
             :row-height="tableRowHeight"
             :item-key="primaryKeyField?.field"
-            :show-manual-sort="sortAllowed"
+            :show-manual-sort="sortAllowed && !isFiltered"
             :manual-sort-key="sortField"
             allow-header-reorder
             selection-use-keys
