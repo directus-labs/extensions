@@ -462,6 +462,11 @@
         .manual-btn {
             width: 24px;
 
+            &:hover,
+            &.sorted-manually:hover {
+                color: var(--theme--primary);
+            }
+
             &.sorted-manually {
                 color: var(--theme--foreground);
             }

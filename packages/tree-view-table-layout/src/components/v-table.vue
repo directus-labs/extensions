@@ -235,7 +235,7 @@
         emit("update:sort", newSort?.by ? newSort : null);
     }
 
-    const controlColumnPadding = 12;
+    const controlColumnPadding = 16;
     const controlIconWidth = 28;
     const controlIconWidthCSS = `${controlIconWidth}px`;
 
