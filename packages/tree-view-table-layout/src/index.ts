@@ -118,7 +118,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
             return formatItemsCountPaginated({
                 currentItems: itemCount.value,
                 currentPage: page.value,
-                perPage: limit.value,
+                perPage: 25, //limit.value,
                 isFiltered: !!filterUser.value,
                 totalItems: totalCount.value,
             });
