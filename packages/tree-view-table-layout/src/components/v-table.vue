@@ -349,7 +349,7 @@
             initCollapsedChildren,
         } = useCollapsible();
 
-        watch(() => props.items, initTreeView, { immediate: true });
+        watch(() => props.items, initTreeView);
         watch(() => treeViewAble.value, initTreeView);
         watch(() => parentField.value, initTreeView);
 
