@@ -459,13 +459,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
                 function addParentField() {
                     if (
+                        parentField.value &&
                         primaryKeyField.value &&
                         !fieldsToQuery.find(
                             (field) =>
                                 field === parentField.value ||
-                                field.startsWith(
+                                field ===
                                     `${parentField.value}.${primaryKeyField.value?.field}`
-                                )
                         )
                     ) {
                         fieldsToQuery.push(
@@ -475,10 +475,18 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
                 }
             });
 
+            watch(() => parentField.value, updateItemsOnNewParentQuery);
+
             return {
                 parentField,
                 fieldsToQuery,
             };
+
+            function updateItemsOnNewParentQuery(
+                newParentField: string | null | undefined
+            ) {
+                if (!!newParentField) refresh();
+            }
         }
 
         function useSaveEdits() {
