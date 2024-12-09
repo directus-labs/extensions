@@ -409,7 +409,7 @@ function setMapType(newValue: MapType) {
 							value: 'roadmap',
 						},
 						{
-							text: 'Sattelite',
+							text: 'Satellite',
 							value: 'satellite',
 						},
 						{
