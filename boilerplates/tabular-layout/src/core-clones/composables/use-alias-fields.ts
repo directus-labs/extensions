@@ -37,7 +37,9 @@ type UsableAliasFields = {
  */
 export function useAliasFields(
     fields: Ref<string[]> | string[],
-    collection: Ref<string | null> | string | null
+    collection: Ref<string | null> | string | null,
+    // CORE CHANGES
+    system: Record<string, any>
 ): UsableAliasFields {
     const aliasedFields = computed(() => {
         const aliasedFields: Record<string, AliasFields> = {};
@@ -64,7 +66,11 @@ export function useAliasFields(
                 aliasedFields[field] = {
                     key: field,
                     fieldName,
-                    fields: adjustFieldsForDisplays([field], _collection),
+                    fields: adjustFieldsForDisplays(
+                        [field],
+                        _collection,
+                        system
+                    ),
                     aliased: false,
                 };
             } else {
@@ -74,18 +80,20 @@ export function useAliasFields(
                     key: field,
                     fieldName,
                     fieldAlias: alias,
-                    fields: adjustFieldsForDisplays([field], _collection).map(
-                        (displayField) => {
-                            if (displayField.includes(".")) {
-                                return `${alias}.${displayField
-                                    .split(".")
-                                    .slice(1)
-                                    .join(".")}`;
-                            } else {
-                                return alias;
-                            }
+                    fields: adjustFieldsForDisplays(
+                        [field],
+                        _collection,
+                        system
+                    ).map((displayField) => {
+                        if (displayField.includes(".")) {
+                            return `${alias}.${displayField
+                                .split(".")
+                                .slice(1)
+                                .join(".")}`;
+                        } else {
+                            return alias;
                         }
-                    ),
+                    }),
                     aliased: true,
                 };
             }
