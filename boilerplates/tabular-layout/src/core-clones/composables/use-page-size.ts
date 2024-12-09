@@ -1,15 +1,16 @@
 import { computed, unref, type ComputedRef, type MaybeRef } from "vue";
 // CORE CHANGES
 // import { useServerStore } from "@/stores/server";
-import { useStores } from "@directus/extensions-sdk";
 
 export function usePageSize<T = any>(
     availableSizes: MaybeRef<number[]>,
     mapCallback: (value: number, index: number, array: number[]) => T,
-    defaultSize = 25
+    defaultSize = 25,
+    // CORE CHANGE
+    system: Record<string, any>
 ): { sizes: ComputedRef<T[]>; selected: number } {
     // CORE CHANGES
-    const { useServerStore } = useStores();
+    const { useServerStore } = system.stores;
 
     const {
         info: { queryLimit },

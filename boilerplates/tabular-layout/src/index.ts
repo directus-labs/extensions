@@ -1,7 +1,8 @@
-import { computed, ref, toRefs, unref, watch } from "vue";
+import { computed, ref, toRefs, unref, watch, provide } from "vue";
 import {
     defineLayout,
     useStores,
+    useExtensions,
     useItems,
     useCollection,
     useSync,
@@ -35,7 +36,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
     },
     headerShadow: false,
     setup(props, { emit }) {
-        const { useFieldsStore } = useStores();
+        const system = { stores: useStores(), extensions: useExtensions() };
+        provide("system", system);
+
+        const { useFieldsStore } = system.stores;
         const fieldsStore = useFieldsStore();
 
         const selection = useSync(props, "selection", emit);
@@ -56,7 +60,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
         const { aliasedFields, aliasQuery, aliasedKeys } = useAliasFields(
             fields,
-            collection
+            collection,
+            system
         );
 
         const fieldsWithRelationalAliased = computed(() =>
@@ -166,7 +171,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
         function download() {
             if (!collection.value) return;
-            saveAsCSV(collection.value, fields.value, items.value);
+            saveAsCSV(collection.value, fields.value, items.value, system);
         }
 
         function toPage(newPage: number) {
@@ -221,7 +226,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
             const fieldsWithRelational = computed(() => {
                 if (!props.collection) return [];
-                return adjustFieldsForDisplays(fields.value, props.collection);
+                return adjustFieldsForDisplays(
+                    fields.value,
+                    props.collection,
+                    system
+                );
             });
 
             return { sort, limit, page, fields, fieldsWithRelational };

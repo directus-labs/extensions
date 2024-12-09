@@ -6,15 +6,13 @@ import type {
 import type { Plural } from "@directus/types";
 import { pluralize } from "@directus/utils";
 import { Ref, computed, unref } from "vue";
-// CORE CHANGES
-import { useExtensions } from "@directus/extensions-sdk";
 
 export function useExtension<T extends AppExtensionType | HybridExtensionType>(
     type: T | Ref<T>,
-    name: string | Ref<string | null>
+    name: string | Ref<string | null>,
+    // CORE CHANGE
+    extensions: Record<string, any>
 ): Ref<AppExtensionConfigs[Plural<T>][number] | null> {
-    const extensions = useExtensions();
-
     return computed(() => {
         if (unref(name) === null) return null;
         return (

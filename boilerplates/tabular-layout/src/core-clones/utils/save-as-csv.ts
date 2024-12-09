@@ -6,7 +6,6 @@ import { saveAs } from "file-saver";
 import { useAliasFields } from "../composables/use-alias-fields";
 import { useExtension } from "../composables/use-extension";
 // import { useFieldsStore } from "@/stores/fields";
-import { useStores } from "@directus/extensions-sdk";
 
 /**
  * Saves the given collection + items combination as a CSV file
@@ -14,9 +13,11 @@ import { useStores } from "@directus/extensions-sdk";
 export async function saveAsCSV(
     collection: string,
     fields: string[],
-    items: Item[]
+    items: Item[],
+    // CORE CHANGE
+    system: Record<string, any>
 ) {
-    const { useFieldsStore } = useStores();
+    const { useFieldsStore } = system.stores;
     const fieldsStore = useFieldsStore();
 
     const fieldsUsed: Record<string, Field | null> = {};
@@ -25,7 +26,7 @@ export async function saveAsCSV(
         fieldsUsed[key] = fieldsStore.getField(collection, key);
     }
 
-    const { getFromAliasedItem } = useAliasFields(fields, collection);
+    const { getFromAliasedItem } = useAliasFields(fields, collection, system);
 
     const parsedItems = [];
 
@@ -56,7 +57,8 @@ export async function saveAsCSV(
 
             const display = useExtension(
                 "display",
-                computed(() => fieldsUsed[key]?.meta?.display ?? null)
+                computed(() => fieldsUsed[key]?.meta?.display ?? null),
+                system.extensions
             );
 
             if (value !== undefined && value !== null) {
