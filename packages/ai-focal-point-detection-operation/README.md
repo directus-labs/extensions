@@ -2,11 +2,11 @@
 
 Determine an image focal point, powered by [OpenAI](https://platform.openai.com/).
 
-![The AI Focal Point Detection operation, showing an Openai API Key field and a File URL field.](https://raw.githubusercontent.com/directus-labs/extension-ai-focal-point-detection-operation/main/docs/options.png)
+![The AI Focal Point Detection operation, showing an Openai API Key field and a File URL field.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-focal-point-detection-operation/docs/options.png)
 
 This operation contains two required configuration options - an [OpenAI API Key](https://platform.openai.com), and a link to a file. It returns a JSON object containing the focal point coordinates and the reason these were chosen.
 
-![The output showing a JSON object containing a a flocal_point_x, focal_point_y, and reason parameter.](https://raw.githubusercontent.com/directus-labs/extension-ai-focal-point-detection-operation/main/docs/output.png)
+![The output showing a JSON object containing a a flocal_point_x, focal_point_y, and reason parameter.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-focal-point-detection-operation/docs/output.png)
 
 You can use the operation to then save the result to a file.
 

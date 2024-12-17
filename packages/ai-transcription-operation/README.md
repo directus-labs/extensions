@@ -2,7 +2,7 @@
 
 Generate transcripts from audio files within Directus Flows with this custom operation, powered by [Deepgram](https://deepgram.com).
 
-![The AI Transcription operation, showing a Deepgram API Key field and a File URL field.](https://raw.githubusercontent.com/directus-labs/extension-ai-transcription-operation/main/docs/options.png)
+![The AI Transcription operation, showing a Deepgram API Key field and a File URL field.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-transcription-operation/docs/options.png)
 
 This operation contains the following configuration options:
 
@@ -19,7 +19,7 @@ This operation contains the following configuration options:
 
 If a Callback URL is NOT provided, the operation returns a JSON object containing the transcript, a breakdown of each word and timestamp, a paragraph-formatted transcript, and a breakdown of each paragraph and timestamp.
 
-![The output showing a JSON object containing a transcript and words.](https://raw.githubusercontent.com/directus-labs/extension-ai-transcription-operation/main/docs/output.png)
+![The output showing a JSON object containing a transcript and words.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-transcription-operation/docs/output.png)
 
 You can use the operation to then save the result to a file description or item, or run further automation on the output.
 
@@ -27,7 +27,7 @@ You can use the operation to then save the result to a file description or item,
 
 If a Callback URL is provided, the operation does not wait for the transcript to finish generation. It immediately returns a JSON object containing the `request_id` provided by the Deepgram API and a message confirming successful submission.
 
-![The output showing a JSON object containing a confirmation message and request_id.](https://raw.githubusercontent.com/directus-labs/extension-ai-transcription-operation/main/docs/callback.png)
+![The output showing a JSON object containing a confirmation message and request_id.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-transcription-operation/docs/callback.png)
 
 The `request_id` should be stored and used to identify the incoming transcript from Deepgram.
 

@@ -2,7 +2,7 @@
 
 Generate new images within Directus Flows with this custom operation, powered by [OpenAI](https://platform.openai.com).
 
-![The AI Image Generation operation, showing an OpenAI API Key field, and fields for a prompt, quality, and size selection](https://raw.githubusercontent.com/directus-labs/extension-ai-image-generation-operation/main/docs/options.png)
+![The AI Image Generation operation, showing an OpenAI API Key field, and fields for a prompt, quality, and size selection](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-image-generation-operation/docs/options.png)
 
 This operation contains four required configuration options - an [OpenAI API Key](https://platform.openai.com), a text prompt, a quality (standard or high), and a size (square, portrait, or landscape). It returns a string which is a direct URL to the generated image.
 
