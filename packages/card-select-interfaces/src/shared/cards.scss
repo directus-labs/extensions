@@ -1,4 +1,4 @@
-
+@mixin cards-interface {
 .content {
     padding: 0;
   }
@@ -73,3 +73,4 @@
       transition: transform 0.3s ease;
     }
   }
+}

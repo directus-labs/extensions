@@ -47,7 +47,7 @@ function clearSearch() {
 </script>
 
 <template>
-	<div class="content">
+	<div class="card-select-interface content">
 		<v-input v-if="enableSearch" v-model="searchQuery" placeholder="Search..." small type="search">
 			<template #prepend>
 				<v-icon name="search" />
@@ -79,7 +79,11 @@ function clearSearch() {
 </template>
 
 <style lang="scss" scoped>
-@import '../shared/cards';
+@import '../shared/cards.scss';
+
+.card-select-interface {
+  @include cards-interface;
+}
 
 :deep(.radio-root) {
     width: 100%;
