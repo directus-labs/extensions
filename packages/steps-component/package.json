@@ -7,7 +7,7 @@
 		"type": "git",
 		"url": "https://github.com/directus-labs/extension-steps-component"
 	},
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": [
 		"directus",
 		"directus-extension",

@@ -3,7 +3,7 @@
 Displays a clickable list of steps that the user can follow to complete a task within the Directus Studio.
 
 ## Interface
-
+steps-interface-example.png
 **UI**
 
 ![Example view of the steps interface.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/steps-component/docs/steps-interface-example.png)
