@@ -10,7 +10,9 @@ export function syncRefProperty<R, T extends keyof R>(
             return ref.value?.[key] ?? unref(defaultValue);
         },
         set(value: R[T]) {
-            ref.value = Object.assign({}, ref.value, { [key]: value }) as R;
+            // CORE CHANGE
+            // ref.value = Object.assign({}, ref.value, { [key]: value }) as R;
+            ref.value = { ...ref.value, [key]: value } as R;
         },
     });
 }
