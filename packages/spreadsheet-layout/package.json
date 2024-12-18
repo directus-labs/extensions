@@ -1,49 +1,49 @@
 {
-    "name": "directus-extension-spreadsheet-layout",
-    "version": "1.0.0",
-    "description": "A spreadsheet layout that allows you to edit item fields directly inline, just like in a spreadsheet",
-    "license": "MIT",
-    "author": "Directus Labs",
-    "contributors": [
-        {
-            "name": "formfcw",
-            "email": "dev@formfcw.com"
-        }
-    ],
-    "icon": "table",
-    "keywords": [
-        "inline",
-        "inline-editing",
-        "spreadsheet",
-        "directus",
-        "directus-extension",
-        "directus-extension-layout",
-        "directus-extension-spreadsheet-layout"
-    ],
-    "type": "module",
-    "files": [
-        "dist"
-    ],
-    "directus:extension": {
-        "type": "layout",
-        "path": "dist/index.js",
-        "source": "src/index.ts",
-        "host": "^10.10.0"
-    },
-    "scripts": {
-        "build": "directus-extension build",
-        "dev": "directus-extension build -w --no-minify",
-        "link": "directus-extension link"
-    },
-    "devDependencies": {
-        "@directus/extensions-sdk": "11.0.3",
-        "@types/lodash": "^4.17.1",
-        "@vueuse/core": "^10.9.0",
-        "lodash": "^4.17.21",
-        "sass": "^1.76.0",
-        "typescript": "^5.4.5",
-        "vue": "^3.4.26",
-        "vue-i18n": "^9.13.1",
-        "vue-router": "^4.3.2"
+  "name": "directus-extension-spreadsheet-layout",
+  "version": "1.0.1",
+  "description": "A spreadsheet layout that allows you to edit item fields directly inline, just like in a spreadsheet",
+  "license": "MIT",
+  "author": "Directus Labs",
+  "contributors": [
+    {
+      "name": "formfcw",
+      "email": "dev@formfcw.com"
     }
+  ],
+  "icon": "table",
+  "keywords": [
+    "inline",
+    "inline-editing",
+    "spreadsheet",
+    "directus",
+    "directus-extension",
+    "directus-extension-layout",
+    "directus-extension-spreadsheet-layout"
+  ],
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "directus:extension": {
+    "type": "layout",
+    "path": "dist/index.js",
+    "source": "src/index.ts",
+    "host": "^10.10.0"
+  },
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "11.0.3",
+    "@types/lodash": "^4.17.1",
+    "@vueuse/core": "^10.9.0",
+    "lodash": "^4.17.21",
+    "sass": "^1.76.0",
+    "typescript": "^5.4.5",
+    "vue": "^3.4.26",
+    "vue-i18n": "^9.13.1",
+    "vue-router": "^4.3.2"
+  }
 }
