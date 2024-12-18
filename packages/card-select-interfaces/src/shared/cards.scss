@@ -1,0 +1,76 @@
+@mixin cards-interface {
+.content {
+    padding: 0;
+  }
+
+  .grid {
+    display: grid;
+    width: 100%;
+    gap: var(--theme--form--column-gap);
+    grid-template-columns: repeat(var(--columns-xl), minmax(0, 1fr));
+
+    @media (max-width: 840px) {
+      grid-template-columns: repeat(var(--columns-lg), minmax(0, 1fr));
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: repeat(var(--columns-md), minmax(0, 1fr));
+    }
+
+    @media (max-width: 400px) {
+      grid-template-columns: repeat(var(--columns-sm), minmax(0, 1fr));
+    }
+  }
+
+  .interface {
+    --border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all var(--fast) var(--transition);
+
+    &:hover {
+      --border-color: var(--theme--form--field--input--border-color-hover);
+    }
+
+    &:focus {
+      --border-color: var(--theme--primary);
+    }
+
+    &.active {
+      --border-color: var(--theme--primary);
+    }
+
+    &.gray {
+      opacity: 0.8;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  .v-input {
+    margin-bottom: 16px;
+  }
+
+  .list {
+    &-enter-active,
+    &-leave-active {
+      transition: all 0.3s ease;
+    }
+
+    &-enter-from,
+    &-leave-to {
+      opacity: 0;
+    }
+
+    &-move {
+      transition: transform 0.3s ease;
+    }
+  }
+}
