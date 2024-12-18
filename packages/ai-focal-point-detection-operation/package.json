@@ -1,51 +1,51 @@
 {
-	"name": "@directus-labs/ai-focal-point-detection-operation",
-	"description": "Use OpenAI Vision models to find an image's focal points.",
-	"icon": "extension",
-	"version": "1.0.2",
-	"keywords": [
-		"directus",
-		"directus-extension",
-		"directus-extension-operation"
-	],
-	"type": "module",
-	"files": [
-		"dist"
-	],
-	"license": "MIT",
-	"directus:extension": {
-		"type": "operation",
-		"path": {
-			"app": "dist/app.js",
-			"api": "dist/api.js"
-		},
-		"source": {
-			"app": "src/app.js",
-			"api": "src/api.js"
-		},
-		"host": "^10.10.0",
-		"sandbox": {
-			"enabled": true,
-			"requestedScopes": {
-				"log": {},
-				"request": {
-					"methods": [
-						"POST"
-					],
-					"urls": [
-						"https://api.openai.com/v1/chat/**"
-					]
-				}
-			}
-		}
-	},
-	"scripts": {
-		"build": "directus-extension build",
-		"dev": "directus-extension build -w --no-minify",
-		"link": "directus-extension link"
-	},
-	"devDependencies": {
-		"@directus/extensions-sdk": "11.0.1",
-		"vue": "^3.4.21"
-	}
+  "name": "@directus-labs/ai-focal-point-detection-operation",
+  "description": "Use OpenAI Vision models to find an image's focal points.",
+  "icon": "extension",
+  "version": "1.0.3",
+  "keywords": [
+    "directus",
+    "directus-extension",
+    "directus-extension-operation"
+  ],
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "directus:extension": {
+    "type": "operation",
+    "path": {
+      "app": "dist/app.js",
+      "api": "dist/api.js"
+    },
+    "source": {
+      "app": "src/app.js",
+      "api": "src/api.js"
+    },
+    "host": "^10.10.0",
+    "sandbox": {
+      "enabled": true,
+      "requestedScopes": {
+        "log": {},
+        "request": {
+          "methods": [
+            "POST"
+          ],
+          "urls": [
+            "https://api.openai.com/v1/chat/**"
+          ]
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "11.0.1",
+    "vue": "^3.4.21"
+  }
 }
