@@ -1,18 +1,18 @@
 import { computed } from "vue";
 import type { Field } from "@directus/types";
 // CORE IMPORTS
-import { useExtension } from "../../core-clones/composables/use-extension";
+import { useExtension } from "../composables/use-extension";
 // CORE CHANGES
 // import { useFieldsStore } from '@/stores/fields';
-import { useStores } from "@directus/extensions-sdk";
 
 export function adjustFieldsForDisplays(
     fields: readonly string[],
-    parentCollection: string
+    parentCollection: string,
+    // CORE CHANGES
+    system: Record<string, any>
 ): string[] {
-    // CHANGE: import useStores
-    const { useFieldsStore } = useStores();
-
+    // CORE CHANGE
+    const { useFieldsStore } = system.stores;
     const fieldsStore = useFieldsStore();
 
     const adjustedFields: string[] = fields
@@ -27,7 +27,8 @@ export function adjustFieldsForDisplays(
 
             const display = useExtension(
                 "display",
-                computed(() => field.meta?.display ?? null)
+                computed(() => field.meta?.display ?? null),
+                system.extensions
             );
 
             if (!display) return fieldKey;
