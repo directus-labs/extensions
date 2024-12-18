@@ -2,7 +2,7 @@
 
 Present a cluster or boxes where the size of each box represent the value. You can also group data into categories which are presented in different colors.
 
-![Treemap Chart Panel](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/tree-map-chart-panel/docs/directus-panel-treemap-chart.jpg)
+![Treemap Chart Panel](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/treemap-chart-panel/docs/directus-panel-treemap-chart.jpg)
 
 ## Usage
 
@@ -55,7 +55,7 @@ Refer to the Official Guide for details on installing the extension from the Mar
 7. Save the panel and position/resize as required
 8. Save the dashboard
 
-![Customise the panel](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/tree-map-chart-panel/docs/directus-panel-treemap-chart-customize.jpg)
+![Customise the panel](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/treemap-chart-panel/docs/directus-panel-treemap-chart-customize.jpg)
 
 
 ## Permissions

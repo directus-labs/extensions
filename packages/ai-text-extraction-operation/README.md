@@ -2,7 +2,7 @@
 
 Extract text from image files within Directus Files with this custom operation, using [Clarifai](https://www.clarifai.com).
 
-![Sample output](https://raw.githubusercontent.com/directus-labs/extension-ai-text-extraction-operation/main/docs/options.png)
+![Sample output](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-text-extraction-operation/docs/options.png)
 
 This operation requires two options to be set - first a personal access token from [Clarifai](https://www.clarifai.com) (you can find this in your personal settings under [Security](https://clarifai.com/settings/security)), and a link to the image file. It will return a JSON object, with all the found text into a single merged string and a list of regions where the texts were found.
 

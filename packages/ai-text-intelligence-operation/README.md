@@ -2,11 +2,11 @@
 
 Analyze text within Directus Flows with this custom operation, powered by Deepgram. Understand intents, sentiment, topics, and generate a summary.
 
-![The AI Text Intelligence operation, showing a Deepgram API Key field and a text field](https://raw.githubusercontent.com/directus-labs/extension-ai-text-intelligence-operation/main/docs/options.png)
+![The AI Text Intelligence operation, showing a Deepgram API Key field and a text field](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-text-intelligence-operation/docs/options.png)
 
 This operation contains two required configuration options - a [Deepgram API Key](https://console.deepgram.com), and some text. It returns a JSON object containing sentiment average and per segment, intent per segment, topics per segment, and an overall summary of the text.
 
-![The output showing a JSON object containing a summary and topics.](https://raw.githubusercontent.com/directus-labs/extension-ai-text-intelligence-operation/main/docs/output.png)
+![The output showing a JSON object containing a summary and topics.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-text-intelligence-operation/docs/output.png)
 
 ## Output
 
