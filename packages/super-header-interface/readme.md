@@ -3,7 +3,7 @@
 ![Super Header Interface thumbnail](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/super-header-interface/docs/super-header-interface.png)
 
 
-A super powerfulheader interface for Directus that allows you to create rich page headers with titles, subtitles, help information, and interactive actions. Perfect for enhancing the user experience with contextual information and quick access to common tasks.
+A super powerful header interface for Directus that allows you to create rich page headers with titles, subtitles, help information, and interactive actions. Perfect for enhancing the user experience with contextual information and quick access to common tasks.
 
 **Features**
 
