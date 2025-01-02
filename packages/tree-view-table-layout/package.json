@@ -1,0 +1,62 @@
+{
+    "name": "directus-extension-tree-view-table-layout",
+    "version": "1.0.0",
+    "description": "A tree view layout that allows you to nest items within a table",
+    "license": "MIT",
+    "author": "Directus Labs",
+    "contributors": [
+        {
+            "name": "formfcw",
+            "email": "dev@formfcw.com"
+        }
+    ],
+    "icon": "format_indent_increase",
+    "keywords": [
+        "directus",
+        "directus-extension",
+        "directus-extension-layout",
+        "directus-extension-tree-view-table-layout",
+        "directus-extension-tree-view-layout",
+        "directus-extension-tabular-layout",
+        "directus-extension-table-layout",
+        "tree-view-table-layout",
+        "tree-view-table",
+        "tree-view-layout",
+        "tabular-layout",
+        "table-layout",
+        "hierachical-table",
+        "nested-table",
+        "nested-items"
+    ],
+    "type": "module",
+    "files": [
+        "dist"
+    ],
+    "directus:extension": {
+        "type": "layout",
+        "path": "dist/index.js",
+        "source": "src/index.ts",
+        "host": "^10.10.0 || ^11.0.0"
+    },
+    "scripts": {
+        "build": "directus-extension build",
+        "dev": "directus-extension build -w --no-minify",
+        "link": "directus-extension link"
+    },
+    "devDependencies": {
+        "@directus/extensions-sdk": "^12.1.2",
+        "@directus/utils": "^12.0.4",
+        "@json2csv/plainjs": "^7.0.6",
+        "@types/file-saver": "^2.0.7",
+        "@types/lodash": "^4.17.13",
+        "@vueuse/core": "^12.0.0",
+        "file-saver": "^2.0.5",
+        "lodash": "^4.17.21",
+        "sass": "^1.80.5",
+        "typescript": "^5.6.3",
+        "vue": "^3.5.12",
+        "vue-i18n": "^10.0.4",
+        "vue-router": "^4.4.5",
+        "vuedraggable": "4.1.0"
+    }
+}
