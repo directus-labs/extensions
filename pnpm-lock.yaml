@@ -706,6 +706,51 @@ importers:
         specifier: ^10.0.4
         version: 10.0.5(vue@3.5.13(typescript@5.6.3))
 
+  packages/tree-view-table-layout:
+    devDependencies:
+      '@directus/extensions-sdk':
+        specifier: ^12.1.2
+        version: 12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))
+      '@directus/utils':
+        specifier: ^12.0.4
+        version: 12.0.5(vue@3.5.13(typescript@5.6.3))
+      '@json2csv/plainjs':
+        specifier: ^7.0.6
+        version: 7.0.6
+      '@types/file-saver':
+        specifier: ^2.0.7
+        version: 2.0.7
+      '@types/lodash':
+        specifier: ^4.17.13
+        version: 4.17.14
+      '@vueuse/core':
+        specifier: ^12.0.0
+        version: 12.3.0(typescript@5.6.3)
+      file-saver:
+        specifier: ^2.0.5
+        version: 2.0.5
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      sass:
+        specifier: ^1.80.5
+        version: 1.83.0
+      typescript:
+        specifier: ^5.6.3
+        version: 5.6.3
+      vue:
+        specifier: ^3.5.12
+        version: 3.5.13(typescript@5.6.3)
+      vue-i18n:
+        specifier: ^10.0.4
+        version: 10.0.5(vue@3.5.13(typescript@5.6.3))
+      vue-router:
+        specifier: ^4.4.5
+        version: 4.4.5(vue@3.5.13(typescript@5.6.3))
+      vuedraggable:
+        specifier: 4.1.0
+        version: 4.1.0(vue@3.5.13(typescript@5.6.3))
+
   packages/treemap-chart-panel:
     devDependencies:
       '@directus/extensions-sdk':
@@ -1858,6 +1903,12 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
+  '@json2csv/formatters@7.0.6':
+    resolution: {integrity: sha512-hjIk1H1TR4ydU5ntIENEPgoMGW+Q7mJ+537sDFDbsk+Y3EPl2i4NfFVjw0NJRgT+ihm8X30M67mA8AS6jPidSA==}
+
+  '@json2csv/plainjs@7.0.6':
+    resolution: {integrity: sha512-4Md7RPDCSYpmW1HWIpWBOqCd4vWfIqm53S3e/uzQ62iGi7L3r34fK/8nhOMEe+/eVfCx8+gdSCt1d74SlacQHw==}
+
   '@ljharb/through@2.3.13':
     resolution: {integrity: sha512-/gKJun8NNiWGZJkGzI/Ragc53cOdcLNdzjLaIa+GEjguQs0ulsurx8WN0jijdK9yPqDvziX995sMRLyLt1uZMQ==}
     engines: {node: '>= 0.4'}
@@ -2114,6 +2165,9 @@ packages:
   '@sinclair/typebox@0.33.15':
     resolution: {integrity: sha512-R50kz7xohLjhwgmAiw+6qOAYkeFXsK8i1CbEQB1qJTiHMK5WywpvGIHJenE3n4t7dqj3bas+H1cD5dTZIfrAEw==}
 
+  '@streamparser/json@0.0.20':
+    resolution: {integrity: sha512-VqAAkydywPpkw63WQhPVKCD3SdwXuihCUVZbbiY3SfSTGQyHmwRoq27y4dmJdZuJwd5JIlQoMPyGvMbUPY0RKQ==}
+
   '@tootallnate/once@1.1.2':
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
     engines: {node: '>= 6'}
@@ -2244,6 +2298,9 @@ packages:
   '@types/fabric@5.3.7':
     resolution: {integrity: sha512-Fd2oN4zg/E6X+85HbmWSpswzcu3rvDfmwtvz1SH0j2av9OFHZDRrkLQ3K16nl6w+mSflrcTfmB719I7wXkfIsw==}
 
+  '@types/file-saver@2.0.7':
+    resolution: {integrity: sha512-dNKVfHd/jk0SkR/exKGj2ggkB45MAkzvWCaqLUUgkyjITkGNzH8H+yUwr+BLJUBjZOe9w8X3wgmXhZDRg1ED6A==}
+
   '@types/fs-extra@8.1.5':
     resolution: {integrity: sha512-0dzKcwO+S8s2kuF5Z9oUWatQJj5Uq/iqphEtE3GQJVRRYm/tD1LglU2UnXi2A8jLq5umkGouOXOR9y0n613ZwQ==}
 
@@ -2261,6 +2318,9 @@ packages:
 
   '@types/lodash-es@4.17.12':
     resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
+
+  '@types/lodash@4.17.14':
+    resolution: {integrity: sha512-jsxagdikDiDBeIRaPYtArcT8my4tN1og7MtMRquFT3XNA6axxyHDRUemqDz/taRDdOUn0GnGHRCuff4q48sW9A==}
 
   '@types/lodash@4.17.5':
     resolution: {integrity: sha512-MBIOHVZqVqgfro1euRDWX7OO0fBVUUMrN6Pwm8LQsz8cWhEpihlvR70ENj3f40j58TNxZaWv2ndSkInykNBBJw==}
@@ -2569,17 +2629,26 @@ packages:
   '@vueuse/core@11.1.0':
     resolution: {integrity: sha512-P6dk79QYA6sKQnghrUz/1tHi0n9mrb/iO1WTMk/ElLmTyNqgDeSZ3wcDf6fRBGzRJbeG1dxzEOvLENMjr+E3fg==}
 
+  '@vueuse/core@12.3.0':
+    resolution: {integrity: sha512-cnV8QDKZrsyKC7tWjPbeEUz2cD9sa9faxF2YkR8QqNwfofgbOhmfIgvSYmkp+ttSvfOw4E6hLcQx15mRPr0yBA==}
+
   '@vueuse/metadata@10.11.0':
     resolution: {integrity: sha512-kQX7l6l8dVWNqlqyN3ePW3KmjCQO3ZMgXuBMddIu83CmucrsBfXlH+JoviYyRBws/yLTQO8g3Pbw+bdIoVm4oQ==}
 
   '@vueuse/metadata@11.1.0':
     resolution: {integrity: sha512-l9Q502TBTaPYGanl1G+hPgd3QX5s4CGnpXriVBR5fEZ/goI6fvDaVmIl3Td8oKFurOxTmbXvBPSsgrd6eu6HYg==}
 
+  '@vueuse/metadata@12.3.0':
+    resolution: {integrity: sha512-M/iQHHjMffOv2npsw2ihlUx1CTiBwPEgb7DzByLq7zpg1+Ke8r7s9p5ybUWc5OIeGewtpY4Xy0R2cKqFqM8hFg==}
+
   '@vueuse/shared@10.11.0':
     resolution: {integrity: sha512-fyNoIXEq3PfX1L3NkNhtVQUSRtqYwJtJg+Bp9rIzculIZWHTkKSysujrOk2J+NrRulLTQH9+3gGSfYLWSEWU1A==}
 
   '@vueuse/shared@11.1.0':
     resolution: {integrity: sha512-YUtIpY122q7osj+zsNMFAfMTubGz0sn5QzE5gPzAIiCmtt2ha3uQUY1+JPyL4gRCTsLPX82Y9brNbo/aqlA91w==}
+
+  '@vueuse/shared@12.3.0':
+    resolution: {integrity: sha512-X3YD35GUeW0d5Gajcwv9jdLAJTV2Jdb/Ll6Ii2JIYcKLYZqv5wxyLeKtiQkqWmHg3v0J0ZWjDUMVOw2E7RCXfA==}
 
   '@yr/monotone-cubic-spline@1.0.3':
     resolution: {integrity: sha512-FQXkOta0XBSUPHndIKON2Y9JeQz5ZeMqLYZVVK93FliNBFm7LNMIZmY6FrMEB9XPcDbE2bekMbZD6kzDkxwYjA==}
@@ -3320,6 +3389,9 @@ packages:
   figures@3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
     engines: {node: '>=8'}
+
+  file-saver@2.0.5:
+    resolution: {integrity: sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -8069,6 +8141,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
+  '@json2csv/formatters@7.0.6': {}
+
+  '@json2csv/plainjs@7.0.6':
+    dependencies:
+      '@json2csv/formatters': 7.0.6
+      '@streamparser/json': 0.0.20
+
   '@ljharb/through@2.3.13':
     dependencies:
       call-bind: 1.0.7
@@ -8304,6 +8383,8 @@ snapshots:
 
   '@sinclair/typebox@0.33.15': {}
 
+  '@streamparser/json@0.0.20': {}
+
   '@tootallnate/once@1.1.2': {}
 
   '@tootallnate/once@2.0.0': {}
@@ -8462,6 +8543,8 @@ snapshots:
 
   '@types/fabric@5.3.7': {}
 
+  '@types/file-saver@2.0.7': {}
+
   '@types/fs-extra@8.1.5':
     dependencies:
       '@types/node': 22.7.7
@@ -8480,6 +8563,8 @@ snapshots:
   '@types/lodash-es@4.17.12':
     dependencies:
       '@types/lodash': 4.17.5
+
+  '@types/lodash@4.17.14': {}
 
   '@types/lodash@4.17.5': {}
 
@@ -9111,9 +9196,20 @@ snapshots:
       - '@vue/composition-api'
       - vue
 
+  '@vueuse/core@12.3.0(typescript@5.6.3)':
+    dependencies:
+      '@types/web-bluetooth': 0.0.20
+      '@vueuse/metadata': 12.3.0
+      '@vueuse/shared': 12.3.0(typescript@5.6.3)
+      vue: 3.5.13(typescript@5.6.3)
+    transitivePeerDependencies:
+      - typescript
+
   '@vueuse/metadata@10.11.0': {}
 
   '@vueuse/metadata@11.1.0': {}
+
+  '@vueuse/metadata@12.3.0': {}
 
   '@vueuse/shared@10.11.0(vue@3.4.31(typescript@5.5.3))':
     dependencies:
@@ -9128,6 +9224,12 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
+
+  '@vueuse/shared@12.3.0(typescript@5.6.3)':
+    dependencies:
+      vue: 3.5.13(typescript@5.6.3)
+    transitivePeerDependencies:
+      - typescript
 
   '@yr/monotone-cubic-spline@1.0.3': {}
 
@@ -10004,6 +10106,8 @@ snapshots:
   figures@3.2.0:
     dependencies:
       escape-string-regexp: 1.0.5
+
+  file-saver@2.0.5: {}
 
   fill-range@7.1.1:
     dependencies:
@@ -11946,7 +12050,6 @@ snapshots:
     dependencies:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.13(typescript@5.6.3)
-    optional: true
 
   vue@3.4.21(typescript@5.5.3):
     dependencies:
@@ -12072,6 +12175,11 @@ snapshots:
     dependencies:
       sortablejs: 1.14.0
       vue: 3.5.12(typescript@5.6.3)
+
+  vuedraggable@4.1.0(vue@3.5.13(typescript@5.6.3)):
+    dependencies:
+      sortablejs: 1.14.0
+      vue: 3.5.13(typescript@5.6.3)
 
   w3c-hr-time@1.0.2:
     dependencies:
