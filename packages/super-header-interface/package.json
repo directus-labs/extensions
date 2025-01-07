@@ -1,6 +1,6 @@
 {
 	"name": "@directus-labs/super-header-interface",
-	"description": "The super page header component that does all the things. Show help content, include a page title + description, and more. Run flows and include links within the actions.",
+	"description": "A super powerful header interface for Directus that allows you to create rich page headers with titles, subtitles, help information, and interactive actions. Perfect for enhancing the user experience with contextual information and quick access to common tasks.",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus-labs/extensions.git"
