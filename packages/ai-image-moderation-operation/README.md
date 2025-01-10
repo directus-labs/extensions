@@ -2,11 +2,11 @@
 
 Analyze images for drugs, suggestive or explicit material, powered by Clarifai.
 
-![The AI Image Moderation operation, showing a Clarifai API Token field, File URL, and threshold](https://raw.githubusercontent.com/directus-labs/extension-ai-image-moderation-operation/main/docs/options.png)
+![The AI Image Moderation operation, showing a Clarifai API Token field, File URL, and threshold](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-image-moderation-operation/docs/options.png)
 
 This operation contains four configuration options - a [Clarifai API Key](https://clarifai.com/settings/security), a link to a file, and a threshold percentage for the concepts to be 'flagged'. It returns a JSON object containing a score for each concept, and an array of which concepts are over the threshold.
 
-![The output showing a JSON object containing a list of conecpts with values, and an array of flagged concepts.](https://raw.githubusercontent.com/directus-labs/extension-ai-text-intelligence-operation/main/docs/output.png)
+![The output showing a JSON object containing a list of conecpts with values, and an array of flagged concepts.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-image-moderation-operation/docs/output.png)
 
 ## Output
 

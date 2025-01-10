@@ -2,7 +2,7 @@
 
 The HubSpot Operation allows you to integrate their API into Directus flows.
 
-![Hubspot API Operation](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/hubspot-operation/docs/hubspot-operation.png)
+![Hubspot API Operation](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/hubspot-operation/docs/hubspot-operation.jpg)
 
 ## Endpoints
 

@@ -2,7 +2,7 @@
 
 Generate realistic speech clips from text using the [Genny API](https://docs.genny.lovo.ai).
 
-![The operation shows hardcoded text, a speaker name country and gener, and a speed slider](https://raw.githubusercontent.com/directus-labs/extension-ai-speech-generation-operation/main/docs/options.png)
+![The operation shows hardcoded text, a speaker name country and gener, and a speed slider](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-speech-generation-operation/docs/options.png)
 
 This operation contains four required configuration options - a Genny API key, the text to use in the clip, a speaker from the selecton of voices, and a speed (between 0.1 and 3 - 1 being 'normal'). It returns a string which is a direct URL to the generated audio file.
 
