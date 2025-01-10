@@ -39,6 +39,7 @@ const handleFlowExecuted = async ({ success, flow, result, error }) => {
 };
 
 const actionList = computed(() => {
+	if (!props.actions || !props.actions?.length) return [];
 	const formattedActions = props.actions.map((action) => {
 		if (action.actionType === 'link') {
 			return {
