@@ -1,0 +1,62 @@
+{
+	"name": "@directus-labs/card-select-interfaces",
+	"description": "A bundle of card-based selection interfaces for Directus",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions"
+	},
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "interface",
+				"name": "radio-cards-interface",
+				"source": "src/radio-cards-interface/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "checkbox-cards-interface",
+				"source": "src/checkbox-cards-interface/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "image-uuid-interface",
+				"source": "src/image-uuid-interface/index.ts"
+			}
+		],
+		"host": "^10.0.0 || ^11.0.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"add": "directus-extension add"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "12.0.1",
+		"sass": "^1.83.0",
+		"typescript": "^5.6.3"
+	},
+	"dependencies": {
+		"reka-ui": "^1.0.0-alpha.7",
+		"vue-i18n": "^10.0.4",
+        "vue": "^3.5.11"
+
+	}
+}
