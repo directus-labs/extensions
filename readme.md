@@ -38,6 +38,8 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Whiteboard](//github.com/directus-labs/extensions/tree/main/packages/whiteboard-interface)                                           | Interface | N/A       |            |
 | [Multilevel Autocomplete Input (API)](//github.com/directus-labs/extensions/tree/main/packages/multilevel-autocomplete-api-interface) | Interface | N/A       |            |
 | [Experimental M2A Interface](//github.com/directus-labs/extensions/tree/main/packages/experimental-m2a-interface)                     | Interface | N/A       |            |
+| [Super Header Interface](//github.com/directus-labs/extensions/tree/main/packages/super-header-interface)                             | Interface | N/A       |            |
+| [Switch Interface](//github.com/directus-labs/extensions/tree/main/packages/switch-interface)                                         | Interface | N/A       |            |
 | [Simple List](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface)                                         | Interface | N/A       |            |
 | [Whereby Embed](//github.com/directus-labs/extensions/tree/main/packages/whereby-embedded-interface)                                  | Interface | N/A       |            |
 | [Address Completion](//github.com/directus-labs/extensions/tree/main/packages/address-completion-interface)                           | Interface | N/A       |            |
@@ -50,6 +52,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Cholopleth Map](//github.com/directus-labs/extensions/tree/main/packages/choropleth-map-panel)                                       | Panel     | N/A       |            |
 | [Command Palette](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module)                                    | Module    | N/A       | ⭐         |
 | [Plausible Analytics](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle)                            | Bundle    | N/A       |            |
+| [Card Select Interfaces](//github.com/directus-labs/extensions/tree/main/packages/card-select-interfaces)                             | Bundle    | N/A       |            |
 | [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component)                                           | Bundle    | N/A       |            |
 | [Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component)                                           | Bundle    | N/A       |            |
 | [Calculated Fields](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle)                                | Bundle    | N/A       | ⭐         |
