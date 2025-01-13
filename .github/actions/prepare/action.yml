@@ -1,0 +1,19 @@
+name: build
+description: Check that all packages build successfully
+runs:
+  using: composite
+  steps:
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.0.0
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install
+    - name: Build
+      if: inputs.build == 'true'
+      shell: bash
+      env:
+        npm_config_workspace_concurrency: 1
+        NODE_OPTIONS: --max_old_space_size=6144
+      run: pnpm run build

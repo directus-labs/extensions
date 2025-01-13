@@ -1,16 +1,17 @@
 {
-	"name": "@directus-labs/extensions",
-	"private": true,
-	"homepage": "https://github.com/directus-labs/extensions",
-	"license": "MIT",
-	"scripts": {
-		"premkcert": "mkcert -install",
-		"mkcert": "mkcert -ecdsa -key-file .local/caddy/key.pem -cert-file .local/caddy/cert.pem extensions.directus.labs",
-		"dev": "pnpm --stream -r dev"
-	},
-	"packageManager": "pnpm@9.1.2",
-	"engines": {
-		"node": ">=18.18.0",
-		"pnpm": "~9"
-	}
+  "name": "@directus-labs/extensions",
+  "private": true,
+  "homepage": "https://github.com/directus-labs/extensions",
+  "license": "MIT",
+  "scripts": {
+    "premkcert": "mkcert -install",
+    "mkcert": "mkcert -ecdsa -key-file .local/caddy/key.pem -cert-file .local/caddy/cert.pem extensions.directus.labs",
+    "dev": "pnpm --stream -r dev",
+    "build": "pnpm --recursive run build"
+  },
+  "packageManager": "pnpm@9.1.2",
+  "engines": {
+    "node": ">=18.18.0",
+    "pnpm": "~9"
+  }
 }
