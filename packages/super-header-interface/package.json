@@ -6,7 +6,7 @@
 		"url": "https://github.com/directus-labs/extensions.git"
 	},
 	"icon": "extension",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": [
 		"directus",
 		"directus-extension",
@@ -20,7 +20,7 @@
 		"type": "interface",
 		"path": "dist/index.js",
 		"source": "src/index.ts",
-		"host": "^10.10.0"
+		"host": "^10.0.0 || ^11.0.0"
 	},
 	"scripts": {
 		"build": "directus-extension build",
