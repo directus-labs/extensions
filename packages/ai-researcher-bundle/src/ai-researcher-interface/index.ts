@@ -133,6 +133,28 @@ export default defineInterface({
 					hidden: !context.field.meta?.options?.aiProvider,
 				},
 			},
+			{
+				field: 'inputPlaceholder',
+				name: 'Placeholder',
+				type: 'string',
+				meta: {
+					required: false,
+					width: 'full',
+					interface: 'system-input-translated-string',
+				},
+				schema: {
+					default_value: 'Ask a question... / Ask a follow-up...',
+				},
+			},
+			{
+				field: 'iconLeft',
+				name: '$t:icon_left',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'select-icon',
+				},
+			},
 		]
 	},
 });
