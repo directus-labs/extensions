@@ -28,10 +28,11 @@
     "host": "^10.0.0 || ^11.0.0"
   },
   "scripts": {
-    "build": "directus-extension build",
+    "build": "npm run build:parser && npm run build:plugin",
     "dev": "directus-extension build -w --no-minify",
     "link": "directus-extension link",
     "add": "directus-extension add",
+    "build:plugin": "directus-extension build",
     "build:parser": "peggy --format es -o src/lib/parser/index.js src/lib/parser/grammar.pegjs"
   },
   "devDependencies": {
