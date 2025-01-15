@@ -1,53 +1,54 @@
 {
-	"name": "@directus-labs/calculated-fields-bundle",
-	"description": "Automatically calculate values based on field values.",
-	"icon": "extension",
-	"version": "1.0.1",
-	"keywords": [
-		"directus",
-		"directus-extension",
-		"directus-extension-bundle"
-	],
-	"type": "module",
-	"files": [
-		"dist"
-	],
-	"directus:extension": {
-		"type": "bundle",
-		"path": {
-			"app": "dist/app.js",
-			"api": "dist/api.js"
-		},
-		"entries": [
-			{
-				"type": "interface",
-				"name": "calulcated-fields-interface",
-				"source": "src/interface/index.ts"
-			}
-		],
-		"host": "^10.0.0 || ^11.0.0"
-	},
-	"scripts": {
-		"build": "directus-extension build",
-		"dev": "directus-extension build -w --no-minify",
-		"link": "directus-extension link",
-		"add": "directus-extension add",
-		"build:parser": "peggy --format es -o src/lib/parser/index.js src/lib/parser/grammar.pegjs"
-	},
-	"devDependencies": {
-		"@directus/extensions-sdk": "11.0.9",
-		"@directus/types": "11.1.1",
-		"@types/lodash-es": "^4.17.12",
-		"peggy": "^4.0.3",
-		"sass": "^1.77.8",
-		"typescript": "^5.5.4",
-		"vue": "^3.4.34"
-	},
-	"dependencies": {
-		"@directus/extensions": "^1.0.9",
-		"@directus/sdk": "^16.1.1",
-		"@directus/utils": "11.0.8",
-		"@formulajs/formulajs": "^4.4.4",
-		"lodash-es": "^4.17.21"
-	}
+  "name": "@directus-labs/calculated-fields-bundle",
+  "description": "Automatically calculate values based on field values.",
+  "icon": "extension",
+  "version": "1.0.2",
+  "keywords": [
+    "directus",
+    "directus-extension",
+    "directus-extension-bundle"
+  ],
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "directus:extension": {
+    "type": "bundle",
+    "path": {
+      "app": "dist/app.js",
+      "api": "dist/api.js"
+    },
+    "entries": [
+      {
+        "type": "interface",
+        "name": "calulcated-fields-interface",
+        "source": "src/interface/index.ts"
+      }
+    ],
+    "host": "^10.0.0 || ^11.0.0"
+  },
+  "scripts": {
+    "build": "npm run build:parser && npm run build:plugin",
+    "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link",
+    "add": "directus-extension add",
+    "build:plugin": "directus-extension build",
+    "build:parser": "peggy --format es -o src/lib/parser/index.js src/lib/parser/grammar.pegjs"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "11.0.9",
+    "@directus/types": "11.1.1",
+    "@types/lodash-es": "^4.17.12",
+    "peggy": "^4.0.3",
+    "sass": "^1.77.8",
+    "typescript": "^5.5.4",
+    "vue": "^3.4.34"
+  },
+  "dependencies": {
+    "@directus/extensions": "^1.0.9",
+    "@directus/sdk": "^16.1.1",
+    "@directus/utils": "11.0.8",
+    "@formulajs/formulajs": "^4.4.4",
+    "lodash-es": "^4.17.21"
+  }
 }
