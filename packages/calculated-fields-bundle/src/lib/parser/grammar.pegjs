@@ -88,7 +88,7 @@ FunctionCall = name:FunctionName "(" args:Arguments ")" { return { type: "Functi
 
 Arguments = empty:(","*) first:Expression? rest:("," _ Expression)* { return buildArgumentList(empty, first, rest) }
 
-FunctionName = [A-Z]+ { return text() }
+FunctionName = [A-Z0-9]+ { return text() }
 
 FieldReference "field reference"
   = '{{' _ field:FieldKey _ '}}' { return { type: 'Reference', field } }

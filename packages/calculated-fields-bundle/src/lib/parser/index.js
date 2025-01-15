@@ -224,7 +224,7 @@ function peg$parse(input, options) {
 
   var peg$r0 = /^[+=]/;
   var peg$r1 = /^[\-=]/;
-  var peg$r2 = /^[A-Z]/;
+  var peg$r2 = /^[A-Z0-9]/;
   var peg$r3 = /^[a-zA-Z_\-]/;
   var peg$r4 = /^[a-zA-Z0-9_\-]/;
   var peg$r5 = /^[0-9]/;
@@ -250,7 +250,7 @@ function peg$parse(input, options) {
   var peg$e16 = peg$literalExpectation(")", false);
   var peg$e17 = peg$otherExpectation("constant or field");
   var peg$e18 = peg$literalExpectation(",", false);
-  var peg$e19 = peg$classExpectation([["A", "Z"]], false, false);
+  var peg$e19 = peg$classExpectation([["A", "Z"], ["0", "9"]], false, false);
   var peg$e20 = peg$otherExpectation("field reference");
   var peg$e21 = peg$literalExpectation("{{", false);
   var peg$e22 = peg$literalExpectation("}}", false);
