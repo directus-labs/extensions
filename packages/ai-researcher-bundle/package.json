@@ -1,0 +1,41 @@
+{
+	"name": "@directus-labs/ai-researcher-bundle",
+	"description": "An AI agent for the purpose of content research within the Editor",
+	"icon": "extension",
+	"version": "1.0.0",
+	"license": "MIT",
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "Dominic Marcelino",
+			"email": "dominic.marcelino@utomic.media"
+		}
+	],
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [],
+		"host": "^10.0.0 || ^11.0.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"add": "directus-extension add"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "12.1.4"
+	}
+}
