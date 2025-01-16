@@ -24,11 +24,19 @@ export default defineOperationApp({
 		const anthropicModels = [
 			{
 				text: 'Claude 3.5 Sonnet',
-				value: 'claude-3-5-sonnet-20240620',
+				value: 'claude-3-5-sonnet-latest',
+			},
+			{
+				text: 'Claude 3.5 Haiku',
+				value: 'claude-3-5-haiku-latest',
 			},
 			{
 				text: 'Claude 3 Opus',
-				value: 'claude-3-opus-20240229',
+				value: 'claude-3-opus-latest',
+			},
+			{
+				text: 'Claude 3 Sonnet',
+				value: 'claude-3-sonnet-20240229',
 			},
 			{
 				text: 'Claude 3 Haiku',
@@ -58,11 +66,11 @@ export default defineOperationApp({
 				value: 'gpt-3.5-turbo',
 			},
 			{
-				text: 'O1 preview (Beta, requires access)',
-				value: 'o1-preview',
+				text: 'o1',
+				value: 'o1',
 			},
 			{
-				text: 'O1 mini (Beta, requires access)',
+				text: 'o1-mini',
 				value: 'o1-mini',
 			},
 		];
