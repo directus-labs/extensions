@@ -7,9 +7,8 @@ interface DirectusRequest extends Request {
 	accountability?: Accountability;
 }
 
-const AiCompletionError = createError('AI_COMPLETION_FAILED', "AI failed to perform a chat completion", 503);
-const AiMissingKeyError = createError('AI_COMPLETION_FAILED', "AI failed due to missing API key", 503);
-
+const AiCompletionError = createError('AI_COMPLETION_FAILED', "AI request failed to perform a chat completion", 503);
+export const AiMissingKeyError = createError('AI_KEY_MISSING', "AI request failed due to missing API key", 503);
 
 export default {
 	id: 'ai-researcher',
@@ -33,10 +32,6 @@ export default {
 				return  next(new InvalidPayloadError({reason: 'Missing aiModel parameter'}));
 			}
 
-			if (!aiKey) {
-				return  next(new AiMissingKeyError());
-			}
-
 			try {
 				res.setHeader('Content-Type', 'text/event-stream');
 				res.setHeader('Cache-Control', 'no-cache');
@@ -57,7 +52,13 @@ export default {
 		
 				res.write('data: [DONE]\n\n');
 				res.end();
-			} catch (error) {
+			} catch (error: any) {
+				res.setHeader('Content-Type', 'application/json')
+				
+				if (error.code === 'AI_KEY_MISSING') {
+					next(error);
+				}
+
 				next(new AiCompletionError());
 			}
 		});

@@ -55,6 +55,7 @@
 	},
 	"dependencies": {
 		"@anthropic-ai/sdk": "^0.33.1",
+		"@directus/env": "^4.1.0",
 		"@directus/errors": "^1.0.0",
 		"openai": "^4.78.1",
 		"sass": "^1.83.4"

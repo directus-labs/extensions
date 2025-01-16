@@ -70,10 +70,6 @@ async function submitMessage() {
       })
 		})) as any;
 
-		if (response.status !== 200) {
-			throw new Error(`AI Request failed: ${response.statusText}`);
-		}
-
 		const reader = response!.body?.getReader();
 		const decoder = new TextDecoder();
 
@@ -113,7 +109,7 @@ async function submitMessage() {
 
 		notificationStore.add({
 			type: 'error',
-			title: error.message,
+			title: error.errors?.[0].message || error.message || 'AI Request failed',
 		});
 	} finally {
 		loading.value = false;

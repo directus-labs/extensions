@@ -103,6 +103,7 @@ export default defineInterface({
 					width: 'full',
 					interface: 'input',
 					hidden: context.field.meta?.options?.aiProvider !== 'anthropic',
+					note: 'Alternatively you can set the key as environment variable `EXTENSION_AI_RESEARCHER_API_KEY_ANTHROPIC`',
 				},
 			},
 			{
@@ -117,6 +118,7 @@ export default defineInterface({
 					width: 'full',
 					interface: 'input',
 					hidden: context.field.meta?.options?.aiProvider !== 'openai',
+					note: 'Alternatively you can set the key as environment variable `EXTENSION_AI_RESEARCHER_API_KEY_OPENAI`',
 				},
 			},
 			{
