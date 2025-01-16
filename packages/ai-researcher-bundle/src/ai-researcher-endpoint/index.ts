@@ -54,6 +54,7 @@ export default {
 				res.end();
 			} catch (error: any) {
 				res.setHeader('Content-Type', 'application/json')
+				console.error(error);
 				
 				if (error.code === 'AI_KEY_MISSING') {
 					next(error);
