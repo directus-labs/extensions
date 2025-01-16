@@ -120,7 +120,7 @@ export default defineInterface({
 				},
 			},
 			{
-				field: 'model',
+				field: 'aiModel',
 				name: 'AI Model',
 				type: 'string',
 				meta: {

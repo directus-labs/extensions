@@ -31,6 +31,11 @@
 				"type": "interface",
 				"name": "ai-researcher-interface",
 				"source": "src/ai-researcher-interface/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "ai-researcher-endpoint",
+				"source": "src/ai-researcher-endpoint/index.ts"
 			}
 		],
 		"host": "^10.0.0 || ^11.0.0"
@@ -43,7 +48,12 @@
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "12.1.0",
+		"@directus/types": "^12.2.2",
+		"@types/node": "^22.10.6",
 		"typescript": "^5.7.3",
 		"vue": "^3.5.13"
+	},
+	"dependencies": {
+		"@directus/errors": "^1.0.0"
 	}
 }
