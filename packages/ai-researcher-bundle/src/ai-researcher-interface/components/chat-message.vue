@@ -45,7 +45,7 @@ defineProps<{
 	}
 }
 
-:deep(.chat-messages .v-avatar) {
+:deep(.v-avatar) {
 	flex-shrink: 0;
 }
 </style>
