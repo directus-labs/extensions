@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Message } from '../types';
+import type { Message } from '../../_shared/types';
 
 defineProps<{
   message: Message

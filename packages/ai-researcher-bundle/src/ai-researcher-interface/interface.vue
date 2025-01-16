@@ -2,7 +2,7 @@
 import { computed, ref, reactive } from 'vue';
 import { useSdk, useStores } from '@directus/extensions-sdk';
 import ChatMessage from './components/chat-message.vue';
-import type { Message } from './types';
+import type { Message } from '../_shared/types';
 
 
 const props = withDefaults(
