@@ -16,7 +16,7 @@ export const createProvider = (provider: string, requestApiKey: string | null): 
       return new OpenAiProvider(apiKey);
     }
     case 'anthropic': {
-      let apiKey = requestApiKey || useEnv()['EXTENSION_AI_RESEARCHER_API_KEY_OPENAI'] as string | undefined;
+      let apiKey = requestApiKey || useEnv()['EXTENSION_AI_RESEARCHER_API_KEY_ANTHROPIC'] as string | undefined;
 
       if (!apiKey) {
 				throw new AiMissingKeyError();
