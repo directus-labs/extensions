@@ -34,7 +34,9 @@
     const selfReferencingM2oFields = computed(() => {
         return props.fieldsInCollection?.filter(
             (field: Field) =>
-                ["string", "integer"].includes(field.type) &&
+                ["string", "uuid", "integer", "bigInteger"].includes(
+                    field.type
+                ) &&
                 field.meta?.special?.includes("m2o") &&
                 field.schema?.foreign_key_table == props.collection
         );
