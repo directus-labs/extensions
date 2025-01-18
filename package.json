@@ -7,7 +7,8 @@
     "premkcert": "mkcert -install",
     "mkcert": "mkcert -ecdsa -key-file .local/caddy/key.pem -cert-file .local/caddy/cert.pem extensions.directus.labs",
     "dev": "pnpm --stream -r dev",
-    "build": "pnpm --recursive run build"
+    "build": "pnpm --recursive run build",
+    "validate": "pnpm --recursive run validate"
   },
   "packageManager": "pnpm@9.1.2",
   "engines": {
