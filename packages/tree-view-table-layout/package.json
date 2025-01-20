@@ -1,6 +1,6 @@
 {
   "name": "@directus-labs/tree-view-table-layout",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A tree view layout that allows you to nest items within a table",
   "license": "MIT",
   "author": "Directus Labs",
