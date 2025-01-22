@@ -3,6 +3,7 @@
   "description": "A powerful interface for managing repeatable form fields within Directus that allows inline editing and reordering of items.",
   "icon": "extension",
   "version": "1.0.0",
+  "license": "MIT",
   "keywords": [
     "directus",
     "directus-extension",
