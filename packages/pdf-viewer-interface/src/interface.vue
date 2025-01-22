@@ -40,8 +40,8 @@
             return fieldValues.value[props.file_field] ?? null;
         });
         const fileURL = computed(() => {
-            if (!fileID.value) return null;
-            return `/assets/${fileID.value}`;
+            if (!fileID.value || !fileID.value.id) return null;
+            return `/assets/${fileID.value.id}`;
         });
         const fileIsValid = computed(() => !!fileID.value);
 
