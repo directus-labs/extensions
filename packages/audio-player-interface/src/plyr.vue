@@ -10,6 +10,7 @@
     import { ref, onMounted, watch } from 'vue';
     import Plyr from 'plyr';
     import type { AudioService, AudioSource } from './types'
+    import { getAssetUrl } from './utils/get-asset-url';
 
     const props = defineProps<{ service: AudioService; source: AudioSource; }>();
 
@@ -28,10 +29,6 @@
                 : { src: props.source }
             ],
         }
-    }
-
-    function getAssetUrl(id: AudioSource) {
-        return `/assets/${id}`;
     }
 </script>
 
