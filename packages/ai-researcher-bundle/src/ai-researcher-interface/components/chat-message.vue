@@ -13,7 +13,7 @@ defineProps<{
 		<v-icon :name="message.role === 'user' ? 'person' : 'robot'" />
 	</v-avatar>
 	
-	<div class="message-content">{{ message.content }}</div>
+	<pre class="message-content">{{ message.content }}</pre>
 </div>
 </template>
 
