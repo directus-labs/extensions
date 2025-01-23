@@ -3,7 +3,7 @@ import OpenAI from 'openai';
 import type { Message } from '../../_shared/types';
 
 export class OpenAiProvider extends Provider {
-  async* createCompletion(aiModel: string, messages: Message[]): AsyncIterableIterator<string> {
+  async *createCompletion(aiModel: string, messages: Message[]): AsyncIterableIterator<string> {
     const openai = new OpenAI({
       apiKey: this.apiKey,
     });
@@ -11,7 +11,7 @@ export class OpenAiProvider extends Provider {
     const completionStream = await openai.chat.completions.create({
       model: aiModel,
       messages: messages as OpenAI.Chat.Completions.ChatCompletionMessageParam[],
-      stream: true
+      stream: true,
     });
 
     for await (const chunk of completionStream) {

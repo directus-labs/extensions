@@ -23,7 +23,7 @@ const props = withDefaults(
 
 
 const emit = defineEmits<{
-  input: [value: string]
+	input: [value: string]
 }>()
 
 
@@ -35,7 +35,7 @@ const messages = reactive([] as Message[]);
 
 const client = useSdk();
 const { useNotificationsStore } = useStores();
-const notificationStore = useNotificationsStore();	
+const notificationStore = useNotificationsStore();
 
 const aiKey = computed(() => {
 	if (props.aiProvider === 'openai' && props.apiKeyOpenAi) {
@@ -59,7 +59,7 @@ async function submitMessage() {
 			path: '/ai-researcher/chat/completions',
 			method: 'POST',
 			headers: {
-        'Content-Type': 'application/json',
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
 				aiProvider: props.aiProvider,
@@ -67,7 +67,7 @@ async function submitMessage() {
 				aiKey: aiKey.value,
 				userMessage: messageBackup.value,
 				messages: messages,
-      })
+			})
 		})) as any;
 
 		const reader = response!.body?.getReader();
@@ -81,17 +81,17 @@ async function submitMessage() {
 			}
 
 			const chunk = decoder.decode(value);
-      const lines = chunk.split('\n');
+			const lines = chunk.split('\n');
 
 			lines.forEach(line => {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6);
-          if (data === '[DONE]') return;
-          
-          const { content } = JSON.parse(data);
-          streamResponse.value = `${streamResponse.value}${content}`;
-        }
-      });
+				if (line.startsWith('data: ')) {
+					const data = line.slice(6);
+					if (data === '[DONE]') return;
+
+					const { content } = JSON.parse(data);
+					streamResponse.value = `${streamResponse.value}${content}`;
+				}
+			});
 		}
 
 		messages.push(
@@ -134,12 +134,8 @@ function clearMessages() {
 
 	<template v-else>
 		<div class="input-row">
-			<v-input 
-				:model-value="value"
-				:placeholder="inputPlaceholder"
-				@update:model-value="$emit('input', $event)"
-				@keyup.enter="submitMessage"
-			>
+			<v-input :model-value="value" :placeholder="inputPlaceholder" @update:model-value="$emit('input', $event)"
+				@keyup.enter="submitMessage">
 				<template v-if="iconLeft" #prepend>
 					<v-icon :name="iconLeft" />
 				</template>
@@ -151,13 +147,7 @@ function clearMessages() {
 				</template>
 			</v-input>
 
-			<v-button 
-				icon
-				x-large
-				secondary
-				:disabled="!messages.length" 
-				@click="showMessages = true"
-			>
+			<v-button icon x-large secondary :disabled="!messages.length" @click="showMessages = true">
 				<v-icon name="forum" :color="messages.length ? 'var(--theme--primary)' : 'inherit'" />
 			</v-button>
 		</div>
@@ -179,12 +169,12 @@ function clearMessages() {
 				</v-card-actions>
 			</v-card>
 		</v-overlay>
-		
+
 
 		<template v-if="streamResponse">
-			 <chat-message class="chat-response" :message="{ role: 'assistant', content: streamResponse }" />
+			<chat-message class="chat-response" :message="{ role: 'assistant', content: streamResponse }" />
 		</template>
-		
+
 	</template>
 </template>
 
@@ -197,7 +187,7 @@ function clearMessages() {
 
 .chat-context {
 	max-width: 800px;
-	
+
 	.chat-messages {
 		display: flex;
 		flex-direction: column;

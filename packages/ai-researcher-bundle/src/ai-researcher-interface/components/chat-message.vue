@@ -2,19 +2,19 @@
 import type { Message } from '../../_shared/types';
 
 defineProps<{
-  message: Message
+	message: Message
 }>()
 </script>
 
 
 <template>
-<div :class="`chat-message ${message.role}`">
-	<v-avatar>
-		<v-icon :name="message.role === 'user' ? 'person' : 'robot'" />
-	</v-avatar>
-	
-	<pre class="message-content">{{ message.content }}</pre>
-</div>
+	<div :class="`chat-message ${message.role}`">
+		<v-avatar>
+			<v-icon :name="message.role === 'user' ? 'person' : 'robot'" />
+		</v-avatar>
+
+		<pre class="message-content">{{ message.content }}</pre>
+	</div>
 </template>
 
 <style scoped lang="scss">

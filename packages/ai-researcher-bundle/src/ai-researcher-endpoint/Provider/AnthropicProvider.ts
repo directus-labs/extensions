@@ -3,7 +3,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import type { Message } from '../../_shared/types';
 
 export class AnthropicProvider extends Provider {
-  async* createCompletion(aiModel: string, messages: Message[]): AsyncIterableIterator<string> {
+  async *createCompletion(aiModel: string, messages: Message[]): AsyncIterableIterator<string> {
     const anthropic = new Anthropic({
       apiKey: this.apiKey,
     });
@@ -12,7 +12,7 @@ export class AnthropicProvider extends Provider {
       model: aiModel,
       messages: messages as Anthropic.MessageCreateParams['messages'],
       max_tokens: 1024,
-      stream: true
+      stream: true,
     });
 
     for await (const chunk of completionStream) {
