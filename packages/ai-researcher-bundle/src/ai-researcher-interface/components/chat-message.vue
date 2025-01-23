@@ -26,7 +26,8 @@ defineProps<{
 	.message-content {
 		border-radius: 1.5rem;
 		padding: 12px 1rem;
-		background-color: var(--theme--background-normal)
+		background-color: var(--theme--background-normal);
+		white-space: pre-wrap;
 	}
 
 	&.user {
