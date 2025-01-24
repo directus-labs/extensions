@@ -11,6 +11,7 @@ import { schema_collection_name, schema_collection, schema_field_field, schema_f
 import type { Field } from "@directus/types";
 import type { CommentCollectionType, Packet } from "../types";
 
+const config = { attributes: false, childList: true, subtree: true };
 let app: App | null = null;
 
 export function injectFieldLabels(options: Record<string,boolean> = { update: false }) {
@@ -22,7 +23,7 @@ export function injectFieldLabels(options: Record<string,boolean> = { update: fa
     } else {
       router.afterEach(async (to: Record<string,any>) => {
         // Remove DOM listner if active
-        window.removeEventListener("DOMSubtreeModified", appChanges);
+        if(observer) observer.disconnect();
 
         if(to.name == "settings-project"){
           initializeApp();
@@ -35,11 +36,13 @@ export function injectFieldLabels(options: Record<string,boolean> = { update: fa
   }
 }
 
-function appChanges(e: Record<string,any>){
-  if(e?.target?.classList[0] == "v-form" || e?.target?.classList[0] == "v-detail" || e?.target?.classList[1] == "accordion-section"){
+const observer = new MutationObserver((mutations, observer) => {
+  console.log(mutations);
+  if(mutations.filter((e) => e.target?.classList[0] == "field-name" || e.target?.classList[0] == "v-detail" || e.target?.classList[0] == "accordion-section").length > 0){
+    observer.disconnect();
     injectFieldLabels({ update: true });
   }
-}
+});
 
 async function initializeApp(retry: number = 0){
   const titleContainer = document.querySelector(".title-container");
@@ -232,7 +235,8 @@ async function injectApp(to: Record<string,any>, retry: number = 0) {
     });
 
     // Watch for dynamic fields in the DOM
-    window.addEventListener("DOMSubtreeModified", appChanges);
+    const mainContent = document.getElementById("main-content");
+    observer.observe(mainContent, config);
 
   } catch(err: any){
     unexpectedError(err, stores);
