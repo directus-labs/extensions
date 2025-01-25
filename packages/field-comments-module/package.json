@@ -16,7 +16,7 @@
 		"type": "module",
 		"path": "dist/index.js",
 		"source": "src/index.ts",
-		"host": "^11.1.2"
+		"host": "^10.0.0 || ^11.0.0"
 	},
 	"scripts": {
 		"build": "directus-extension build",

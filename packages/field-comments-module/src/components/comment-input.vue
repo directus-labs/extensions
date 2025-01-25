@@ -29,8 +29,10 @@
 
 	const { t } = useI18n();
 	const api = useApi();
-	const { useNotificationsStore } = useStores();
+	const { useNotificationsStore, useUserStore } = useStores();
 	const notificationStore = useNotificationsStore();
+	const userStore = useUserStore();
+	const currentUser = userStore.currentUser;
 	const commentElement = ref<ComponentPublicInstance>();
 	let lastCaretPosition = 0;
 	let lastCaretOffset = 0;
@@ -221,17 +223,17 @@
 
 		try {
 			if (props.existingComment) {
-				await api.patch(`/comments/${props.existingComment.id}`, {
+				await api.patch(`/items/${schema_collection_name}/${props.existingComment.id}`, {
 					comment: newCommentContent.value,
+					user_updated: currentUser.id,
 				});
 			} else {
 				await api.post(`/items/${schema_collection_name}`, {
 					field: props.field,
-					comment: {
-						collection: props.collection,
-						item: props.primaryKey,
-						comment: newCommentContent.value,
-					}
+					collection: props.collection,
+					item: props.primaryKey,
+					comment: newCommentContent.value,
+					user_created: currentUser.id,
 				});
 			}
 

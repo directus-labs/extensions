@@ -31,30 +31,35 @@ Refer to the Official Guide for details on installing the extension from the Mar
 3. Choose a collection from the dropdown field
 4. Select the field to include
 5. Save changes
-6. Open the Access Policies and add permissions to read, write and update the new collection `system_field_comments`
+6. Open the Access Policies and configure permissions for the new collection `system_field_comments`. See Permissions section below.
 
-When opening the project settings for the first time, the module will automatically add the new setting option to the page and create the required system table. 
+When opening the project settings for the first time, the module will automatically add the new field at the bottom of the page and create the required system table. Permissions need to be added by the admin.
 
 ![Customise the module](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/field-comments-module/docs/field-comments-customize.jpg)
 
 
 ## Permissions
 
-This extension uses the current session permissions and will only show the permitted data. Please refer to your Access Policies to ensure your users have required access.
+This extension uses the current user's policy/role permissions and will only show the permitted data. Please refer to your Access Policies to ensure your users have required access.
 
 ### Recommended Permissions
 
 | Collection | `create` | `read` | `update` | `delete` |
 |------------|----------|--------|----------|----------|
-| `directus_comments` | Default | All | Default* | Default* |
-| `system_field_comments` | Full | Full | Full | - |
+| `system_field_comments` | Full | Full | Custom* | Custom* |
 
-_(*) The default update and delete has the following item permission. It's important to keep these settings as they are to prevent user's from changing or deleting comments of other users._
+_(*) The custom update and delete has the following item permissions. It's important these settings as they prevent user's from updating or deleting comments of other users._
 
+#### Item Permissions (Update & Delete)
 ```
 {
     user_created: {
         "_eq": "$CURRENT_USER"
     }
 }
+```
+
+#### Field Permissions (Update)
+```
+["comment","user_updated"]
 ```

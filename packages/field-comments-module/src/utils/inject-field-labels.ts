@@ -7,7 +7,7 @@ import { getDirectusApp, getDirectusAppProvides } from "./get-directus-app";
 import { getDirectusRouter } from "./get-directus-router";
 import { unexpectedError } from "./unexpected-error";
 import { system_field } from "../settings-field";
-import { schema_collection_name, schema_collection, schema_field_field, schema_field_comment, field_relation, comment_relation } from "../schema";
+import { schema_collection_name, schema_collection, schema_field_field, schema_field_collection, schema_field_item, schema_field_comment, field_relation, collection_relation, schema_field_date_created, schema_field_date_updated, schema_field_user_created, schema_field_user_updated, user_created_relation, user_updated_relation } from "../schema";
 import type { Field } from "@directus/types";
 import type { CommentCollectionType, Packet } from "../types";
 
@@ -37,8 +37,7 @@ export function injectFieldLabels(options: Record<string,boolean> = { update: fa
 }
 
 const observer = new MutationObserver((mutations, observer) => {
-  console.log(mutations);
-  if(mutations.filter((e) => e.target?.classList[0] == "field-name" || e.target?.classList[0] == "v-detail" || e.target?.classList[0] == "accordion-section").length > 0){
+  if(mutations.filter((e) => (e.target as HTMLElement).classList[0] == "field-name" || (e.target as HTMLElement).classList[0] == "v-detail" || (e.target as HTMLElement).classList[0] == "accordion-section").length > 0){
     observer.disconnect();
     injectFieldLabels({ update: true });
   }
@@ -74,8 +73,21 @@ async function initializeApp(retry: number = 0){
       await collectionStore.upsertCollection(schema_collection_name,  schema_collection);
       await fieldStore.upsertField(schema_collection_name, "field", schema_field_field);
       relationStore.upsertRelation(schema_collection_name, "field", field_relation);
+
+      await fieldStore.upsertField(schema_collection_name, "collection", schema_field_collection);
+      relationStore.upsertRelation(schema_collection_name, "collection", collection_relation);
+
+      await fieldStore.upsertField(schema_collection_name, "item", schema_field_item);
       await fieldStore.upsertField(schema_collection_name, "comment", schema_field_comment);
-      relationStore.upsertRelation(schema_collection_name, "comment", comment_relation);
+
+      await fieldStore.upsertField(schema_collection_name, "date_created", schema_field_date_created);
+      await fieldStore.upsertField(schema_collection_name, "date_updated", schema_field_date_updated);
+
+      await fieldStore.upsertField(schema_collection_name, "user_created", schema_field_user_created);
+      await fieldStore.upsertField(schema_collection_name, "user_updated", schema_field_user_updated);
+
+      relationStore.upsertRelation(schema_collection_name, "user_created", user_created_relation);
+      relationStore.upsertRelation(schema_collection_name, "user_updated", user_updated_relation);
 
     } catch(error: any){
       unexpectedError(error, stores);
@@ -236,7 +248,7 @@ async function injectApp(to: Record<string,any>, retry: number = 0) {
 
     // Watch for dynamic fields in the DOM
     const mainContent = document.getElementById("main-content");
-    observer.observe(mainContent, config);
+    observer.observe(mainContent as HTMLElement, config);
 
   } catch(err: any){
     unexpectedError(err, stores);

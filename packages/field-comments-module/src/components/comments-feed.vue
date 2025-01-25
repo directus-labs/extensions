@@ -1,8 +1,9 @@
 <script setup lang="ts">
     import { useApi, useStores } from "@directus/extensions-sdk";
     import { STORES_INJECT } from "@directus/constants";
-    import type { Comment, PrimaryKey, User } from "@directus/types";
+    import type { Comment, PrimaryKey } from "@directus/types";
     import type { Locale } from "date-fns";
+    import type { CommentsByDateDisplay, Activity } from "../types";
     import { schema_collection_name } from "../schema";
     import { isThisYear, isToday, isYesterday } from "date-fns";
     import { format as formatOriginal } from "date-fns";
@@ -16,16 +17,6 @@
     import CommentInput from "./comment-input.vue";
     import CommentItem from "./comment-item.vue";
     import { userName } from "../utils/user-name"
-
-
-    type CommentsByDateDisplay = {
-        date: Date;
-        dateFormatted: string;
-        comments: (Comment & {
-            display: string;
-            user_created: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
-        })[];
-    };
 
     type LocalizedFormat = (...a: Parameters<typeof formatOriginal>) => string;
 
@@ -88,41 +79,38 @@
                 const response = hasPermission(schema_collection_name, "read") ? (
                     await api.get(`/items/${schema_collection_name}`, {
                         params: {
-                            "filter[comment][collection][_eq]": collection.value,
-                            "filter[comment][item][_eq]": primaryKey.value,
+                            "filter[collection][_eq]": collection.value,
+                            "filter[item][_eq]": primaryKey.value,
                             "filter[field][_eq]": field.value,
-                            sort: "-comment.date_created",
+                            sort: "-date_created",
                             fields: [
-                                "comment.id",
-                                "comment.comment",
-                                "comment.date_created",
-                                "comment.user_created.id",
-                                "comment.user_created.email",
-                                "comment.user_created.first_name",
-                                "comment.user_created.last_name",
-                                "comment.user_created.avatar.id",
+                                "id",
+                                "comment",
+                                "date_created",
+                                "user_created.id",
+                                "user_created.email",
+                                "user_created.first_name",
+                                "user_created.last_name",
+                                "user_created.avatar.id",
                             ],
                         },
                     })
-                ).data.data as Record<string,Comment>[] : [];
+                ).data.data as Comment[] : [];
 
                 userPreviews.value = await loadUserPreviews(response, regex);
 
-                const commentsWithTaggedUsers = (response as Record<string,Comment>[]).map((c) => {
+                const commentsWithTaggedUsers = (response as Comment[]).map((c) => {
                     const display = dompurify
-                        .sanitize(c.comment?.comment as string, { ALLOWED_TAGS: [] })
+                        .sanitize(c.comment as string, { ALLOWED_TAGS: [] })
                         .replace(regex, (match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`);
 
                     return {
-                        ...c.comment,
+                        ...c,
                         display,
-                    } as Comment & {
-                        display: string;
-                        user_created: Pick<User, "id" | "email" | "first_name" | "last_name" | "avatar">;
-                    };
+                    } as Activity;
                 });
 
-                const commentsByDate = groupBy(commentsWithTaggedUsers, (activity) => {
+                const commentsByDate = groupBy(commentsWithTaggedUsers, (activity: Activity) => {
                     const date = new Date(new Date(activity.date_created).toDateString());
                     return date;
                 });
@@ -145,7 +133,7 @@
                     commentsGrouped.push({
                         date: date,
                         dateFormatted: String(dateFormatted),
-                        comments: value,
+                        comments: value as Activity[],
                     });
                 }
 
@@ -167,17 +155,13 @@
                         filter: {
                             _and: [
                                 {
-                                    comment: {
-                                        collection: {
-                                            _eq: collection.value,
-                                        },
-                                    }
+                                    collection: {
+                                        _eq: collection.value,
+                                    },
                                 },
                                 {
-                                    comment: {
-                                        item: {
-                                            _eq: primaryKey.value,
-                                        },
+                                    item: {
+                                        _eq: primaryKey.value,
                                     },
                                 },
                                 {
@@ -227,16 +211,16 @@
         }
     }
 
-    async function loadUserPreviews(comments: Record<string,Comment>[], regex: RegExp) {
+    async function loadUserPreviews(comments: Comment[], regex: RegExp) {
         const userPreviews: any[] = [];
 
-        comments.forEach((c: Record<string, Comment>) => {
-            userPreviews.push(c.comment?.comment.match(regex));
+        comments.forEach((c: Comment) => {
+            userPreviews.push(c.comment.match(regex) as string[]);
         });
 
-        const uniqIds: string[] = [...new Set(flatten(userPreviews))].filter((id) => {
+        const uniqIds: string[] = ([...new Set(flatten(userPreviews))]).filter((id) => {
             if (id) return id;
-        });
+        }) as string[];
 
         if (uniqIds.length > 0) {
             const response = await api.get("/users", {
@@ -257,8 +241,6 @@
 
         return {};
     }
-
-    
 
     const localizedFormat: LocalizedFormat = (date, format, options): string => {
         return formatOriginal(date, format, {
@@ -300,30 +282,30 @@
     </template>
 </template>
 <style scoped>
-.v-progress-linear {
-	margin: 24px 0;
-}
+    .v-progress-linear {
+        margin: 24px 0;
+    }
 
-.v-divider {
-	position: sticky;
-	top: 0;
-	z-index: 2;
-	margin-top: 12px;
-	margin-bottom: 2px;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	--v-divider-label-color: var(--theme--foreground-subdued);
-}
+    .v-divider {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        margin-top: 12px;
+        margin-bottom: 2px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        --v-divider-label-color: var(--theme--foreground-subdued);
+    }
 
-.v-notice {
-    background-color: var(--theme--background);
-}
+    .v-notice {
+        background-color: var(--theme--background);
+    }
 
-.empty {
-	margin-top: 16px;
-	margin-bottom: 8px;
-	margin-left: 2px;
-	color: var(--theme--foreground-subdued);
-	font-style: italic;
-}
+    .empty {
+        margin-top: 16px;
+        margin-bottom: 8px;
+        margin-left: 2px;
+        color: var(--theme--foreground-subdued);
+        font-style: italic;
+    }
 </style>

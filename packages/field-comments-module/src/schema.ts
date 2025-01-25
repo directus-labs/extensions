@@ -32,148 +32,176 @@ export const schema_collection: Collection = {
     },
 };
 
-export const schema_field_id: DeepPartial<Field> = {
-    field: "id",
-    type: "uuid",
-    meta: {
-        collection: schema_collection_name,
-        conditions: null,
-        display: null,
-        display_options: null,
-        field: "id",
-        group: null,
-        hidden: true,
-        interface: "input",
-        note: null,
-        options: null,
-        readonly: true,
-        required: false,
-        special: ["uuid"],
-        translations: null,
-        validation: null,
-        validation_message: null,
-        width: "full",
-    },
-    schema: {
-        data_type: "uuid",
-        is_generated: false,
-        is_indexed: false,
-        is_nullable: false,
-        is_primary_key: true,
-        is_unique: true,
-        max_length: null,
-        name: "id",
-        numeric_precision: null,
-        numeric_scale: null,
-    },
-};
+// export const schema_field_id: DeepPartial<Field> = {
+//     field: "id",
+//     type: "uuid",
+//     meta: {
+//         collection: schema_collection_name,
+//         conditions: null,
+//         display: null,
+//         display_options: null,
+//         field: "id",
+//         group: null,
+//         hidden: true,
+//         interface: "input",
+//         note: null,
+//         options: null,
+//         readonly: true,
+//         required: false,
+//         special: ["uuid"],
+//         translations: null,
+//         validation: null,
+//         validation_message: null,
+//         width: "full",
+//     },
+//     schema: {
+//         data_type: "uuid",
+//         is_generated: false,
+//         is_indexed: false,
+//         is_nullable: false,
+//         is_primary_key: true,
+//         is_unique: true,
+//         max_length: null,
+//         name: "id",
+//         numeric_precision: null,
+//         numeric_scale: null,
+//     },
+// };
 
 export const schema_field_field: DeepPartial<Field> = {
-    field: "field",
     type: "integer",
     meta: {
-        collection: schema_collection_name,
-        conditions: null,
-        display: null,
-        display_options: null,
-        field: "field",
-        group: null,
-        hidden: true,
-        interface: "select-dropdown-m2o",
-        note: null,
-        options: {
-            enableCreate: false,
-            template: "{{field}}",
-        },
-        readonly: false,
-        required: true,
+        interface: null,
         special: ["m2o"],
-        translations: null,
-        validation: null,
-        validation_message: null,
-        width: "full",
+        required: true
     },
-    schema: {
-        data_type: "integer",
-        foreign_key_column: "id",
-        foreign_key_schema: "public",
-        foreign_key_table: "directus_fields",
-        is_generated: false,
-        is_indexed: false,
-        is_nullable: true,
-        is_primary_key: false,
-        is_unique: false,
-        max_length: null,
-        name: "field",
-        numeric_precision: 32,
-        numeric_scale: 0,
-    },
+    field: "field"
 };
 
 export const schema_field_comment: DeepPartial<Field> = {
-    field: "comment",
+    type: "text",
+    meta: {
+        interface: null,
+        special: null,
+        required: true
+    },
+    field: "comment"
+};
+
+export const schema_field_collection: DeepPartial<Field> = {
+    type: "string",
+    meta: {
+        interface: null,
+        special: ["m2o"],
+        required: true
+    },
+    field: "collection"
+};
+
+export const schema_field_item: DeepPartial<Field> = {
+    type: "string",
+    meta: {
+        interface: null,
+        special: null,
+        required: true
+    },
+    field: "item"
+};
+
+export const schema_field_date_created: DeepPartial<Field> = {
+    type: "dateTime",
+    meta: {
+        interface: null,
+        special: ["date-created"]
+    },
+    field: "date_created"
+};
+
+export const schema_field_date_updated: DeepPartial<Field> = {
+    type: "dateTime",
+    meta: {
+        interface: null,
+        special: ["date-updated"]
+    },
+    field: "date_updated"
+};
+
+export const schema_field_user_created: DeepPartial<Field> = {
     type: "uuid",
     meta: {
-        collection: schema_collection_name,
-        conditions: null,
-        display: null,
-        display_options: null,
-        field: "comment",
-        group: null,
-        hidden: true,
-        interface: "select-dropdown-m2o",
-        note: null,
-        options: {
-            enableCreate: false,
-            template: "{{item}}",
-        },
-        readonly: false,
-        required: true,
+        interface: null,
         special: ["m2o"],
-        translations: null,
-        validation: null,
-        validation_message: null,
-        width: "full",
+        required: true
     },
-    schema: {
-        data_type: "uuid",
-        foreign_key_column: "id",
-        foreign_key_schema: "public",
-        foreign_key_table: "directus_comments",
-        has_auto_increment: false,
-        is_generated: false,
-        is_indexed: false,
-        is_nullable: true,
-        is_primary_key: false,
-        is_unique: false,
-        max_length: null,
-        name: "comment",
-        numeric_precision: null,
-        numeric_scale: null,
-    },
+    field: "user_created"
 };
 
+export const schema_field_user_updated: DeepPartial<Field> = {
+    type: "uuid",
+    meta: {
+        interface: null,
+        special: ["m2o"],
+        required: true
+    },
+    field: "user_updated"
+};
 
 export const field_relation = {
-    collection:schema_collection_name,
-    field:"field",
-    related_collection:"directus_fields",
+    collection: schema_collection_name,
+    field: "field",
+    related_collection: "directus_fields",
     meta: {
-        sort_field:null
+        sort_field: null
     },
     schema: {
-        on_delete:"SET NULL"
+        on_delete: "SET NULL"
     }
 };
 
-export const comment_relation = {
-    collection:schema_collection_name,
-    field:"comment",
-    related_collection:"directus_comments",
+export const collection_relation = {
+    collection: schema_collection_name,
+    field: "collection",
+    related_collection: "directus_collections",
     meta: {
-        sort_field:null
+        sort_field: null
     },
     schema: {
-        on_delete:"SET NULL"
+        on_delete: "SET NULL"
     }
 };
+
+export const user_created_relation = {
+    collection: schema_collection_name,
+    field: "user_created",
+    related_collection: "directus_users",
+    meta: {
+        sort_field: null
+    },
+    schema: {
+        on_delete: "SET NULL"
+    }
+};
+
+export const user_updated_relation = {
+    collection: schema_collection_name,
+    field: "user_updated",
+    related_collection: "directus_users",
+    meta: {
+        sort_field: null
+    },
+    schema: {
+        on_delete: "SET NULL"
+    }
+};
+
+// export const comment_relation = {
+//     collection:schema_collection_name,
+//     field:"comment",
+//     related_collection:"directus_comments",
+//     meta: {
+//         sort_field:null
+//     },
+//     schema: {
+//         on_delete:"SET NULL"
+//     }
+// };

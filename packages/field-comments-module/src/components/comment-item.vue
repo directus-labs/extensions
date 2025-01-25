@@ -1,16 +1,14 @@
 <script setup lang="ts">
 	import { useApi, useStores } from "@directus/extensions-sdk";
-	import type { Comment, User } from "@directus/types";
+	import type { Activity } from "../types";
+	import { schema_collection_name } from "../schema";
 	import { ref, watch } from "vue";
 	import CommentInput from "./comment-input.vue";
 	import CommentItemHeader from "./comment-item-header.vue";
 
 	const props = withDefaults(
 		defineProps<{
-			comment: Comment & {
-				display: string;
-				user_created: Pick<User, "id" | "email" | "first_name" | "last_name" | "avatar">;
-			};
+			comment: Activity;
 			refresh: () => Promise<void>;
 			collection: string;
 			field: number;
@@ -23,8 +21,10 @@
 	);
 
 	const api = useApi();
-	const { useNotificationsStore } = useStores();
+	const { useNotificationsStore, useUserStore } = useStores();
 	const notificationStore = useNotificationsStore();
+	const userStore = useUserStore();
+	const currentUser = userStore.currentUser;
 
 	const { editing, cancelEditing } = useEdits();
 
@@ -44,8 +44,9 @@
 			savingEdits.value = true;
 
 			try {
-				await api.patch(`/comments/${props.comment.id}`, {
+				await api.patch(`/items/${schema_collection_name}/${props.comment.id}`, {
 					comment: edits.value,
+					user_updated: currentUser.id,
 				});
 
 				props.refresh();

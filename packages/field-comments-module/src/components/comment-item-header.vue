@@ -2,16 +2,13 @@
 	import { useApi, useStores } from "@directus/extensions-sdk";
 	import { getAssetUrl } from '../utils/get-asset-url';
 	import { userName } from '../utils/user-name';
-	import type { Comment, User } from '@directus/types';
+	import type { Activity } from "../types";
 	import { format } from 'date-fns';
 	import { computed, ref } from 'vue';
 	import { useI18n } from 'vue-i18n';
 
 	const props = defineProps<{
-		comment: Comment & {
-			display: string;
-			user_created: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
-		};
+		comment: Activity;
 		refresh: () => Promise<void>;
 	}>();
 
