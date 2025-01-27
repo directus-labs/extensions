@@ -8,6 +8,8 @@
 		"directus-extension",
 		"directus-extension-operation"
 	],
+	"license": "MIT",
+	"author": "Tim Butterfield",
 	"type": "module",
 	"files": [
 		"dist"
