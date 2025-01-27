@@ -21,11 +21,12 @@
 	"scripts": {
 		"build": "directus-extension build",
 		"dev": "directus-extension build -w --no-minify",
-		"link": "directus-extension link"
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
 	},
 	"devDependencies": {
 		"@directus/constants": "^12.0.0",
-		"@directus/extensions-sdk": "12.0.1",
+		"@directus/extensions-sdk": "13.0.0",
 		"@directus/types": "^12.0.0",
 		"@directus/utils": "^12.0.0",
 		"@types/diacritics": "^1.3.3",
