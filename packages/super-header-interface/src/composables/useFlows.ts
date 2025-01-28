@@ -1,8 +1,8 @@
-import { ref, inject } from 'vue';
-import { useRoute } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import { useApi, useStores } from '@directus/extensions-sdk';
 import type { FlowIdentifier } from '../types';
+import { useApi, useStores } from '@directus/extensions-sdk';
+import { inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 const showForm = ref(false);
 const currentFlow = ref<any>(null);
@@ -21,7 +21,8 @@ export function useFlows(collection: string) {
 
 	const fetchFlows = async (flowIdentifiers: FlowIdentifier[]) => {
 		const uniqueFlowIds = flowIdentifiers.filter(({ key }) => !flowsCache.value[key]);
-		if (uniqueFlowIds.length === 0) return;
+		if (uniqueFlowIds.length === 0)
+			return;
 
 		loading.value = true;
 
@@ -39,9 +40,11 @@ export function useFlows(collection: string) {
 			response.data.data.forEach((flow: any) => {
 				flowsCache.value[`${flow.id}`] = flow;
 			});
-		} catch (error) {
+		}
+		catch (error) {
 			console.error('Error fetching flows:', error);
-		} finally {
+		}
+		finally {
 			loading.value = false;
 		}
 	};
@@ -67,7 +70,7 @@ export function useFlows(collection: string) {
 
 			const response = await api.post(`/flows/trigger/${flow.id}`, {
 				...formData,
-				collection: collection,
+				collection,
 				keys: [route.params.primaryKey] ?? [],
 				$values: formValues.value,
 				$route: {
@@ -82,7 +85,8 @@ export function useFlows(collection: string) {
 			});
 
 			return response.data;
-		} catch (error) {
+		}
+		catch (error) {
 			console.error(`Error running flow ${flowIdentifier.key}:`, error);
 			throw error;
 		}
@@ -109,7 +113,8 @@ export function useFlows(collection: string) {
 	};
 
 	const submitFlow = async (values: Record<string, any>) => {
-		if (!currentFlow.value) return;
+		if (!currentFlow.value)
+			return;
 		currentFlow.value.onSubmit(values);
 	};
 

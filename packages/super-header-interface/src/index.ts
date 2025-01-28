@@ -110,7 +110,7 @@ export default defineInterface({
 								options: {
 									choices: [
 										{ text: 'Primary', value: 'normal' },
-                                        { text: 'Secondary', value: 'secondary' },
+										{ text: 'Secondary', value: 'secondary' },
 										{ text: 'Info', value: 'info' },
 										{ text: 'Success', value: 'success' },
 										{ text: 'Warning', value: 'warning' },
