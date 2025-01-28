@@ -14,12 +14,19 @@ env:
 
 jobs:
   build:
-    name: Build
+    name: Validate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Prepare
-        uses: ./.github/actions/prepare
-        with:
-          build: false
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
+      - name: Build
+        run: pnpm run build
+      - name: Validate
+        run: pnpm run validate
