@@ -7,7 +7,7 @@
     import { schema_collection_name } from "../schema";
     import { isThisYear, isToday, isYesterday } from "date-fns";
     import { format as formatOriginal } from "date-fns";
-    import { flatten, groupBy, orderBy } from "lodash";
+    import { flatten, groupBy, orderBy } from "lodash-es";
     import { App, createApp, inject, Ref, onMounted, ref, watch } from "vue";
     import { useI18n } from "vue-i18n";
     import { routerKey } from "vue-router";
