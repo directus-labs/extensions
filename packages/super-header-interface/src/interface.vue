@@ -19,7 +19,7 @@ const { t } = useI18n();
 const { useFieldsStore } = useStores();
 const fieldsStore = useFieldsStore();
 
-const { fetchFlows, showForm, submitFlow, currentFlow, runFlow } = useFlows();
+const { fetchFlows, showForm, submitFlow, currentFlow, runFlow } = useFlows(props.collection);
 
 const expanded = ref(false);
 const flowFormData = ref<Record<string, any>>({});
@@ -118,6 +118,7 @@ const fields = computed(() => {
 					<FlowAction
 						v-else-if="primaryAction.actionType === 'flow' && primaryAction.flow"
 						:label="primaryAction.label"
+							:collection="collection"
 						:flow="primaryAction.flow"
 						:icon="primaryAction.icon"
 						:type="primaryAction.type"

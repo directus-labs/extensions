@@ -7,7 +7,7 @@ import type { FlowIdentifier } from '../types';
 const showForm = ref(false);
 const currentFlow = ref<any>(null);
 
-export function useFlows() {
+export function useFlows(collection: string) {
 	const { t } = useI18n();
 	const api = useApi();
 	const formValues = inject('values') as Record<string, any>;
@@ -67,9 +67,10 @@ export function useFlows() {
 
 			const response = await api.post(`/flows/trigger/${flow.id}`, {
 				...formData,
-				collection: 'people',
-				values: formValues.value,
-				route: {
+				collection: collection,
+				keys: [route.params.primaryKey] ?? [],
+				$values: formValues.value,
+				$route: {
 					params: route.params,
 					query: route.query,
 					fullPath: route.fullPath,
