@@ -109,8 +109,8 @@ export default defineInterface({
 								default_value: 'normal',
 								options: {
 									choices: [
-										{ text: 'Primary', value: 'primary' },
-										{ text: 'Normal', value: 'normal' },
+										{ text: 'Primary', value: 'normal' },
+                                        { text: 'Secondary', value: 'secondary' },
 										{ text: 'Info', value: 'info' },
 										{ text: 'Success', value: 'success' },
 										{ text: 'Warning', value: 'warning' },
