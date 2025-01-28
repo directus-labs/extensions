@@ -51,7 +51,7 @@ const templateWithDefaults = computed(() =>
 )
 
 const showAddNew = computed(() => {
-	if (props.disabled) return false
+	if (props.disabled || fieldsWithNames.value.length === 0) return false
 	if (props.value === null) return true
 	if (props.limit === undefined) return true
 	if (Array.isArray(props.value) && props.value.length < props.limit)
@@ -179,100 +179,99 @@ function discardAndLeave() {
 <template>
 	<div class="repeater">
 		<!-- Empty States -->
-		<v-notice v-if="!internalValue?.length">
+		<v-notice v-if="fieldsWithNames.length === 0" type="warning">
+			{{ t('no_visible_fields_copy') }}
+		</v-notice>
+		<v-notice v-else-if="!internalValue?.length">
 			{{ t(placeholder) }}
 		</v-notice>
 		<v-notice v-else-if="!Array.isArray(internalValue)" type="warning">
 			{{ t('interfaces.list.incompatible_data') }}
 		</v-notice>
-
 		<!-- Main Accordion List -->
-		<AccordionRoot type="multiple" v-model="expandedItems">
+		<AccordionRoot v-else type="multiple" v-model="expandedItems">
 			<draggable
-				v-if="Array.isArray(internalValue) && internalValue.length > 0"
-				tag="v-list"
-				:model-value="internalValue"
-				:disabled="disabled"
-				item-key="id"
-				handle=".drag-handle"
-				v-bind="{ 'force-fallback': true }"
-				class="v-list"
-				@update:model-value="$emit('input', $event)"
-			>
-				<template #item="{ element, index }">
-					<AccordionItem :value="index" asChild>
-						<v-list-item block grow class="list-item" clickable>
-							<div class="list-item-content">
-								<AccordionTrigger asChild>
-									<button
-										type="button"
-										class="list-item-header"
-										:class="{ 'border-bottom': isExpanded(index) }"
-									>
-										<div class="list-item-header-controls">
-											<v-icon
-												v-if="!disabled && !sort"
-												name="drag_handle"
-												class="drag-handle"
-												@click.stop
-											/>
-											<v-icon
-												:name="
-													isExpanded(index) ? 'expand_less' : 'chevron_right'
-												"
-												class="expand-icon"
-											/>
-										</div>
-
-										<render-template
-											:fields="fields"
-											:item="{ ...defaults, ...element }"
-											:direction="direction"
-											:template="templateWithDefaults"
-											title="Click to expand form"
-											class="list-item-header-content"
-										/>
-
-										<v-icon
-											v-if="!disabled"
-											name="close"
-											class="clear-icon"
-											clickable
-											@click.stop="removeItem(index)"
-										/>
-									</button>
-								</AccordionTrigger>
-
-								<transition-expand>
-									<AccordionContent asChild>
-										<div class="list-item-form">
-											<v-form
-												:disabled="disabled"
-												:fields="fieldsWithNames"
-												:model-value="element"
+					v-if="Array.isArray(internalValue) && internalValue.length > 0"
+					tag="v-list"
+					:model-value="internalValue"
+					:disabled="disabled"
+					item-key="id"
+					handle=".drag-handle"
+					v-bind="{ 'force-fallback': true }"
+					class="v-list"
+					@update:model-value="$emit('input', $event)"
+				>
+					<template #item="{ element, index }">
+						<AccordionItem :value="index" asChild>
+							<v-list-item block grow class="list-item" clickable>
+								<div class="list-item-content">
+									<AccordionTrigger asChild>
+										<button
+											type="button"
+											class="list-item-header"
+											:class="{ 'border-bottom': isExpanded(index) }"
+										>
+											<div class="list-item-header-controls">
+												<v-icon
+													v-if="!disabled && !sort"
+													name="drag_handle"
+													class="drag-handle"
+													@click.stop
+												/>
+												<v-icon
+													:name="
+														isExpanded(index) ? 'expand_less' : 'chevron_right'
+													"
+													class="expand-icon"
+												/>
+											</div>
+											<render-template
+												:fields="fields"
+												:item="{ ...defaults, ...element }"
 												:direction="direction"
-												primary-key="+"
-												@update:model-value="
-													(updatedElement) => {
-														const updatedValue = [...internalValue]
-														updatedValue[index] = updatedElement
-														emitValue(updatedValue)
-													}
-												"
+												:template="templateWithDefaults"
+												title="Click to expand form"
+												class="list-item-header-content"
 											/>
-										</div>
-									</AccordionContent>
-								</transition-expand>
-							</div>
-						</v-list-item>
-					</AccordionItem>
-				</template>
-			</draggable>
+											<v-icon
+												v-if="!disabled"
+												name="close"
+												class="clear-icon"
+												clickable
+												@click.stop="removeItem(index)"
+											/>
+										</button>
+									</AccordionTrigger>
+									<transition-expand>
+										<AccordionContent asChild>
+											<div class="list-item-form">
+												<v-form
+													:disabled="disabled"
+													:fields="fieldsWithNames"
+													:model-value="element"
+													:direction="direction"
+													primary-key="+"
+													@update:model-value="
+														(updatedElement) => {
+															const updatedValue = [...internalValue]
+															updatedValue[index] = updatedElement
+															emitValue(updatedValue)
+														}
+													"
+												/>
+											</div>
+										</AccordionContent>
+									</transition-expand>
+								</div>
+							</v-list-item>
+						</AccordionItem>
+					</template>
+				</draggable>
 		</AccordionRoot>
 
 		<!-- Action Bar -->
 		<div class="action-bar justify-between">
-			<v-button v-if="showAddNew" class="add-new" @click="addNew">
+			<v-button v-if="showAddNew" class="add-new" @click="addNew" :disabled="disabled">
 				{{ t(addLabel) }}
 			</v-button>
 
@@ -310,7 +309,6 @@ function discardAndLeave() {
 		<v-dialog v-model="confirmDiscard" @esc="confirmDiscard = false">
 			<v-card>
 				<v-card-title>{{ t('remove_item') }}</v-card-title>
-
 				<v-card-actions>
 					<v-button secondary @click="confirmDiscard = false">{{
 						t('cancel')
