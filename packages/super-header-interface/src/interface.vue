@@ -126,7 +126,7 @@ const fields = computed(() => {
 							:collection="collection"
 							:flow="primaryAction.flow"
 							:icon="primaryAction.icon"
-							:kind="primaryAction.type as 'normal' | 'info' | 'success' | 'warning' | 'danger'"
+							:kind="primaryAction.type"
 							:values="values"
 						/>
 					</template>
