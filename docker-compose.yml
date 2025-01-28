@@ -29,7 +29,7 @@ services:
     volumes:
       - ./.local/uploads:/directus/uploads
       - ./.local/database:/directus/database
-      - ./packages/:/directus/extensions/
+      - ./packages:/directus/extensions/
     networks:
       - sandbox
     environment:
