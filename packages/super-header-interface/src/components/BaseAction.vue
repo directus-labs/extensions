@@ -3,7 +3,7 @@ interface BaseActionProps {
 	label: string;
 	icon?: string;
 	/** Styling of the button */
-	kind?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
+	kind?: 'normal' | 'secondary' | 'info' | 'success' | 'warning' | 'danger';
 }
 
 defineProps<BaseActionProps>();

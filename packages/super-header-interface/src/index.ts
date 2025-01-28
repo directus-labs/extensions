@@ -180,6 +180,11 @@ export default defineInterface({
 									selectedCollection: 'directus_flows',
 									placeholder: 'Select a flow',
 									template: '{{ name }}',
+									filter: {
+										trigger: {
+											_eq: 'manual',
+										},
+									},
 								},
 								conditions: [
 									{

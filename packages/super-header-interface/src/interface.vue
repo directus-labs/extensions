@@ -30,15 +30,6 @@ function toggleHelp() {
 	expanded.value = !expanded.value;
 }
 
-async function handleFlowExecuted({ success, flow, result, error }) {
-	if (success) {
-		console.log(`Flow ${flow.key} executed successfully`, result);
-	}
-	else {
-		console.error(`Flow ${flow.key} execution failed:`, error);
-	}
-}
-
 const actionList = computed(() => {
 	if (!props.actions || !props.actions?.length)
 		return [];
@@ -135,9 +126,8 @@ const fields = computed(() => {
 							:collection="collection"
 							:flow="primaryAction.flow"
 							:icon="primaryAction.icon"
-							:kind="primaryAction.type"
+							:kind="primaryAction.type as 'normal' | 'info' | 'success' | 'warning' | 'danger'"
 							:values="values"
-							@flow-executed="handleFlowExecuted"
 						/>
 					</template>
 

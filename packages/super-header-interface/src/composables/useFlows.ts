@@ -71,7 +71,7 @@ export function useFlows(collection: string) {
 			const response = await api.post(`/flows/trigger/${flow.id}`, {
 				...formData,
 				collection,
-				keys: [route.params.primaryKey] ?? [],
+				keys: route.params?.primaryKey ? [route.params.primaryKey] : [],
 				$values: formValues.value,
 				$route: {
 					params: route.params,
@@ -88,7 +88,14 @@ export function useFlows(collection: string) {
 		}
 		catch (error) {
 			console.error(`Error running flow ${flowIdentifier.key}:`, error);
-			throw error;
+
+			notificationStore.add({
+				title: t('unexpected_error'),
+				type: 'error',
+				code: 'UNKNOWN',
+				dialog: true,
+				error,
+			});
 		}
 	};
 
@@ -104,7 +111,7 @@ export function useFlows(collection: string) {
 
 			const onCancel = () => {
 				showForm.value = false;
-				reject('Flow cancelled');
+				reject(new Error('Flow cancelled'));
 			};
 
 			currentFlow.value = { ...flow, onSubmit, onCancel };
