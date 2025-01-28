@@ -8,7 +8,7 @@ import {
 import formatTitle from '@directus/format-title'
 import { DeepPartial, Field } from '@directus/types'
 import { sortBy } from 'lodash'
-import { computed, ref, toRefs } from 'vue'
+import { computed, ref, toRefs, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Draggable from 'vuedraggable'
 
@@ -142,10 +142,21 @@ function addNew() {
 	})
 
 	if (Array.isArray(internalValue.value)) {
+		const newIndex = internalValue.value.length
 		emitValue([...internalValue.value, newDefaults])
 
-		// Add the new item to the expanded items
-		expandedItems.value.push(internalValue.value.length)
+		// Expand the new item
+		expandedItems.value.push(newIndex)
+
+		// Focus the first input of the last form
+		nextTick(() => {
+			const forms = document.querySelectorAll('.list-item-form')
+			const lastForm = forms[forms.length - 1]
+			const firstInput = lastForm?.querySelector('input, select, textarea')
+			if (firstInput instanceof HTMLElement) {
+				firstInput.focus()
+			}
+		})
 	} else {
 		if (internalValue.value != null) {
 			console.warn(
@@ -154,6 +165,16 @@ function addNew() {
 		}
 
 		emitValue([newDefaults])
+		// Expand the first item
+		expandedItems.value = [0]
+
+		// Focus the first input after the DOM updates
+		nextTick(() => {
+			const firstInput = document.querySelector('.list-item-form input, .list-item-form select, .list-item-form textarea')
+			if (firstInput instanceof HTMLElement) {
+				firstInput.focus()
+			}
+		})
 	}
 }
 
