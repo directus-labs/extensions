@@ -6,15 +6,16 @@ import type { FlowIdentifier } from '../types';
 interface FlowActionProps {
   label: string;
   icon?: string;
-  type?: string;
+  kind?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
   flow: FlowIdentifier;
   values: Record<string, any>;
+  collection: string;
 }
 
 const props = defineProps<FlowActionProps>();
 const emit = defineEmits(['flow-executed']);
 
-const { loading, runFlow } = useFlows();
+const { loading, runFlow } = useFlows(props.collection);
 
 const handleClick = async () => {
   try {
@@ -28,7 +29,7 @@ const handleClick = async () => {
 
 <template>
   <v-button
-    :color="type"
+    :kind="kind"
     small
     :loading="loading"
     @click="handleClick"

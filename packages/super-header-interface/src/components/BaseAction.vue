@@ -2,14 +2,15 @@
 interface BaseActionProps {
   label: string;
   icon?: string;
-  type?: string;
+ /** Styling of the button */
+ kind?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
 }
 
 defineProps<BaseActionProps>();
 </script>
 
 <template>
-  <v-button :color="type" small>
+  <v-button :kind="kind" small>
     {{ label }}
     <v-icon v-if="icon" :name="icon" right />
   </v-button>
