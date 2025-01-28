@@ -3,6 +3,7 @@
 	"type": "module",
 	"version": "1.1.0",
 	"description": "A super powerful header interface for Directus that allows you to create rich page headers with titles, subtitles, help information, and interactive actions. Perfect for enhancing the user experience with contextual information and quick access to common tasks.",
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus-labs/extensions.git"
@@ -25,7 +26,8 @@
 	"scripts": {
 		"build": "directus-extension build",
 		"dev": "directus-extension build -w --no-minify",
-		"link": "directus-extension link"
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
 	},
 	"dependencies": {
 		"@directus/utils": "^11.0.10",
@@ -35,7 +37,7 @@
 		"vue-router": "^4.5.0"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "11.0.9",
+		"@directus/extensions-sdk": "13.0.0",
 		"typescript": "^5.5.4",
 		"vue": "^3.4.35"
 	}
