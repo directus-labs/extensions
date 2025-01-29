@@ -2,6 +2,7 @@
   "name": "youtube-embed-interface",
   "description": "Search YouTube videos and generate embed codes",
   "icon": "extension",
+	"license": "MIT",
   "version": "1.0.0",
   "keywords": [
     "directus",
