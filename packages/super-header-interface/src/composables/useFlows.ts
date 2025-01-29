@@ -1,13 +1,13 @@
-import { ref, inject } from 'vue';
-import { useRoute } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import { useApi, useStores } from '@directus/extensions-sdk';
 import type { FlowIdentifier } from '../types';
+import { useApi, useStores } from '@directus/extensions-sdk';
+import { inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 const showForm = ref(false);
 const currentFlow = ref<any>(null);
 
-export function useFlows() {
+export function useFlows(collection: string) {
 	const { t } = useI18n();
 	const api = useApi();
 	const formValues = inject('values') as Record<string, any>;
@@ -21,7 +21,8 @@ export function useFlows() {
 
 	const fetchFlows = async (flowIdentifiers: FlowIdentifier[]) => {
 		const uniqueFlowIds = flowIdentifiers.filter(({ key }) => !flowsCache.value[key]);
-		if (uniqueFlowIds.length === 0) return;
+		if (uniqueFlowIds.length === 0)
+			return;
 
 		loading.value = true;
 
@@ -39,9 +40,11 @@ export function useFlows() {
 			response.data.data.forEach((flow: any) => {
 				flowsCache.value[`${flow.id}`] = flow;
 			});
-		} catch (error) {
+		}
+		catch (error) {
 			console.error('Error fetching flows:', error);
-		} finally {
+		}
+		finally {
 			loading.value = false;
 		}
 	};
@@ -67,9 +70,10 @@ export function useFlows() {
 
 			const response = await api.post(`/flows/trigger/${flow.id}`, {
 				...formData,
-				collection: 'people',
-				values: formValues.value,
-				route: {
+				collection,
+				keys: route.params?.primaryKey ? [route.params.primaryKey] : [],
+				$values: formValues.value,
+				$route: {
 					params: route.params,
 					query: route.query,
 					fullPath: route.fullPath,
@@ -81,9 +85,17 @@ export function useFlows() {
 			});
 
 			return response.data;
-		} catch (error) {
+		}
+		catch (error) {
 			console.error(`Error running flow ${flowIdentifier.key}:`, error);
-			throw error;
+
+			notificationStore.add({
+				title: t('unexpected_error'),
+				type: 'error',
+				code: 'UNKNOWN',
+				dialog: true,
+				error,
+			});
 		}
 	};
 
@@ -99,7 +111,7 @@ export function useFlows() {
 
 			const onCancel = () => {
 				showForm.value = false;
-				reject('Flow cancelled');
+				reject(new Error('Flow cancelled'));
 			};
 
 			currentFlow.value = { ...flow, onSubmit, onCancel };
@@ -108,7 +120,8 @@ export function useFlows() {
 	};
 
 	const submitFlow = async (values: Record<string, any>) => {
-		if (!currentFlow.value) return;
+		if (!currentFlow.value)
+			return;
 		currentFlow.value.onSubmit(values);
 	};
 
