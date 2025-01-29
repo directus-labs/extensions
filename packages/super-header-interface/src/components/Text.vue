@@ -7,7 +7,7 @@ defineProps<TextProps>();
 </script>
 
 <template>
-	<div v-if="content" class="helper-text selectable" v-html="content"></div>
+	<div v-if="content" class="helper-text selectable" v-html="content" />
 </template>
 
 <style scoped lang="scss">
