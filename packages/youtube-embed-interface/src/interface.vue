@@ -1,15 +1,15 @@
 <template>
-	<template v-if="preview">
+	<template v-if="!hideSelect && preview">
 		<div class="responsive-preview">
 			<div class="responsive-placeholder" :style="{ paddingBottom: ((preview.height/preview.width*100)+'%') }"></div>
-			<iframe :src="preview.src" :height="preview.height" :width="preview.width"></iframe>
+			<iframe :src="preview.src" :height="preview.height" :width="preview.width" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 		</div>
 	</template>
 
 	<v-drawer @cancel="showDrawer = false" title="Embed YouTube video" v-model="showDrawer">
 
 		<template #actions>
-			<v-button v-tooltip.bottom="'Save'" icon rounded @click="saveEmbed">
+			<v-button v-if="!hideSelect" v-tooltip.bottom="'Save'" icon rounded @click="saveEmbed">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -31,7 +31,7 @@
 				v-model:headers="headers"
 				class="table"
 				fixed-header
-				show-select="one"
+				:show-select="!hideSelect ? 'one' : 'none'"
 				:show-resize="true"
 				:show-manual-sort="false"
 				:items="items"
@@ -151,6 +151,7 @@
 	const props = defineProps<{
 		apiKey?: string
 		channelId?: string,
+		hideSelect?: boolean,
 		value?: any
 	}>();
 
@@ -195,7 +196,7 @@
 
 	const embed = (item:any) => {
 		const height = Math.round(item.snippet?.thumbnails?.medium ? (1280 / item.snippet.thumbnails.medium.width * item.snippet.thumbnails.medium.height) : 720);
-		return `<iframe src="https://www.youtube.com/embed/${item.id.videoId}" height="${height}" width="1280"></iframe>`;
+		return `<iframe src="https://www.youtube.com/embed/${item.id.videoId}" height="${height}" width="1280" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
 	}
 
 	const copyEmbed = async (item:any) => {

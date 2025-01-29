@@ -17,7 +17,6 @@ export default defineInterface({
 			type: 'string',
 			name: 'API Key',
 			meta: {
-				width: 'half',
 				interface: 'input',
 				note: 'YouTube Data API v3',
 				options: {
@@ -31,13 +30,26 @@ export default defineInterface({
 			type: 'string',
 			name: 'Channel ID',
 			meta: {
-				width: 'half',
 				interface: 'input',
 				note: 'Limit searches to a single channel. You can find your channel ID in your advanced YouTube settings.',
 				options: {
 					iconRight: 'key'
 				}
 			}
+		},{
+			field: 'hideSelect',
+			type: 'boolean',
+			name: 'Selection',
+			meta: {
+				interface: 'boolean',
+				note: 'Prevents selecting a video to embed. Check this if you only want to copy embed codes to your clipboard.',
+				options: {
+					label: "Hide Select"
+				}
+			},
+			schema: {
+				default_value: false,
+			},
 		}
 	],
 	types: ['string']
