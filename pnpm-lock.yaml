@@ -980,6 +980,22 @@ importers:
         specifier: ^3.4.27
         version: 3.4.31(typescript@5.5.3)
 
+  packages/youtube-embed-interface:
+    dependencies:
+      sass:
+        specifier: ^1.83.4
+        version: 1.83.4
+    devDependencies:
+      '@directus/extensions-sdk':
+        specifier: 13.0.0
+        version: 13.0.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+      typescript:
+        specifier: ^5.7.3
+        version: 5.7.3
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.7.3)
+
 packages:
 
   '@anthropic-ai/sdk@0.33.1':
@@ -10324,7 +10340,7 @@ snapshots:
 
   '@vue/compiler-core@3.4.34':
     dependencies:
-      '@babel/parser': 7.24.7
+      '@babel/parser': 7.25.8
       '@vue/shared': 3.4.34
       entities: 4.5.0
       estree-walker: 2.0.2
