@@ -6,7 +6,7 @@ export interface FlowIdentifier {
 export interface Action {
 	label: string;
 	icon?: string;
-	type?: string;
+	type?: 'normal' | 'secondary' | 'info' | 'success' | 'warning' | 'danger';
 	actionType: 'link' | 'flow';
 	url?: string;
 	flow?: FlowIdentifier;
