@@ -19,6 +19,7 @@
     import { useI18n } from 'vue-i18n';
     import { defaultButtonLabel } from './default-button-label';
     import PdfViewer from './pdf-viewer.vue'
+    import { getAssetUrl } from './utils/get-asset-url';
 
     const props = withDefaults(defineProps<{
         file_field?: string;
@@ -41,7 +42,7 @@
         });
         const fileURL = computed(() => {
             if (!fileID.value) return null;
-            return `/assets/${fileID.value}`;
+            return getAssetUrl(fileID.value);
         });
         const fileIsValid = computed(() => !!fileID.value);
 

@@ -14,6 +14,7 @@
     import { ref, onMounted, watch } from 'vue';
     import Plyr from 'plyr';
     import type { VideoService, VideoID } from './types'
+    import { getAssetUrl } from './utils/get-asset-url';
 
     const props = defineProps<{ service: VideoService; id: VideoID; }>();
 
@@ -40,10 +41,6 @@
                 }
             ],
         }
-    }
-
-    function getAssetUrl(id: VideoID) {
-        return `/assets/${id}`;
     }
 </script>
 

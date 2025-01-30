@@ -295,7 +295,7 @@
 		>
 			<v-icon :name="fullscreen ? 'fullscreen_exit' : 'fullscreen'" />
 		</v-button>
-		<Upload v-model="showUpload" @file-selected="$file => wb.insertImage('/assets/'+$file.id)"></Upload>
+		<Upload v-model="showUpload" @file-selected="$file => wb.insertImage(getAssetUrl($file.id))"></Upload>
 	</div>
 </template>
 
@@ -304,6 +304,7 @@
 	import { onMounted, onUnmounted, ref, watch } from 'vue';
 	import { Whiteboard } from './whiteboard'
 	import Upload from './upload.vue'
+	import { getAssetUrl } from './utils/get-asset-url';
 
 	const showUpload = ref(false);
 	const fullscreen = ref(false);
