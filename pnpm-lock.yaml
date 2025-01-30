@@ -9574,9 +9574,9 @@ snapshots:
     dependencies:
       '@types/node': 22.7.7
 
-  '@types/cssnano@5.1.0(postcss@8.4.47)':
+  '@types/cssnano@5.1.0(postcss@8.4.49)':
     dependencies:
-      cssnano: 5.1.15(postcss@8.4.47)
+      cssnano: 5.1.15(postcss@8.4.49)
     transitivePeerDependencies:
       - postcss
 
