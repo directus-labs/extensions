@@ -25,12 +25,13 @@ export const system_field: DeepPartial<Field> = {
         },
         {
           field: "fields",
-          type: "json",
-          name: "Fields to Search",
+          type: "csv",
+          name: "Fields to Include",
           meta: {
-            interface: "system-field-tree",
+            interface: "system-field",
             options: {
               collectionField: "collection",
+              multiple: true,
             },
             note: "Select the fields to enable comments.",
           },

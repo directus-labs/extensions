@@ -89,25 +89,12 @@ async function initializeApp(retry: number = 0){
       relationStore.upsertRelation(schema_collection_name, "user_created", user_created_relation);
       relationStore.upsertRelation(schema_collection_name, "user_updated", user_updated_relation);
 
+      await fieldStore.upsertField("directus_settings", "field_comments_settings", system_field);
+      await settingsStore.hydrate();
+
     } catch(error: any){
       unexpectedError(error, stores);
     }
-
-    const fieldCommentsSettingsField = fieldStore.getField(
-      "directus_settings",
-      "field_comments_settings",
-    );
-
-    if (!fieldCommentsSettingsField){
-      // Create Fields in Collection if missing
-      try {
-        await fieldStore.createField("directus_settings", system_field);
-        await settingsStore.hydrate();
-
-      } catch (error) {
-        unexpectedError(error, stores);
-      }
-    };
   }
 
   return;
