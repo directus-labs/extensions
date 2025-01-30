@@ -16,7 +16,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.1.2
-        version: 12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@rollup/plugin-url':
         specifier: ^8.0.2
         version: 8.0.2(rollup@3.29.4)
@@ -58,7 +58,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.1
-        version: 11.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
+        version: 11.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
       vue:
         specifier: ^3.4.21
         version: 3.4.31(typescript@5.7.3)
@@ -67,7 +67,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.1
-        version: 11.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
+        version: 11.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
       vue:
         specifier: ^3.4.21
         version: 3.4.31(typescript@5.7.3)
@@ -76,16 +76,50 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.1
-        version: 11.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
+        version: 11.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
       vue:
         specifier: ^3.4.21
         version: 3.4.31(typescript@5.7.3)
+
+  packages/ai-researcher-bundle:
+    dependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.33.1
+        version: 0.33.1(encoding@0.1.13)
+      '@directus/env':
+        specifier: ^4.1.0
+        version: 4.1.0(vue@3.5.13(typescript@5.7.3))
+      '@directus/errors':
+        specifier: ^1.0.0
+        version: 1.0.0
+      openai:
+        specifier: ^4.78.1
+        version: 4.80.0(encoding@0.1.13)(zod@3.24.1)
+      sass:
+        specifier: ^1.83.4
+        version: 1.83.4
+    devDependencies:
+      '@directus/extensions-sdk':
+        specifier: 13.0.0
+        version: 13.0.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+      '@directus/types':
+        specifier: ^12.2.2
+        version: 12.2.2(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
+      '@types/node':
+        specifier: ^22.10.6
+        version: 22.10.7
+      typescript:
+        specifier: ^5.7.3
+        version: 5.7.3
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.7.3)
 
   packages/ai-speech-generation-operation:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.1
-        version: 11.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
+        version: 11.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
       vue:
         specifier: ^3.4.21
         version: 3.4.31(typescript@5.7.3)
@@ -109,7 +143,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.1
-        version: 11.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
+        version: 11.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
       vue:
         specifier: ^3.4.21
         version: 3.4.31(typescript@5.7.3)
@@ -118,7 +152,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.1
-        version: 11.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
+        version: 11.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
       vue:
         specifier: ^3.4.21
         version: 3.4.31(typescript@5.7.3)
@@ -127,7 +161,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.1
-        version: 11.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
+        version: 11.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))
       vue:
         specifier: ^3.4.21
         version: 3.4.31(typescript@5.7.3)
@@ -136,7 +170,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.1
-        version: 11.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+        version: 11.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
       vue:
         specifier: ^3.4.21
         version: 3.5.13(typescript@5.7.3)
@@ -202,7 +236,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^11.0.9
-        version: 11.0.9(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 11.0.9(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       typescript:
         specifier: ^5.4.5
         version: 5.6.3
@@ -233,7 +267,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.9
-        version: 11.0.9(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(sass@1.77.8)(terser@5.36.0)(typescript@5.5.4)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))
+        version: 11.0.9(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(sass@1.77.8)(terser@5.36.0)(typescript@5.5.4)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))
       '@directus/types':
         specifier: 11.1.1
         version: 11.1.1(knex@3.1.0)(vue@3.4.34(typescript@5.5.4))
@@ -267,7 +301,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.1
-        version: 12.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       sass:
         specifier: ^1.83.0
         version: 1.83.1
@@ -286,7 +320,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.1.2
-        version: 12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@types/d3':
         specifier: ^7.4.3
         version: 7.4.3
@@ -335,7 +369,7 @@ importers:
         version: 12.0.0
       '@directus/extensions-sdk':
         specifier: 12.0.1
-        version: 12.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))
+        version: 12.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))
       '@directus/types':
         specifier: ^12.0.0
         version: 12.1.0(knex@3.1.0)(vue@3.5.12(typescript@5.6.3))
@@ -359,7 +393,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.6
-        version: 11.0.6(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
+        version: 11.0.6(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
       typescript:
         specifier: ^5.4.5
         version: 5.5.3
@@ -381,7 +415,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.1
-        version: 12.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 12.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       typescript:
         specifier: ^5.5.4
         version: 5.6.3
@@ -393,7 +427,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.0
-        version: 12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@directus/format-title':
         specifier: ^11.0.0
         version: 11.0.0
@@ -421,7 +455,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.0
-        version: 12.0.0(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 12.0.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       typescript:
         specifier: ^5.5.4
         version: 5.6.3
@@ -433,13 +467,50 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.2
-        version: 12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       typescript:
         specifier: ^5.6.2
         version: 5.6.3
       vue:
         specifier: ^3.5.3
         version: 3.5.13(typescript@5.6.3)
+
+  packages/inline-repeater-interface:
+    dependencies:
+      '@directus/format-title':
+        specifier: ^12.0.0
+        version: 12.0.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      nanoid:
+        specifier: ^5.0.7
+        version: 5.0.7
+      reka-ui:
+        specifier: 1.0.0-alpha.8
+        version: 1.0.0-alpha.8(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3))
+      sass:
+        specifier: ^1.77.8
+        version: 1.83.1
+      vue:
+        specifier: ^3.4.38
+        version: 3.5.13(typescript@5.6.3)
+      vue-i18n:
+        specifier: ^11.0.1
+        version: 11.0.1(vue@3.5.13(typescript@5.6.3))
+      vuedraggable:
+        specifier: 4.1.0
+        version: 4.1.0(vue@3.5.13(typescript@5.6.3))
+    devDependencies:
+      '@directus/extensions-sdk':
+        specifier: 13.0.0
+        version: 13.0.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+      '@directus/types':
+        specifier: ^13.0.0
+        version: 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.6.3))
+      typescript:
+        specifier: ^5.5.4
+        version: 5.6.3
 
   packages/liquidjs-operation:
     dependencies:
@@ -464,7 +535,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.3
-        version: 11.0.3(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
+        version: 11.0.3(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
       typescript:
         specifier: ^5.4.5
         version: 5.5.3
@@ -476,7 +547,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.6
-        version: 11.0.6(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.77.1)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
+        version: 11.0.6(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.77.1)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
       '@directus/format-title':
         specifier: 10.1.2
         version: 10.1.2
@@ -512,7 +583,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^11.0.8
-        version: 11.0.8(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
+        version: 11.0.8(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
       typescript:
         specifier: ^5.4.5
         version: 5.5.3
@@ -534,7 +605,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.8
-        version: 11.0.8(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 11.0.8(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       typescript:
         specifier: ^5.5.2
         version: 5.6.3
@@ -583,7 +654,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.0
-        version: 12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@directus/format-title':
         specifier: ^11.0.0
         version: 11.0.0
@@ -617,7 +688,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.9
-        version: 11.0.9(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 11.0.9(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       typescript:
         specifier: ^5.5.4
         version: 5.6.3
@@ -629,7 +700,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.3
-        version: 11.0.3(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.77.1)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.4.0(vue@3.4.31(typescript@5.5.3)))
+        version: 11.0.3(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.77.1)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.4.0(vue@3.4.31(typescript@5.5.3)))
       '@types/lodash':
         specifier: ^4.17.1
         version: 4.17.5
@@ -659,7 +730,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.4
-        version: 11.0.4(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
+        version: 11.0.4(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
       typescript:
         specifier: ^5.4.5
         version: 5.5.3
@@ -687,7 +758,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.0
-        version: 13.0.0(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 13.0.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       typescript:
         specifier: ^5.5.4
         version: 5.6.3
@@ -699,7 +770,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.1
-        version: 12.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       sass:
         specifier: ^1.83.1
         version: 1.83.1
@@ -714,7 +785,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^11.0.9
-        version: 11.0.9(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 11.0.9(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -732,7 +803,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.0
-        version: 12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@directus/format-title':
         specifier: ^11.0.0
         version: 11.0.0
@@ -760,7 +831,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.1.0
-        version: 12.1.0(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
@@ -775,7 +846,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.2
-        version: 12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))
       '@directus/utils':
         specifier: ^12.0.4
         version: 12.0.5(vue@3.5.13(typescript@5.6.3))
@@ -820,7 +891,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.2
-        version: 12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@directus/format-title':
         specifier: ^11.0.0
         version: 11.0.0
@@ -848,7 +919,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.4
-        version: 11.0.4(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
+        version: 11.0.4(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
       get-video-id:
         specifier: ^4.1.5
         version: 4.1.7
@@ -876,7 +947,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.8
-        version: 11.0.8(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 11.0.8(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       typescript:
         specifier: ^5.5.4
         version: 5.6.3
@@ -901,7 +972,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.6
-        version: 11.0.6(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.77.1)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
+        version: 11.0.6(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.77.1)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))
       typescript:
         specifier: ^5.4.5
         version: 5.5.3
@@ -917,7 +988,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.0
-        version: 13.0.0(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+        version: 13.0.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -926,6 +997,9 @@ importers:
         version: 3.5.13(typescript@5.7.3)
 
 packages:
+
+  '@anthropic-ai/sdk@0.33.1':
+    resolution: {integrity: sha512-VrlbxiAdVRGuKP2UQlCnsShDHJKWepzvfRCkZMpU+oaUdKLpOfmylLMRojGrAgebV+kDtPjewCVP0laHXg+vsA==}
 
   '@babel/code-frame@7.25.7':
     resolution: {integrity: sha512-0xZJFNE5XMpENsgfHYTw8FbX4kv53mFLn2i3XPoq69LyhYSCBJtitaHx9QnsVTrsogI4Z3+HtEfZ2/GFPOtf5g==}
@@ -1037,6 +1111,9 @@ packages:
 
   '@directus/constants@13.0.0':
     resolution: {integrity: sha512-R2uuMEJarlq29IPH9Pqe11U74mDqQWBHWhVy77R7ZrnJeZiiayLFoQTlZS4FN8M+ROVrCkIcsg39meNpxEyvpA==}
+
+  '@directus/env@4.1.0':
+    resolution: {integrity: sha512-ANsZoY5Yz9Y8o0U0NuLx1Xxq+mw4o4BHigPmBBbEgBtlFM4Y2hjNDavezfHst4JDyR2Ksc2WyOmyzudGyF6lDA==}
 
   '@directus/errors@1.0.0':
     resolution: {integrity: sha512-J9LA2ro4STS7JGsE5ERb01hTD/otQlRkw4PhbTF/7BXbhTVkagEYrBkCoqjMOysFB+zPHqii5Dc7RVNsjraxzA==}
@@ -1296,6 +1373,9 @@ packages:
     resolution: {integrity: sha512-M4Xvwsc8M0x/ZvmxDmSmoechTQ/HRAFjj+PYi5Psn0/XhZ9vU3E8dadEXQDm0UGb30jdt0nrWBSU2+L5AgEwDw==}
     engines: {node: '>=18'}
 
+  '@directus/format-title@12.0.0':
+    resolution: {integrity: sha512-8hCMRjaMRRZU7DJci2ep/yNYV7wrpgJFXEeMouHnyLxEev7Tb4UO4lZv4C+p2a0E81nyemhXEwPB0UjFrlV8VA==}
+
   '@directus/schema@11.0.1':
     resolution: {integrity: sha512-I8YaZcFdzY1Livv3fW2L0GTBan+MGIYancj9GM/AoZpfeI5PjCecqASna/ijD/WVwDlUUvx6b7aJcQ1OLXBDug==}
 
@@ -1522,6 +1602,17 @@ packages:
 
   '@directus/types@12.2.1':
     resolution: {integrity: sha512-bPzyiy22jZawFuCkTjxO+eyaANtSk4d114ABuNXTDreZvI0v1LqU5WluECoXk02PFAJiX46mpcNT2WzhZ46fwg==}
+    peerDependencies:
+      knex: '3'
+      vue: ^3.4
+    peerDependenciesMeta:
+      knex:
+        optional: true
+      vue:
+        optional: true
+
+  '@directus/types@12.2.2':
+    resolution: {integrity: sha512-PR0wQkdTH2PYnnYdvZpJ01nMbEbhIfW9PUvT+vJvnnpVmycE/Y+garvaRDWI9183tXfSL8uvItixhUs1gdqV4w==}
     peerDependencies:
       knex: '3'
       vue: ^3.4
@@ -2088,6 +2179,10 @@ packages:
     resolution: {integrity: sha512-F3snDTQs0MdvnnyzTDTVkOYVAZOE/MHwRvF7mn7Jw1yuih4NrFYLNYIymGlLmq4HU2iIdzYsZ7f47bOcwY73XQ==}
     engines: {node: '>= 16'}
 
+  '@intlify/core-base@11.0.1':
+    resolution: {integrity: sha512-NAmhw1l/llM0HZRpagR/ChJTNymW4ll6/4EDSJML5c8L5Hl/+k6UyF8EIgE6DeHpfheQujkSRngauViHqq6jJQ==}
+    engines: {node: '>= 16'}
+
   '@intlify/core-base@9.13.1':
     resolution: {integrity: sha512-+bcQRkJO9pcX8d0gel9ZNfrzU22sZFSA0WVhfXrf5jdJOS24a+Bp8pozuS9sBI9Hk/tGz83pgKfmqcn/Ci7/8w==}
     engines: {node: '>= 16'}
@@ -2100,6 +2195,10 @@ packages:
     resolution: {integrity: sha512-6GT1BJ852gZ0gItNZN2krX5QAmea+cmdjMvsWohArAZ3GmHdnNANEcF9JjPXAMRtQ6Ux5E269ymamg/+WU6tQA==}
     engines: {node: '>= 16'}
 
+  '@intlify/message-compiler@11.0.1':
+    resolution: {integrity: sha512-5RFH8x+Mn3mbjcHXnb6KCXGiczBdiQkWkv99iiA0JpKrNuTAQeW59Pjq/uObMB0eR0shnKYGTkIJxum+DbL3sw==}
+    engines: {node: '>= 16'}
+
   '@intlify/message-compiler@9.13.1':
     resolution: {integrity: sha512-SKsVa4ajYGBVm7sHMXd5qX70O2XXjm55zdZB3VeMFCvQyvLew/dLvq3MqnaIsTMF1VkkOb9Ttr6tHcMlyPDL9w==}
     engines: {node: '>= 16'}
@@ -2110,6 +2209,10 @@ packages:
 
   '@intlify/shared@10.0.5':
     resolution: {integrity: sha512-bmsP4L2HqBF6i6uaMqJMcFBONVjKt+siGluRq4Ca4C0q7W2eMaVZr8iCgF9dKbcVXutftkC7D6z2SaSMmLiDyA==}
+    engines: {node: '>= 16'}
+
+  '@intlify/shared@11.0.1':
+    resolution: {integrity: sha512-lH164+aDDptHZ3dBDbIhRa1dOPQUp+83iugpc+1upTOWCnwyC1PVis6rSWNMMJ8VQxvtHQB9JMib48K55y0PvQ==}
     engines: {node: '>= 16'}
 
   '@intlify/shared@9.13.1':
@@ -2601,8 +2704,17 @@ packages:
   '@types/minimist@1.2.5':
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
 
+  '@types/node-fetch@2.6.12':
+    resolution: {integrity: sha512-8nneRWKCg3rMtF69nLQJnOYUcbafYeFSjqkw3jCRLsqkWFlHaoQrr5mXmofFGOx3DKn7UfmBMyov8ySvLRVldA==}
+
+  '@types/node@18.19.71':
+    resolution: {integrity: sha512-evXpcgtZm8FY4jqBSN8+DmOTcVkkvTmAayeo4Wf3m1xAruyVGzGuDh/Fb/WWX2yLItUiho42ozyJjB0dw//Tkw==}
+
   '@types/node@20.14.9':
     resolution: {integrity: sha512-06OCtnTXtWOZBJlRApleWndH4JsRVs1pDCc8dLSQp+7PpUpX3ePdHyeNSFTeSe7FtKyQkrlPvHwJOW3SLd8Oyg==}
+
+  '@types/node@22.10.7':
+    resolution: {integrity: sha512-V09KvXxFiutGp6B7XkpaDXlNadZxrzajcY50EuoLIpQ6WWYCSvf19lVIazzfIzQvhUN2HjX12spLojTnhuKlGg==}
 
   '@types/node@22.7.7':
     resolution: {integrity: sha512-SRxCrrg9CL/y54aiMCG3edPKdprgMVGDXjA3gB8UmmBW5TcXzRUYAh8EWzTnSJFAd1rgImPELza+A3bJ+qxz8Q==}
@@ -2926,6 +3038,10 @@ packages:
 
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
+
+  abort-controller@3.0.0:
+    resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
+    engines: {node: '>=6.5'}
 
   acorn-globals@6.0.0:
     resolution: {integrity: sha512-ZQl7LOWaF5ePqqcX4hLuv/bLXYQNfNWw2c0/yX/TsPRKamzHcTGQnlCjHT3TsmkOUVEPS3crCxiPfdzE/Trlhg==}
@@ -3558,6 +3674,10 @@ packages:
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
 
+  dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
+
   driver.js@1.3.1:
     resolution: {integrity: sha512-MvUdXbqSgEsgS/H9KyWb5Rxy0aE6BhOVT4cssi2x2XjmXea6qQfgdx32XKVLLSqTaIw7q/uxU5Xl3NV7+cN6FQ==}
 
@@ -3645,6 +3765,10 @@ packages:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
 
+  event-target-shim@5.0.1:
+    resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
+    engines: {node: '>=6'}
+
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
 
@@ -3704,9 +3828,16 @@ packages:
       debug:
         optional: true
 
+  form-data-encoder@1.7.2:
+    resolution: {integrity: sha512-qfqtYan3rxrnCk1VYaA4H+Ms9xdpPqvLZa6xmMgFvhO32x7/3J/ExcTd6qpxM0vH2GdMI+poehyBZvqfMTto8A==}
+
   form-data@4.0.0:
     resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
     engines: {node: '>= 6'}
+
+  formdata-node@4.4.1:
+    resolution: {integrity: sha512-0iirZp3uVDjVGt9p49aTaqjk84TrglENEDuqfdlZQ1roC9CWlPk6Avf8EEnZNcAqPonwkG35x4n3ww/1THYAeQ==}
+    engines: {node: '>= 12.20'}
 
   fs-extra@10.1.0:
     resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
@@ -4358,6 +4489,10 @@ packages:
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
 
+  node-domexception@1.0.0:
+    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
+    engines: {node: '>=10.5.0'}
+
   node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
     engines: {node: 4.x || >=6.0.0}
@@ -4437,6 +4572,18 @@ packages:
   onetime@6.0.0:
     resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
     engines: {node: '>=12'}
+
+  openai@4.80.0:
+    resolution: {integrity: sha512-5TqdNQgjOMxo3CkCvtjzuSwuznO/o3q5aak0MTy6IjRvPtvVA1wAFGJU3eZT1JHzhs2wFb/xtDG0o6Y/2KGCfw==}
+    hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.23.8
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
 
   ora@5.4.1:
     resolution: {integrity: sha512-5b6Y85tPxZZ7QytO+BQzysW31HJku27cRIlkbAXaNx+BdcVi+LlRFmVXzeF6a7JCwJpyw5c4b+YSVImQIrBpuQ==}
@@ -5295,6 +5442,9 @@ packages:
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
+  undici-types@6.20.0:
+    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
+
   unhead@1.9.14:
     resolution: {integrity: sha512-npdYu6CfasX/IhB8OO27e3u4A1zhAY77T1FwWDIIUaJvugYTte5hjsolPX0/fG5jmjnWTFTuIkmbCSfj7bfIkg==}
 
@@ -5426,6 +5576,12 @@ packages:
     peerDependencies:
       vue: ^3.0.0
 
+  vue-i18n@11.0.1:
+    resolution: {integrity: sha512-pWAT8CusK8q9/EpN7V3oxwHwxWm6+Kp2PeTZmRGvdZTkUzMQDpbbmHp0TwQ8xw04XKm23cr6B4GL72y3W8Yekg==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      vue: ^3.0.0
+
   vue-i18n@9.13.1:
     resolution: {integrity: sha512-mh0GIxx0wPtPlcB1q4k277y0iKgo25xmDPWioVVYanjPufDBpvu5ySTjP5wOrSvlYQ2m1xI+CFhGdauv/61uQg==}
     engines: {node: '>= 16'}
@@ -5538,6 +5694,10 @@ packages:
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
 
+  web-streams-polyfill@4.0.0-beta.3:
+    resolution: {integrity: sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==}
+    engines: {node: '>= 14'}
+
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
@@ -5645,6 +5805,18 @@ packages:
     resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
 
 snapshots:
+
+  '@anthropic-ai/sdk@0.33.1(encoding@0.1.13)':
+    dependencies:
+      '@types/node': 18.19.71
+      '@types/node-fetch': 2.6.12
+      abort-controller: 3.0.0
+      agentkeepalive: 4.5.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      node-fetch: 2.7.0(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
 
   '@babel/code-frame@7.25.7':
     dependencies:
@@ -5854,6 +6026,15 @@ snapshots:
 
   '@directus/constants@13.0.0': {}
 
+  '@directus/env@4.1.0(vue@3.5.13(typescript@5.7.3))':
+    dependencies:
+      '@directus/constants': 12.0.1
+      '@directus/utils': 12.0.5(vue@3.5.13(typescript@5.7.3))
+      dotenv: 16.4.5
+      lodash-es: 4.17.21
+    transitivePeerDependencies:
+      - vue
+
   '@directus/errors@1.0.0':
     dependencies:
       '@directus/storage': 11.0.0
@@ -5910,7 +6091,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))':
+  '@directus/extensions-sdk@11.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.4.31(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.7.3)))':
     dependencies:
       '@directus/composables': 10.1.11(vue@3.4.21(typescript@5.7.3))
       '@directus/constants': 11.0.3
@@ -5924,7 +6105,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.5(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.21(typescript@5.7.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.21(typescript@5.7.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -5935,7 +6116,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.21(typescript@5.7.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -5961,7 +6142,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
+  '@directus/extensions-sdk@11.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
     dependencies:
       '@directus/composables': 10.1.11(vue@3.4.21(typescript@5.7.3))
       '@directus/constants': 11.0.3
@@ -5975,7 +6156,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.5(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.21(typescript@5.7.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.21(typescript@5.7.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -5986,7 +6167,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.21(typescript@5.7.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6012,7 +6193,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.3(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.77.1)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.4.0(vue@3.4.31(typescript@5.5.3)))':
+  '@directus/extensions-sdk@11.0.3(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.77.1)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.4.0(vue@3.4.31(typescript@5.5.3)))':
     dependencies:
       '@directus/composables': 10.1.12(vue@3.4.23(typescript@5.5.3))
       '@directus/constants': 11.0.3
@@ -6026,7 +6207,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.5(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.77.1)(terser@5.36.0))(vue@3.4.23(typescript@5.5.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.77.1)(terser@5.36.0))(vue@3.4.23(typescript@5.5.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6037,7 +6218,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.77.1)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.77.1)(terser@5.36.0)
       vue: 3.4.23(typescript@5.5.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6063,7 +6244,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.3(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))':
+  '@directus/extensions-sdk@11.0.3(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))':
     dependencies:
       '@directus/composables': 10.1.12(vue@3.4.23(typescript@5.5.3))
       '@directus/constants': 11.0.3
@@ -6077,7 +6258,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.5(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.23(typescript@5.5.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.23(typescript@5.5.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6088,7 +6269,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.23(typescript@5.5.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6114,7 +6295,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.4(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))':
+  '@directus/extensions-sdk@11.0.4(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))':
     dependencies:
       '@directus/composables': 10.1.13(vue@3.4.27(typescript@5.5.3))
       '@directus/constants': 11.0.4
@@ -6128,7 +6309,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.5(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6139,7 +6320,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.27(typescript@5.5.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6165,7 +6346,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.6(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.77.1)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))':
+  '@directus/extensions-sdk@11.0.6(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.77.1)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))':
     dependencies:
       '@directus/composables': 10.1.13(vue@3.4.27(typescript@5.5.3))
       '@directus/constants': 11.0.4
@@ -6179,7 +6360,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.5(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.77.1)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.77.1)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6190,7 +6371,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.77.1)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.77.1)(terser@5.36.0)
       vue: 3.4.27(typescript@5.5.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6216,7 +6397,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.6(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))':
+  '@directus/extensions-sdk@11.0.6(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))':
     dependencies:
       '@directus/composables': 10.1.13(vue@3.4.27(typescript@5.5.3))
       '@directus/constants': 11.0.4
@@ -6230,7 +6411,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.5(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6241,7 +6422,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.27(typescript@5.5.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6369,7 +6550,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.8(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))':
+  '@directus/extensions-sdk@11.0.8(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.31(typescript@5.5.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.3)(vue@3.4.31(typescript@5.5.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.5.3)(vue-router@4.5.0(vue@3.4.31(typescript@5.5.3)))':
     dependencies:
       '@directus/composables': 10.1.14(vue@3.4.27(typescript@5.5.3))
       '@directus/constants': 11.0.4
@@ -6383,7 +6564,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.5(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6394,7 +6575,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.27(typescript@5.5.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6420,7 +6601,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.8(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@11.0.8(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 10.1.14(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 11.0.4
@@ -6434,7 +6615,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.5(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6445,7 +6626,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.27(typescript@5.6.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6471,7 +6652,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.9(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(sass@1.77.8)(terser@5.36.0)(typescript@5.5.4)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))':
+  '@directus/extensions-sdk@11.0.9(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@2.1.7(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(sass@1.77.8)(terser@5.36.0)(typescript@5.5.4)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))':
     dependencies:
       '@directus/composables': 10.1.15(vue@3.4.27(typescript@5.5.4))
       '@directus/constants': 11.0.4
@@ -6485,7 +6666,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0))(vue@3.4.27(typescript@5.5.4))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0))(vue@3.4.27(typescript@5.5.4))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6496,7 +6677,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0)
       vue: 3.4.27(typescript@5.5.4)
     transitivePeerDependencies:
       - '@types/node'
@@ -6522,7 +6703,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.9(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@11.0.9(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 10.1.15(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 11.0.4
@@ -6536,7 +6717,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6547,7 +6728,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.27(typescript@5.6.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6573,7 +6754,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.0.0(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.0.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.0.0(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 12.0.0
@@ -6587,7 +6768,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6598,7 +6779,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0)
       vue: 3.4.27(typescript@5.6.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6624,7 +6805,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.0(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 12.0.0
@@ -6638,7 +6819,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6649,7 +6830,109 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0)
+      vue: 3.4.27(typescript@5.6.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@unhead/vue'
+      - better-sqlite3
+      - debug
+      - knex
+      - less
+      - lightningcss
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - pinia
+      - pino
+      - sass
+      - sqlite3
+      - stylus
+      - sugarss
+      - supports-color
+      - tedious
+      - terser
+      - typescript
+      - vue-router
+
+  '@directus/extensions-sdk@12.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
+    dependencies:
+      '@directus/composables': 11.1.0(vue@3.4.27(typescript@5.6.3))
+      '@directus/constants': 12.0.0
+      '@directus/extensions': 2.0.0(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/themes': 1.0.0(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/types': 12.0.0(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
+      '@directus/utils': 12.0.0(vue@3.4.27(typescript@5.6.3))
+      '@rollup/plugin-commonjs': 25.0.8(rollup@3.29.4)
+      '@rollup/plugin-json': 6.1.0(rollup@3.29.4)
+      '@rollup/plugin-node-resolve': 15.2.3(rollup@3.29.4)
+      '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
+      '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
+      '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
+      chalk: 5.3.0
+      commander: 10.0.1
+      esbuild: 0.17.19
+      execa: 7.2.0
+      fs-extra: 11.2.0
+      inquirer: 9.3.6
+      ora: 6.3.1
+      rollup: 3.29.4
+      rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
+      rollup-plugin-styles: 4.0.0(rollup@3.29.4)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
+      vue: 3.4.27(typescript@5.6.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@unhead/vue'
+      - better-sqlite3
+      - debug
+      - knex
+      - less
+      - lightningcss
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - pinia
+      - pino
+      - sass
+      - sqlite3
+      - stylus
+      - sugarss
+      - supports-color
+      - tedious
+      - terser
+      - typescript
+      - vue-router
+
+  '@directus/extensions-sdk@12.0.1(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+    dependencies:
+      '@directus/composables': 11.1.0(vue@3.4.27(typescript@5.6.3))
+      '@directus/constants': 12.0.0
+      '@directus/extensions': 2.0.0(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/themes': 1.0.0(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/types': 12.0.0(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
+      '@directus/utils': 12.0.0(vue@3.4.27(typescript@5.6.3))
+      '@rollup/plugin-commonjs': 25.0.8(rollup@3.29.4)
+      '@rollup/plugin-json': 6.1.0(rollup@3.29.4)
+      '@rollup/plugin-node-resolve': 15.2.3(rollup@3.29.4)
+      '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
+      '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
+      '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.1)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
+      chalk: 5.3.0
+      commander: 10.0.1
+      esbuild: 0.17.19
+      execa: 7.2.0
+      fs-extra: 11.2.0
+      inquirer: 9.3.6
+      ora: 6.3.1
+      rollup: 3.29.4
+      rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
+      rollup-plugin-styles: 4.0.0(rollup@3.29.4)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.1)(terser@5.36.0)
       vue: 3.4.27(typescript@5.6.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6726,57 +7009,6 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.0.1(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
-    dependencies:
-      '@directus/composables': 11.1.0(vue@3.4.27(typescript@5.6.3))
-      '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.0(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
-      '@directus/themes': 1.0.0(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
-      '@directus/types': 12.0.0(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
-      '@directus/utils': 12.0.0(vue@3.4.27(typescript@5.6.3))
-      '@rollup/plugin-commonjs': 25.0.8(rollup@3.29.4)
-      '@rollup/plugin-json': 6.1.0(rollup@3.29.4)
-      '@rollup/plugin-node-resolve': 15.2.3(rollup@3.29.4)
-      '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
-      '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
-      '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.1)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
-      chalk: 5.3.0
-      commander: 10.0.1
-      esbuild: 0.17.19
-      execa: 7.2.0
-      fs-extra: 11.2.0
-      inquirer: 9.3.6
-      ora: 6.3.1
-      rollup: 3.29.4
-      rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
-      rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.1)(terser@5.36.0)
-      vue: 3.4.27(typescript@5.6.3)
-    transitivePeerDependencies:
-      - '@types/node'
-      - '@unhead/vue'
-      - better-sqlite3
-      - debug
-      - knex
-      - less
-      - lightningcss
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - pinia
-      - pino
-      - sass
-      - sqlite3
-      - stylus
-      - sugarss
-      - supports-color
-      - tedious
-      - terser
-      - typescript
-      - vue-router
-
   '@directus/extensions-sdk@12.0.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.0(vue@3.4.27(typescript@5.6.3))
@@ -6828,7 +7060,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.1.0(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.1.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.1(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 12.0.0
@@ -6842,7 +7074,7 @@ snapshots:
       '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
@@ -6853,7 +7085,7 @@ snapshots:
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.27(typescript@5.6.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6879,7 +7111,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.3(vue@3.5.11(typescript@5.6.3))
       '@directus/constants': 12.0.0
@@ -6893,18 +7125,18 @@ snapshots:
       '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0))(vue@3.5.11(typescript@5.6.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0))(vue@3.5.11(typescript@5.6.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
       execa: 7.2.0
       fs-extra: 11.2.0
-      inquirer: 12.0.0(@types/node@22.7.7)
+      inquirer: 12.0.0(@types/node@22.10.7)
       ora: 6.3.1
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0)
       vue: 3.5.11(typescript@5.6.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6930,7 +7162,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.3(vue@3.5.11(typescript@5.6.3))
       '@directus/constants': 12.0.0
@@ -6944,18 +7176,18 @@ snapshots:
       '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0))(vue@3.5.11(typescript@5.6.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0))(vue@3.5.11(typescript@5.6.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
       execa: 7.2.0
       fs-extra: 11.2.0
-      inquirer: 12.0.0(@types/node@22.7.7)
+      inquirer: 12.0.0(@types/node@22.10.7)
       ora: 6.3.1
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0)
       vue: 3.5.11(typescript@5.6.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -6981,7 +7213,7 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.1.2(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.1.2(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.3(vue@3.5.11(typescript@5.6.3))
       '@directus/constants': 12.0.0
@@ -6995,19 +7227,175 @@ snapshots:
       '@rollup/plugin-replace': 5.0.7(rollup@3.29.4)
       '@rollup/plugin-terser': 0.4.4(rollup@3.29.4)
       '@rollup/plugin-virtual': 3.0.2(rollup@3.29.4)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.5.11(typescript@5.6.3))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.5.11(typescript@5.6.3))
       chalk: 5.3.0
       commander: 10.0.1
       esbuild: 0.17.19
       execa: 7.2.0
       fs-extra: 11.2.0
-      inquirer: 12.0.0(@types/node@22.7.7)
+      inquirer: 12.0.0(@types/node@22.10.7)
       ora: 6.3.1
       rollup: 3.29.4
       rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.4)
       rollup-plugin-styles: 4.0.0(rollup@3.29.4)
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.5.11(typescript@5.6.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@unhead/vue'
+      - better-sqlite3
+      - debug
+      - knex
+      - less
+      - lightningcss
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - pinia
+      - pino
+      - sass
+      - sqlite3
+      - stylus
+      - sugarss
+      - supports-color
+      - tedious
+      - terser
+      - typescript
+      - vue-router
+
+  '@directus/extensions-sdk@13.0.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+    dependencies:
+      '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.6.3))
+      '@directus/constants': 13.0.0
+      '@directus/extensions': 3.0.0(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
+      '@directus/themes': 1.0.6(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
+      '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.6.3))
+      '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.6.3))
+      '@rollup/plugin-commonjs': 25.0.8(rollup@3.29.5)
+      '@rollup/plugin-json': 6.1.0(rollup@3.29.5)
+      '@rollup/plugin-node-resolve': 15.3.1(rollup@3.29.5)
+      '@rollup/plugin-replace': 5.0.7(rollup@3.29.5)
+      '@rollup/plugin-terser': 0.4.4(rollup@3.29.5)
+      '@rollup/plugin-virtual': 3.0.2(rollup@3.29.5)
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.5(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0))(vue@3.5.13(typescript@5.6.3))
+      chalk: 5.4.1
+      commander: 10.0.1
+      esbuild: 0.17.19
+      execa: 7.2.0
+      fs-extra: 11.2.0
+      inquirer: 12.3.0(@types/node@22.10.7)
+      ora: 6.3.1
+      rollup: 3.29.5
+      rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.5)
+      rollup-plugin-styles: 4.0.0(rollup@3.29.5)
+      semver: 7.6.3
+      vite: 4.5.5(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0)
+      vue: 3.5.13(typescript@5.6.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@unhead/vue'
+      - better-sqlite3
+      - debug
+      - knex
+      - less
+      - lightningcss
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - pinia
+      - pino
+      - sass
+      - sqlite3
+      - stylus
+      - sugarss
+      - supports-color
+      - tedious
+      - terser
+      - typescript
+      - vue-router
+
+  '@directus/extensions-sdk@13.0.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+    dependencies:
+      '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.6.3))
+      '@directus/constants': 13.0.0
+      '@directus/extensions': 3.0.0(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
+      '@directus/themes': 1.0.6(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
+      '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.6.3))
+      '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.6.3))
+      '@rollup/plugin-commonjs': 25.0.8(rollup@3.29.5)
+      '@rollup/plugin-json': 6.1.0(rollup@3.29.5)
+      '@rollup/plugin-node-resolve': 15.3.1(rollup@3.29.5)
+      '@rollup/plugin-replace': 5.0.7(rollup@3.29.5)
+      '@rollup/plugin-terser': 0.4.4(rollup@3.29.5)
+      '@rollup/plugin-virtual': 3.0.2(rollup@3.29.5)
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.5(@types/node@22.10.7)(sass@1.83.1)(terser@5.36.0))(vue@3.5.13(typescript@5.6.3))
+      chalk: 5.4.1
+      commander: 10.0.1
+      esbuild: 0.17.19
+      execa: 7.2.0
+      fs-extra: 11.2.0
+      inquirer: 12.3.0(@types/node@22.10.7)
+      ora: 6.3.1
+      rollup: 3.29.5
+      rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.5)
+      rollup-plugin-styles: 4.0.0(rollup@3.29.5)
+      semver: 7.6.3
+      vite: 4.5.5(@types/node@22.10.7)(sass@1.83.1)(terser@5.36.0)
+      vue: 3.5.13(typescript@5.6.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@unhead/vue'
+      - better-sqlite3
+      - debug
+      - knex
+      - less
+      - lightningcss
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - pinia
+      - pino
+      - sass
+      - sqlite3
+      - stylus
+      - sugarss
+      - supports-color
+      - tedious
+      - terser
+      - typescript
+      - vue-router
+
+  '@directus/extensions-sdk@13.0.0(@types/node@22.10.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
+    dependencies:
+      '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.7.3))
+      '@directus/constants': 13.0.0
+      '@directus/extensions': 3.0.0(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
+      '@directus/themes': 1.0.6(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
+      '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
+      '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.7.3))
+      '@rollup/plugin-commonjs': 25.0.8(rollup@3.29.5)
+      '@rollup/plugin-json': 6.1.0(rollup@3.29.5)
+      '@rollup/plugin-node-resolve': 15.3.1(rollup@3.29.5)
+      '@rollup/plugin-replace': 5.0.7(rollup@3.29.5)
+      '@rollup/plugin-terser': 0.4.4(rollup@3.29.5)
+      '@rollup/plugin-virtual': 3.0.2(rollup@3.29.5)
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.5(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.5.13(typescript@5.7.3))
+      chalk: 5.4.1
+      commander: 10.0.1
+      esbuild: 0.17.19
+      execa: 7.2.0
+      fs-extra: 11.2.0
+      inquirer: 12.3.0(@types/node@22.10.7)
+      ora: 6.3.1
+      rollup: 3.29.5
+      rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.5)
+      rollup-plugin-styles: 4.0.0(rollup@3.29.5)
+      semver: 7.6.3
+      vite: 4.5.5(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
+      vue: 3.5.13(typescript@5.7.3)
     transitivePeerDependencies:
       - '@types/node'
       - '@unhead/vue'
@@ -7060,110 +7448,6 @@ snapshots:
       semver: 7.6.3
       vite: 4.5.5(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.5.13(typescript@5.6.3)
-    transitivePeerDependencies:
-      - '@types/node'
-      - '@unhead/vue'
-      - better-sqlite3
-      - debug
-      - knex
-      - less
-      - lightningcss
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - pinia
-      - pino
-      - sass
-      - sqlite3
-      - stylus
-      - sugarss
-      - supports-color
-      - tedious
-      - terser
-      - typescript
-      - vue-router
-
-  '@directus/extensions-sdk@13.0.0(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.36.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
-    dependencies:
-      '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.6.3))
-      '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.0(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
-      '@directus/themes': 1.0.6(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.6.3)))(pinia@2.1.7(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
-      '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.6.3))
-      '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.6.3))
-      '@rollup/plugin-commonjs': 25.0.8(rollup@3.29.5)
-      '@rollup/plugin-json': 6.1.0(rollup@3.29.5)
-      '@rollup/plugin-node-resolve': 15.3.1(rollup@3.29.5)
-      '@rollup/plugin-replace': 5.0.7(rollup@3.29.5)
-      '@rollup/plugin-terser': 0.4.4(rollup@3.29.5)
-      '@rollup/plugin-virtual': 3.0.2(rollup@3.29.5)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.5(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0))(vue@3.5.13(typescript@5.6.3))
-      chalk: 5.4.1
-      commander: 10.0.1
-      esbuild: 0.17.19
-      execa: 7.2.0
-      fs-extra: 11.2.0
-      inquirer: 12.3.0(@types/node@22.7.7)
-      ora: 6.3.1
-      rollup: 3.29.5
-      rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.5)
-      rollup-plugin-styles: 4.0.0(rollup@3.29.5)
-      semver: 7.6.3
-      vite: 4.5.5(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0)
-      vue: 3.5.13(typescript@5.6.3)
-    transitivePeerDependencies:
-      - '@types/node'
-      - '@unhead/vue'
-      - better-sqlite3
-      - debug
-      - knex
-      - less
-      - lightningcss
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - pinia
-      - pino
-      - sass
-      - sqlite3
-      - stylus
-      - sugarss
-      - supports-color
-      - tedious
-      - terser
-      - typescript
-      - vue-router
-
-  '@directus/extensions-sdk@13.0.0(@types/node@22.7.7)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
-    dependencies:
-      '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.7.3))
-      '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.0(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
-      '@directus/themes': 1.0.6(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
-      '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
-      '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.7.3))
-      '@rollup/plugin-commonjs': 25.0.8(rollup@3.29.5)
-      '@rollup/plugin-json': 6.1.0(rollup@3.29.5)
-      '@rollup/plugin-node-resolve': 15.3.1(rollup@3.29.5)
-      '@rollup/plugin-replace': 5.0.7(rollup@3.29.5)
-      '@rollup/plugin-terser': 0.4.4(rollup@3.29.5)
-      '@rollup/plugin-virtual': 3.0.2(rollup@3.29.5)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.5(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.5.13(typescript@5.7.3))
-      chalk: 5.4.1
-      commander: 10.0.1
-      esbuild: 0.17.19
-      execa: 7.2.0
-      fs-extra: 11.2.0
-      inquirer: 12.3.0(@types/node@22.7.7)
-      ora: 6.3.1
-      rollup: 3.29.5
-      rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.5)
-      rollup-plugin-styles: 4.0.0(rollup@3.29.5)
-      semver: 7.6.3
-      vite: 4.5.5(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
-      vue: 3.5.13(typescript@5.7.3)
     transitivePeerDependencies:
       - '@types/node'
       - '@unhead/vue'
@@ -7789,6 +8073,8 @@ snapshots:
   '@directus/format-title@10.1.2': {}
 
   '@directus/format-title@11.0.0': {}
+
+  '@directus/format-title@12.0.0': {}
 
   '@directus/schema@11.0.1':
     dependencies:
@@ -8438,6 +8724,24 @@ snapshots:
       - supports-color
       - tedious
 
+  '@directus/types@12.2.2(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))':
+    dependencies:
+      '@directus/constants': 12.0.1
+      '@directus/schema': 12.1.1
+      '@types/geojson': 7946.0.14
+    optionalDependencies:
+      knex: 3.1.0
+      vue: 3.5.13(typescript@5.7.3)
+    transitivePeerDependencies:
+      - better-sqlite3
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - sqlite3
+      - supports-color
+      - tedious
+
   '@directus/types@13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 13.0.0
@@ -8695,6 +8999,19 @@ snapshots:
     optionalDependencies:
       vue: 3.5.13(typescript@5.6.3)
 
+  '@directus/utils@12.0.5(vue@3.5.13(typescript@5.7.3))':
+    dependencies:
+      '@directus/constants': 12.0.1
+      '@directus/system-data': 2.1.2
+      date-fns: 4.1.0
+      fs-extra: 11.2.0
+      joi: 17.13.3
+      js-yaml: 4.1.0
+      lodash-es: 4.17.21
+      micromustache: 8.0.3
+    optionalDependencies:
+      vue: 3.5.13(typescript@5.7.3)
+
   '@directus/utils@13.0.0(vue@3.5.13(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 13.0.0
@@ -8888,12 +9205,21 @@ snapshots:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-  '@inquirer/checkbox@4.0.3(@types/node@22.7.7)':
+  '@inquirer/checkbox@4.0.3(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
       '@inquirer/figures': 1.0.8
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      '@types/node': 22.10.7
+      ansi-escapes: 4.3.2
+      yoctocolors-cjs: 2.1.2
+
+  '@inquirer/checkbox@4.0.6(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/figures': 1.0.9
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
       ansi-escapes: 4.3.2
       yoctocolors-cjs: 2.1.2
 
@@ -8906,11 +9232,17 @@ snapshots:
       ansi-escapes: 4.3.2
       yoctocolors-cjs: 2.1.2
 
-  '@inquirer/confirm@5.1.0(@types/node@22.7.7)':
+  '@inquirer/confirm@5.1.0(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      '@types/node': 22.10.7
+
+  '@inquirer/confirm@5.1.3(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
 
   '@inquirer/confirm@5.1.3(@types/node@22.7.7)':
     dependencies:
@@ -8918,10 +9250,24 @@ snapshots:
       '@inquirer/type': 3.0.2(@types/node@22.7.7)
       '@types/node': 22.7.7
 
-  '@inquirer/core@10.1.1(@types/node@22.7.7)':
+  '@inquirer/core@10.1.1(@types/node@22.10.7)':
     dependencies:
       '@inquirer/figures': 1.0.8
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      ansi-escapes: 4.3.2
+      cli-width: 4.1.0
+      mute-stream: 2.0.0
+      signal-exit: 4.1.0
+      strip-ansi: 6.0.1
+      wrap-ansi: 6.2.0
+      yoctocolors-cjs: 2.1.2
+    transitivePeerDependencies:
+      - '@types/node'
+
+  '@inquirer/core@10.1.4(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/figures': 1.0.9
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
       ansi-escapes: 4.3.2
       cli-width: 4.1.0
       mute-stream: 2.0.0
@@ -8946,11 +9292,18 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@inquirer/editor@4.2.0(@types/node@22.7.7)':
+  '@inquirer/editor@4.2.0(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      '@types/node': 22.10.7
+      external-editor: 3.1.0
+
+  '@inquirer/editor@4.2.3(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
       external-editor: 3.1.0
 
   '@inquirer/editor@4.2.3(@types/node@22.7.7)':
@@ -8960,11 +9313,18 @@ snapshots:
       '@types/node': 22.7.7
       external-editor: 3.1.0
 
-  '@inquirer/expand@4.0.3(@types/node@22.7.7)':
+  '@inquirer/expand@4.0.3(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      '@types/node': 22.10.7
+      yoctocolors-cjs: 2.1.2
+
+  '@inquirer/expand@4.0.6(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
       yoctocolors-cjs: 2.1.2
 
   '@inquirer/expand@4.0.6(@types/node@22.7.7)':
@@ -8980,11 +9340,17 @@ snapshots:
 
   '@inquirer/figures@1.0.9': {}
 
-  '@inquirer/input@4.1.0(@types/node@22.7.7)':
+  '@inquirer/input@4.1.0(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      '@types/node': 22.10.7
+
+  '@inquirer/input@4.1.3(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
 
   '@inquirer/input@4.1.3(@types/node@22.7.7)':
     dependencies:
@@ -8992,11 +9358,17 @@ snapshots:
       '@inquirer/type': 3.0.2(@types/node@22.7.7)
       '@types/node': 22.7.7
 
-  '@inquirer/number@3.0.3(@types/node@22.7.7)':
+  '@inquirer/number@3.0.3(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      '@types/node': 22.10.7
+
+  '@inquirer/number@3.0.6(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
 
   '@inquirer/number@3.0.6(@types/node@22.7.7)':
     dependencies:
@@ -9004,11 +9376,18 @@ snapshots:
       '@inquirer/type': 3.0.2(@types/node@22.7.7)
       '@types/node': 22.7.7
 
-  '@inquirer/password@4.0.3(@types/node@22.7.7)':
+  '@inquirer/password@4.0.3(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      '@types/node': 22.10.7
+      ansi-escapes: 4.3.2
+
+  '@inquirer/password@4.0.6(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
       ansi-escapes: 4.3.2
 
   '@inquirer/password@4.0.6(@types/node@22.7.7)':
@@ -9018,19 +9397,33 @@ snapshots:
       '@types/node': 22.7.7
       ansi-escapes: 4.3.2
 
-  '@inquirer/prompts@7.2.0(@types/node@22.7.7)':
+  '@inquirer/prompts@7.2.0(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/checkbox': 4.0.3(@types/node@22.7.7)
-      '@inquirer/confirm': 5.1.0(@types/node@22.7.7)
-      '@inquirer/editor': 4.2.0(@types/node@22.7.7)
-      '@inquirer/expand': 4.0.3(@types/node@22.7.7)
-      '@inquirer/input': 4.1.0(@types/node@22.7.7)
-      '@inquirer/number': 3.0.3(@types/node@22.7.7)
-      '@inquirer/password': 4.0.3(@types/node@22.7.7)
-      '@inquirer/rawlist': 4.0.3(@types/node@22.7.7)
-      '@inquirer/search': 3.0.3(@types/node@22.7.7)
-      '@inquirer/select': 4.0.3(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/checkbox': 4.0.3(@types/node@22.10.7)
+      '@inquirer/confirm': 5.1.0(@types/node@22.10.7)
+      '@inquirer/editor': 4.2.0(@types/node@22.10.7)
+      '@inquirer/expand': 4.0.3(@types/node@22.10.7)
+      '@inquirer/input': 4.1.0(@types/node@22.10.7)
+      '@inquirer/number': 3.0.3(@types/node@22.10.7)
+      '@inquirer/password': 4.0.3(@types/node@22.10.7)
+      '@inquirer/rawlist': 4.0.3(@types/node@22.10.7)
+      '@inquirer/search': 3.0.3(@types/node@22.10.7)
+      '@inquirer/select': 4.0.3(@types/node@22.10.7)
+      '@types/node': 22.10.7
+
+  '@inquirer/prompts@7.2.3(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/checkbox': 4.0.6(@types/node@22.10.7)
+      '@inquirer/confirm': 5.1.3(@types/node@22.10.7)
+      '@inquirer/editor': 4.2.3(@types/node@22.10.7)
+      '@inquirer/expand': 4.0.6(@types/node@22.10.7)
+      '@inquirer/input': 4.1.3(@types/node@22.10.7)
+      '@inquirer/number': 3.0.6(@types/node@22.10.7)
+      '@inquirer/password': 4.0.6(@types/node@22.10.7)
+      '@inquirer/rawlist': 4.0.6(@types/node@22.10.7)
+      '@inquirer/search': 3.0.6(@types/node@22.10.7)
+      '@inquirer/select': 4.0.6(@types/node@22.10.7)
+      '@types/node': 22.10.7
 
   '@inquirer/prompts@7.2.3(@types/node@22.7.7)':
     dependencies:
@@ -9046,11 +9439,18 @@ snapshots:
       '@inquirer/select': 4.0.6(@types/node@22.7.7)
       '@types/node': 22.7.7
 
-  '@inquirer/rawlist@4.0.3(@types/node@22.7.7)':
+  '@inquirer/rawlist@4.0.3(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      '@types/node': 22.10.7
+      yoctocolors-cjs: 2.1.2
+
+  '@inquirer/rawlist@4.0.6(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
       yoctocolors-cjs: 2.1.2
 
   '@inquirer/rawlist@4.0.6(@types/node@22.7.7)':
@@ -9060,12 +9460,20 @@ snapshots:
       '@types/node': 22.7.7
       yoctocolors-cjs: 2.1.2
 
-  '@inquirer/search@3.0.3(@types/node@22.7.7)':
+  '@inquirer/search@3.0.3(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
       '@inquirer/figures': 1.0.8
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      '@types/node': 22.10.7
+      yoctocolors-cjs: 2.1.2
+
+  '@inquirer/search@3.0.6(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/figures': 1.0.9
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
       yoctocolors-cjs: 2.1.2
 
   '@inquirer/search@3.0.6(@types/node@22.7.7)':
@@ -9076,12 +9484,21 @@ snapshots:
       '@types/node': 22.7.7
       yoctocolors-cjs: 2.1.2
 
-  '@inquirer/select@4.0.3(@types/node@22.7.7)':
+  '@inquirer/select@4.0.3(@types/node@22.10.7)':
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
       '@inquirer/figures': 1.0.8
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
-      '@types/node': 22.7.7
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
+      '@types/node': 22.10.7
+      ansi-escapes: 4.3.2
+      yoctocolors-cjs: 2.1.2
+
+  '@inquirer/select@4.0.6(@types/node@22.10.7)':
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/figures': 1.0.9
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
       ansi-escapes: 4.3.2
       yoctocolors-cjs: 2.1.2
 
@@ -9094,9 +9511,13 @@ snapshots:
       ansi-escapes: 4.3.2
       yoctocolors-cjs: 2.1.2
 
-  '@inquirer/type@3.0.1(@types/node@22.7.7)':
+  '@inquirer/type@3.0.1(@types/node@22.10.7)':
     dependencies:
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
+
+  '@inquirer/type@3.0.2(@types/node@22.10.7)':
+    dependencies:
+      '@types/node': 22.10.7
 
   '@inquirer/type@3.0.2(@types/node@22.7.7)':
     dependencies:
@@ -9115,6 +9536,11 @@ snapshots:
       '@intlify/message-compiler': 10.0.5
       '@intlify/shared': 10.0.5
 
+  '@intlify/core-base@11.0.1':
+    dependencies:
+      '@intlify/message-compiler': 11.0.1
+      '@intlify/shared': 11.0.1
+
   '@intlify/core-base@9.13.1':
     dependencies:
       '@intlify/message-compiler': 9.13.1
@@ -9130,6 +9556,11 @@ snapshots:
       '@intlify/shared': 10.0.5
       source-map-js: 1.2.1
 
+  '@intlify/message-compiler@11.0.1':
+    dependencies:
+      '@intlify/shared': 11.0.1
+      source-map-js: 1.2.1
+
   '@intlify/message-compiler@9.13.1':
     dependencies:
       '@intlify/shared': 9.13.1
@@ -9141,6 +9572,8 @@ snapshots:
       source-map-js: 1.2.1
 
   '@intlify/shared@10.0.5': {}
+
+  '@intlify/shared@11.0.1': {}
 
   '@intlify/shared@9.13.1': {}
 
@@ -9490,11 +9923,11 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
 
   '@types/cssnano@5.1.0(postcss@8.4.49)':
     dependencies:
@@ -9519,7 +9952,7 @@ snapshots:
   '@types/d3-contour@3.0.6':
     dependencies:
       '@types/d3-array': 3.2.1
-      '@types/geojson': 7946.0.14
+      '@types/geojson': 7946.0.15
 
   '@types/d3-delaunay@6.0.4': {}
 
@@ -9543,7 +9976,7 @@ snapshots:
 
   '@types/d3-geo@3.1.0':
     dependencies:
-      '@types/geojson': 7946.0.14
+      '@types/geojson': 7946.0.15
 
   '@types/d3-hierarchy@3.1.7': {}
 
@@ -9625,7 +10058,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.5':
     dependencies:
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -9643,7 +10076,7 @@ snapshots:
 
   '@types/fs-extra@8.1.5':
     dependencies:
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
 
   '@types/geojson@7946.0.14': {}
 
@@ -9652,7 +10085,7 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
 
   '@types/google.maps@3.58.1': {}
 
@@ -9672,9 +10105,22 @@ snapshots:
 
   '@types/minimist@1.2.5': {}
 
+  '@types/node-fetch@2.6.12':
+    dependencies:
+      '@types/node': 22.10.7
+      form-data: 4.0.0
+
+  '@types/node@18.19.71':
+    dependencies:
+      undici-types: 5.26.5
+
   '@types/node@20.14.9':
     dependencies:
       undici-types: 5.26.5
+
+  '@types/node@22.10.7':
+    dependencies:
+      undici-types: 6.20.0
 
   '@types/node@22.7.7':
     dependencies:
@@ -9693,12 +10139,12 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
       '@types/send': 0.17.4
 
   '@types/web-bluetooth@0.0.20': {}
@@ -9780,75 +10226,85 @@ snapshots:
       vite: 4.5.2(@types/node@20.14.9)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.27(typescript@5.6.3)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.77.1)(terser@5.36.0))(vue@3.4.23(typescript@5.5.3))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.77.1)(terser@5.36.0))(vue@3.4.23(typescript@5.5.3))':
     dependencies:
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.77.1)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.77.1)(terser@5.36.0)
       vue: 3.4.23(typescript@5.5.3)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.77.1)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.77.1)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))':
     dependencies:
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.77.1)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.77.1)(terser@5.36.0)
       vue: 3.4.27(typescript@5.5.3)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0))(vue@3.4.27(typescript@5.5.4))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0))(vue@3.4.27(typescript@5.5.4))':
     dependencies:
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0)
       vue: 3.4.27(typescript@5.5.4)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))':
     dependencies:
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0)
       vue: 3.4.27(typescript@5.6.3)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0))(vue@3.5.11(typescript@5.6.3))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0))(vue@3.5.11(typescript@5.6.3))':
     dependencies:
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0)
       vue: 3.5.11(typescript@5.6.3)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.1)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.1)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))':
     dependencies:
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.1)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.1)(terser@5.36.0)
       vue: 3.4.27(typescript@5.6.3)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.21(typescript@5.7.3))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.21(typescript@5.7.3))':
     dependencies:
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.21(typescript@5.7.3)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.23(typescript@5.5.3))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.23(typescript@5.5.3))':
     dependencies:
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.23(typescript@5.5.3)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.5.3))':
     dependencies:
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.27(typescript@5.5.3)
+
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))':
+    dependencies:
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
+      vue: 3.4.27(typescript@5.6.3)
+
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.5.11(typescript@5.6.3))':
+    dependencies:
+      vite: 4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
+      vue: 3.5.11(typescript@5.6.3)
 
   '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.4.27(typescript@5.6.3))':
     dependencies:
       vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.4.27(typescript@5.6.3)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.5.11(typescript@5.6.3))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.5(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0))(vue@3.5.13(typescript@5.6.3))':
     dependencies:
-      vite: 4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
-      vue: 3.5.11(typescript@5.6.3)
-
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.5(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0))(vue@3.5.13(typescript@5.6.3))':
-    dependencies:
-      vite: 4.5.5(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0)
+      vite: 4.5.5(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0)
       vue: 3.5.13(typescript@5.6.3)
+
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.5(@types/node@22.10.7)(sass@1.83.1)(terser@5.36.0))(vue@3.5.13(typescript@5.6.3))':
+    dependencies:
+      vite: 4.5.5(@types/node@22.10.7)(sass@1.83.1)(terser@5.36.0)
+      vue: 3.5.13(typescript@5.6.3)
+
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.5(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0))(vue@3.5.13(typescript@5.7.3))':
+    dependencies:
+      vite: 4.5.5(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0)
+      vue: 3.5.13(typescript@5.7.3)
 
   '@vitejs/plugin-vue@4.6.2(vite@4.5.5(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.5.13(typescript@5.6.3))':
     dependencies:
       vite: 4.5.5(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
       vue: 3.5.13(typescript@5.6.3)
-
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.5(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0))(vue@3.5.13(typescript@5.7.3))':
-    dependencies:
-      vite: 4.5.5(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0)
-      vue: 3.5.13(typescript@5.7.3)
 
   '@vue/compiler-core@3.4.21':
     dependencies:
@@ -9884,7 +10340,7 @@ snapshots:
 
   '@vue/compiler-core@3.4.34':
     dependencies:
-      '@babel/parser': 7.24.7
+      '@babel/parser': 7.25.8
       '@vue/shared': 3.4.34
       entities: 4.5.0
       estree-walker: 2.0.2
@@ -10374,6 +10830,10 @@ snapshots:
     optional: true
 
   abbrev@1.1.1: {}
+
+  abort-controller@3.0.0:
+    dependencies:
+      event-target-shim: 5.0.1
 
   acorn-globals@6.0.0:
     dependencies:
@@ -11107,6 +11567,8 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 4.3.1
 
+  dotenv@16.4.5: {}
+
   driver.js@1.3.1: {}
 
   electron-to-chromium@1.5.41: {}
@@ -11216,6 +11678,8 @@ snapshots:
   esutils@2.0.3:
     optional: true
 
+  event-target-shim@5.0.1: {}
+
   eventemitter3@4.0.7: {}
 
   execa@7.2.0:
@@ -11283,11 +11747,18 @@ snapshots:
 
   follow-redirects@1.15.6: {}
 
+  form-data-encoder@1.7.2: {}
+
   form-data@4.0.0:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
+
+  formdata-node@4.4.1:
+    dependencies:
+      node-domexception: 1.0.0
+      web-streams-polyfill: 4.0.0-beta.3
 
   fs-extra@10.1.0:
     dependencies:
@@ -11523,17 +11994,28 @@ snapshots:
 
   inherits@2.0.4: {}
 
-  inquirer@12.0.0(@types/node@22.7.7):
+  inquirer@12.0.0(@types/node@22.10.7):
     dependencies:
-      '@inquirer/core': 10.1.1(@types/node@22.7.7)
-      '@inquirer/prompts': 7.2.0(@types/node@22.7.7)
-      '@inquirer/type': 3.0.1(@types/node@22.7.7)
+      '@inquirer/core': 10.1.1(@types/node@22.10.7)
+      '@inquirer/prompts': 7.2.0(@types/node@22.10.7)
+      '@inquirer/type': 3.0.1(@types/node@22.10.7)
       ansi-escapes: 4.3.2
       mute-stream: 2.0.0
       run-async: 3.0.0
       rxjs: 7.8.1
     transitivePeerDependencies:
       - '@types/node'
+
+  inquirer@12.3.0(@types/node@22.10.7):
+    dependencies:
+      '@inquirer/core': 10.1.4(@types/node@22.10.7)
+      '@inquirer/prompts': 7.2.3(@types/node@22.10.7)
+      '@inquirer/type': 3.0.2(@types/node@22.10.7)
+      '@types/node': 22.10.7
+      ansi-escapes: 4.3.2
+      mute-stream: 2.0.0
+      run-async: 3.0.0
+      rxjs: 7.8.1
 
   inquirer@12.3.0(@types/node@22.7.7):
     dependencies:
@@ -11653,7 +12135,7 @@ snapshots:
 
   inquirer@9.3.6:
     dependencies:
-      '@inquirer/figures': 1.0.8
+      '@inquirer/figures': 1.0.9
       ansi-escapes: 4.3.2
       cli-width: 4.1.0
       external-editor: 3.1.0
@@ -12071,12 +12553,13 @@ snapshots:
   node-addon-api@7.1.1:
     optional: true
 
+  node-domexception@1.0.0: {}
+
   node-fetch@2.7.0(encoding@0.1.13):
     dependencies:
       whatwg-url: 5.0.0
     optionalDependencies:
       encoding: 0.1.13
-    optional: true
 
   node-gyp@8.4.1:
     dependencies:
@@ -12180,6 +12663,20 @@ snapshots:
   onetime@6.0.0:
     dependencies:
       mimic-fn: 4.0.0
+
+  openai@4.80.0(encoding@0.1.13)(zod@3.24.1):
+    dependencies:
+      '@types/node': 18.19.71
+      '@types/node-fetch': 2.6.12
+      abort-controller: 3.0.0
+      agentkeepalive: 4.5.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      node-fetch: 2.7.0(encoding@0.1.13)
+    optionalDependencies:
+      zod: 3.24.1
+    transitivePeerDependencies:
+      - encoding
 
   ora@5.4.1:
     dependencies:
@@ -13084,8 +13581,7 @@ snapshots:
       url-parse: 1.5.10
     optional: true
 
-  tr46@0.0.3:
-    optional: true
+  tr46@0.0.3: {}
 
   tr46@3.0.0:
     dependencies:
@@ -13117,6 +13613,8 @@ snapshots:
   undici-types@5.26.5: {}
 
   undici-types@6.19.8: {}
+
+  undici-types@6.20.0: {}
 
   unhead@1.9.14:
     dependencies:
@@ -13180,48 +13678,59 @@ snapshots:
       sass: 1.83.4
       terser: 5.36.0
 
-  vite@4.5.2(@types/node@22.7.7)(sass@1.77.1)(terser@5.36.0):
+  vite@4.5.2(@types/node@22.10.7)(sass@1.77.1)(terser@5.36.0):
     dependencies:
       esbuild: 0.18.20
       postcss: 8.4.47
       rollup: 3.29.5
     optionalDependencies:
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
       fsevents: 2.3.3
       sass: 1.77.1
       terser: 5.36.0
 
-  vite@4.5.2(@types/node@22.7.7)(sass@1.77.8)(terser@5.36.0):
+  vite@4.5.2(@types/node@22.10.7)(sass@1.77.8)(terser@5.36.0):
     dependencies:
       esbuild: 0.18.20
       postcss: 8.4.47
       rollup: 3.29.5
     optionalDependencies:
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
       fsevents: 2.3.3
       sass: 1.77.8
       terser: 5.36.0
 
-  vite@4.5.2(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0):
+  vite@4.5.2(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0):
     dependencies:
       esbuild: 0.18.20
       postcss: 8.4.47
       rollup: 3.29.5
     optionalDependencies:
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
       fsevents: 2.3.3
       sass: 1.83.0
       terser: 5.36.0
 
-  vite@4.5.2(@types/node@22.7.7)(sass@1.83.1)(terser@5.36.0):
+  vite@4.5.2(@types/node@22.10.7)(sass@1.83.1)(terser@5.36.0):
     dependencies:
       esbuild: 0.18.20
       postcss: 8.4.47
       rollup: 3.29.5
     optionalDependencies:
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
       fsevents: 2.3.3
       sass: 1.83.1
+      terser: 5.36.0
+
+  vite@4.5.2(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0):
+    dependencies:
+      esbuild: 0.18.20
+      postcss: 8.4.47
+      rollup: 3.29.5
+    optionalDependencies:
+      '@types/node': 22.10.7
+      fsevents: 2.3.3
+      sass: 1.83.4
       terser: 5.36.0
 
   vite@4.5.2(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0):
@@ -13235,15 +13744,37 @@ snapshots:
       sass: 1.83.4
       terser: 5.36.0
 
-  vite@4.5.5(@types/node@22.7.7)(sass@1.83.0)(terser@5.36.0):
+  vite@4.5.5(@types/node@22.10.7)(sass@1.83.0)(terser@5.36.0):
     dependencies:
       esbuild: 0.18.20
       postcss: 8.4.49
       rollup: 3.29.5
     optionalDependencies:
-      '@types/node': 22.7.7
+      '@types/node': 22.10.7
       fsevents: 2.3.3
       sass: 1.83.0
+      terser: 5.36.0
+
+  vite@4.5.5(@types/node@22.10.7)(sass@1.83.1)(terser@5.36.0):
+    dependencies:
+      esbuild: 0.18.20
+      postcss: 8.4.49
+      rollup: 3.29.5
+    optionalDependencies:
+      '@types/node': 22.10.7
+      fsevents: 2.3.3
+      sass: 1.83.1
+      terser: 5.36.0
+
+  vite@4.5.5(@types/node@22.10.7)(sass@1.83.4)(terser@5.36.0):
+    dependencies:
+      esbuild: 0.18.20
+      postcss: 8.4.49
+      rollup: 3.29.5
+    optionalDependencies:
+      '@types/node': 22.10.7
+      fsevents: 2.3.3
+      sass: 1.83.4
       terser: 5.36.0
 
   vite@4.5.5(@types/node@22.7.7)(sass@1.83.4)(terser@5.36.0):
@@ -13289,6 +13820,13 @@ snapshots:
     dependencies:
       '@intlify/core-base': 10.0.5
       '@intlify/shared': 10.0.5
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.13(typescript@5.6.3)
+
+  vue-i18n@11.0.1(vue@3.5.13(typescript@5.6.3)):
+    dependencies:
+      '@intlify/core-base': 11.0.1
+      '@intlify/shared': 11.0.1
       '@vue/devtools-api': 6.6.4
       vue: 3.5.13(typescript@5.6.3)
 
@@ -13525,8 +14063,9 @@ snapshots:
     dependencies:
       defaults: 1.0.4
 
-  webidl-conversions@3.0.1:
-    optional: true
+  web-streams-polyfill@4.0.0-beta.3: {}
+
+  webidl-conversions@3.0.1: {}
 
   webidl-conversions@7.0.0:
     optional: true
@@ -13555,7 +14094,6 @@ snapshots:
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
-    optional: true
 
   which@2.0.2:
     dependencies:
