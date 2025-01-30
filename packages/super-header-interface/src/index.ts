@@ -109,8 +109,8 @@ export default defineInterface({
 								default_value: 'normal',
 								options: {
 									choices: [
-										{ text: 'Primary', value: 'primary' },
-										{ text: 'Normal', value: 'normal' },
+										{ text: 'Primary', value: 'normal' },
+										{ text: 'Secondary', value: 'secondary' },
 										{ text: 'Info', value: 'info' },
 										{ text: 'Success', value: 'success' },
 										{ text: 'Warning', value: 'warning' },
@@ -180,6 +180,11 @@ export default defineInterface({
 									selectedCollection: 'directus_flows',
 									placeholder: 'Select a flow',
 									template: '{{ name }}',
+									filter: {
+										trigger: {
+											_eq: 'manual',
+										},
+									},
 								},
 								conditions: [
 									{
