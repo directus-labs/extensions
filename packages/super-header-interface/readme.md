@@ -65,7 +65,7 @@ Each action can be configured with:
 - **Icon** - Optional icon for the button
 - **Type** - Button style:
   - Primary
-  - Normal
+  - Secondary
   - Info
   - Success
   - Warning
