@@ -1,0 +1,43 @@
+{
+  "name": "@directus-labs/inline-repeater-interface",
+  "description": "A powerful interface for managing repeatable form fields within Directus that allows inline editing and reordering of items.",
+  "icon": "extension",
+  "version": "1.0.0",
+  "license": "MIT",
+  "keywords": [
+    "directus",
+    "directus-extension",
+    "directus-extension-interface"
+  ],
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "directus:extension": {
+    "type": "interface",
+    "path": "dist/index.js",
+    "source": "src/index.ts",
+    "host": "^10.0.0 || ^11.0.0"
+  },
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link",
+    "validate": "directus-extension validate"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "13.0.0",
+    "typescript": "^5.5.4",
+    "@directus/types": "^13.0.0"
+  },
+  "dependencies": {
+    "@directus/format-title": "^12.0.0",
+    "lodash": "^4.17.21",
+    "nanoid": "^5.0.7",
+    "reka-ui": "1.0.0-alpha.8",
+    "sass": "^1.77.8",
+    "vue-i18n": "^11.0.1",
+    "vuedraggable": "4.1.0",
+    "vue": "^3.4.38"
+  }
+}
