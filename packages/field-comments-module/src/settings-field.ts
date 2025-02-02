@@ -5,6 +5,9 @@ export const system_field: DeepPartial<Field> = {
   type: "json",
   meta: {
     interface: "list",
+    special: [
+      "cast-json"
+    ],
     options: {
       icon: "chat-bubble-outline",
       fields: <DeepPartial<Field[]>>[
@@ -20,13 +23,13 @@ export const system_field: DeepPartial<Field> = {
               includeSingleton: false,
             },
             note: "Select the collection where the fields reside.",
-            width: "full",
+            width: "half",
           },
         },
         {
           field: "fields",
-          type: "csv",
-          name: "Fields to Include",
+          type: "json",
+          name: "Fields for Comments",
           meta: {
             interface: "system-field",
             options: {
@@ -34,10 +37,10 @@ export const system_field: DeepPartial<Field> = {
               multiple: true,
             },
             note: "Select the fields to enable comments.",
+            width: "half",
           },
         },
       ],
-      // collection: "products",
       addLabel: "Add Collection",
     },
     note: "Specify which collections and fields to enable field comments.",

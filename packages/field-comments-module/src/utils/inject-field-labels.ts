@@ -138,7 +138,7 @@ async function injectApp(to: Record<string,any>, retry: number = 0) {
 
   // Fetch Settings
   const fieldCommentSettings = computed(
-    () => settingsStore.settings.field_comments_settings.filter((i: CommentCollectionType) => i.collection == collection),
+    () => (typeof settingsStore.settings.field_comments_settings == "string" ? JSON.parse(settingsStore.settings.field_comments_settings) : settingsStore.settings.field_comments_settings).filter((i: CommentCollectionType) => i.collection == collection),
   );
 
   // Exit if no settings found

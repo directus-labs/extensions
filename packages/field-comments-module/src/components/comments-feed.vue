@@ -40,7 +40,7 @@
     const primaryKey = ref(props.primaryKey);
     const field = ref(props.field);
 
-    const { comments, getComments, loading, refresh, commentsCount, getCommentsCount, loadingCount, userPreviews } =
+    const { comments, getComments, loading, refresh, getCommentsCount, userPreviews } =
         useComments(collection, field, primaryKey);
 
     onMounted(() => {
