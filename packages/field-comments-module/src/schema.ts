@@ -32,42 +32,6 @@ export const schema_collection: Collection = {
     },
 };
 
-// export const schema_field_id: DeepPartial<Field> = {
-//     field: "id",
-//     type: "uuid",
-//     meta: {
-//         collection: schema_collection_name,
-//         conditions: null,
-//         display: null,
-//         display_options: null,
-//         field: "id",
-//         group: null,
-//         hidden: true,
-//         interface: "input",
-//         note: null,
-//         options: null,
-//         readonly: true,
-//         required: false,
-//         special: ["uuid"],
-//         translations: null,
-//         validation: null,
-//         validation_message: null,
-//         width: "full",
-//     },
-//     schema: {
-//         data_type: "uuid",
-//         is_generated: false,
-//         is_indexed: false,
-//         is_nullable: false,
-//         is_primary_key: true,
-//         is_unique: true,
-//         max_length: null,
-//         name: "id",
-//         numeric_precision: null,
-//         numeric_scale: null,
-//     },
-// };
-
 export const schema_field_field: DeepPartial<Field> = {
     type: "integer",
     meta: {
@@ -193,15 +157,3 @@ export const user_updated_relation = {
         on_delete: "SET NULL"
     }
 };
-
-// export const comment_relation = {
-//     collection:schema_collection_name,
-//     field:"comment",
-//     related_collection:"directus_comments",
-//     meta: {
-//         sort_field:null
-//     },
-//     schema: {
-//         on_delete:"SET NULL"
-//     }
-// };
