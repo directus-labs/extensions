@@ -14,7 +14,11 @@
     "dev": "pnpm --stream -r dev",
     "build": "pnpm --recursive run build",
     "validate": "pnpm --recursive run validate",
-    "package": "pnpm --recursive exec node ../../scripts/check-package-json.js"
+    "package": "pnpm --recursive exec node ../../scripts/check-package-json.js",
+    "lint": "pnpm --recursive exec eslint --flag unstable_config_lookup_from_file --cache .",
+    "lint:fix": "pnpm run lint --fix",
+    "lint:repo": "eslint --flag unstable_config_lookup_from_file --cache .",
+    "lint:fix:repo": "pnpm run lint:repo --fix"
   },
   "devDependencies": {
     "@directus/eslint-config": "github:directus/eslint-config#hannes/temp-workaround",
