@@ -1,4 +1,4 @@
-name: Lint
+name: Package
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ env:
 
 jobs:
   build:
-    name: Lint
+    name: Package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -26,5 +26,5 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: pnpm install
-      - name: Lint
-        run: pnpm lint
+      - name: Package
+        run: pnpm package
