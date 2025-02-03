@@ -1,0 +1,30 @@
+name: Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_OPTIONS: --max_old_space_size=6144
+
+jobs:
+  build:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
+      - name: Lint
+        run: pnpm lint
