@@ -1,9 +1,8 @@
 {
 	"name": "@directus-labs/rss-to-json-operation",
-	"description": "Return RSS Feeds as JSON Objects in Flows",
-	"icon": "rss_feed",
+	"type": "module",
 	"version": "1.0.2",
-	"license": "MIT",
+	"description": "Return RSS Feeds as JSON Objects in Flows",
 	"author": "Directus Labs",
 	"contributors": [
 		{
@@ -11,12 +10,13 @@
 			"email": "kevin@directus.io"
 		}
 	],
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-operation"
 	],
-	"type": "module",
+	"icon": "rss_feed",
 	"files": [
 		"dist"
 	],
@@ -51,13 +51,13 @@
 		"dev": "directus-extension build -w --no-minify",
 		"link": "directus-extension link"
 	},
+	"dependencies": {
+		"fast-xml-parser": "^4.4.0"
+	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "11.0.8",
 		"@types/node": "^20.14.5",
 		"typescript": "^5.4.5",
 		"vue": "^3.4.29"
-	},
-	"dependencies": {
-		"fast-xml-parser": "^4.4.0"
 	}
 }

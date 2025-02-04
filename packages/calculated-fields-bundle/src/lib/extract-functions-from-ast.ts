@@ -1,14 +1,14 @@
-import { Node } from "../types";
-import { walkAst } from "./walk-ast";
+import type { Node } from '../types';
+import { walkAst } from './walk-ast';
 
 export function extractFunctionsFromAst(root: Node) {
-  const functions = new Set<string>();
+	const functions = new Set<string>();
 
-  walkAst(root, (node) => {
-    if (node.type === "Function") {
-      functions.add(node.name);
-    }
-  });
+	walkAst(root, (node) => {
+		if (node.type === 'Function') {
+			functions.add(node.name);
+		}
+	});
 
-  return functions;
+	return functions;
 }

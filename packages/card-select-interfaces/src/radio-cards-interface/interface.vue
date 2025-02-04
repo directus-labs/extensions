@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { RadioGroupItem, RadioGroupRoot } from 'reka-ui';
-import { ref, watch, computed } from 'vue';
-
 import type { InterfaceProps } from '../shared/types';
+import { RadioGroupItem, RadioGroupRoot } from 'reka-ui';
+
+import { computed, ref, watch } from 'vue';
 import CardPreview from '../shared/CardPreview.vue';
 
 const props = withDefaults(defineProps<InterfaceProps & { value: string | number | null }>(), {
@@ -21,7 +21,7 @@ watch(
 	() => props.value,
 	(newValue) => {
 		selectedValue.value = newValue;
-	}
+	},
 );
 
 function handleChange(value: string) {
@@ -37,7 +37,8 @@ const gridColumns = computed(() => ({
 }));
 
 const filteredChoices = computed(() => {
-	if (!searchQuery.value) return props.choices;
+	if (!searchQuery.value)
+		return props.choices;
 	return props.choices?.filter((choice) => choice.text.toLowerCase().includes(searchQuery.value.toLowerCase()));
 });
 
@@ -57,7 +58,7 @@ function clearSearch() {
 			</template>
 		</v-input>
 
-		<RadioGroupRoot v-model="selectedValue" :disabled="disabled" class="group" @update:modelValue="handleChange">
+		<RadioGroupRoot v-model="selectedValue" :disabled="disabled" class="group" @update:model-value="handleChange">
 			<transition-group name="list" tag="div" class="grid" :style="gridColumns">
 				<RadioGroupItem
 					v-for="choice in filteredChoices"
@@ -82,11 +83,11 @@ function clearSearch() {
 @import '../shared/cards.scss';
 
 .card-select-interface {
-  @include cards-interface;
+	@include cards-interface;
 }
 
 :deep(.radio-root) {
-    width: 100%;
+	width: 100%;
 	outline: none;
 	display: block;
 	text-align: left;

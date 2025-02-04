@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { CheckboxGroupRoot, CheckboxRoot } from 'reka-ui';
-import { ref, watch, computed } from 'vue';
-
 import type { InterfaceProps } from '../shared/types';
+import { CheckboxGroupRoot, CheckboxRoot } from 'reka-ui';
+
+import { computed, ref, watch } from 'vue';
 import CardPreview from '../shared/CardPreview.vue';
 
 const props = withDefaults(defineProps<InterfaceProps & { value: string[] }>(), {
@@ -21,7 +21,7 @@ watch(
 	() => props.value,
 	(newValue) => {
 		selectedValues.value = newValue || [];
-	}
+	},
 );
 
 function handleChange(values: string[]) {
@@ -37,7 +37,8 @@ const gridColumns = computed(() => ({
 }));
 
 const filteredChoices = computed(() => {
-	if (!searchQuery.value) return props.choices;
+	if (!searchQuery.value)
+		return props.choices;
 	return props.choices?.filter((choice) => choice.text.toLowerCase().includes(searchQuery.value.toLowerCase()));
 });
 
@@ -61,9 +62,9 @@ function clearSearch() {
 			v-model="selectedValues"
 			:disabled="disabled"
 			class="group"
-			@update:modelValue="handleChange"
 			:loop="true"
 			role="group"
+			@update:model-value="handleChange"
 		>
 			<transition-group name="list" tag="div" class="grid" :style="gridColumns">
 				<div
@@ -99,23 +100,23 @@ function clearSearch() {
 @import '../shared/cards.scss';
 
 .card-select-interface {
-  @include cards-interface;
+	@include cards-interface;
 }
 
 :deep(.checkbox-root) {
-  width: 100%;
-  outline: none;
-  display: block;
-  text-align: left;
+	width: 100%;
+	outline: none;
+	display: block;
+	text-align: left;
 
-&:focus-visible {
-    outline: none;
+	&:focus-visible {
+		outline: none;
 
-    .preview {
-      outline: 2px solid var(--theme--primary);
-      outline-offset: 2px;
-      border-color: var(--theme--primary);
-    }
-  }
+		.preview {
+			outline: 2px solid var(--theme--primary);
+			outline-offset: 2px;
+			border-color: var(--theme--primary);
+		}
+	}
 }
 </style>

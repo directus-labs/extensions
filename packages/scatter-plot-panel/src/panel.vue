@@ -1,24 +1,12 @@
-<template>
-	<div class="scatter-plot" :class="{ 'has-header': showHeader }">
-		<v-info type="danger" icon="error" :center="true" v-if="!collection" title="No Collection Selected"></v-info>
-		<v-info type="warning" icon="warning" :center="true" v-else-if="!xAxis || !yAxis" title="Both Axis must be selected"></v-info>
-		<v-info type="danger" icon="error" :center="true" v-else-if="!canRead" title="Forbidden">You do not have permissions to see this table</v-info>
-		<v-info type="danger" icon="error" v-else-if="hasError" :title="errorResponse?.title">{{ errorResponse?.message }}</v-info>
-		<VProgressCircular v-else-if="isLoading" :indeterminate="true"/>
-		<v-info type="danger" icon="error" :center="true" v-else-if="!isLoading && !chartEl" title="Incompatible Data">The current data is not compatiple with the scatter plot.</v-info>
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
-import { abbreviateNumber } from '@directus/utils';
 import formatTitle from '@directus/format-title';
-import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
-import ApexCharts from 'apexcharts'
+import { abbreviateNumber } from '@directus/utils';
+import ApexCharts from 'apexcharts';
 import { format } from 'date-fns';
 import { get } from 'lodash';
+import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
@@ -67,18 +55,19 @@ export default defineComponent({
 			default: true,
 		},
 	},
-	setup(props){
-
+	setup(props) {
 		const { t, n } = useI18n();
 		const api = useApi();
 		const { useFieldsStore, usePermissionsStore } = useStores();
 		const { hasPermission } = usePermissionsStore();
 		const canRead = hasPermission(props.collection, 'read');
 		const hasError = ref<boolean>(false);
-		const errorResponse = ref<Record<string, String>>({
+
+		const errorResponse = ref<Record<string, string>>({
 			title: '',
 			message: '',
 		});
+
 		const isLoading = ref<boolean>(true);
 
 		const fieldsStore = useFieldsStore();
@@ -111,52 +100,59 @@ export default defineComponent({
 		});
 
 		async function setUpChart() {
-			if (!props.xAxis || !props.yAxis) return;
+			if (!props.xAxis || !props.yAxis)
+				return;
 
 			const xField = fieldsStore.getField(props.collection, props.xAxis);
 			const yField = fieldsStore.getField(props.collection, props.yAxis);
 			const showToolTip = props.showMarker;
-			const type: string = ["timestamp", "dateTime", "date"].includes(xField.type) ? 'datetime' : 'numeric';
+			const type: string = ['timestamp', 'dateTime', 'date'].includes(xField.type) ? 'datetime' : 'numeric';
 
 			let series: any = [];
 			let categories: any = [];
 
-			try{
-				const response = await api.get(`/items/${props.collection}`,{
+			try {
+				const response = await api.get(`/items/${props.collection}`, {
 					params: {
 						limit: '-1',
 						filter: props.filter,
 						fields: [props.xAxis, props.yAxis, props.series],
 						sort: [props.series, props.xAxis],
-					}
+					},
 				});
 
 				if (props.series) {
-					let category_data: Record<string, any> = {};
+					const category_data: Record<string, any> = {};
+
 					response.data.data.forEach((item: Record<string, any>) => {
 						const category = formatTitle(get(item, props.series));
 						const x_value = get(item, props.xAxis);
 						const y_value = get(item, props.yAxis);
-						if(!(category in category_data)){
+
+						if (!(category in category_data)) {
 							category_data[category] = [];
 						}
-						category_data[category].push([type == 'datetime' ? new Date(x_value):(x_value==x_value*1?x_value*1:x_value), y_value]);
+
+						category_data[category].push([type == 'datetime' ? new Date(x_value) : (x_value == x_value * 1 ? x_value * 1 : x_value), y_value]);
 					});
+
 					categories = Object.keys(category_data);
+
 					series = categories.map((category: string) => {
 						return {
 							name: category,
 							data: category_data[category],
 						};
 					});
-				} else {
+				}
+				else {
 					series = [
 						{
 							name: formatTitle(props.collection),
 							data: response.data.data.map((item: Record<string, any>) => {
 								const x_value = get(item, props.xAxis);
 								const y_value = get(item, props.yAxis);
-								return [type == 'datetime' ? new Date(x_value):(x_value==x_value*1?x_value*1:x_value), y_value];
+								return [type == 'datetime' ? new Date(x_value) : (x_value == x_value * 1 ? x_value * 1 : x_value), y_value];
 							}),
 						},
 					];
@@ -171,23 +167,25 @@ export default defineComponent({
 					fontSize: '10px',
 				};
 
-				let xLabels: Record<string, any> = {
+				const xLabels: Record<string, any> = {
 					show: ['both', 'xAxis'].includes(props.showAxisLabels),
 					offsetY: -4,
 					style: axisStyle,
 				};
 
-				if(type == 'datetime'){
+				if (type == 'datetime') {
 					xLabels.datetimeFormatter = {
 						year: 'yyyy',
 						month: 'MMM \'yy',
 						day: 'dd MMM',
-						hour: 'HH:mm'
+						hour: 'HH:mm',
 					};
+
 					xLabels.datetimeUTC = false;
-				} else {
-					xLabels.formatter = function(val: string) {
-						return xField.type == 'integer' ? parseInt(val) : parseFloat(val).toFixed(1);
+				}
+				else {
+					xLabels.formatter = function (val: string) {
+						return xField.type == 'integer' ? Number.parseInt(val) : Number.parseFloat(val).toFixed(1);
 					};
 				}
 
@@ -209,10 +207,10 @@ export default defineComponent({
 						selection: {
 							enabled: false,
 							fill: {
-								opacity: 0.5
+								opacity: 0.5,
 							},
 							stroke: {
-								opacity: 0
+								opacity: 0,
 							},
 						},
 						zoom: {
@@ -224,7 +222,7 @@ export default defineComponent({
 							enabled: isSparkline,
 						},
 					},
-					series: series,
+					series,
 					markers: {
 						size: 8,
 						fillOpacity: 0.5,
@@ -237,12 +235,15 @@ export default defineComponent({
 						enabled: showToolTip,
 						x: {
 							formatter: (value: any) => {
-								let formattedValue = type == 'datetime' ? format(value, (xField.type == 'date' ? "MMM d" : "MMM d, p")) : value > 10000
-									? abbreviateNumber(value, 1)
-									: n(value, 'decimal', {
-											minimumFractionDigits: 0,
-											maximumFractionDigits: 2,
-									} as any);
+								const formattedValue = type == 'datetime'
+									? format(value, (xField.type == 'date' ? 'MMM d' : 'MMM d, p'))
+									: value > 10000
+										? abbreviateNumber(value, 1)
+										: n(value, 'decimal', {
+												minimumFractionDigits: 0,
+												maximumFractionDigits: 2,
+											} as any);
+
 								return `${xField.name}: ${formattedValue}`;
 							},
 						},
@@ -256,23 +257,23 @@ export default defineComponent({
 						borderColor: 'var(--theme--border-color-subdued)',
 						padding: isSparkline
 							? {
-								top: props.showHeader ? 0 : 5,
-								bottom: 5,
-								left: 0,
-								right: 0,
-							}
+									top: props.showHeader ? 0 : 5,
+									bottom: 5,
+									left: 0,
+									right: 0,
+								}
 							: {
-								top: props.showHeader ? -20 : -2,
-								bottom: 0,
-								left: 30,
-								right: 30,
-							},
+									top: props.showHeader ? -20 : -2,
+									bottom: 0,
+									left: 30,
+									right: 30,
+								},
 					},
 					xaxis: {
-						type: type,
+						type,
 						labels: xLabels,
 						tooltip: {
-							enabled: false
+							enabled: false,
 						},
 						crosshairs: {
 							stroke: {
@@ -298,7 +299,7 @@ export default defineComponent({
 									: n(value, 'decimal', {
 											minimumFractionDigits: 0,
 											maximumFractionDigits: 2,
-									} as any);
+										} as any);
 							},
 							style: axisStyle,
 						},
@@ -318,13 +319,15 @@ export default defineComponent({
 
 				chart.value.render();
 				isLoading.value = false;
-
-			} catch(error: any) {
+			}
+			catch (error: any) {
 				errorResponse.value.title = error.code || 'UNKNOWN';
 				errorResponse.value.message = error.message || t('errors.UNKNOWN');
 				hasError.value = true;
 				isLoading.value = false;
-			};
+			}
+
+			;
 		}
 
 		return {
@@ -343,6 +346,24 @@ export default defineComponent({
 });
 </script>
 
+<template>
+	<div class="scatter-plot" :class="{ 'has-header': showHeader }">
+		<v-info v-if="!collection" type="danger" icon="error" :center="true" title="No Collection Selected" />
+		<v-info v-else-if="!xAxis || !yAxis" type="warning" icon="warning" :center="true" title="Both Axis must be selected" />
+		<v-info v-else-if="!canRead" type="danger" icon="error" :center="true" title="Forbidden">
+			You do not have permissions to see this table
+		</v-info>
+		<v-info v-else-if="hasError" type="danger" icon="error" :title="errorResponse?.title">
+			{{ errorResponse?.message }}
+		</v-info>
+		<VProgressCircular v-else-if="isLoading" :indeterminate="true" />
+		<v-info v-else-if="!isLoading && !chartEl" type="danger" icon="error" :center="true" title="Incompatible Data">
+			The current data is not compatiple with the scatter plot.
+		</v-info>
+		<div ref="chartEl" />
+	</div>
+</template>
+
 <style scoped>
 .scatter-plot {
 	height: 100%;
@@ -352,5 +373,4 @@ export default defineComponent({
 .scatter-plot.has-header {
 	padding: 0 12px;
 }
-
 </style>

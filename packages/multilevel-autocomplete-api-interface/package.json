@@ -1,17 +1,17 @@
 {
 	"name": "@directus-labs/multilevel-autocomplete-api-interface",
-	"description": "Get data from nested API queries.",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.1",
-	"license": "MIT",
+	"description": "Get data from nested API queries.",
 	"author": "Directus Labs",
 	"contributors": [],
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-interface"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],

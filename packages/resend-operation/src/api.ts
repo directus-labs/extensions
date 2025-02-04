@@ -1,15 +1,15 @@
 /// <reference types="@directus/extensions/api.d.ts" />
 import { defineOperationApi } from '@directus/extensions-sdk';
-import { Resend } from './resend';
-import { emails, domains, apiKeys, audiences, contacts } from './endpoints';
 import { log, request } from 'directus:api';
+import { apiKeys, audiences, contacts, domains, emails } from './endpoints';
+import { Resend } from './resend';
 
-export type Options = {
+export interface Options {
 	apiKey: string;
 	endpoint: string;
 	action: string;
 	[key: string]: any;
-};
+}
 
 const endpoints = {
 	emails,
@@ -26,11 +26,13 @@ export default defineOperationApi<Options>({
 		const client = new Resend(apiKey, request, log);
 
 		const selectedEndpoint = endpoints[endpoint as keyof typeof endpoints];
+
 		if (!selectedEndpoint) {
 			throw new Error(`Unsupported endpoint: ${endpoint}`);
 		}
 
 		const selectedAction = selectedEndpoint.actions[action as keyof typeof selectedEndpoint.actions];
+
 		if (!selectedAction) {
 			throw new Error(`Unsupported action: ${action} for endpoint: ${endpoint}`);
 		}

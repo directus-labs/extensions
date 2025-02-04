@@ -1,14 +1,14 @@
 {
 	"name": "@directus-labs/liquidjs-operation",
-	"description": "Render Liquid templates within Directus flows.",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
+	"description": "Render Liquid templates within Directus flows.",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-operation"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],
@@ -44,13 +44,13 @@
 		"dev": "directus-extension build -w --no-minify",
 		"link": "directus-extension link"
 	},
+	"dependencies": {
+		"liquidjs": "^10.16.3"
+	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "11.0.8",
 		"@types/node": "^20.14.5",
 		"typescript": "^5.4.5",
 		"vue": "^3.4.29"
-	},
-	"dependencies": {
-		"liquidjs": "^10.16.3"
 	}
 }

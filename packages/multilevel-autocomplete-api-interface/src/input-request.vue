@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { get, debounce, throttle } from 'lodash';
+import type { Scope, Step } from './types';
+import { debounce, get, throttle } from 'lodash';
 import { render } from 'micromustache';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Step, Scope } from './types';
 
 const props = withDefaults(
 	defineProps<{
@@ -38,7 +38,7 @@ const { t } = useI18n();
 
 const results = ref<Record<string, any>[]>([]);
 
-const fetchResultsRaw = async (inputValue: string) => {
+async function fetchResultsRaw(inputValue: string) {
 	if (!props.url) {
 		return;
 	}
@@ -49,19 +49,23 @@ const fetchResultsRaw = async (inputValue: string) => {
 	});
 
 	try {
-		let reqOpt : any = {method:(props.method ? props.method : "GET")};
-		if(props.headers){
+		let reqOpt: any = { method: (props.method ? props.method : 'GET') };
+
+		if (props.headers) {
 			const fetchHeaders = new Headers();
-			for(const headerItem of props.headers){
-				fetchHeaders.append(headerItem.header,headerItem.value);
+
+			for (const headerItem of props.headers) {
+				fetchHeaders.append(headerItem.header, headerItem.value);
 			}
-			reqOpt = {...reqOpt,headers:fetchHeaders};
-		}
-		if(reqOpt.method !== "GET" && props.body){
-			reqOpt = {...reqOpt,body:(typeof(props.body) === 'string' ? props.body : JSON.stringify(props.body))};
+
+			reqOpt = { ...reqOpt, headers: fetchHeaders };
 		}
 
-		const data = await fetch(url,reqOpt).then((res) => res.json());
+		if (reqOpt.method !== 'GET' && props.body) {
+			reqOpt = { ...reqOpt, body: (typeof (props.body) === 'string' ? props.body : JSON.stringify(props.body)) };
+		}
+
+		const data = await fetch(url, reqOpt).then((res) => res.json());
 		const resultsArray = props.resultsPath ? get(data, props.resultsPath) : data;
 
 		if (Array.isArray(resultsArray) === false) {
@@ -72,21 +76,25 @@ const fetchResultsRaw = async (inputValue: string) => {
 		results.value = resultsArray.map((result: Record<string, unknown>) => {
 			if (props.textPath && props.valuePath) {
 				return { text: get(result, props.textPath), value: get(result, props.valuePath) };
-			} else if (props.textPath) {
+			}
+			else if (props.textPath) {
 				return { text: get(result, props.textPath), value: result };
-			} else if (props.valuePath) {
+			}
+			else if (props.valuePath) {
 				return { value: get(result, props.valuePath) };
-			} else {
+			}
+			else {
 				return { value: result };
 			}
 		});
-	} catch (err: any) {
+	}
+	catch (err: any) {
 		console.warn(err);
 	}
-};
+}
 
-const fetchResults =
-	props.trigger === 'debounce'
+const fetchResults
+	= props.trigger === 'debounce'
 		? debounce(fetchResultsRaw, Number(props.rate))
 		: throttle(fetchResultsRaw, Number(props.rate));
 
@@ -146,7 +154,7 @@ function emitValue(item: any) {
 					</template>
 
 					<template v-if="iconRight || modelValue" #append>
-						<v-icon v-if="modelValue" name="close" class="icon-clear" v-tooltip.bottom="t('clear_value')" @click.stop="clearValue" />
+						<v-icon v-if="modelValue" v-tooltip.bottom="t('clear_value')" name="close" class="icon-clear" @click.stop="clearValue" />
 						<v-icon v-if="iconRight" :name="iconRight" />
 					</template>
 				</v-input>

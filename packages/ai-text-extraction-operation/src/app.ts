@@ -23,7 +23,7 @@ export default defineOperationApp({
 				options: {
 					iconRight: 'key',
 					font: 'monospace',
-					masked: true
+					masked: true,
 				},
 			},
 		},
@@ -38,9 +38,9 @@ export default defineOperationApp({
 				options: {
 					iconRight: 'link',
 					font: 'monospace',
-					placeholder: 'https://my.directus.app/assets/{{$trigger.key}}'
-				}
-			}
-		}
+					placeholder: 'https://my.directus.app/assets/{{$trigger.key}}',
+				},
+			},
+		},
 	],
 });

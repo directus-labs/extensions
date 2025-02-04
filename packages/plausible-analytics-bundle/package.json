@@ -1,14 +1,14 @@
 {
 	"name": "@directus-labs/plausible-analytics-bundle",
-	"description": "Embed Plausible Analytics into your Directus project.",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
+	"description": "Embed Plausible Analytics into your Directus project.",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-bundle"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],
@@ -38,12 +38,12 @@
 		"link": "directus-extension link",
 		"add": "directus-extension add"
 	},
+	"dependencies": {
+		"@directus/utils": "^12.0.0"
+	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "11.0.8",
 		"typescript": "^5.5.2",
 		"vue": "^3.4.30"
-	},
-	"dependencies": {
-		"@directus/utils": "^12.0.0"
 	}
 }

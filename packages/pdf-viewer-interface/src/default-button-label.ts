@@ -1,1 +1,1 @@
-export const defaultButtonLabel = "Open PDF";
+export const defaultButtonLabel = 'Open PDF';

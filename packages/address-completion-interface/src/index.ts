@@ -61,7 +61,7 @@ export default defineInterface({
 				interface: 'code',
 				note: 'Check the [documentation](https://developers.google.com/maps/documentation/javascript/reference/autocomplete-data#AutocompleteSuggestion.fetchAutocompleteSuggestions) for possible options',
 			},
-		}
+		},
 	],
 	types: ['json'],
 });

@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import type { Step } from './types';
 import { get } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Step } from './types';
 
 const props = withDefaults(
 	defineProps<{
@@ -45,15 +45,19 @@ const items = computed<any[]>(() => {
 		return itemsArray.map((item: Record<string, unknown>) => {
 			if (props.textPath && props.valuePath) {
 				return { text: get(item, props.textPath), value: get(item, props.valuePath) };
-			} else if (props.textPath) {
+			}
+			else if (props.textPath) {
 				return { text: get(item, props.textPath), value: item };
-			} else if (props.valuePath) {
+			}
+			else if (props.valuePath) {
 				return { value: get(item, props.valuePath) };
-			} else {
+			}
+			else {
 				return { value: item };
 			}
 		});
-	} catch (err: any) {
+	}
+	catch (err: any) {
 		console.warn(err);
 		return [];
 	}
@@ -100,7 +104,7 @@ function emitValue(item: any) {
 					</template>
 
 					<template v-if="iconRight || modelValue" #append>
-						<v-icon v-if="modelValue" name="close" class="icon-clear" v-tooltip.bottom="t('clear_value')" @click.stop="clearValue" />
+						<v-icon v-if="modelValue" v-tooltip.bottom="t('clear_value')" name="close" class="icon-clear" @click.stop="clearValue" />
 						<v-icon v-if="iconRight" :name="iconRight" />
 					</template>
 				</v-input>

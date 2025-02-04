@@ -1,4 +1,4 @@
-import { request, log } from 'directus:api'
+import { log, request } from 'directus:api';
 
 export default {
 	id: 'directus-labs-ai-image-generation',
@@ -8,12 +8,12 @@ export default {
 				{ label: 'square', size: '1024x1024' },
 				{ label: 'portrait', size: '1024x1792' },
 				{ label: 'landscape', size: '1792x1024' },
-			].find(d => d.label == size)
+			].find((d) => d.label == size);
 
 			const response = await request('https://api.openai.com/v1/images/generations', {
 				method: 'POST',
 				headers: {
-					Authorization: `Bearer ${apiKey}`,
+					'Authorization': `Bearer ${apiKey}`,
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
@@ -21,15 +21,17 @@ export default {
 					n: 1,
 					prompt,
 					quality,
-					size: dimensions
-				})
-			})
+					size: dimensions,
+				}),
+			});
 
-			if(response.status != 200) throw new Error('An error occurred when accessing OpenAI')
-			return response.data.data[0].url
-		} catch(error) {
-			log(error.message)
-			throw new Error(error.message)
+			if (response.status != 200)
+				throw new Error('An error occurred when accessing OpenAI');
+			return response.data.data[0].url;
+		}
+		catch (error) {
+			log(error.message);
+			throw new Error(error.message);
 		}
 	},
-}
+};

@@ -1,7 +1,7 @@
 /// <reference types="@directus/extensions/api.d.ts" />
 
-import { request, log } from 'directus:api'
-import type { SandboxOperationConfig } from "directus:api";
+import type { SandboxOperationConfig } from 'directus:api';
+import { log, request } from 'directus:api';
 
 const operation: SandboxOperationConfig = {
 	id: 'directus-labs-ai-alt-text-writer-operation',
@@ -11,36 +11,42 @@ const operation: SandboxOperationConfig = {
 				method: 'POST',
 				headers: {
 					'Authorization': `Key ${apiKey}`,
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
 				},
 				body: {
-			    "inputs": [
-      			{
-							"data": {
-								"image": {
-									"url": url
-								}
-							}
-						}
-					]
-				}
-			})
+					inputs: [
+						{
+							data: {
+								image: {
+									url,
+								},
+							},
+						},
+					],
+				},
+			});
+
 			const output = (<any>response?.data)?.outputs?.[0]?.data;
+
 			if (output?.text?.raw) {
 				return output.text.raw;
 			}
-			throw new Error("No text was found in the picture.");
-		} catch (error:any) {
+
+			throw new Error('No text was found in the picture.');
+		}
+		catch (error: any) {
 			if (error.response) {
 				const response = JSON.parse(error.response);
 				const message = response?.data?.status?.description;
+
 				if (message) {
 					log(message);
-					throw new Error(message);	
+					throw new Error(message);
 				}
 			}
-			log(error.message)
-			throw new Error(error.message)
+
+			log(error.message);
+			throw new Error(error.message);
 		}
 	},
 };

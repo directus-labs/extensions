@@ -12,5 +12,5 @@ export function addQueryToPath(path: string, query: Record<string, string>): str
 		queryParams.set(key, value);
 	}
 
-	return path.split('?')[0] + '?' + queryParams;
+	return `${path.split('?')[0]}?${queryParams}`;
 }

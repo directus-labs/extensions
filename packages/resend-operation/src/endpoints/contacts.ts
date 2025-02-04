@@ -217,9 +217,11 @@ export const contacts = {
 			],
 			handler: async (client: any, params: any) => {
 				const { audienceId, id, email } = params;
+
 				const path = id
 					? `/audiences/${audienceId}/contacts/${id}`
 					: `/audiences/${audienceId}/contacts?email=${encodeURIComponent(email)}`;
+
 				return client.fetchRequest(path, 'DELETE');
 			},
 		},

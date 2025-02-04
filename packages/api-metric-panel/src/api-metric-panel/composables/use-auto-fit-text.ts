@@ -1,15 +1,15 @@
-import { Ref } from 'vue';
+import type { Ref } from 'vue';
 
 function extractValues(paddingString: string): { top: number; right: number; bottom: number; left: number } {
 	const paddingValues: number[] = paddingString
 		.split(' ')
-		.map((value) => parseFloat(value.trim()))
+		.map((value) => Number.parseFloat(value.trim()))
 		.filter((value) => !isNaN(value));
 
-	let top = 0,
-		right = 0,
-		bottom = 0,
-		left = 0;
+	let top = 0;
+	let right = 0;
+	let bottom = 0;
+	let left = 0;
 
 	switch (paddingValues.length) {
 		case 1:
@@ -43,7 +43,8 @@ export function useAutoFontFit(parent: Ref<HTMLElement | null>, child: Ref<HTMLE
 		const parentContainer = parent.value;
 		const childContainer = child.value;
 
-		if (!parentContainer || !childContainer) return;
+		if (!parentContainer || !childContainer)
+			return;
 
 		const padding = extractValues(parentContainer.style.padding);
 		const margin = extractValues(childContainer.style.margin);
@@ -76,7 +77,8 @@ export function useAutoFontFit(parent: Ref<HTMLElement | null>, child: Ref<HTMLE
 
 			if (childContainer.offsetHeight > calcHeight || childContainer.offsetWidth > calcWidth) {
 				maxFontSize = fontSize;
-			} else {
+			}
+			else {
 				minFontSize = fontSize;
 			}
 		}

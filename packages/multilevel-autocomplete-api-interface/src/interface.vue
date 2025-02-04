@@ -1,14 +1,15 @@
 <script setup lang="ts">
+import type { Scope, Step, Value } from './types';
 import { formatTitle } from '@directus/format-title';
-import { parseJSON, optionToObject } from '@directus/utils';
-import { ref, reactive, computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { optionToObject, parseJSON } from '@directus/utils';
 import { render } from 'micromustache';
-import InputRequest from './input-request.vue';
+import { computed, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import InputData from './input-data.vue';
-import { Source, Step, Value, Scope } from './types';
+import InputRequest from './input-request.vue';
+import { Source } from './types';
 
-type StepProps = {
+interface StepProps {
 	source: Source;
 	requestMethod?: string;
 	requestUrl?: string;
@@ -24,7 +25,7 @@ type StepProps = {
 	font?: 'sans-serif' | 'serif' | 'monospace';
 	iconLeft?: string;
 	iconRight?: string;
-};
+}
 
 type Props = StepProps & {
 	field: string;
@@ -67,9 +68,11 @@ function getScope(value: Value | null): Scope {
 	if (!value) {
 		return {};
 	}
+
 	if (!value.steps) {
 		return {};
 	}
+
 	const steps = value.steps;
 	return {
 		steps,
@@ -92,7 +95,8 @@ const hasBreadcrumbs = computed<boolean>(() => {
 function isStepDisabled(index: number): boolean {
 	if (index === 0) {
 		return false;
-	} else {
+	}
+	else {
 		return value.steps[index - 1] === null;
 	}
 }
@@ -115,19 +119,24 @@ watch(
 	() => value.steps,
 	() => {
 		const nullIndex = value.steps.findIndex((step) => step === null);
+
 		if (nullIndex > -1) {
 			for (let index = nullIndex + 1; index < value.steps.length; index++) {
 				value.steps[index] = null;
 			}
 		}
+
 		scope.value = getScope(value);
+
 		try {
 			const template = optionToObject(props.payload);
+
 			if (template) {
 				const payload = render(JSON.stringify(template), scope.value);
 				value.payload = parseJSON(payload);
 			}
-		} catch (err: any) {
+		}
+		catch (err: any) {
 			console.warn(err);
 		}
 	},
@@ -141,7 +150,6 @@ watch(
 	},
 	{ deep: true },
 );
-
 </script>
 
 <template>
@@ -158,7 +166,7 @@ watch(
 
 				<template v-if="hasBreadcrumbs" #input>
 					<div class="breadcrumb">
-						<div class="section" v-for="(step, index) in breadcrumbs" :key="index">
+						<div v-for="(step, index) in breadcrumbs" :key="index" class="section">
 							<v-icon v-if="index > 0" name="chevron_right" small class="separator" />
 							<v-icon v-if="steps[index]?.iconLeft" :name="steps[index].iconLeft" class="prepend" />
 							<div>{{ step.text ?? step.value }}</div>
@@ -182,33 +190,33 @@ watch(
 							:body="step.requestBody"
 							:trigger="step.requestTrigger"
 							:rate="step.requestRate"
-							:resultsPath="step.resultsPath"
-							:textPath="step.textPath"
-							:valuePath="step.valuePath"
+							:results-path="step.resultsPath"
+							:text-path="step.textPath"
+							:value-path="step.valuePath"
 							:placeholder="step.placeholder"
 							:font="step.font"
-							:iconLeft="step.iconLeft"
-							:iconRight="step.iconRight"
+							:icon-left="step.iconLeft"
+							:icon-right="step.iconRight"
 							:direction="props.direction"
 							:disabled="isStepDisabled(index)"
-							@update:modelValue="() => clearStepsAfterIndex(index)"
-						></InputRequest>
+							@update:model-value="() => clearStepsAfterIndex(index)"
+						/>
 					</div>
 					<div v-if="steps[index].source === Source.list">
 						<InputData
 							v-model="value.steps[index]"
 							:data="step.list"
-							:resultsPath="step.resultsPath"
-							:textPath="step.textPath"
-							:valuePath="step.valuePath"
+							:results-path="step.resultsPath"
+							:text-path="step.textPath"
+							:value-path="step.valuePath"
 							:placeholder="step.placeholder"
 							:font="step.font"
-							:iconLeft="step.iconLeft"
-							:iconRight="step.iconRight"
+							:icon-left="step.iconLeft"
+							:icon-right="step.iconRight"
 							:direction="props.direction"
 							:disabled="isStepDisabled(index)"
-							@update:modelValue="() => clearStepsAfterIndex(index)"
-						></InputData>
+							@update:model-value="() => clearStepsAfterIndex(index)"
+						/>
 					</div>
 				</div>
 			</v-card-text>

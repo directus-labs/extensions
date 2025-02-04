@@ -1,14 +1,14 @@
 {
 	"name": "@directus-labs/timeline-chart-panel",
-	"description": "View timelines for various items in Directus",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.1",
+	"description": "View timelines for various items in Directus",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-custom-panel"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],

@@ -1,4 +1,4 @@
-import { request, log } from 'directus:api'
+import { log, request } from 'directus:api';
 
 export default {
 	id: 'directus-labs-ai-speech-generation',
@@ -10,13 +10,16 @@ export default {
 					'X-API-KEY': apiKey,
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ text, speaker, speed })
-			})
-			if(response.status != 201) throw new Error('An error occurred when accessing Genny')
-			return response.data.data[0].urls[0]
-		} catch(error) {
-			log(JSON.stringify(error))
-			throw new Error(error.message)
+				body: JSON.stringify({ text, speaker, speed }),
+			});
+
+			if (response.status != 201)
+				throw new Error('An error occurred when accessing Genny');
+			return response.data.data[0].urls[0];
+		}
+		catch (error) {
+			log(JSON.stringify(error));
+			throw new Error(error.message);
 		}
 	},
-}
+};

@@ -1,4 +1,4 @@
-import speakers from './speakers'
+import speakers from './speakers';
 
 export default {
 	id: 'directus-labs-ai-speech-generation',
@@ -8,11 +8,11 @@ export default {
 	overview: ({ text, speaker }) => [
 		{
 			label: 'Text',
-			text: text,
+			text,
 		},
 		{
 			label: 'Speaker',
-			text: speakers.find(s => s.value == speaker).text,
+			text: speakers.find((s) => s.value == speaker).text,
 		},
 	],
 	options: [
@@ -33,7 +33,7 @@ export default {
 			name: 'Text',
 			type: 'text',
 			schema: {
-				max_length: 500
+				max_length: 500,
 			},
 			meta: {
 				width: 'full',
@@ -41,8 +41,8 @@ export default {
 				note: 'Maximum 500 characters',
 				options: {
 					softLength: 500,
-					trim: true
-				}
+					trim: true,
+				},
 			},
 		},
 		{
@@ -54,9 +54,9 @@ export default {
 				interface: 'select-dropdown',
 				width: 'half',
 				options: {
-					choices: speakers
-				}
-			}
+					choices: speakers,
+				},
+			},
 		},
 		{
 			field: 'speed',
@@ -68,8 +68,8 @@ export default {
 				options: {
 					max: 3.0,
 					min: 0.1,
-					step: 0.1
-				}
+					step: 0.1,
+				},
 			},
 		},
 	],

@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { FIELD_TYPES_SELECT } from './utils/constants'
-import { translate } from './utils/translate-object-values'
-import { DeepPartial, Field, FieldMeta } from '@directus/types'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import type { DeepPartial, Field, FieldMeta } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { FIELD_TYPES_SELECT } from './utils/constants';
+import { translate } from './utils/translate-object-values';
 
 const props = defineProps<{
-	value: Record<string, any> | null
-	collection: string
-}>()
+	value: Record<string, any> | null;
+	collection: string;
+}>();
 
 const emit = defineEmits<{
-	(e: 'input', value: Record<string, any> | null): void
-}>()
+	(e: 'input', value: Record<string, any> | null): void;
+}>();
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 const repeaterValue = computed({
 	get() {
-		return props.value?.fields?.map((field: Field) => field.meta)
+		return props.value?.fields?.map((field: Field) => field.meta);
 	},
 	set(newVal: FieldMeta[] | null) {
 		const fields = (newVal || []).map((meta: Record<string, any>) => ({
@@ -26,14 +26,14 @@ const repeaterValue = computed({
 			name: meta.name || meta.field,
 			type: meta.type,
 			meta,
-		}))
+		}));
 
 		emit('input', {
 			...(props.value || {}),
 			fields,
-		})
+		});
 	},
-})
+});
 
 const repeaterFields: DeepPartial<Field>[] = [
 	{
@@ -201,74 +201,79 @@ const repeaterFields: DeepPartial<Field>[] = [
 			},
 		},
 	},
-]
+];
 
 const template = computed({
 	get() {
-		return props.value?.template
+		return props.value?.template;
 	},
 	set(newTemplate: string) {
 		emit('input', {
 			...(props.value || {}),
 			template: newTemplate,
-		})
+		});
 	},
-})
+});
 
 const showConfirmDiscard = computed({
 	get() {
-		return props.value?.showConfirmDiscard
+		return props.value?.showConfirmDiscard;
 	},
 	set(newShowConfirmDiscard: boolean) {
 		emit('input', {
 			...(props.value || {}),
 			showConfirmDiscard: newShowConfirmDiscard,
-		})
+		});
 	},
-})
+});
 
 const addLabel = computed({
 	get() {
-		return props.value?.addLabel
+		return props.value?.addLabel;
 	},
 	set(newAddLabel: string) {
 		emit('input', {
 			...(props.value || {}),
 			addLabel: newAddLabel,
-		})
+		});
 	},
-})
+});
 
 const sort = computed({
 	get() {
-		return props.value?.sort
+		return props.value?.sort;
 	},
 	set(newSort: string) {
 		emit('input', {
 			...(props.value || {}),
 			sort: newSort,
-		})
+		});
 	},
-})
+});
 
 const sortFields = computed(() => {
-	if (!repeaterValue.value) return []
+	if (!repeaterValue.value)
+		return [];
 
 	return repeaterValue.value.map((val) => {
-		return { text: val.field, value: val.field }
-	})
-})
+		return { text: val.field, value: val.field };
+	});
+});
 </script>
 
 <template>
 	<div class="v-form grid">
 		<div class="field half">
-			<p class="type-label">{{ t('template') }}</p>
-			<v-input v-model="template" class="input" :placeholder="`{{ field }}`" />
+			<p class="type-label">
+				{{ t('template') }}
+			</p>
+			<v-input v-model="template" class="input" placeholder="{{ field }}" />
 		</div>
 
 		<div class="field half">
-			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
+			<p class="type-label">
+				{{ t('interfaces.list.add_label') }}
+			</p>
 			<interface-system-input-translated-string
 				:value="addLabel"
 				class="input"
@@ -277,7 +282,9 @@ const sortFields = computed(() => {
 			/>
 		</div>
 		<div class="field half-left">
-			<p class="type-label">{{ t('interfaces.list.sort') }}</p>
+			<p class="type-label">
+				{{ t('interfaces.list.sort') }}
+			</p>
 			<v-select
 				v-model="sort"
 				class="input"
@@ -288,7 +295,9 @@ const sortFields = computed(() => {
 		</div>
 
 		<div class="field full">
-			<p class="type-label">{{ t('interfaces.list.edit_fields') }}</p>
+			<p class="type-label">
+				{{ t('interfaces.list.edit_fields') }}
+			</p>
 			<interface-list
 				:value="repeaterValue"
 				template="{{ field }} — {{ interface }}"
@@ -299,7 +308,7 @@ const sortFields = computed(() => {
 
 		<div class="field full">
 			<p class="type-label">
-				{{ t('require_confirmation') + ' to ' + t('remove_item') }}
+				{{ `${t('require_confirmation')} to ${t('remove_item')}` }}
 			</p>
 			<interface-boolean v-model="showConfirmDiscard" />
 		</div>
@@ -314,10 +323,7 @@ const sortFields = computed(() => {
 
 	&.with-fill {
 		grid-template-columns:
-			[start] minmax(0, var(--form-column-max-width)) [half] minmax(
-				0,
-				var(--form-column-max-width)
-			)
+			[start] minmax(0, var(--form-column-max-width)) [half] minmax(0, var(--form-column-max-width))
 			[full] 1fr [fill];
 	}
 

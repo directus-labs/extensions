@@ -1,6 +1,6 @@
-import { definePanel, useCollection, useStores } from '@directus/extensions-sdk';
-import PanelComponent from './panel.vue';
+import { definePanel, useStores } from '@directus/extensions-sdk';
 import { computed } from 'vue';
+import PanelComponent from './panel.vue';
 
 export default definePanel({
 	id: 'choropleth-map-panel',
@@ -9,7 +9,6 @@ export default definePanel({
 	description: 'Display your data divided into colored geographical areas.',
 	component: PanelComponent,
 	options: ({ options }) => {
-		
 		const { useFieldsStore } = useStores();
 		const fieldsStore = useFieldsStore();
 

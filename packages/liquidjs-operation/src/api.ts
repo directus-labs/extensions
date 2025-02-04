@@ -1,8 +1,8 @@
 /// <reference types="@directus/extensions/api.d.ts" />
 import { defineOperationApi } from '@directus/extensions-sdk';
+import { request } from 'directus:api';
 // @ts-ignore - Using the browser.esm version in order to make this 'sandboxable'.
 import { Liquid } from 'liquidjs/dist/liquid.browser.esm';
-import { request } from 'directus:api';
 
 export interface Options {
 	mode: 'custom' | 'saved';
@@ -38,6 +38,7 @@ async function renderTemplate(
 			[field]: await engine.parseAndRender(template[field], data),
 		})),
 	);
+
 	return Object.assign({}, ...renderedFields);
 }
 
@@ -53,6 +54,7 @@ async function fetchSavedTemplate(
 			headers: { Authorization: `Bearer ${accessToken}` },
 		}),
 	});
+
 	const responseData = response.data as Record<string, unknown>;
 	return responseData.data as Record<string, string>;
 }
@@ -73,6 +75,7 @@ export default defineOperationApi<Options>({
 	}) => {
 		try {
 			let templateToRender: Record<string, string>;
+
 			// CORS fix for local dev
 			if (publicUrl.includes('localhost')) {
 				publicUrl = publicUrl.replace('localhost', '0.0.0.0');
@@ -84,12 +87,14 @@ export default defineOperationApi<Options>({
 					if (!collection || !item) {
 						throw new Error('Collection and item are required for saved template mode');
 					}
+
 					templateToRender = await fetchSavedTemplate(collection, item.key, publicUrl, accessToken);
 					break;
 				case 'custom':
 					if (!template) {
 						throw new Error('Template is required for custom mode');
 					}
+
 					templateToRender = { template };
 					fields = ['template'];
 					break;
@@ -104,14 +109,16 @@ export default defineOperationApi<Options>({
 			switch (operationMode) {
 				case 'single':
 					if (Array.isArray(data)) {
-						throw new Error('Single operation mode expects a single data object, not an array');
+						throw new TypeError('Single operation mode expects a single data object, not an array');
 					}
+
 					const rendered = await renderTemplate(data, templateToRender, fields);
 					return { ...returnFields(data), ...rendered };
 				case 'batch':
 					if (!Array.isArray(data)) {
-						throw new Error('Batch operation mode expects an array of data objects');
+						throw new TypeError('Batch operation mode expects an array of data objects');
 					}
+
 					return Promise.all(
 						data.map(async (item) => {
 							const rendered = await renderTemplate(item, templateToRender, fields);
@@ -121,7 +128,8 @@ export default defineOperationApi<Options>({
 				default:
 					throw new Error('Invalid operation mode specified');
 			}
-		} catch (error) {
+		}
+		catch (error) {
 			throw new Error((error as Error).message || 'An unknown error occurred');
 		}
 	},

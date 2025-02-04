@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, reactive } from 'vue';
-import { useSdk, useStores } from '@directus/extensions-sdk';
-import ChatMessage from './components/chat-message.vue';
 import type { Message } from '../_shared/types';
-
+import { useSdk, useStores } from '@directus/extensions-sdk';
+import { computed, reactive, ref } from 'vue';
+import ChatMessage from './components/chat-message.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -21,11 +20,9 @@ const props = withDefaults(
 	},
 );
 
-
 const emit = defineEmits<{
-	input: [value: string]
-}>()
-
+	input: [value: string];
+}>();
 
 const loading = ref(false);
 const streamResponse = ref('');
@@ -41,12 +38,13 @@ const aiKey = computed(() => {
 	if (props.aiProvider === 'openai' && props.apiKeyOpenAi) {
 		return props.apiKeyOpenAi;
 	}
+
 	if (props.aiProvider === 'anthropic' && props.apiKeyAnthropic) {
 		return props.apiKeyAnthropic;
 	}
+
 	return null;
 });
-
 
 async function submitMessage() {
 	messageBackup.value = props.value;
@@ -66,8 +64,8 @@ async function submitMessage() {
 				aiModel: props.aiModel,
 				aiKey: aiKey.value,
 				userMessage: messageBackup.value,
-				messages: messages,
-			})
+				messages,
+			}),
 		})) as any;
 
 		const reader = response!.body?.getReader();
@@ -83,10 +81,11 @@ async function submitMessage() {
 			const chunk = decoder.decode(value);
 			const lines = chunk.split('\n');
 
-			lines.forEach(line => {
+			lines.forEach((line) => {
 				if (line.startsWith('data: ')) {
 					const data = line.slice(6);
-					if (data === '[DONE]') return;
+					if (data === '[DONE]')
+						return;
 
 					const { content } = JSON.parse(data);
 					streamResponse.value = `${streamResponse.value}${content}`;
@@ -102,16 +101,18 @@ async function submitMessage() {
 			{
 				role: 'assistant',
 				content: streamResponse.value,
-			}
+			},
 		);
-	} catch (error: any) {
+	}
+	catch (error: any) {
 		emit('input', messageBackup.value || '');
 
 		notificationStore.add({
 			type: 'error',
 			title: error.errors?.[0].message || error.message || 'AI Request failed',
 		});
-	} finally {
+	}
+	finally {
 		loading.value = false;
 		messageBackup.value = null;
 	}
@@ -121,9 +122,7 @@ function clearMessages() {
 	messages.splice(0);
 	streamResponse.value = '';
 }
-
 </script>
-
 
 <template>
 	<template v-if="!props.aiProvider || !props.aiModel">
@@ -134,8 +133,10 @@ function clearMessages() {
 
 	<template v-else>
 		<div class="input-row">
-			<v-input :model-value="value" :placeholder="inputPlaceholder" @update:model-value="$emit('input', $event)"
-				@keyup.enter="submitMessage">
+			<v-input
+				:model-value="value" :placeholder="inputPlaceholder" @update:model-value="$emit('input', $event)"
+				@keyup.enter="submitMessage"
+			>
 				<template v-if="iconLeft" #prepend>
 					<v-icon :name="iconLeft" />
 				</template>
@@ -160,24 +161,25 @@ function clearMessages() {
 
 				<v-card-text>
 					<div class="chat-messages">
-						<chat-message v-for="message in messages" :message="message" />
+						<ChatMessage v-for="message in messages" :message="message" />
 					</div>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="clearMessages">Clear</v-button>
-					<v-button @click="showMessages = false">Close</v-button>
+					<v-button secondary @click="clearMessages">
+						Clear
+					</v-button>
+					<v-button @click="showMessages = false">
+						Close
+					</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-overlay>
 
-
 		<template v-if="streamResponse">
-			<chat-message class="chat-response" :message="{ role: 'assistant', content: streamResponse }" />
+			<ChatMessage class="chat-response" :message="{ role: 'assistant', content: streamResponse }" />
 		</template>
-
 	</template>
 </template>
-
 
 <style lang="scss" scoped>
 .input-row {

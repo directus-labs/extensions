@@ -1,8 +1,8 @@
-import { API, BlockAPI, BlockToolConstructorOptions, BlockToolData, BlockTune, ToolConfig } from '@editorjs/editorjs';
+import type { API, BlockAPI, BlockToolConstructorOptions, BlockToolData, BlockTune, ToolConfig } from '@editorjs/editorjs';
 
-type AlignmentData = {
+interface AlignmentData {
 	alignment: 'left' | 'center' | 'right';
-};
+}
 
 export class Alignment implements BlockTune {
 	private api: API;
@@ -38,7 +38,8 @@ export class Alignment implements BlockTune {
 			data = {
 				alignment: this.getAlignment(),
 			};
-		} else if (data.alignment === undefined) {
+		}
+		else if (data.alignment === undefined) {
 			data.alignment = this.getAlignment();
 		}
 

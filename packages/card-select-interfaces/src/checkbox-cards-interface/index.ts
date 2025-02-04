@@ -1,6 +1,6 @@
+import { options } from '../shared/options';
 // index.ts
 import InterfaceCheckboxCards from './interface.vue';
-import { options } from '../shared/options';
 
 export default {
 	id: 'checkbox-cards-interface',
@@ -12,7 +12,7 @@ export default {
 	component: InterfaceCheckboxCards,
 	types: ['json', 'csv'],
 	recommendedDisplays: ['labels'],
-	options: options,
+	options,
 	preview: `<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
 		<rect x="6.5" y="13.5" width="69" height="69" rx="5.5" fill="var(--theme--background)" stroke="var(--theme--primary)"/>
 		<rect x="80.5" y="13.5" width="69" height="69" rx="5.5" fill="var(--theme--background)" stroke="var(--theme--primary)"/>

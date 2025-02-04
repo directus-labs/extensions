@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
@@ -16,7 +16,7 @@ const props = withDefaults(
 		addLabel: 'Add New',
 		placeholder: 'No Items',
 		size: 'normal',
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -31,8 +31,10 @@ const inputRefs = ref<HTMLInputElement[]>([]);
 const isEmpty = computed(() => localItems.value.length === 0);
 
 const showAddNew = computed(() => {
-	if (props.disabled) return false;
-	if (!props.limit) return true;
+	if (props.disabled)
+		return false;
+	if (!props.limit)
+		return true;
 	return localItems.value.length < props.limit;
 });
 
@@ -45,23 +47,28 @@ watch(
 	(newValue) => {
 		if (Array.isArray(newValue)) {
 			localItems.value = newValue.map((item) => (item === undefined ? null : item));
-		} else if (typeof newValue === 'string') {
+		}
+		else if (typeof newValue === 'string') {
 			try {
 				const parsedValue = JSON.parse(newValue);
+
 				localItems.value = Array.isArray(parsedValue)
 					? parsedValue.map((item) => (item === undefined ? null : item))
 					: [];
-			} catch (error) {
+			}
+			catch (error) {
 				localItems.value = [];
 			}
-		} else if (newValue === null || newValue === undefined) {
+		}
+		else if (newValue === null || newValue === undefined) {
 			// Initialize with an empty array for local state, but don't emit
 			localItems.value = [];
-		} else {
+		}
+		else {
 			localItems.value = [];
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function addItem() {
@@ -95,6 +102,7 @@ function removeItem(index: number) {
 
 function emitUpdate() {
 	const filteredItems = localItems.value.filter((item) => item !== null && item.trim() !== '');
+
 	if (filteredItems.length > 0 || props.value !== null) {
 		emit('input', filteredItems);
 	}
@@ -117,31 +125,38 @@ function onKeyDown(event: KeyboardEvent, index: number) {
 				event.preventDefault();
 				focusInput(index - 1);
 			}
+
 			break;
 		case 'ArrowDown':
 			if (index < localItems.value.length - 1) {
 				event.preventDefault();
 				focusInput(index + 1);
 			}
+
 			break;
 		case 'Enter':
 			if (input.value.trim() !== '') {
 				if (index === localItems.value.length - 1) {
 					addItem();
-				} else {
+				}
+				else {
 					focusInput(index + 1);
 				}
+
 				event.preventDefault();
 			}
+
 			break;
 		case 'Backspace':
 			if (input.selectionStart === 0 && input.selectionEnd === 0) {
 				event.preventDefault();
+
 				if (index > 0) {
 					const prevValue = localItems.value[index - 1] || '';
 					const currentValue = input.value;
 					updateItem(index - 1, prevValue + currentValue);
 					removeItem(index);
+
 					nextTick(() => {
 						if (inputRefs.value[index - 1]) {
 							const prevInput = inputRefs.value[index - 1];
@@ -150,29 +165,37 @@ function onKeyDown(event: KeyboardEvent, index: number) {
 						}
 					});
 				}
-			} else if (input.selectionStart === 0 && input.selectionEnd === input.value.length) {
+			}
+			else if (input.selectionStart === 0 && input.selectionEnd === input.value.length) {
 				event.preventDefault();
+
 				if (localItems.value.length > 1) {
 					removeItem(index);
-				} else {
-					updateItem(index, '');
 				}
-			} else if (input.value.length === 0 || (input.value.length === 1 && input.selectionStart === 1)) {
-				event.preventDefault();
-				if (index > 0) {
-					const prevValue = localItems.value[index - 1] || '';
-					removeItem(index);
-					nextTick(() => {
-						if (inputRefs.value[index - 1]) {
-							const prevInput = inputRefs.value[index - 1];
-							prevInput.focus();
-							prevInput.setSelectionRange(prevValue.length, prevValue.length);
-						}
-					});
-				} else {
+				else {
 					updateItem(index, '');
 				}
 			}
+			else if (input.value.length === 0 || (input.value.length === 1 && input.selectionStart === 1)) {
+				event.preventDefault();
+
+				if (index > 0) {
+					const prevValue = localItems.value[index - 1] || '';
+					removeItem(index);
+
+					nextTick(() => {
+						if (inputRefs.value[index - 1]) {
+							const prevInput = inputRefs.value[index - 1];
+							prevInput.focus();
+							prevInput.setSelectionRange(prevValue.length, prevValue.length);
+						}
+					});
+				}
+				else {
+					updateItem(index, '');
+				}
+			}
+
 			break;
 	}
 }
@@ -180,18 +203,22 @@ function onKeyDown(event: KeyboardEvent, index: number) {
 function onPaste(event: ClipboardEvent, index: number) {
 	event.preventDefault();
 	const pastedText = event.clipboardData?.getData('text');
-	if (!pastedText) return;
+	if (!pastedText)
+		return;
 
 	const lines = pastedText.split(/\r?\n/).filter((line) => line.trim() !== '');
 
 	if (lines.length === 1) {
 		updateItem(index, lines[0]);
-	} else {
+	}
+	else {
 		updateItem(index, lines[0]);
+
 		for (let i = 1; i < lines.length; i++) {
 			if (props.limit && localItems.value.length >= props.limit) {
 				break;
 			}
+
 			addItem();
 			updateItem(localItems.value.length - 1, lines[i]);
 		}
@@ -212,7 +239,7 @@ function onDragEnd() {
 		<v-notice v-if="isEmpty">
 			{{ placeholder }}
 		</v-notice>
-		<draggable
+		<Draggable
 			v-else
 			v-model="localItems"
 			:disabled="disabled"
@@ -246,7 +273,7 @@ function onDragEnd() {
 					</v-input>
 				</div>
 			</template>
-		</draggable>
+		</Draggable>
 		<v-button v-if="showAddNew" class="add-new" :small="size === 'small'" @click="addItem">
 			{{ addLabel }}
 		</v-button>

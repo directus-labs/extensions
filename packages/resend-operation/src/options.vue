@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { Field, FieldMeta } from '@directus/types';
-import { emails, domains, apiKeys, audiences, contacts } from './endpoints';
-import { resendLogo } from './resend-logo.ts'
+import type { Field, FieldMeta } from '@directus/types';
 import type { Options as ResendOptions } from './api';
+import { computed, ref, watch } from 'vue';
+import { apiKeys, audiences, contacts, domains, emails } from './endpoints';
+import { resendLogo } from './resend-logo.ts';
 
 type PartialExcept<T, K extends keyof T> = Partial<T> & Pick<T, K>;
 
@@ -15,14 +15,6 @@ type FlexibleField = {
 	type?: string;
 	meta: FlexibleFieldMeta;
 } & Partial<Omit<Field, 'meta'>>;
-
-const endpoints = {
-	emails,
-	domains,
-	apiKeys,
-	audiences,
-	contacts,
-};
 
 const props = withDefaults(
 	defineProps<{
@@ -41,6 +33,14 @@ const emit = defineEmits<{
 	(e: 'input', value: Record<string, any>): void;
 }>();
 
+const endpoints = {
+	emails,
+	domains,
+	apiKeys,
+	audiences,
+	contacts,
+};
+
 const formValues = ref<ResendOptions>(props.value);
 
 const endpoint = computed(() => formValues.value.endpoint || '');
@@ -48,7 +48,8 @@ const action = computed(() => formValues.value.action || '');
 
 const actionChoices = computed(() => {
 	const selectedEndpoint = endpoints[endpoint.value as keyof typeof endpoints];
-	if (!selectedEndpoint) return [];
+	if (!selectedEndpoint)
+		return [];
 
 	return Object.entries(selectedEndpoint.actions).map(([key, value]) => ({
 		text: value.label,
@@ -58,19 +59,19 @@ const actionChoices = computed(() => {
 });
 
 const staticFields: FlexibleField[] = [
-{
-            field: "info",
-            type: "alias",
-            meta: {
-                width: "full",
-                interface: "presentation-notice",
+	{
+		field: 'info',
+		type: 'alias',
+		meta: {
+			width: 'full',
+			interface: 'presentation-notice',
 
-                options: {
-                    icon: false,
-                    text: `${resendLogo}<span style="padding-left: 16px">Email API for developers. Learn more and get started at <a href="https://resend.com?ref=directus_marketplace" target="_blank">resend.com</a>.</span>`,
-                },
-            },
-        },
+			options: {
+				icon: false,
+				text: `${resendLogo}<span style="padding-left: 16px">Email API for developers. Learn more and get started at <a href="https://resend.com?ref=directus_marketplace" target="_blank">resend.com</a>.</span>`,
+			},
+		},
+	},
 	{
 		field: 'apiKey',
 		name: 'API Key',
@@ -118,10 +119,12 @@ const staticFields: FlexibleField[] = [
 ];
 
 const dynamicFields = computed(() => {
-	if (!endpoint.value || !action.value) return [];
+	if (!endpoint.value || !action.value)
+		return [];
 
 	const selectedEndpoint = endpoints[endpoint.value as keyof typeof endpoints];
-	if (!selectedEndpoint) return [];
+	if (!selectedEndpoint)
+		return [];
 
 	return selectedEndpoint.actions[action.value]?.options || [];
 });
@@ -148,9 +151,6 @@ watch(
 	},
 	{ deep: true },
 );
-
-
-
 </script>
 
 <template>

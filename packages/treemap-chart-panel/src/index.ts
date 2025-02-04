@@ -7,8 +7,8 @@ export default definePanel({
 	icon: 'dashboard',
 	description: 'Generate a Treemap Chart from your data. Also known as a Cluster chart.',
 	component: PanelComponent,
-	options: ({ options }): Array<Object> => {
-		const series = options?.["series"];
+	options: ({ options }): Array<object> => {
+		const series = options?.series;
 		return [
 			{
 				field: 'collection',
@@ -149,17 +149,19 @@ export default definePanel({
 				schema: {
 					default_value: '#6644FF',
 				},
-				meta: series ? {
-					interface: 'presentation-notice',
-					width: 'half',
-					options: {
-						text: '$t:theme_auto',
-					},
-				} : {
-					interface: 'select-color',
-					display: 'color',
-					width: 'half',
-				},
+				meta: series
+					? {
+							interface: 'presentation-notice',
+							width: 'half',
+							options: {
+								text: '$t:theme_auto',
+							},
+						}
+					: {
+							interface: 'select-color',
+							display: 'color',
+							width: 'half',
+						},
 			},
 		];
 	},

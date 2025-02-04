@@ -1,40 +1,41 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, PropType, watch } from 'vue';
+import type { PropType } from 'vue';
+import { Loader } from '@googlemaps/js-api-loader';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Loader } from "@googlemaps/js-api-loader";
-import { getCurrentLanguage } from './utils/get-current-lang';
-
-// @ts-ignore
-import googleLogo from './assets/images/google_on_white_hdpi.png';
 // @ts-ignore
 import googleLogoDark from './assets/images/google_on_non_white_hdpi.png';
 
-type AutocompleteLocation = {
-	placeId: string,
-	text: string,
-	place: google.maps.places.Place	,
+// @ts-ignore
+import googleLogo from './assets/images/google_on_white_hdpi.png';
+import { getCurrentLanguage } from './utils/get-current-lang';
+
+interface AutocompleteLocation {
+	placeId: string;
+	text: string;
+	place: google.maps.places.Place;
 }
 
 type Coordinates = [number, number];
 
-type GeoProperties = {
-	displayName: string,
-	country: string, // ISO 3166-2
-	administrativeArea: string,
-	postalCode: string,
-	formated: string,
-	raw: google.maps.places.AddressComponent[],
-	viewport: google.maps.LatLngBounds,
-};
+interface GeoProperties {
+	displayName: string;
+	country: string; // ISO 3166-2
+	administrativeArea: string;
+	postalCode: string;
+	formated: string;
+	raw: google.maps.places.AddressComponent[];
+	viewport: google.maps.LatLngBounds;
+}
 
-type GeoJsonFeature = {
-  "geometry": {
-    "coordinates": Coordinates,
-    "type": "Point"
-  },
-  "properties": Partial<GeoProperties>,
-  "type": "Feature"
-};
+interface GeoJsonFeature {
+	geometry: {
+		coordinates: Coordinates;
+		type: 'Point';
+	};
+	properties: Partial<GeoProperties>;
+	type: 'Feature';
+}
 
 type MapType = 'hybrid' | 'roadmap' | 'satellite' | 'terrain';
 
@@ -66,11 +67,11 @@ const props = defineProps({
 	autocompleteFetchOptions: {
 		type: Object,
 		default: () => ({}),
-	}
+	},
 });
 
 const emit = defineEmits<{
-	'input': [GeoJsonFeature | null],
+	input: [GeoJsonFeature | null];
 }>();
 
 const { t } = useI18n();
@@ -97,17 +98,16 @@ let markerLibrary: google.maps.MarkerLibrary;
 let map: google.maps.Map;
 let marker: google.maps.marker.AdvancedMarkerElement | null = null;
 
-
-onMounted( async () => {
+onMounted(async () => {
 	const loader = new Loader({
 		apiKey: props.apiKeyGMaps,
 		libraries: ['places', 'maps', 'marker'],
 		version: 'weekly',
 	});
 
-	placesLibrary = await loader.importLibrary("places");
-	mapsLibrary = await loader.importLibrary("maps");
-	markerLibrary = await loader.importLibrary("marker");
+	placesLibrary = await loader.importLibrary('places');
+	mapsLibrary = await loader.importLibrary('maps');
+	markerLibrary = await loader.importLibrary('marker');
 
 	setNewSessionToken();
 	initMap();
@@ -115,11 +115,10 @@ onMounted( async () => {
 });
 
 onUnmounted(() => {
-  if (map) {
-    google.maps.event.clearListeners(map, 'tilesloaded');
-  }
+	if (map) {
+		google.maps.event.clearListeners(map, 'tilesloaded');
+	}
 });
-
 
 watch(() => props.value, (newValue) => {
 	if (!hasMounted.value) {
@@ -132,57 +131,54 @@ watch(() => props.value, (newValue) => {
 		}
 
 		searchInput.value = null;
-		
+
 		return;
 	}
 
 	setMapValue();
 });
 
-
 function setNewSessionToken() {
 	sessionToken.value = new placesLibrary.AutocompleteSessionToken();
 }
-
 
 async function onInput(value: string) {
 	searchInput.value = value;
 	makeAutocompleteRequest();
 }
 
-
 async function makeAutocompleteRequest() {
 	if (!searchInput.value) {
 		results.value = [];
 		return;
 	}
-	
+
 	const request = {
 		input: searchInput.value,
 		sessionToken: sessionToken.value!,
-    language: lang,
+		language: lang,
 	};
 
 	try {
-		const { suggestions } = await placesLibrary.AutocompleteSuggestion.fetchAutocompleteSuggestions({...request, ...props.autocompleteFetchOptions});
+		const { suggestions } = await placesLibrary.AutocompleteSuggestion.fetchAutocompleteSuggestions({ ...request, ...props.autocompleteFetchOptions });
 
 		// Make sure to return a custom object, as the original object doesn't play well with vues reactivity (e.g the getter functions)
 		results.value = suggestions
 			.filter((suggestion) => suggestion !== null)
 			.map((suggestion) => {
 				const placePrediction = suggestion.placePrediction!;
-				
+
 				return {
 					placeId: placePrediction.placeId,
 					text: placePrediction.text.toString(),
 					place: placePrediction.toPlace(),
-				}
+				};
 			});
-	} catch (error) {
+	}
+	catch (error) {
 		console.error(error);
 	}
 }
-
 
 async function onPlaceSelected(location: AutocompleteLocation) {
 	searchInput.value = location.text;
@@ -226,7 +222,7 @@ function getProperties(place: google.maps.places.Place): GeoProperties {
 			...properties,
 			...(country && { country }),
 			...(postalCode && { postalCode }),
-			...(administrativeArea && { administrativeArea })
+			...(administrativeArea && { administrativeArea }),
 		};
 
 		properties.raw = place.addressComponents;
@@ -247,31 +243,27 @@ function getProperties(place: google.maps.places.Place): GeoProperties {
 	return properties;
 }
 
-
 function getadressComponent(addressComponents: google.maps.places.Place['addressComponents'], type: string, valueKey: string) {
 	if (!addressComponents) {
 		return;
 	}
 
-	const component = addressComponents.filter(function(address_component) {
+	const component = addressComponents.filter((address_component) => {
 		return address_component.types.includes(type);
 	});
 
 	if (component && component[0] && component[0][valueKey]) {
 		return component[0][valueKey];
 	}
-
-	return;
 }
 
-
 function initMap() {
-  if (!mapContainer.value) {
-    return;
-  }
+	if (!mapContainer.value) {
+		return;
+	}
 
-  map = new mapsLibrary.Map(mapContainer.value, {
-    center: { lat: 0, lng: 0 },
+	map = new mapsLibrary.Map(mapContainer.value, {
+		center: { lat: 0, lng: 0 },
 		zoom: 1,
 		keyboardShortcuts: false,
 		disableDefaultUI: true,
@@ -300,7 +292,6 @@ function initMap() {
 	setMapValue();
 }
 
-
 function setMapValue() {
 	if (!props.value) {
 		return;
@@ -317,7 +308,6 @@ function setMapValue() {
 	}
 }
 
-
 function setMapLocation(location: google.maps.LatLng, viewPort: google.maps.LatLngBounds | null | undefined) {
 	if (!map) {
 		return;
@@ -326,7 +316,6 @@ function setMapLocation(location: google.maps.LatLng, viewPort: google.maps.LatL
 	_setMapCenter(location, viewPort);
 	_setMapMarker(location);
 }
-
 
 function _setMapCenter(location: google.maps.LatLng, viewPort: google.maps.LatLngBounds | null | undefined) {
 	map.setCenter(location);
@@ -338,7 +327,6 @@ function _setMapCenter(location: google.maps.LatLng, viewPort: google.maps.LatLn
 		// Create bounds with some padding around the point
 		const bounds = new google.maps.LatLngBounds();
 		bounds.extend(location);
-
 
 		const PADDING = 0.01;
 		bounds.extend(new google.maps.LatLng(location.lat() + PADDING, location.lng() + PADDING));
@@ -352,6 +340,7 @@ function _setMapMarker(location: google.maps.LatLng) {
 	if (marker) {
 		marker.map = null;
 	}
+
 	marker = new markerLibrary.AdvancedMarkerElement({
 		position: location,
 		map,
@@ -361,7 +350,6 @@ function _setMapMarker(location: google.maps.LatLng) {
 function zoomMap(zoomValue: number) {
 	map.setZoom(map.getZoom()! + zoomValue);
 }
-
 
 function toggleFullscreen() {
 	if (!mapContainer.value?.requestFullscreen || !document.exitFullscreen) {
@@ -373,19 +361,16 @@ function toggleFullscreen() {
 		isFullscreen.value = false;
 		return;
 	}
-	
+
 	mapContainer.value.requestFullscreen();
 	isFullscreen.value = true;
 }
-
 
 function setMapType(newValue: MapType) {
 	mapType.value = newValue;
 	map.setMapTypeId(google.maps.MapTypeId[newValue.toUpperCase()]);
 }
-
 </script>
-
 
 <template>
 	<template v-if="!props.apiKeyGMaps">
@@ -397,9 +382,9 @@ function setMapType(newValue: MapType) {
 	<template v-else>
 		<!-- Render map first, to reduce content-shift on moving the search-input into the map -->
 		<div v-if="props.displayMap">
-			<div ref="mapContainer" class="map-container"></div>
+			<div ref="mapContainer" class="map-container" />
 
-			<div ref="mapTypeSelectContainer" v-show="controlsReady" class="map-type-select-container">
+			<div v-show="controlsReady" ref="mapTypeSelectContainer" class="map-type-select-container">
 				<VSelect
 					class="small"
 					:model-value="mapType"
@@ -421,13 +406,13 @@ function setMapType(newValue: MapType) {
 							value: 'terrain',
 						},
 					]"
+					:close-on-content-click="true"
 					@update:model-value="(newValue) => setMapType(newValue)"
-					:closeOnContentClick="true"
 				/>
 			</div>
 
-			<div ref="mapControlsContainer" v-show="controlsReady" class="map-controls-container">
-				<VButton 
+			<div v-show="controlsReady" ref="mapControlsContainer" class="map-controls-container">
+				<VButton
 					icon
 					small
 					secondary
@@ -436,8 +421,8 @@ function setMapType(newValue: MapType) {
 				>
 					<v-icon name="add" />
 				</VButton>
-				
-				<VButton 
+
+				<VButton
 					icon
 					small
 					secondary
@@ -447,7 +432,7 @@ function setMapType(newValue: MapType) {
 					<v-icon name="remove" />
 				</VButton>
 
-				<VButton 
+				<VButton
 					icon
 					small
 					secondary
@@ -456,11 +441,11 @@ function setMapType(newValue: MapType) {
 					@click="toggleFullscreen"
 				>
 					<v-icon :name="isFullscreen ? 'fullscreen_exit' : 'fullscreen'" />
-				</VButton>			
+				</VButton>
 			</div>
 		</div>
 
-		<div ref="searchContainer" v-show="mapContainer && controlsReady || !mapContainer" class="search-container">
+		<div v-show="mapContainer && controlsReady || !mapContainer" ref="searchContainer" class="search-container">
 			<v-menu attached :disabled="disabled">
 				<template #activator="{ activate }">
 					<v-input
@@ -474,7 +459,7 @@ function setMapType(newValue: MapType) {
 						<template v-if="iconLeft" #prepend>
 							<v-icon :name="iconLeft" />
 						</template>
-						
+
 						<template v-if="iconRight" #append>
 							<v-icon :name="iconRight" />
 						</template>
@@ -491,18 +476,18 @@ function setMapType(newValue: MapType) {
 						{{ result.text }}
 					</v-list-item>
 
-					<!-- 
+					<!--
 						If we do not display the map, we need to include the google logo in here
 						@see https://developers.google.com/maps/documentation/javascript/place-autocomplete-data
 						@see https://developers.google.com/maps/documentation/javascript/policies#logo
 					-->
-					<v-list-item 
+					<v-list-item
 						v-if="!props.displayMap"
-						:clickable="false" 
-						:disabled="true" 
+						:clickable="false"
+						:disabled="true"
 						class="google-logo"
 					>
-						<img :src="isDark ? googleLogoDark : googleLogo" alt="Google Logo" />
+						<img :src="isDark ? googleLogoDark : googleLogo" alt="Google Logo">
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -510,12 +495,11 @@ function setMapType(newValue: MapType) {
 	</template>
 </template>
 
-
 <style lang="scss" scoped>
 :deep(.v-select) {
-	/* 
+	/*
 	 * Small style in sync with input-small
-	 * @see https://github.com/directus/directus/blob/28aaf739ba75980f4cb5ed1fa8c31b900dd97765/app/src/components/v-input.vue#L434-L440 
+	 * @see https://github.com/directus/directus/blob/28aaf739ba75980f4cb5ed1fa8c31b900dd97765/app/src/components/v-input.vue#L434-L440
 	*/
 	&.small {
 		.v-input {
@@ -538,7 +522,10 @@ function setMapType(newValue: MapType) {
 	.v-list-item {
 		&.selected,
 		&:hover {
-			background-color: var(--v-list-item-background-color-active, var(--v-list-background-color-active, var(--theme--background-normal)));
+			background-color: var(
+				--v-list-item-background-color-active,
+				var(--v-list-background-color-active, var(--theme--background-normal))
+			);
 		}
 
 		&.google-logo {
@@ -588,5 +575,4 @@ function setMapType(newValue: MapType) {
 		}
 	}
 }
-
 </style>

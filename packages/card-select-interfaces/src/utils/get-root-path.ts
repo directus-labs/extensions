@@ -21,6 +21,6 @@ export function getPublicURL(): string {
 export function extract(path: string) {
 	const parts = path.split('/');
 	const adminIndex = parts.indexOf('admin');
-	const rootPath = parts.slice(0, adminIndex).join('/') + '/';
+	const rootPath = `${parts.slice(0, adminIndex).join('/')}/`;
 	return rootPath;
 }

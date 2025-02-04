@@ -1,19 +1,20 @@
-
 import { useStores } from '@directus/composables';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-var store:any;
+let store: any;
 
 export function useClipboard() {
 	const { t } = useI18n();
 
-  const { useNotificationsStore } = useStores();
-  function notify(notification: any): void {
-    if (!store) store = useNotificationsStore();
-    store.add(notification);
-  }
-  
+	const { useNotificationsStore } = useStores();
+
+	function notify(notification: any): void {
+		if (!store)
+			store = useNotificationsStore();
+		store.add(notification);
+	}
+
 	const isCopySupported = computed(() => {
 		return !!navigator?.clipboard?.writeText;
 	});
@@ -34,7 +35,8 @@ export function useClipboard() {
 			});
 
 			return true;
-		} catch {
+		}
+		catch {
 			notify({
 				type: 'error',
 				title: message?.fail ?? t('copy_raw_value_fail'),
@@ -53,7 +55,8 @@ export function useClipboard() {
 			});
 
 			return pasteValue;
-		} catch {
+		}
+		catch {
 			notify({
 				type: 'error',
 				title: message?.fail ?? t('paste_raw_value_fail'),

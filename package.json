@@ -1,27 +1,27 @@
 {
-  "name": "@directus-labs/extensions",
-  "private": true,
-  "packageManager": "pnpm@9.1.2",
-  "license": "MIT",
-  "homepage": "https://github.com/directus-labs/extensions",
-  "engines": {
-    "node": ">=18.18.0",
-    "pnpm": "~9"
-  },
-  "scripts": {
-    "premkcert": "mkcert -install",
-    "mkcert": "mkcert -ecdsa -key-file .local/caddy/key.pem -cert-file .local/caddy/cert.pem extensions.directus.labs",
-    "dev": "pnpm --stream -r dev",
-    "build": "pnpm --recursive run build",
-    "validate": "pnpm --recursive run validate",
-    "package": "pnpm --recursive exec node ../../scripts/check-package-json.js",
-    "lint": "eslint --flag unstable_config_lookup_from_file --cache .",
-    "lint:fix": "pnpm run lint --fix"
-  },
-  "devDependencies": {
-    "@directus/eslint-config": "github:directus/eslint-config#hannes/temp-workaround",
-    "@nuxt/eslint-config": "^0.7.5",
-    "eslint": "^9.18.0",
-    "jiti": "^2.4.2"
-  }
+	"name": "@directus-labs/extensions",
+	"private": true,
+	"packageManager": "pnpm@9.1.2",
+	"license": "MIT",
+	"homepage": "https://github.com/directus-labs/extensions",
+	"engines": {
+		"node": ">=18.18.0",
+		"pnpm": "~9"
+	},
+	"scripts": {
+		"premkcert": "mkcert -install",
+		"mkcert": "mkcert -ecdsa -key-file .local/caddy/key.pem -cert-file .local/caddy/cert.pem extensions.directus.labs",
+		"dev": "pnpm --stream -r dev",
+		"build": "pnpm --recursive run build",
+		"validate": "pnpm --recursive run validate",
+		"package": "pnpm --recursive exec node ../../scripts/check-package-json.js",
+		"lint": "eslint --flag unstable_config_lookup_from_file --cache .",
+		"lint:fix": "pnpm run lint --fix"
+	},
+	"devDependencies": {
+		"@directus/eslint-config": "github:directus/eslint-config#hannes/temp-workaround",
+		"@nuxt/eslint-config": "^0.7.5",
+		"eslint": "^9.18.0",
+		"jiti": "^2.4.2"
+	}
 }

@@ -1,7 +1,7 @@
+import type { DeepPartial, Field } from '@directus/types';
 import { defineInterface } from '@directus/extensions-sdk';
-import { DeepPartial, Field } from '@directus/types';
-import { Source } from './types';
 import InterfaceComponent from './interface.vue';
+import { Source } from './types';
 
 export default defineInterface({
 	id: 'directus-labs-multilevel-autocomplete-api-interface',
@@ -263,8 +263,8 @@ export default defineInterface({
 					width: 'full',
 					interface: 'input',
 					options: {
-						'placeholder': 'result.predictions',
-						'font': 'monospace',
+						placeholder: 'result.predictions',
+						font: 'monospace',
 					},
 					conditions: [
 						{
@@ -286,8 +286,8 @@ export default defineInterface({
 					width: 'half',
 					interface: 'input',
 					options: {
-						'placeholder': 'structured_main_text',
-						'font': 'monospace',
+						placeholder: 'structured_main_text',
+						font: 'monospace',
 					},
 					conditions: [
 						{
@@ -309,8 +309,8 @@ export default defineInterface({
 					width: 'half',
 					interface: 'input',
 					options: {
-						'placeholder': 'structured_main_value',
-						'font': 'monospace',
+						placeholder: 'structured_main_value',
+						font: 'monospace',
 					},
 					conditions: [
 						{
@@ -384,7 +384,7 @@ export default defineInterface({
 					width: 'full',
 					interface: 'list',
 					options: {
-						template: "{{ source }}",
+						template: '{{ source }}',
 						fields: stepFields,
 					},
 				},
@@ -399,17 +399,17 @@ export default defineInterface({
 					options: {
 						language: 'json',
 						placeholder: JSON.stringify({
-							"region": "{{ values[0] }}",
-							"country": {
-								"name": "{{ steps[1].text }}",
-								"code": "{{ steps[1].value }}",
+							region: '{{ values[0] }}',
+							country: {
+								name: '{{ steps[1].text }}',
+								code: '{{ steps[1].value }}',
 							},
 						}, null, 2),
 						template: JSON.stringify({
-							"region": "{{ values[0] }}",
-							"country": {
-								"name": "{{ steps[1].text }}",
-								"code": "{{ steps[1].value }}",
+							region: '{{ values[0] }}',
+							country: {
+								name: '{{ steps[1].text }}',
+								code: '{{ steps[1].value }}',
 							},
 						}, null, 2),
 					},

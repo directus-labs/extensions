@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import type { PrimaryKey } from '@directus/types';
+import type { Trigger } from '../types/trigger';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { PrimaryKey } from '@directus/types';
-import { Trigger } from '../types/trigger';
 import { useFlowTriggers } from '../composables/use-flow-triggers';
 
 type TriggerList = TriggerListItem[];
 
-type TriggerListItem = {
+interface TriggerListItem {
 	trigger: Trigger;
-};
+}
 
 const props = withDefaults(
 	defineProps<{
@@ -53,11 +53,13 @@ function getButtonDisabled(trigger: Trigger) {
 	}
 
 	const flow = getFlow(trigger.flowId);
+
 	if (!flow) {
 		return true;
 	}
 
-	const requireSelection = flow.options?.requireSelection !== false
+	const requireSelection = flow.options?.requireSelection !== false;
+
 	if (requireSelection && props.primaryKey === '+') {
 		return true;
 	}

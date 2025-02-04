@@ -53,15 +53,15 @@ export default {
 					choices: [
 						{
 							text: 'Standard',
-							value: 'standard'
+							value: 'standard',
 						},
 						{
 							text: 'High',
-							value: 'hd'
+							value: 'hd',
 						},
-					]
-				}
-			}
+					],
+				},
+			},
 		},
 		{
 			field: 'size',
@@ -75,19 +75,19 @@ export default {
 					choices: [
 						{
 							text: 'Square',
-							value: 'square'
+							value: 'square',
 						},
 						{
 							text: 'Portrait',
-							value: 'portrait'
+							value: 'portrait',
 						},
 						{
 							text: 'Landscape',
-							value: 'landscape'
+							value: 'landscape',
 						},
-					]
-				}
-			}
+					],
+				},
+			},
 		},
 	],
 };
