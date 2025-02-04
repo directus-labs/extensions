@@ -14,7 +14,8 @@
 		"dev": "pnpm --stream -r dev",
 		"build": "pnpm --recursive run build",
 		"validate": "pnpm --recursive run validate",
-		"package": "pnpm --recursive exec node ../../scripts/check-package-json.js",
+		"package:json": "pnpm --recursive exec node ../../scripts/check-package-json.js",
+		"package:lockfile": "pnpm --recursive exec node ../../scripts/check-lock-files.js",
 		"lint": "eslint --flag unstable_config_lookup_from_file --cache .",
 		"lint:fix": "pnpm run lint --fix"
 	},

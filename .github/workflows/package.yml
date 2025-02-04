@@ -5,12 +5,16 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
   build:
-    name: Package
+    name: Package.json
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,8 +23,17 @@ jobs:
         uses: actions/setup-node@v4
       - name: Setup pnpm
         uses: pnpm/action-setup@v4.0.0
-      - name: Install dependencies
-        shell: bash
-        run: pnpm install
       - name: Package
-        run: pnpm package
+        run: pnpm package:json
+  lockfile:
+    name: Lockfiles
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+      - name: Lockfiles
+        run: pnpm package:lockfile
