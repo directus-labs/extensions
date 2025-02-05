@@ -31,7 +31,7 @@ export default {
 				}),
 			});
 
-			if (response.status != 200)
+			if (response.status !== 200)
 				throw new Error('An error occurred when accessing OpenAI');
 			return JSON.parse(response.data.choices[0].message.content);
 		}
