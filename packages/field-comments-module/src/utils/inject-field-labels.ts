@@ -15,11 +15,18 @@ import { unexpectedError } from './unexpected-error';
 const config = { attributes: false, childList: true, subtree: true };
 let app: App | null = null;
 
+const observer = new MutationObserver((mutations, observer) => {
+	if (mutations.filter((e) => (e.target as HTMLElement).classList[0] === 'field-name' || (e.target as HTMLElement).classList[0] === 'v-detail' || (e.target as HTMLElement).classList[0] === 'accordion-section').length > 0) {
+		observer.disconnect();
+		injectFieldLabels({ update: true });
+	}
+});
+
 export function injectFieldLabels(options: Record<string, boolean> = { update: false }) {
 	const router = getDirectusRouter();
 
 	if (router) {
-		if (options.update && router.currentRoute.value.name == 'content-item' && router.currentRoute.value.params.primaryKey != '+') {
+		if (options.update && router.currentRoute.value.name === 'content-item' && router.currentRoute.value.params.primaryKey !== '+') {
 			injectApp(router.currentRoute.value);
 		}
 		else {
@@ -28,10 +35,10 @@ export function injectFieldLabels(options: Record<string, boolean> = { update: f
 				if (observer)
 					observer.disconnect();
 
-				if (to.name == 'settings-project') {
+				if (to.name === 'settings-project') {
 					initializeApp();
 				}
-				else if (to.name == 'content-item' && to.params.primaryKey != '+') {
+				else if (to.name === 'content-item' && to.params.primaryKey !== '+') {
 					await nextTick();
 					injectApp(to);
 				}
@@ -39,13 +46,6 @@ export function injectFieldLabels(options: Record<string, boolean> = { update: f
 		}
 	}
 }
-
-const observer = new MutationObserver((mutations, observer) => {
-	if (mutations.filter((e) => (e.target as HTMLElement).classList[0] == 'field-name' || (e.target as HTMLElement).classList[0] == 'v-detail' || (e.target as HTMLElement).classList[0] == 'accordion-section').length > 0) {
-		observer.disconnect();
-		injectFieldLabels({ update: true });
-	}
-});
 
 async function initializeApp(retry: number = 0) {
 	const titleContainer = document.querySelector('.title-container');
@@ -86,7 +86,7 @@ async function injectApp(to: Record<string, any>, retry: number = 0) {
 	const primaryKey = to.params.primaryKey;
 
 	// Exit if creating a new item
-	if (primaryKey == '+')
+	if (primaryKey === '+')
 		return;
 
 	// Use title as anchor
@@ -121,7 +121,7 @@ async function injectApp(to: Record<string, any>, retry: number = 0) {
 
 	// Fetch Settings
 	const fieldCommentSettings = computed(
-		() => (typeof settingsStore.settings.field_comments_settings == 'string' ? JSON.parse(settingsStore.settings.field_comments_settings) : settingsStore.settings.field_comments_settings).filter((i: CommentCollectionType) => i.collection == collection),
+		() => (typeof settingsStore.settings.field_comments_settings == 'string' ? JSON.parse(settingsStore.settings.field_comments_settings) : settingsStore.settings.field_comments_settings).filter((i: CommentCollectionType) => i.collection === collection),
 	);
 
 	// Exit if no settings found
@@ -173,7 +173,7 @@ async function injectApp(to: Record<string, any>, retry: number = 0) {
 
 		fieldLabels.forEach((f: any) => {
 			const label = f.querySelector('div') ? f.querySelector('div')?.innerHTML : f.innerHTML;
-			const matches: Array<Record<string, any>> = fields.filter((i: Field) => i.name == label && (fieldCommentSettings.value[0].all_fields || fieldCommentSettings.value[0].fields.includes(i.field)));
+			const matches: Array<Record<string, any>> = fields.filter((i: Field) => i.name === label && (fieldCommentSettings.value[0].all_fields || fieldCommentSettings.value[0].fields.includes(i.field)));
 			const isEnabled: boolean = matches.length > 0;
 
 			if (isEnabled) {
@@ -210,7 +210,7 @@ async function injectApp(to: Record<string, any>, retry: number = 0) {
 
 					const injects = getDirectusAppProvides(directusApp);
 
-					app = createApp(FieldLabel, { count: response.filter((i: Record<string, number | Record<string, string>>) => i.field == matches[0]?.meta.id)[0]?.count?.id ?? 0 });
+					app = createApp(FieldLabel, { count: response.filter((i: Record<string, number | Record<string, string>>) => i.field === matches[0]?.meta.id)[0]?.count?.id ?? 0 });
 					app.provide(STORES_INJECT, injects[STORES_INJECT]);
 
 					directusApp.runWithContext(() => {

@@ -48,6 +48,13 @@ onMounted(() => {
 	getComments();
 });
 
+const localizedFormat: LocalizedFormat = (date, format, options): string => {
+	return formatOriginal(date, format, {
+		...options,
+		locale: getDateFNSLocale(),
+	});
+};
+
 function useComments(collection: Ref<string>, field: Ref<number>, primaryKey: Ref<PrimaryKey>) {
 	const regex = /\s@[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/gi;
 	const comments = ref<CommentsByDateDisplay[] | null>(null);
@@ -239,6 +246,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 		userPreviews.push(c.comment.match(regex) as string[]);
 	});
 
+	// eslint-disable-next-line array-callback-return
 	const uniqIds: string[] = ([...new Set(flatten(userPreviews))]).filter((id) => {
 		if (id)
 			return id;
@@ -254,6 +262,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 
 		const userPreviews: Record<string, string> = {};
 
+		// eslint-disable-next-line array-callback-return
 		response.data.data.map((user: Record<string, any>) => {
 			userPreviews[user.id] = userName(user) ?? t('unknown_user') as string;
 		});
@@ -263,13 +272,6 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 
 	return {};
 }
-
-const localizedFormat: LocalizedFormat = (date, format, options): string => {
-	return formatOriginal(date, format, {
-		...options,
-		locale: getDateFNSLocale(),
-	});
-};
 
 function getDateFNSLocale(): Locale | undefined {
 	const currentLang = locale.value;

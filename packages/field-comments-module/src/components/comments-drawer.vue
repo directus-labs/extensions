@@ -63,7 +63,7 @@ onMounted(() => {
 				You do not have permission to access comments
 			</v-info>
 			<CommentsFeed v-else-if="collection_name && field_id && item_id" :collection="collection_name" :field="field_id" :primary-key="item_id" />
-			<v-info v-else type="danger" icon="error" :center="true" title="Missing Details" />
+			<v-info v-else type="danger" icon="error" center title="Missing Details" />
 		</div>
 	</v-drawer>
 </template>

@@ -95,7 +95,7 @@ function useDelete() {
 		</div>
 
 		<div class="header-right">
-			<v-menu v-if="currentUser.id == comment.user_created.id || currentUser?.role?.admin_access || currentUser?.admin_access" show-arrow placement="bottom-end">
+			<v-menu v-if="currentUser.id === comment.user_created.id || currentUser?.role?.admin_access || currentUser?.admin_access" show-arrow placement="bottom-end">
 				<template #activator="{ toggle, active }">
 					<v-icon class="more" :class="{ active }" name="more_horiz" clickable @click="toggle" />
 					<div class="time">
