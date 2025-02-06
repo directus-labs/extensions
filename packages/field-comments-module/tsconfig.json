@@ -15,11 +15,11 @@
 		"noImplicitAny": true,
 		"noImplicitReturns": true,
 		"noImplicitThis": true,
-		"esModuleInterop": true,
 		"noUncheckedIndexedAccess": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"isolatedModules": true,
 		"skipLibCheck": true
