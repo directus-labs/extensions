@@ -154,6 +154,7 @@ function updateRoomUrl() {
 	// Strip the query parameters from the host room URL to get the viewer room URL
 	const viewerRoomUrl = newHostRoomUrl.split('?')[0];
 	// Extract the room name from the viewer room URL
+	// eslint-disable-next-line no-constant-binary-expression
 	const roomName = `/${viewerRoomUrl.split('/').pop()}` || '';
 	// Other properties can't be determined from the URL, so we keep the existing values
 	emit('input', { ...props.value, hostRoomUrl: newHostRoomUrl, roomUrl: viewerRoomUrl, roomName });
