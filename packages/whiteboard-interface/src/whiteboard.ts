@@ -1,3 +1,6 @@
+/* eslint-disable no-useless-call */
+/* eslint-disable new-cap */
+/* eslint-disable ts/no-unsafe-function-type */
 import { fabric } from 'fabric';
 import tinycolor from 'tinycolor2';
 import { markRaw } from 'vue';
@@ -99,7 +102,7 @@ export class Whiteboard {
 			return;
 
 		this.canvas.getActiveObjects().forEach((o: any) => {
-			if (o.type == 'textbox') {
+			if (o.type === 'textbox') {
 				o.set('fontSize', size);
 			}
 		});
@@ -118,7 +121,7 @@ export class Whiteboard {
 			return;
 
 		this.canvas.getActiveObjects().forEach((o: any) => {
-			if (o.type == 'textbox') {
+			if (o.type === 'textbox') {
 				o.set('textAlign', align);
 			}
 		});
@@ -256,10 +259,10 @@ export class Whiteboard {
 		this.canvas.on('selection:cleared', () => this.updateSelection.call(this));
 		this.canvas.on('selection:updated', () => this.updateSelection.call(this));
 
-		this.canvas.on('object:scaling', (e) => {
+		this.canvas.on('object:scaling', (e: any) => {
 			const object = e.target;
 
-			if (object.type == 'rect') {
+			if (object.type === 'rect') {
 				object.set({
 					rx: 6 * (1 / object.scaleX),
 					ry: 6 * (1 / object.scaleY),
@@ -276,10 +279,10 @@ export class Whiteboard {
 	private updateSelection() {
 		const objects = this.canvas.getActiveObjects();
 
-		if (objects.length == 1) {
+		if (objects.length === 1) {
 			this.selectedShapeType = objects[0].type;
 
-			if (objects[0].type == 'image') {
+			if (objects[0].type === 'image') {
 				// Do nothing
 			}
 			else if (['path', 'line', 'arrow'].includes(objects[0].type)) {
@@ -322,7 +325,7 @@ export class Whiteboard {
 
 	public deleteSelected() {
 		const objects = this.canvas.getActiveObjects();
-		const isEditingText = objects.find((o: any) => o.type == 'textbox' && o.isEditing);
+		const isEditingText = objects.find((o: any) => o.type === 'textbox' && o.isEditing);
 
 		if (!isEditingText) {
 			objects.forEach((o: any) => {
@@ -396,9 +399,9 @@ export class Whiteboard {
 	private strokeConfig(type: string, color: string) {
 		return {
 			stroke: tinycolor(color).darken(20).toString(),
-			strokeWidth: type == 'none' ? 0 : 4,
+			strokeWidth: type === 'none' ? 0 : 4,
 			strokeUniform: true,
-			strokeDashArray: type == 'dashed' ? [16, 10] : null,
+			strokeDashArray: type === 'dashed' ? [16, 10] : null,
 			strokeLineCap: 'round',
 		};
 	}
@@ -463,7 +466,7 @@ export class Whiteboard {
 			erasable: false,
 		};
 
-		if (this.currentTool == 'textbox') {
+		if (this.currentTool === 'textbox') {
 			config.fontFamily = getStyleVar('--theme--fonts--sans--font-family');
 			config.fontSize = this._fontSize;
 			config.textAlign = this._textAlign;
@@ -471,18 +474,18 @@ export class Whiteboard {
 			this.canvas.setActiveObject(this.shape);
 			this.canvas.add(this.shape);
 		}
-		else if (this.currentTool == 'line' || this.currentTool == 'arrow') {
+		else if (this.currentTool === 'line' || this.currentTool === 'arrow') {
 			config.stroke = this.color;
 			config.strokeWidth = this.strokeWidth;
 			this.shape = new this.shapeTool([this.start.x, this.start.y, this.start.x, this.start.y], config);
 			this.canvas.add(this.shape);
 		}
 		else {
-			if (this.currentTool == 'rect' || this.currentTool == 'ellipse') {
+			if (this.currentTool === 'rect' || this.currentTool === 'ellipse') {
 				config = Object.assign(config, this.strokeConfig(this.strokeType, config.fill));
 			}
 
-			if (this.currentTool == 'rect') {
+			if (this.currentTool === 'rect') {
 				config.rx = 6;
 				config.ry = 6;
 			}
@@ -515,18 +518,18 @@ export class Whiteboard {
 			this.shape.set({ top: Math.abs(pointer.y) });
 		}
 
-		if (this.currentTool == 'line' || this.currentTool == 'arrow') {
+		if (this.currentTool === 'line' || this.currentTool === 'arrow') {
 			this.shape.set({ x2: pointer.x });
 			this.shape.set({ y2: pointer.y });
 		}
-		else if (this.currentTool == 'ellipse') {
+		else if (this.currentTool === 'ellipse') {
 			this.shape.set({ rx: Math.abs(this.start.x - pointer.x) / 2 });
 			this.shape.set({ ry: Math.abs(this.start.y - pointer.y) / 2 });
 		}
 		else {
 			this.shape.set({ width: Math.abs(this.start.x - pointer.x) });
 
-			if (this.currentTool != 'textbox') {
+			if (this.currentTool !== 'textbox') {
 				this.shape.set({ height: Math.abs(this.start.y - pointer.y) });
 			}
 		}

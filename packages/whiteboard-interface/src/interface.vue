@@ -19,8 +19,9 @@ const interfaceContainer = ref();
 const wrapper = ref();
 const container = ref();
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 function toggleTool(tool: string, image?: any) {
-	if (tool == wb.value.currentTool) {
+	if (tool === wb.value.currentTool) {
 		wb.value.setTool('none');
 	}
 	else {
@@ -39,6 +40,7 @@ function toggleFullscreen() {
 	}
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const resizeObserver = new ResizeObserver((entries) => {
 	wb.value.setSize(wrapper.value.clientWidth, wrapper.value.clientHeight);
 });
@@ -50,9 +52,7 @@ watch(() => props.value, (value: any) => {
 });
 
 const keyEvents = function (e) {
-	console.log(e);
-
-	if (e.keyCode == 46 || e.keyCode == 8) {
+	if (e.keyCode === 46 || e.keyCode === 8) {
 		wb.value.deleteSelected();
 	}
 };
@@ -105,7 +105,7 @@ onUnmounted(() => {
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z" /></svg>
 					</v-button>
 
-					<VDivider :vertical="true" />
+					<VDivider vertical />
 
 					<v-button
 						v-tooltip.top="'Rectangle'"
@@ -167,10 +167,10 @@ onUnmounted(() => {
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" /></svg>
 					</v-button>
 
-					<VDivider v-if="wb.selectedShapeType != 'none' || wb.currentTool != 'none'" :vertical="true" />
+					<VDivider v-if="wb.selectedShapeType !== 'none' || wb.currentTool !== 'none'" vertical />
 
 					<VMenu
-						v-if="wb.selectedShapeType != 'none' || wb.currentTool != 'none'"
+						v-if="wb.selectedShapeType !== 'none' || wb.currentTool !== 'none'"
 						placement="top"
 					>
 						<template #activator="{ toggle }">
@@ -204,7 +204,7 @@ onUnmounted(() => {
 						<v-button
 							v-tooltip.tol="'Small'"
 							small
-							:secondary="wb.strokeWidth != 1"
+							:secondary="wb.strokeWidth !== 1"
 							icon
 							@click="wb.strokeWidth = 1"
 						>
@@ -214,7 +214,7 @@ onUnmounted(() => {
 						<v-button
 							v-tooltip.tol="'Medium'"
 							small
-							:secondary="wb.strokeWidth != 3"
+							:secondary="wb.strokeWidth !== 3"
 							icon
 							@click="wb.strokeWidth = 3"
 						>
@@ -224,7 +224,7 @@ onUnmounted(() => {
 						<v-button
 							v-tooltip.tol="'Thick'"
 							small
-							:secondary="wb.strokeWidth != 5"
+							:secondary="wb.strokeWidth !== 5"
 							icon
 							@click="wb.strokeWidth = 5"
 						>
@@ -249,7 +249,7 @@ onUnmounted(() => {
 								</v-button>
 							</template>
 							<VList>
-								<VListItem clickable :active="wb.strokeType == 'solid'" @click="wb.strokeType = 'solid'">
+								<VListItem clickable :active="wb.strokeType === 'solid'" @click="wb.strokeType = 'solid'">
 									<VListItemIcon>
 										<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M212-212q-11-11-11-28t11-28l480-480q11-12 27.5-12t28.5 12q11 11 11 28t-11 28L268-212q-11 11-28 11t-28-11Z" /></svg>
 									</VListItemIcon>
@@ -257,7 +257,7 @@ onUnmounted(() => {
 										Solid
 									</VListItemContent>
 								</VListItem>
-								<VListItem clickable :active="wb.strokeType == 'dashed'" @click="wb.strokeType = 'dashed'">
+								<VListItem clickable :active="wb.strokeType === 'dashed'" @click="wb.strokeType = 'dashed'">
 									<VListItemIcon>
 										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.29999 18.7C5.11666 18.5167 5.02499 18.2833 5.02499 18C5.02499 17.7167 5.11666 17.4833 5.29999 17.3L9.29999 13.3C9.48333 13.1 9.71249 13 9.98749 13C10.2625 13 10.5 13.1 10.7 13.3C10.8833 13.4833 10.975 13.7167 10.975 14C10.975 14.2833 10.8833 14.5167 10.7 14.7L6.69999 18.7C6.51666 18.8833 6.28333 18.975 5.99999 18.975C5.71666 18.975 5.48333 18.8833 5.29999 18.7Z" fill="currentColor" /><path d="M13.3 10.7C13.1167 10.5167 13.025 10.2833 13.025 10C13.025 9.71667 13.1167 9.48333 13.3 9.3L17.3 5.3C17.4833 5.1 17.7125 5 17.9875 5C18.2625 5 18.5 5.1 18.7 5.3C18.8833 5.48333 18.975 5.71667 18.975 6C18.975 6.28333 18.8833 6.51667 18.7 6.7L14.7 10.7C14.5167 10.8833 14.2833 10.975 14 10.975C13.7167 10.975 13.4833 10.8833 13.3 10.7Z" fill="currentColor" /></svg>
 									</VListItemIcon>
@@ -265,7 +265,7 @@ onUnmounted(() => {
 										Dashed
 									</VListItemContent>
 								</VListItem>
-								<VListItem clickable :active="wb.strokeType == 'none'" @click="wb.strokeType = 'none'">
+								<VListItem clickable :active="wb.strokeType = 'none'" @click="wb.strokeType = 'none'">
 									<VListItemIcon>
 										<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q54 0 104-17.5t92-50.5L228-676q-33 42-50.5 92T160-480q0 134 93 227t227 93Zm252-124q33-42 50.5-92T800-480q0-134-93-227t-227-93q-54 0-104 17.5T284-732l448 448Z" /></svg>
 									</VListItemIcon>
@@ -277,7 +277,7 @@ onUnmounted(() => {
 						</VMenu>
 					</template>
 
-					<template v-if="wb.currentTool == 'textbox' || wb.selectedShapeType == 'textbox'">
+					<template v-if="wb.currentTool === 'textbox' || wb.selectedShapeType === 'textbox'">
 						<VMenu
 							placement="top"
 						>
@@ -294,17 +294,17 @@ onUnmounted(() => {
 								</v-button>
 							</template>
 							<VList>
-								<VListItem clickable :active="wb.fontSize == 14" @click="wb.fontSize = 14">
+								<VListItem clickable :active="wb.fontSize === 14" @click="wb.fontSize = 14">
 									<VListItemContent>
 										Small
 									</VListItemContent>
 								</VListItem>
-								<VListItem clickable :active="wb.fontSize == 16" @click="wb.fontSize = 16">
+								<VListItem clickable :active="wb.fontSize === 16" @click="wb.fontSize = 16">
 									<VListItemContent>
 										Medium
 									</VListItemContent>
 								</VListItem>
-								<VListItem clickable :active="wb.fontSize == 20" @click="wb.fontSize = 20">
+								<VListItem clickable :active="wb.fontSize === 20" @click="wb.fontSize = 20">
 									<VListItemContent>
 										Large
 									</VListItemContent>
@@ -322,12 +322,12 @@ onUnmounted(() => {
 									icon
 									@click="toggle"
 								>
-									<v-icon :name="(wb.textAlign == 'left' ? 'format_align_left' : (wb.textAlign == 'center' ? 'format_align_center' : 'format_align_right'))" />
+									<v-icon :name="(wb.textAlign === 'left' ? 'format_align_left' : (wb.textAlign === 'center' ? 'format_align_center' : 'format_align_right'))" />
 									<svg xmlns="http://www.w3.org/2000/svg" class="arrow" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
 								</v-button>
 							</template>
 							<VList>
-								<VListItem clickable :active="wb.textAlign == 'left'" @click="wb.textAlign = 'left'">
+								<VListItem clickable :active="wb.textAlign === 'left'" @click="wb.textAlign = 'left'">
 									<VListItemIcon>
 										<v-icon name="format_align_left" />
 									</VListItemIcon>
@@ -335,7 +335,7 @@ onUnmounted(() => {
 										Left
 									</VListItemContent>
 								</VListItem>
-								<VListItem clickable :active="wb.textAlign == 'center'" @click="wb.textAlign = 'center'">
+								<VListItem clickable :active="wb.textAlign === 'center'" @click="wb.textAlign = 'center'">
 									<VListItemIcon>
 										<v-icon name="format_align_center" />
 									</VListItemIcon>
@@ -343,7 +343,7 @@ onUnmounted(() => {
 										Center
 									</VListItemContent>
 								</VListItem>
-								<VListItem clickable :active="wb.textAlign == 'right'" @click="wb.textAlign = 'right'">
+								<VListItem clickable :active="wb.textAlign === 'right'" @click="wb.textAlign = 'right'">
 									<VListItemIcon>
 										<v-icon name="format_align_right" />
 									</VListItemIcon>

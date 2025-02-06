@@ -26,7 +26,7 @@ function setFile($value: any) {
 		:model-value="props.show"
 		icon="image"
 		title="Insert image"
-		:cancelable="true"
+		cancelable
 		@update:model-value="emit('update:modelValue', false)"
 		@cancel="emit('update:modelValue', false)"
 	>

@@ -36,6 +36,7 @@ export default function (fabric: any) {
 
 			e.lineWidth = this.strokeWidth;
 
+			// eslint-disable-next-line ts/no-unused-expressions, no-sequences
 			e.strokeStyle = this.stroke || e.fillStyle, this.stroke && this._renderStroke(e), e.strokeStyle = s;
 		},
 		complexity() {
