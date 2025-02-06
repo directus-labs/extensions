@@ -17,7 +17,7 @@ watch([() => props.service, () => props.id], updateSource);
 function updateSource() {
 	player.source = {
 		type: 'video',
-		sources: [props.service == 'directus'
+		sources: [props.service === 'directus'
 			? {
 					src: getAssetUrl(props.id),
 					type: 'video/mp4',
@@ -38,11 +38,11 @@ function getAssetUrl(id: VideoID) {
 <template>
 	<div class="wrapper">
 		<component
-			:is="service == 'directus' ? 'video' : 'div'" ref="el"
-			:src="service == 'directus' ? getAssetUrl(id) : null" :playsinline="service == 'directus'"
-			:controls="service == 'directus'" :type="service == 'directus' ? 'video/mp4' : null"
-			:data-plyr-provider="service != 'directus' ? service : null"
-			:data-plyr-embed-id="service != 'directus' ? id : null"
+			:is="service === 'directus' ? 'video' : 'div'" ref="el"
+			:src="service === 'directus' ? getAssetUrl(id) : null" :playsinline="service === 'directus'"
+			:controls="service === 'directus'" :type="service === 'directus' ? 'video/mp4' : null"
+			:data-plyr-provider="service !== 'directus' ? service : null"
+			:data-plyr-embed-id="service !== 'directus' ? id : null"
 		/>
 	</div>
 </template>

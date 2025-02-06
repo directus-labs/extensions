@@ -24,7 +24,7 @@ function setServiceAndID() {
 
 	service.value = props.value.service;
 
-	if (service.value == 'directus') {
+	if (service.value === 'directus') {
 		fileID.value = props.value.id;
 		return;
 	}
@@ -33,7 +33,7 @@ function setServiceAndID() {
 }
 
 function emitInputValue() {
-	if (props.value?.service == service.value && props.value?.id == id.value)
+	if (props.value?.service === service.value && props.value?.id === id.value)
 		return;
 
 	const inputValue = service.value && id.value
@@ -70,7 +70,7 @@ function useVideoID(service: Ref<VideoService | null>, idInput: Ref<VideoID | nu
 			if (!service.value)
 				return;
 
-			if (service.value == 'directus')
+			if (service.value === 'directus')
 				return fileID.value;
 
 			return idInput.value;
@@ -84,7 +84,7 @@ function useVideoID(service: Ref<VideoService | null>, idInput: Ref<VideoID | nu
 	return { id, clearID };
 
 	function clearID() {
-		if (service.value == 'directus') {
+		if (service.value === 'directus') {
 			fileID.value = null;
 			return;
 		}
@@ -108,20 +108,20 @@ function useFileSelect(service: Ref<VideoService | null>) {
 	}
 
 	function openIfFileEmptyOnSelection(newValue: any, oldValue: any) {
-		if (newValue != oldValue && newValue == 'directus' && !fileID.value)
+		if (newValue !== oldValue && newValue === 'directus' && !fileID.value)
 			fileDrawer.value = true;
 	}
 }
 
 function useInputField(service: Ref<VideoService | null>, fileDrawer: Ref<boolean>) {
 	const idInput = ref<VideoID | null>(null);
-	const inputIsClickable = computed(() => !service.value || service.value == 'directus');
+	const inputIsClickable = computed(() => !service.value || service.value === 'directus');
 
 	const inputPlaceholder = computed(() => {
 		if (!service.value)
 			return;
 
-		if (service.value == 'directus')
+		if (service.value === 'directus')
 			return t('choose_from_library');
 
 		return `Video ID …`;
@@ -135,7 +135,7 @@ function useInputField(service: Ref<VideoService | null>, fileDrawer: Ref<boolea
 
 		const clickOnMenu = !!target?.closest('.prepend .v-select');
 
-		if (!clickOnMenu && service.value == 'directus') {
+		if (!clickOnMenu && service.value === 'directus') {
 			fileDrawer.value = true;
 			return;
 		}
@@ -155,7 +155,7 @@ function useInputField(service: Ref<VideoService | null>, fileDrawer: Ref<boolea
 			/>
 		</template>
 		<template #append>
-			<v-icon v-if="service == 'directus' && !id" name="attach_file" />
+			<v-icon v-if="service === 'directus' && !id" name="attach_file" />
 			<v-icon
 				v-if="service && id" v-tooltip="t('deselect')" class="deselect" name="close" clickable
 				@click.stop="clearID"
