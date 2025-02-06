@@ -38,7 +38,7 @@ const selfReferencingM2oFields = computed(() => {
 				field.type,
 			)
 			&& field.meta?.special?.includes('m2o')
-			&& field.schema?.foreign_key_table == props.collection,
+			&& field.schema?.foreign_key_table === props.collection,
 	);
 });
 </script>

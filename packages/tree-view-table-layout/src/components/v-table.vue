@@ -288,7 +288,9 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 		if (props.showManualSort)
 			controlColumnWidth += controlIconWidth;
 
+		// eslint-disable-next-line ts/no-use-before-define
 		if (gridTemplateTreeColumnWidth.value)
+			// eslint-disable-next-line ts/no-use-before-define
 			controlColumnWidth += gridTemplateTreeColumnWidth.value;
 
 		if (controlColumnWidth)
@@ -547,9 +549,7 @@ function useTreeView({
 				[parent.id]: {
 					...edits[parent.id],
 					[parentField.value]:
-                            parent.parent !== null
-                            	? { [itemKey.value]: parent.parent }
-                            	: null,
+                            parent.parent !== null ? { [itemKey.value]: parent.parent } : null,
 				},
 			};
 		}

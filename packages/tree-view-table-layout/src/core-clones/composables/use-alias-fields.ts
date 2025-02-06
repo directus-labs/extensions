@@ -1,3 +1,4 @@
+/* eslint-disable style/no-mixed-operators */
 import type { Query } from '@directus/types';
 import { get, getSimpleHash } from '@directus/utils';
 import { computed, type ComputedRef, type Ref, unref } from 'vue';

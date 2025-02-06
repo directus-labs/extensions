@@ -363,12 +363,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 								collection: field.collection,
 							},
 							sortable:
-                                [
-                                	'json',
-                                	'alias',
-                                	'presentation',
-                                	'translations',
-                                ].includes(field.type) === false,
+                                ['json', 'alias', 'presentation', 'translations'].includes(field.type) === false,
 						} as HeaderRaw;
 					});
 				},
@@ -399,11 +394,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				switch (tableSpacing.value) {
 					case 'compact':
 						return 32;
+					case 'comfortable':
+						return 64;
 					case 'cozy':
 					default:
 						return 48;
-					case 'comfortable':
-						return 64;
 				}
 			});
 
@@ -576,10 +571,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				return {
 					unexpectedError(error: any) {
 						const code
-                            = error.response?.data?.errors?.[0]?.extensions
-                            	?.code
-                            	|| error?.extensions?.code
-                            	|| 'UNKNOWN';
+                            = error.response?.data?.errors?.[0]?.extensions?.code || error?.extensions?.code || 'UNKNOWN';
 
 						notificationStore.add({
 							title: t(`errors.${code}`),

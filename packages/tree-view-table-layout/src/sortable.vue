@@ -9,14 +9,7 @@ interface SortUpdateParams {
 }
 
 const { itemKey, itemSort, itemDepth, itemParent, snapStep, disabled }
-        = defineProps<{
-        	itemKey: string;
-        	itemSort: string;
-        	itemDepth: string;
-        	itemParent: string | null;
-        	snapStep: number;
-        	disabled?: boolean;
-        }>();
+        = defineProps<{ itemKey: string;itemSort: string;itemDepth: string;itemParent: string | null;snapStep: number;disabled?: boolean }>();
 
 const emit = defineEmits(['manual-sort']);
 
@@ -29,12 +22,7 @@ const depthChangeMax = defineModel<number>('depthChangeMax', {
 const nestable = computed(() => itemParent !== null);
 
 const { draggedChildrenIds, onSortStart, onDragOver, isSorting, getDepth }
-        = useSortable({
-        	items: items as ModelRef<Item[]>,
-        	depthChangeMax,
-        	snapStep,
-        	nestable,
-        });
+        = useSortable({ items: items as ModelRef<Item[]>, depthChangeMax, snapStep, nestable });
 
 provide('sortable', { onSortStart, nestable });
 
@@ -117,7 +105,7 @@ function useSortable({
 
 	function getDraggedItemIndex(): number | null {
 		const index = items.value.findIndex(
-			(item: Item) => item[itemKey] == draggedItemId.value,
+			(item: Item) => item[itemKey] === draggedItemId.value,
 		);
 
 		return index > -1 ? index : null;
@@ -253,7 +241,7 @@ function useSortable({
 		function updateDraggedChildrenDepth() {
 			draggedChildrenIds.value?.forEach((childId) => {
 				const child = items.value.find(
-					(item) => item[itemKey] == childId,
+					(item) => item[itemKey] === childId,
 				);
 
 				if (!child)
