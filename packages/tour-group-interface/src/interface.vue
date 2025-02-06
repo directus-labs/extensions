@@ -228,6 +228,7 @@ function useTour() {
 	}
 
 	function onDestroyStarted() {
+		// eslint-disable-next-line no-alert
 		if (!tour.hasNextStep() || confirm(props.exitMessage)) {
 			tour.destroy();
 		}
