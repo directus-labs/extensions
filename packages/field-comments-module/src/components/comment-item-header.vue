@@ -1,76 +1,79 @@
 <script setup lang="ts">
-	import { useApi, useStores } from "@directus/extensions-sdk";
-	import { getAssetUrl } from '../utils/get-asset-url';
-	import { userName } from '../utils/user-name';
-	import { comments_schema } from "../schema";
-	import { format } from 'date-fns';
-	import { computed, ref } from 'vue';
-	import { useI18n } from 'vue-i18n';
-	import type { Activity } from "../types";
+import type { Activity } from '../types';
+import { useApi, useStores } from '@directus/extensions-sdk';
+import { format } from 'date-fns';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { comments_schema } from '../schema';
+import { getAssetUrl } from '../utils/get-asset-url';
+import { userName } from '../utils/user-name';
 
-	const props = defineProps<{
-		comment: Activity;
-		refresh: () => Promise<void>;
-	}>();
+const props = defineProps<{
+	comment: Activity;
+	refresh: () => Promise<void>;
+}>();
 
-	defineEmits(['edit']);
+defineEmits(['edit']);
 
-	const { t } = useI18n();
-	const api = useApi();
-	const { useNotificationsStore, useUserStore } = useStores();
-	const notificationStore = useNotificationsStore();
-	const userStore = useUserStore();
-	const currentUser = userStore.currentUser;
+const { t } = useI18n();
+const api = useApi();
+const { useNotificationsStore, useUserStore } = useStores();
+const notificationStore = useNotificationsStore();
+const userStore = useUserStore();
+const currentUser = userStore.currentUser;
 
-	const formattedTime = computed(() => {
-		if (props.comment.date_created) {
-			return format(new Date(props.comment.date_created), String(t('date-fns_time_no_seconds')));
-		}
+const formattedTime = computed(() => {
+	if (props.comment.date_created) {
+		return format(new Date(props.comment.date_created), String(t('date-fns_time_no_seconds')));
+	}
 
+	return null;
+});
+
+const avatarSource = computed(() => {
+	if (!props.comment.user_created?.avatar)
 		return null;
-	});
 
-	const avatarSource = computed(() => {
-		if (!props.comment.user_created?.avatar) return null;
+	return getAssetUrl(`${props.comment.user_created.avatar.id}?key=system-small-cover`);
+});
 
-		return getAssetUrl(`${props.comment.user_created.avatar.id}?key=system-small-cover`);
-	});
+const { confirmDelete, deleting, remove } = useDelete();
 
-	const { confirmDelete, deleting, remove } = useDelete();
+function useDelete() {
+	const confirmDelete = ref(false);
+	const deleting = ref(false);
 
-	function useDelete() {
-		const confirmDelete = ref(false);
-		const deleting = ref(false);
+	return { confirmDelete, deleting, remove };
 
-		return { confirmDelete, deleting, remove };
+	async function remove() {
+		deleting.value = true;
 
-		async function remove() {
-			deleting.value = true;
+		try {
+			await api.delete(`/${comments_schema.endpoint}/${props.comment.id}`);
+			await props.refresh();
+			confirmDelete.value = false;
+		}
+		catch (error: any) {
+			const code
+					= error?.response?.data?.errors?.[0]?.extensions?.code
+						|| error?.extensions?.code
+						|| 'UNKNOWN';
 
-			try {
-				await api.delete(`/${comments_schema.endpoint}/${props.comment.id}`);
-				await props.refresh();
-				confirmDelete.value = false;
-			} catch (error: any) {
-				const code =
-					error?.response?.data?.errors?.[0]?.extensions?.code ||
-					error?.extensions?.code ||
-					'UNKNOWN';
+			console.warn(error);
 
-				console.warn(error);
-				
-				notificationStore.add({
-					title: code,
-					type: 'error',
-					code,
-					dialog: true,
-					error,
-				});
-			} finally {
-				deleting.value = false;
-			}
+			notificationStore.add({
+				title: code,
+				type: 'error',
+				code,
+				dialog: true,
+				error,
+			});
+		}
+		finally {
+			deleting.value = false;
 		}
 	}
+}
 </script>
 
 <template>
@@ -136,89 +139,89 @@
 
 <style scoped>
 	.comment-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 8px;
-	}
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+}
 
-	.comment-header .v-avatar {
-		--v-avatar-color: var(--theme--background-accent);
+.comment-header .v-avatar {
+	--v-avatar-color: var(--theme--background-accent);
 
-		flex-basis: 24px;
-		margin-right: 8px;
-	}
+	flex-basis: 24px;
+	margin-right: 8px;
+}
 
-	.comment-header .v-avatar .v-icon {
-		--v-icon-color: var(--theme--foreground-subdued);
-	}
+.comment-header .v-avatar .v-icon {
+	--v-icon-color: var(--theme--foreground-subdued);
+}
 
-	.comment-header .name {
-		flex-grow: 1;
-		margin-right: 8px;
-		font-weight: 600;
-	}
+.comment-header .name {
+	flex-grow: 1;
+	margin-right: 8px;
+	font-weight: 600;
+}
 
-	.comment-header .header-right {
-		position: relative;
-		flex-basis: 24px;
-		color: var(--theme--foreground-subdued);
-	}
+.comment-header .header-right {
+	position: relative;
+	flex-basis: 24px;
+	color: var(--theme--foreground-subdued);
+}
 
-	.comment-header .header-right .more {
-		cursor: pointer;
-		opacity: 0;
-		transition: all var(--slow) var(--transition);
-	}
+.comment-header .header-right .more {
+	cursor: pointer;
+	opacity: 0;
+	transition: all var(--slow) var(--transition);
+}
 
-	.comment-header .header-right .more:hover {
-		color: var(--theme--foreground);
-	}
+.comment-header .header-right .more:hover {
+	color: var(--theme--foreground);
+}
 
-	.comment-header .header-right .more.active {
-		opacity: 1;
-	}
+.comment-header .header-right .more.active {
+	opacity: 1;
+}
 
-	.comment-header .header-right .time {
-		position: absolute;
-		top: 0;
-		right: 0;
-		display: flex;
-		align-items: center;
-		font-size: 12px;
-		white-space: nowrap;
-		text-align: right;
-		text-transform: lowercase;
-		opacity: 1;
-		transition: opacity var(--slow) var(--transition);
-		pointer-events: none;
-	}
+.comment-header .header-right .time {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	font-size: 12px;
+	white-space: nowrap;
+	text-align: right;
+	text-transform: lowercase;
+	opacity: 1;
+	transition: opacity var(--slow) var(--transition);
+	pointer-events: none;
+}
 
-	.comment-header .header-right > .time {
-		position: relative;
-		top: auto;
-		right: auto;
-		opacity: 1;
-	}
+.comment-header .header-right > .time {
+	position: relative;
+	top: auto;
+	right: auto;
+	opacity: 1;
+}
 
-	.comment-header .header-right .more.active + .time {
-		opacity: 0;
-	}
+.comment-header .header-right .more.active + .time {
+	opacity: 0;
+}
 
-	.action-delete {
-		--v-button-background-color: var(--danger-25);
-		--v-button-color: var(--theme--danger);
-		--v-button-background-color-hover: var(--danger-50);
-		--v-button-color-hover: var(--theme--danger);
-	}
+.action-delete {
+	--v-button-background-color: var(--danger-25);
+	--v-button-color: var(--theme--danger);
+	--v-button-background-color-hover: var(--danger-50);
+	--v-button-color-hover: var(--theme--danger);
+}
 
-	.dot {
-		display: inline-block;
-		width: 6px;
-		height: 6px;
-		margin-right: 4px;
-		vertical-align: middle;
-		background-color: var(--theme--warning);
-		border-radius: 3px;
-	}
+.dot {
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	margin-right: 4px;
+	vertical-align: middle;
+	background-color: var(--theme--warning);
+	border-radius: 3px;
+}
 </style>

@@ -1,9 +1,9 @@
-import { marked } from 'marked';
 import dompurify from 'dompurify';
+import { marked } from 'marked';
 
-type Options = {
+interface Options {
 	target: '_blank' | '_self' | '_parent' | '_top';
-};
+}
 
 const renderer = new marked.Renderer();
 
@@ -13,9 +13,10 @@ export function md(value: string, options: Options = { target: '_self' }): strin
 			node.setAttribute('rel', 'noopener noreferrer');
 		}
 	});
-    // @ts-ignore
+
+	// @ts-ignore
 	renderer.link = function (href, title, text) {
-        // @ts-ignore
+		// @ts-ignore
 		const link = marked.Renderer.prototype.link.apply(this, [href, title, text]);
 		return link.replace('<a', `<a target="${options.target}"`);
 	};

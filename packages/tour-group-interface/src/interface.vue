@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { Field, ValidationError } from "@directus/types";
+import type { Field, ValidationError } from '@directus/types';
 import {
 	type AllowedButtons,
 	type Config,
 	driver,
 	type Driver,
 	type DriveStep,
-} from "driver.js";
-import { computed, onMounted, onUnmounted, ref } from "vue";
-import { useI18n } from "vue-i18n";
-import defaults from "./defaults";
+} from 'driver.js';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import defaults from './defaults';
 
 const props = withDefaults(
 	defineProps<{
@@ -42,30 +42,32 @@ const props = withDefaults(
 	},
 );
 
-defineEmits(["apply"]);
+defineEmits(['apply']);
 const { updatedFields, injectFieldClasses } = useInjectClasses();
 const { injectButtonBar, rootFormExists } = useInjectButtonBar();
 const { tourReady, initTour, startTour } = useTour();
 
 onMounted(async () => {
 	await injectFieldClasses();
-	if (!rootFormExists()) return;
+	if (!rootFormExists())
+		return;
 	injectButtonBar();
 	initTour();
 });
 
 function useInjectClasses() {
-	const inputClassPrfx = "tour-input";
-	const fieldClassPrfx = "tour-field";
+	const inputClassPrfx = 'tour-input';
+	const fieldClassPrfx = 'tour-field';
 
 	const updatedFields = computed(() => {
 		return props.fields.map((field) => {
-			if (!field.meta) return field;
+			if (!field.meta)
+				return field;
 
 			field.meta.options = {
 				...field.meta?.options,
 				class: `${
-					field.meta?.options?.class ? `${field.meta.options.class} ` : ""
+					field.meta?.options?.class ? `${field.meta.options.class} ` : ''
 				}${inputClassPrfx}-${field.field}`,
 			};
 
@@ -77,7 +79,8 @@ function useInjectClasses() {
 
 	async function injectFieldClasses() {
 		for (const field of props.fields) {
-			if (!field.meta?.options?.class) return;
+			if (!field.meta?.options?.class)
+				return;
 			const maxTries = 6;
 			let tries = 0;
 			let inputEl: HTMLElement | null;
@@ -88,11 +91,13 @@ function useInjectClasses() {
 				inputEl = document.querySelector(`.tour-input-${field.field}`);
 			} while (!inputEl && tries < maxTries);
 
-			if (!inputEl) return;
+			if (!inputEl)
+				return;
 
 			inputEl
-				?.closest(".field")
-				?.classList.add(`${fieldClassPrfx}-${field.field}`, "tour-field");
+				?.closest('.field')
+				?.classList
+				.add(`${fieldClassPrfx}-${field.field}`, 'tour-field');
 		}
 	}
 
@@ -109,16 +114,19 @@ function useInjectButtonBar() {
 	}
 
 	function getRootForm() {
-		return document.querySelector("main>.v-form");
+		return document.querySelector('main>.v-form');
 	}
 
 	function injectButtonBar() {
-		if (!props.steps?.length) return;
-		if (document.querySelector(".tour-group-nav-bar")) return;
+		if (!props.steps?.length)
+			return;
+		if (document.querySelector('.tour-group-nav-bar'))
+			return;
 		const rootForm = getRootForm();
-		if (!rootForm) return;
-		const bar = document.createElement("div");
-		bar.classList.add("tour-group-nav-bar");
+		if (!rootForm)
+			return;
+		const bar = document.createElement('div');
+		bar.classList.add('tour-group-nav-bar');
 		rootForm?.prepend(bar);
 	}
 }
@@ -134,25 +142,26 @@ function useTour() {
 	return { tourReady, initTour, startTour };
 
 	function initTour() {
-		if (!props.steps?.length) return;
+		if (!props.steps?.length)
+			return;
 		tour = driver();
 
 		const themeBorderRadiusCssVar = Number.parseInt(
 			getComputedStyle(document.documentElement)
-				.getPropertyValue("--theme--border-radius")
+				.getPropertyValue('--theme--border-radius')
 				.trim()
-				.replace("px", ""),
+				.replace('px', ''),
 		);
 
 		// NOTE: Must use `setConfig` for each difference to make multiple instances work with driver.js
 		tourBaseConfig = {
 			showProgress: true,
-			progressText: "{{current}}/{{total}}",
-			showButtons: ["next", "previous"],
-			nextBtnText: t("next"),
-			prevBtnText: t("back"),
-			doneBtnText: t("done"),
-			popoverClass: "tour-group-theme",
+			progressText: '{{current}}/{{total}}',
+			showButtons: ['next', 'previous'],
+			nextBtnText: t('next'),
+			prevBtnText: t('back'),
+			doneBtnText: t('done'),
+			popoverClass: 'tour-group-theme',
 			overlayOpacity: 1,
 			stagePadding: 12,
 			stageRadius: themeBorderRadiusCssVar || 6,
@@ -172,17 +181,17 @@ function useTour() {
 				let onHighlighted = (_el: Element | undefined) => {};
 
 				if (forceClick) {
-					disableButtons.push("next");
+					disableButtons.push('next');
 					onNextClick = () => {};
 
 					onHighlighted = (el) => {
-						el?.removeEventListener("click", goToNextElement);
-						el?.addEventListener("click", goToNextElement);
+						el?.removeEventListener('click', goToNextElement);
+						el?.addEventListener('click', goToNextElement);
 					};
 				}
 
 				if (preventBack) {
-					disableButtons.push("previous");
+					disableButtons.push('previous');
 					onPrevClick = () => {};
 				}
 
@@ -206,7 +215,8 @@ function useTour() {
 	}
 
 	function startTour() {
-		if (!tour || !tourSteps?.length) return;
+		if (!tour || !tourSteps?.length)
+			return;
 
 		tour.setConfig({
 			...tourBaseConfig,
@@ -283,7 +293,7 @@ function useTour() {
 	margin-bottom: -8px;
 	grid-column: start/full;
 }
-@import "driver.js/dist/driver.css";
+@import 'driver.js/dist/driver.css';
 /* driver.js overwrites */
 svg.driver-overlay path {
 	fill: var(--overlay-color) !important;
@@ -328,20 +338,16 @@ svg.driver-overlay path {
 .driver-popover.tour-group-theme .driver-popover-footer button:focus {
 	background-color: var(--theme--background-normal);
 }
-.driver-popover.tour-group-theme
-	.driver-popover-arrow-side-left.driver-popover-arrow {
+.driver-popover.tour-group-theme .driver-popover-arrow-side-left.driver-popover-arrow {
 	border-left-color: var(--theme--background);
 }
-.driver-popover.tour-group-theme
-	.driver-popover-arrow-side-right.driver-popover-arrow {
+.driver-popover.tour-group-theme .driver-popover-arrow-side-right.driver-popover-arrow {
 	border-right-color: var(--theme--background);
 }
-.driver-popover.tour-group-theme
-	.driver-popover-arrow-side-top.driver-popover-arrow {
+.driver-popover.tour-group-theme .driver-popover-arrow-side-top.driver-popover-arrow {
 	border-top-color: var(--theme--background);
 }
-.driver-popover.tour-group-theme
-	.driver-popover-arrow-side-bottom.driver-popover-arrow {
+.driver-popover.tour-group-theme .driver-popover-arrow-side-bottom.driver-popover-arrow {
 	border-bottom-color: var(--theme--background);
 }
 </style>

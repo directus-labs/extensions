@@ -1,4 +1,5 @@
-import { ComponentPublicInstance, onMounted, onUnmounted, Ref, ref } from 'vue';
+import type { ComponentPublicInstance, Ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => void | any | boolean;
 
@@ -13,14 +14,16 @@ const keysDown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
 
 document.body.addEventListener('keydown', (event: KeyboardEvent) => {
-	if (event.repeat || !event.key) return;
+	if (event.repeat || !event.key)
+		return;
 
 	keysDown.add(mapKeys(event));
 	callHandlers(event);
 });
 
 document.body.addEventListener('keyup', (event: KeyboardEvent) => {
-	if (event.repeat || !event.key) return;
+	if (event.repeat || !event.key)
+		return;
 	keysDown.clear();
 });
 
@@ -32,13 +35,14 @@ export function useShortcut(
 	) as Ref<HTMLElement>,
 ): void {
 	const callback: ShortcutHandler = (event, cancelNext) => {
-		if (!reference.value) return;
+		if (!reference.value)
+			return;
 		const ref = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
 
 		if (
-			document.activeElement === ref ||
-			ref.contains(document.activeElement) ||
-			document.activeElement === document.body
+			document.activeElement === ref
+			|| ref.contains(document.activeElement)
+			|| document.activeElement === document.body
 		) {
 			event.preventDefault();
 			return handler(event, cancelNext);
@@ -51,7 +55,8 @@ export function useShortcut(
 		[shortcuts].flat().forEach((shortcut) => {
 			if (shortcut in handlers) {
 				handlers[shortcut]?.unshift(callback);
-			} else {
+			}
+			else {
 				handlers[shortcut] = [callback];
 			}
 		});
@@ -75,7 +80,7 @@ export function useShortcut(
 }
 
 function mapKeys(key: KeyboardEvent) {
-	const isLatinAlphabet = /^[a-zA-Z0-9]*?$/g;
+	const isLatinAlphabet = /^[a-z0-9]*$/gi;
 
 	let keyString = key.key.match(isLatinAlphabet) === null ? key.code.replace(/(Key|Digit)/g, '') : key.key;
 
@@ -92,11 +97,13 @@ function callHandlers(event: KeyboardEvent) {
 		const keys = key.split('+');
 
 		for (key of keysDown) {
-			if (keys.includes(key) === false) return;
+			if (keys.includes(key) === false)
+				return;
 		}
 
 		for (key of keys) {
-			if (keysDown.has(key) === false) return;
+			if (keysDown.has(key) === false)
+				return;
 		}
 
 		for (let i = 0; i < value.length; i++) {
@@ -107,7 +114,8 @@ function callHandlers(event: KeyboardEvent) {
 			});
 
 			// if cancelNext is called, discontinue going through the queue.
-			if (typeof cancel === 'boolean' && cancel) break;
+			if (typeof cancel === 'boolean' && cancel)
+				break;
 		}
 	});
 }
