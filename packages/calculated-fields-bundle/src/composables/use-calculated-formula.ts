@@ -1,15 +1,6 @@
-import type {
-	ComputedRef,
-	Ref,
-} from 'vue';
-import { useStores } from '@directus/extensions-sdk';
+import type { ComputedRef, Ref } from 'vue';
 import { get, isObject, mergeWith, set } from 'lodash-es';
-import {
-	computed,
-	readonly,
-	ref,
-	watch,
-} from 'vue';
+import { computed, readonly, ref, watch } from 'vue';
 import { evaluateFormula } from '../lib/evaluate-formula';
 import { extractFieldsFromAst } from '../lib/extract-fields-from-ast';
 import { parseFormula } from '../lib/parse-formula';
@@ -28,8 +19,7 @@ export function useCalculatedFormula({
 	primaryKey,
 	injectedValues,
 }: UseCalculatedFormulaOptions) {
-	const { useRelationsStore } = useStores();
-	const relationsStore = useRelationsStore();
+	const parseError = ref<unknown | string | null>(null);
 
 	const ast = computed(() => {
 		parseError.value = null;
@@ -43,7 +33,6 @@ export function useCalculatedFormula({
 	});
 
 	const result = ref<string | number | boolean | null>(null);
-	const parseError = ref<unknown | string | null>(null);
 	const evalError = ref<unknown>(null);
 
 	const fields = computed(() => {
@@ -64,11 +53,7 @@ export function useCalculatedFormula({
 
 	const values = ref<Record<string, any>>({});
 
-	const {
-		item: fetchedItem,
-		fetch: refetchItem,
-		error: fetchError,
-	} = useItem({
+	const { item: fetchedItem, error: fetchError } = useItem({
 		collection,
 		primaryKey,
 		fields,

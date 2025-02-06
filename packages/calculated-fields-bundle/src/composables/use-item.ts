@@ -121,43 +121,43 @@ export function useItem({
 
 	async function fetchRelated(relations: [[string, string], Relation][]) {
 		const results: [[string, string], Record<string, any>][]
-      = await Promise.all(
-      	relations.map(async ([[relationKey, fieldKey], relation]) => {
-      		const collection = relation.related_collection!;
+			= await Promise.all(
+				relations.map(async ([[relationKey, fieldKey], relation]) => {
+					const collection = relation.related_collection!;
 
-      		const localFieldValue = get(localM2OValues.value, relationKey);
-      		let primaryKey: string | null = null;
+					const localFieldValue = get(localM2OValues.value, relationKey);
+					let primaryKey: string | null = null;
 
-      		if (isObject(localFieldValue)) {
-      			const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
-      				collection,
-      			) as Field | null;
+					if (isObject(localFieldValue)) {
+						const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
+							collection,
+						) as Field | null;
 
-      			if (primaryKeyField) {
-      				primaryKey
-                = (localFieldValue as Record<string, any>)[
-      						primaryKeyField.field
-      					] ?? null;
-      			}
-      		}
-      		else {
-      			primaryKey = localFieldValue;
-      		}
+						if (primaryKeyField) {
+							primaryKey
+								= (localFieldValue as Record<string, any>)[
+									primaryKeyField.field
+								] ?? null;
+						}
+					}
+					else {
+						primaryKey = localFieldValue;
+					}
 
-      		if (!primaryKey) {
-      			return [[relationKey, fieldKey], {}];
-      		}
+					if (!primaryKey) {
+						return [[relationKey, fieldKey], {}];
+					}
 
-      		return [
-      			[relationKey, fieldKey],
-      			(
-      				await api.get(`${getEndpoint(collection)}/${primaryKey}`, {
-      					params: { fields: [fieldKey] },
-      				})
-      			).data?.data,
-      		];
-      	}),
-      );
+					return [
+						[relationKey, fieldKey],
+						(
+							await api.get(`${getEndpoint(collection)}/${primaryKey}`, {
+								params: { fields: [fieldKey] },
+							})
+						).data?.data,
+					];
+				}),
+			);
 
 		// Set the related values on the items
 		for (const [[fieldKey, fieldPath], value] of results) {

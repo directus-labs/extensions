@@ -8,16 +8,17 @@ const props = defineProps<{ service: AudioService; source: AudioSource }>();
 const el = ref();
 let player: any;
 
-onMounted(() => player = new Plyr(el.value, { settings: [] }));
+onMounted(() => (player = new Plyr(el.value, { settings: [] })));
 
 watch([() => props.service, () => props.source], updateSource);
 
 function updateSource() {
 	player.source = {
 		type: 'audio',
-		sources: [props.service == 'directus'
-			? { src: getAssetUrl(props.source) }
-			: { src: props.source },
+		sources: [
+			props.service === 'directus'
+				? { src: getAssetUrl(props.source) }
+				: { src: props.source },
 		],
 	};
 }
@@ -29,12 +30,16 @@ function getAssetUrl(id: AudioSource) {
 
 <template>
 	<div class="wrapper">
-		<audio ref="el" :src="service == 'directus' ? getAssetUrl(source) : source" controls />
+		<audio
+			ref="el"
+			:src="service === 'directus' ? getAssetUrl(source) : source"
+			controls
+		/>
 	</div>
 </template>
 
 <style>
-    @import 'plyr';
+@import 'plyr';
 
 :root {
 	--plyr-color-main: var(--theme--primary);
@@ -46,7 +51,7 @@ function getAssetUrl(id: AudioSource) {
 </style>
 
 <style scoped>
-    .wrapper {
+.wrapper {
 	margin-top: 4px;
 	border-radius: var(--theme--border-radius);
 	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));

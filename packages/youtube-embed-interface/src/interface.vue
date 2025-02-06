@@ -22,34 +22,42 @@ const error = ref('');
 
 const showDrawer = ref(false);
 
-const headers = ref([{
-	text: 'Thumbnail',
-	value: 'thumbnail',
-	sortable: false,
-	width: 69,
-}, {
-	text: 'Name',
-	value: 'name',
-	sortable: false,
-}, {
-	text: 'Channel',
-	value: 'channel',
-	sortable: false,
-}, {
-	text: 'Published',
-	value: 'published',
-	sortable: false,
-}, {
-	text: 'Embed',
-	value: 'embed',
-	sortable: false,
-}]);
+const headers = ref([
+	{
+		text: 'Thumbnail',
+		value: 'thumbnail',
+		sortable: false,
+		width: 69,
+	},
+	{
+		text: 'Name',
+		value: 'name',
+		sortable: false,
+	},
+	{
+		text: 'Channel',
+		value: 'channel',
+		sortable: false,
+	},
+	{
+		text: 'Published',
+		value: 'published',
+		sortable: false,
+	},
+	{
+		text: 'Embed',
+		value: 'embed',
+		sortable: false,
+	},
+]);
 
 const YT = new YouTubeHelper(props.apiKey, props.channelId);
 
 const preview = computed(() => {
 	if (props.value) {
-		const match = props.value.match(/iframe src="(.*?)" height="(\d+)" width="(\d+)"/i);
+		const match = props.value.match(
+			/iframe src="(.*?)" height="(\d+)" width="(\d+)"/i,
+		);
 
 		if (match?.length > 1) {
 			return {
@@ -64,7 +72,13 @@ const preview = computed(() => {
 });
 
 function embed(item: any) {
-	const height = Math.round(item.snippet?.thumbnails?.medium ? (1280 / item.snippet.thumbnails.medium.width * item.snippet.thumbnails.medium.height) : 720);
+	const height = Math.round(
+		item.snippet?.thumbnails?.medium
+			? (1280 / item.snippet.thumbnails.medium.width)
+			* item.snippet.thumbnails.medium.height
+			: 720,
+	);
+
 	return `<iframe src="https://www.youtube.com/embed/${item.id.videoId}" height="${height}" width="1280" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
 }
 
@@ -101,7 +115,9 @@ const videoSearch = debounce(async (value: string) => {
 		try {
 			const fetchedItems = await YT.getVideos(value);
 
-			if (fetchedItems.error) { /* empty */ }
+			if (fetchedItems.error) {
+				/* empty */
+			}
 
 			items.value = fetchedItems.items;
 			nextPageToken.value = fetchedItems.nextPageToken;
@@ -118,7 +134,12 @@ const videoSearch = debounce(async (value: string) => {
 
 async function loadMore() {
 	loading.value = true;
-	const fetchedItems = await YT.getVideos(searchTerm.value, nextPageToken.value);
+
+	const fetchedItems = await YT.getVideos(
+		searchTerm.value,
+		nextPageToken.value,
+	);
+
 	items.value = (items.value ?? []).concat(fetchedItems.items);
 	nextPageToken.value = fetchedItems.nextPageToken;
 	loading.value = false;
@@ -138,14 +159,33 @@ watch(showDrawer, () => {
 <template>
 	<template v-if="!hideSelect && preview">
 		<div class="responsive-preview">
-			<div class="responsive-placeholder" :style="{ paddingBottom: (`${preview.height / preview.width * 100}%`) }" />
-			<iframe :src="preview.src" :height="preview.height" :width="preview.width" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+			<div
+				class="responsive-placeholder"
+				:style="{ paddingBottom: `${(preview.height / preview.width) * 100}%` }"
+			/>
+			<iframe
+				:src="preview.src"
+				:height="preview.height"
+				:width="preview.width"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				allowfullscreen
+			/>
 		</div>
 	</template>
 
-	<v-drawer v-model="showDrawer" title="Embed YouTube video" @cancel="showDrawer = false">
+	<v-drawer
+		v-model="showDrawer"
+		title="Embed YouTube video"
+		@cancel="showDrawer = false"
+	>
 		<template #actions>
-			<v-button v-if="!hideSelect" v-tooltip.bottom="'Save'" icon rounded @click="saveEmbed">
+			<v-button
+				v-if="!hideSelect"
+				v-tooltip.bottom="'Save'"
+				icon
+				rounded
+				@click="saveEmbed"
+			>
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -154,17 +194,18 @@ watch(showDrawer, () => {
 			<v-notice v-if="error" type="danger">
 				{{ error }}
 			</v-notice>
-			<v-input v-model="searchTerm" autofocus full-width placeholder="Search YouTube videos...">
+			<v-input
+				v-model="searchTerm"
+				autofocus
+				full-width
+				placeholder="Search YouTube videos..."
+			>
 				<template #prepend>
-					<v-icon
-						name="search"
-						class="icon-search"
-					/>
+					<v-icon name="search" class="icon-search" />
 				</template>
 			</v-input>
 
 			<v-table
-				ref="table"
 				v-model:headers="headers"
 				v-model="selection"
 				class="table"
@@ -192,7 +233,10 @@ watch(showDrawer, () => {
 					{{ item.snippet.channelTitle }}
 				</template>
 				<template #item.published="{ item }">
-					<display-datetime type="timestamp" :value="item.snippet.publishedAt" />
+					<display-datetime
+						type="timestamp"
+						:value="item.snippet.publishedAt"
+					/>
 				</template>
 				<template #item.embed="{ item }">
 					<v-input readonly small :model-value="embed(item)">
@@ -210,7 +254,12 @@ watch(showDrawer, () => {
 				<template #footer>
 					<div v-if="nextPageToken" class="footer">
 						<div class="pagination">
-							<v-button secondary :loading="loading" :disabled="loading" @click="loadMore">
+							<v-button
+								secondary
+								:loading="loading"
+								:disabled="loading"
+								@click="loadMore"
+							>
 								Load more
 							</v-button>
 						</div>

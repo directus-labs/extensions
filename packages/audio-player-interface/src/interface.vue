@@ -11,7 +11,10 @@ const { t } = useI18n();
 
 const { services, service } = useAudioServices();
 const { fileDrawer, fileID, setFileSelection } = useFileSelect(service);
-const { sourceInput, inputIsClickable, inputPlaceholder, onInputClick } = useInputField(service, fileDrawer);
+
+const { sourceInput, inputIsClickable, inputPlaceholder, onInputClick }
+	= useInputField(service, fileDrawer);
+
 const { source, clearSource } = useAudioSource(service, sourceInput, fileID);
 
 watch(() => props.value, setServiceAndSource, { immediate: true });
@@ -23,7 +26,7 @@ function setServiceAndSource() {
 
 	service.value = props.value.service;
 
-	if (service.value == 'directus') {
+	if (service.value === 'directus') {
 		fileID.value = props.value.source;
 		return;
 	}
@@ -32,12 +35,17 @@ function setServiceAndSource() {
 }
 
 function emitInputValue() {
-	if (props.value?.service == service.value && props.value?.source == source.value)
+	if (
+		props.value?.service === service.value
+		&& props.value?.source === source.value
+	) {
 		return;
+	}
 
-	const inputValue = service.value && source.value
-		? { service: service.value, source: source.value }
-		: null;
+	const inputValue
+		= service.value && source.value
+			? { service: service.value, source: source.value }
+			: null;
 
 	emit('input', ref(inputValue));
 }
@@ -59,7 +67,11 @@ function useAudioServices() {
 	return { service, services };
 }
 
-function useAudioSource(service: Ref<AudioService | null>, sourceInput: Ref<AudioSource | null | undefined>, fileID: Ref<AudioSource | null>) {
+function useAudioSource(
+	service: Ref<AudioService | null>,
+	sourceInput: Ref<AudioSource | null | undefined>,
+	fileID: Ref<AudioSource | null>,
+) {
 	const source = computed({
 		get() {
 			if (!service.value)
@@ -102,20 +114,26 @@ function useFileSelect(service: Ref<AudioService | null>) {
 	}
 
 	function openIfFileEmptyOnSelection(newValue: any, oldValue: any) {
-		if (newValue != oldValue && newValue == 'directus' && !fileID.value)
+		if (newValue !== oldValue && newValue === 'directus' && !fileID.value)
 			fileDrawer.value = true;
 	}
 }
 
-function useInputField(service: Ref<AudioService | null>, fileDrawer: Ref<boolean>) {
+function useInputField(
+	service: Ref<AudioService | null>,
+	fileDrawer: Ref<boolean>,
+) {
 	const sourceInput = ref<AudioSource | null>(null);
-	const inputIsClickable = computed(() => !service.value || service.value == 'directus');
+
+	const inputIsClickable = computed(
+		() => !service.value || service.value == 'directus',
+	);
 
 	const inputPlaceholder = computed(() => {
 		if (!service.value)
 			return;
 
-		if (service.value == 'directus')
+		if (service.value === 'directus')
 			return t('choose_from_library');
 
 		return `Audio Source …`;
@@ -134,36 +152,55 @@ function useInputField(service: Ref<AudioService | null>, fileDrawer: Ref<boolea
 			return;
 		}
 
-		const selectActivator: HTMLElement | null = target?.querySelector('.prepend .v-menu-activator > *');
+		const selectActivator: HTMLElement | null = target?.querySelector(
+			'.prepend .v-menu-activator > *',
+		);
+
 		selectActivator?.click();
 	}
 }
 </script>
 
 <template>
-	<v-input v-model="source" :clickable="inputIsClickable" :placeholder="inputPlaceholder" @click="onInputClick">
+	<v-input
+		v-model="source"
+		:clickable="inputIsClickable"
+		:placeholder="inputPlaceholder"
+		@click="onInputClick"
+	>
 		<template #prepend>
 			<v-select
-				v-model="service" :items="services" inline :placeholder="t('source')"
+				v-model="service"
+				:items="services"
+				inline
+				:placeholder="t('source')"
 				placement="bottom-start"
 			/>
 		</template>
 		<template #append>
 			<v-icon v-if="service == 'directus' && !source" name="attach_file" />
 			<v-icon
-				v-if="service && source" v-tooltip="t('deselect')" class="deselect" name="close"
-				clickable @click.stop="clearSource"
+				v-if="service && source"
+				v-tooltip="t('deselect')"
+				class="deselect"
+				name="close"
+				clickable
+				@click.stop="clearSource"
 			/>
 		</template>
 	</v-input>
 
-	<drawer-files :active="fileDrawer" @update:active="fileDrawer = false" @input="setFileSelection" />
+	<drawer-files
+		:active="fileDrawer"
+		@update:active="fileDrawer = false"
+		@input="setFileSelection"
+	/>
 
 	<Plyr v-if="service && source" :service="service" :source="source" />
 </template>
 
 <style scoped>
-    .v-input :deep(.input .prepend) {
+.v-input :deep(.input .prepend) {
 	margin-right: 16px;
 }
 
