@@ -4,7 +4,7 @@ export default directusConfig({
 	vue: true,
 	eslintConfig: [
 		{
-			ignores: ['**/*.md', 'packages/**/shims.d.ts'],
+			ignores: ['**/*.md', 'packages/**/shims.d.ts', 'packages/**/shim.d.ts'],
 		},
 		{
 			files: ['**/*.vue'],
