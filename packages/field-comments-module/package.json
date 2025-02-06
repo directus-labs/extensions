@@ -1,5 +1,5 @@
 {
-	"name": "directus-extension-field-comments",
+	"name": "@directus-labs/field-comments",
 	"description": "Write comments at the field level",
 	"icon": "extension",
 	"version": "1.0.0",
