@@ -29,11 +29,10 @@ Refer to the Official Guide for details on installing the extension from the Mar
 1. Go to the project settings `/admin/settings/project` and scroll to the bottom
 2. Click Add Collection
 3. Choose a collection from the dropdown field
-4. Select the field to include
-5. Save changes
-6. Open the Access Policies and configure permissions for the new collection `system_field_comments`. See Permissions section below.
+4. Save changes
+5. Open the Access Policies and configure permissions for  `directus_comments`. See Permissions section below.
 
-When opening the project settings for the first time, the module will automatically add the new field at the bottom of the page and create the required system table. Permissions need to be added by the admin.
+When opening the project settings for the first time, the module will automatically add the new field at the bottom of the page and create the required system fields. Admin permissions are required during this step.
 
 ![Customise the module](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/field-comments-module/docs/field-comments-customize.jpg)
 
@@ -46,7 +45,7 @@ This extension uses the current user's policy/role permissions and will only sho
 
 | Collection | `create` | `read` | `update` | `delete` |
 |------------|----------|--------|----------|----------|
-| `system_field_comments` | Full | Full | Custom* | Custom* |
+| `directus_comments` | Full | Full | Custom* | Custom* |
 
 _(*) The custom update and delete has the following item permissions. It's important these settings as they prevent user's from updating or deleting comments of other users._
 
