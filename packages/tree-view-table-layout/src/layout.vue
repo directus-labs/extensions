@@ -1,5 +1,15 @@
 <!-- eslint-disable perfectionist/sort-named-imports -->
 <script setup lang="ts">
+import type { ShowSelect } from '@directus/extensions';
+import type { Field, Filter, Item, PrimaryKey } from '@directus/types';
+// CORE CLONES
+import type { HeaderRaw } from './core-clones/components/v-table/types';
+import type { AliasFields } from './core-clones/composables/use-alias-fields';
+import type { Collection } from './core-clones/types/collections';
+// CORE CHANGES
+// import { useSync } from '@directus/composables';
+// import { useCollectionPermissions } from '@/composables/use-permissions';
+import { useSync } from '@directus/extensions-sdk';
 import {
 	inject,
 	ref,
@@ -10,25 +20,34 @@ import {
 	type Ref,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { ShowSelect } from '@directus/extensions';
-import type { Field, Filter, Item, PrimaryKey } from '@directus/types';
-// CORE CLONES
-import { HeaderRaw } from './core-clones/components/v-table/types';
-import {
-	AliasFields,
-	useAliasFields,
-} from './core-clones/composables/use-alias-fields';
-import { usePageSize } from './core-clones/composables/use-page-size';
-import { useShortcut } from './core-clones/composables/use-shortcut';
-import { Collection } from './core-clones/types/collections';
-// CORE CHANGES
-// import { useSync } from '@directus/composables';
-// import { useCollectionPermissions } from '@/composables/use-permissions';
-import { useSync } from '@directus/extensions-sdk';
 // CUSTOMIZED TABLE COMPONENT
 import CustomVTable from './components/v-table.vue';
+import { useAliasFields } from './core-clones/composables/use-alias-fields';
+import { usePageSize } from './core-clones/composables/use-page-size';
+import { useShortcut } from './core-clones/composables/use-shortcut';
 
 defineOptions({ inheritAttrs: false });
+
+const props = withDefaults(defineProps<Props>(), {
+	selection: () => [],
+	showSelect: 'none',
+	error: null,
+	itemCount: undefined,
+	tableSort: undefined,
+	primaryKeyField: undefined,
+	info: undefined,
+	sortField: undefined,
+	filterUser: undefined,
+	search: undefined,
+	onAlignChange: () => undefined,
+});
+
+const emit = defineEmits([
+	'update:selection',
+	'update:tableHeaders',
+	'update:limit',
+	'update:fields',
+]);
 
 interface Props {
 	collection: string;
@@ -63,27 +82,6 @@ interface Props {
 	saveEdits: (edits: Record<PrimaryKey, Item>) => void;
 	isFiltered: boolean;
 }
-
-const props = withDefaults(defineProps<Props>(), {
-	selection: () => [],
-	showSelect: 'none',
-	error: null,
-	itemCount: undefined,
-	tableSort: undefined,
-	primaryKeyField: undefined,
-	info: undefined,
-	sortField: undefined,
-	filterUser: undefined,
-	search: undefined,
-	onAlignChange: () => undefined,
-});
-
-const emit = defineEmits([
-	'update:selection',
-	'update:tableHeaders',
-	'update:limit',
-	'update:fields',
-]);
 
 const { t } = useI18n();
 const { collection } = toRefs(props);
@@ -179,11 +177,11 @@ function removeField(fieldKey: string) {
 			:manual-sort-key="sortField"
 			allow-header-reorder
 			selection-use-keys
+			:parent-field
+			:collection
 			@click:row="onRowClick"
 			@update:sort="onSortChange"
 			@update:items="saveEdits"
-			:parent-field
-			:collection
 		>
 			<template
 				v-for="header in tableHeaders"
@@ -331,9 +329,9 @@ function removeField(fieldKey: string) {
 
 					<div
 						v-if="
-							loading === false &&
-								limit > -1 &&
-								(items.length >= 25 || limit < 25)
+							loading === false
+								&& limit > -1
+								&& (items.length >= 25 || limit < 25)
 						"
 						class="per-page"
 					>
@@ -365,66 +363,66 @@ function removeField(fieldKey: string) {
 
 <style lang="scss" scoped>
 .custom-layout {
-  display: contents;
-  margin: var(--content-padding);
-  margin-bottom: var(--content-padding-bottom);
+	display: contents;
+	margin: var(--content-padding);
+	margin-bottom: var(--content-padding-bottom);
 }
 
 .v-table {
-  --v-table-sticky-offset-top: var(--layout-offset-top);
+	--v-table-sticky-offset-top: var(--layout-offset-top);
 
-  display: contents;
+	display: contents;
 
-  & > :deep(table) {
-    min-width: calc(100% - var(--content-padding)) !important;
-    margin-left: var(--content-padding);
+	& > :deep(table) {
+		min-width: calc(100% - var(--content-padding)) !important;
+		margin-left: var(--content-padding);
 
-    tr {
-      margin-right: var(--content-padding);
-    }
-  }
+		tr {
+			margin-right: var(--content-padding);
+		}
+	}
 }
 
 .footer {
-  position: sticky;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 32px var(--content-padding);
+	position: sticky;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 32px var(--content-padding);
 
-  .pagination {
-    display: inline-block;
-  }
+	.pagination {
+		display: inline-block;
+	}
 
-  .per-page {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    width: 240px;
-    color: var(--theme--foreground-subdued);
+	.per-page {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		width: 240px;
+		color: var(--theme--foreground-subdued);
 
-    span {
-      width: auto;
-      margin-right: 4px;
-    }
+		span {
+			width: auto;
+			margin-right: 4px;
+		}
 
-    .v-select {
-      color: var(--theme--foreground);
-    }
-  }
+		.v-select {
+			color: var(--theme--foreground);
+		}
+	}
 }
 
 .add-field {
-  --v-icon-color-hover: var(--theme--foreground);
+	--v-icon-color-hover: var(--theme--foreground);
 
-  &.active {
-    --v-icon-color: var(--theme--foreground);
-  }
+	&.active {
+		--v-icon-color: var(--theme--foreground);
+	}
 }
 
 .flip {
-  transform: scaleY(-1);
+	transform: scaleY(-1);
 }
 </style>

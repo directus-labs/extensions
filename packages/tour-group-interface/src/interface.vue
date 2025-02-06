@@ -1,48 +1,14 @@
-<template>
-	<div class="tour-group">
-		<teleport v-if="tourReady" to=".tour-group-nav-bar">
-			<v-button
-				v-if="tourReady"
-				@click="startTour"
-				class="tour-group-nav-btn"
-				x-small
-				secondary
-			>
-				<v-icon :name="buttonIcon" small />
-				<span>{{ buttonTooltip }}</span>
-			</v-button>
-		</teleport>
-
-		<v-form
-			:initial-values="initialValues"
-			:fields="updatedFields"
-			:model-value="values"
-			:primary-key="primaryKey"
-			:group="field.meta?.field"
-			:validation-errors="validationErrors"
-			:loading="loading"
-			:disabled="disabled"
-			:badge="badge"
-			:raw-editor-enabled="rawEditorEnabled"
-			:direction="direction"
-			:show-no-visible-fields="false"
-			:show-validation-errors="false"
-			@update:model-value="$emit('apply', $event)"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useI18n } from "vue-i18n";
+import type { Field, ValidationError } from "@directus/types";
 import {
+	type AllowedButtons,
+	type Config,
 	driver,
 	type Driver,
-	DriveStep,
-	AllowedButtons,
-	Config,
+	type DriveStep,
 } from "driver.js";
-import type { Field, ValidationError } from "@directus/types";
+import { computed, onMounted, onUnmounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import defaults from "./defaults";
 
 const props = withDefaults(
@@ -83,8 +49,7 @@ const { tourReady, initTour, startTour } = useTour();
 
 onMounted(async () => {
 	await injectFieldClasses();
-	if (!rootFormExists())
-		return;
+	if (!rootFormExists()) return;
 	injectButtonBar();
 	initTour();
 });
@@ -95,8 +60,7 @@ function useInjectClasses() {
 
 	const updatedFields = computed(() => {
 		return props.fields.map((field) => {
-			if (!field.meta)
-				return field;
+			if (!field.meta) return field;
 
 			field.meta.options = {
 				...field.meta?.options,
@@ -113,8 +77,7 @@ function useInjectClasses() {
 
 	async function injectFieldClasses() {
 		for (const field of props.fields) {
-			if (!field.meta?.options?.class)
-				return;
+			if (!field.meta?.options?.class) return;
 			const maxTries = 6;
 			let tries = 0;
 			let inputEl: HTMLElement | null;
@@ -125,8 +88,7 @@ function useInjectClasses() {
 				inputEl = document.querySelector(`.tour-input-${field.field}`);
 			} while (!inputEl && tries < maxTries);
 
-			if (!inputEl)
-				return;
+			if (!inputEl) return;
 
 			inputEl
 				?.closest(".field")
@@ -151,13 +113,10 @@ function useInjectButtonBar() {
 	}
 
 	function injectButtonBar() {
-		if (!props.steps?.length)
-			return;
-		if (document.querySelector(".tour-group-nav-bar"))
-			return;
+		if (!props.steps?.length) return;
+		if (document.querySelector(".tour-group-nav-bar")) return;
 		const rootForm = getRootForm();
-		if (!rootForm)
-			return;
+		if (!rootForm) return;
 		const bar = document.createElement("div");
 		bar.classList.add("tour-group-nav-bar");
 		rootForm?.prepend(bar);
@@ -175,11 +134,10 @@ function useTour() {
 	return { tourReady, initTour, startTour };
 
 	function initTour() {
-		if (!props.steps?.length)
-			return;
+		if (!props.steps?.length) return;
 		tour = driver();
 
-		const themeBorderRadiusCssVar = parseInt(
+		const themeBorderRadiusCssVar = Number.parseInt(
 			getComputedStyle(document.documentElement)
 				.getPropertyValue("--theme--border-radius")
 				.trim()
@@ -207,7 +165,7 @@ function useTour() {
 		tourSteps = props.steps
 			.filter(({ element }) => !!element)
 			.map(({ element, forceClick, preventBack, ...popover }, index) => {
-				let disableButtons: AllowedButtons[] = [];
+				const disableButtons: AllowedButtons[] = [];
 				let onNextClick = () => tour.moveTo(index + 1);
 				let onPrevClick = () => tour.moveTo(index - 1);
 
@@ -248,8 +206,7 @@ function useTour() {
 	}
 
 	function startTour() {
-		if (!tour || !tourSteps?.length)
-			return;
+		if (!tour || !tourSteps?.length) return;
 
 		tour.setConfig({
 			...tourBaseConfig,
@@ -268,89 +225,123 @@ function useTour() {
 }
 </script>
 
+<template>
+	<div class="tour-group">
+		<teleport v-if="tourReady" to=".tour-group-nav-bar">
+			<v-button
+				v-if="tourReady"
+				class="tour-group-nav-btn"
+				x-small
+				secondary
+				@click="startTour"
+			>
+				<v-icon :name="buttonIcon" small />
+				<span>{{ buttonTooltip }}</span>
+			</v-button>
+		</teleport>
+
+		<v-form
+			:initial-values="initialValues"
+			:fields="updatedFields"
+			:model-value="values"
+			:primary-key="primaryKey"
+			:group="field.meta?.field"
+			:validation-errors="validationErrors"
+			:loading="loading"
+			:disabled="disabled"
+			:badge="badge"
+			:raw-editor-enabled="rawEditorEnabled"
+			:direction="direction"
+			:show-no-visible-fields="false"
+			:show-validation-errors="false"
+			@update:model-value="$emit('apply', $event)"
+		/>
+	</div>
+</template>
+
 <style scoped>
 .tour-group {
-  position: relative;
+	position: relative;
 }
 .tour-group-nav-btn {
-  --v-icon-color: var(--theme--primary);
-  --v-icon-color-hover: var(--v-icon-color);
+	--v-icon-color: var(--theme--primary);
+	--v-icon-color-hover: var(--v-icon-color);
 }
 .tour-group-nav-btn :deep(.button) {
-  padding: 0 8px;
+	padding: 0 8px;
 }
 .tour-group-nav-btn :deep(.button .content) {
-  gap: 6px;
+	gap: 6px;
 }
 </style>
 
 <style>
 .tour-group-nav-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: -8px;
-  grid-column: start/full;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-bottom: -8px;
+	grid-column: start/full;
 }
 @import "driver.js/dist/driver.css";
 /* driver.js overwrites */
 svg.driver-overlay path {
-  fill: var(--overlay-color) !important;
+	fill: var(--overlay-color) !important;
 }
 .driver-popover.tour-group-theme * {
-  font-family: inherit;
+	font-family: inherit;
 }
 .driver-popover.tour-group-theme {
-  padding: 20px;
-  max-width: 360px;
-  background-color: var(--theme--background);
-  border-radius: var(--theme--border-radius);
-  color: var(--theme--foreground);
+	padding: 20px;
+	max-width: 360px;
+	background-color: var(--theme--background);
+	border-radius: var(--theme--border-radius);
+	color: var(--theme--foreground);
 }
 .driver-popover.tour-group-theme .driver-popover-description,
 .driver-popover.tour-group-theme .driver-popover-progress-text,
 .driver-popover.tour-group-theme .driver-popover-footer button {
-  font-size: 15px;
-  line-height: 22px;
-  font-weight: 500;
+	font-size: 15px;
+	line-height: 22px;
+	font-weight: 500;
 }
 .driver-popover.tour-group-theme .driver-popover-title {
-  font-size: 16px;
-  line-height: 1.6;
-  font-weight: 600;
-  color: var(--theme--foreground-accent);
+	font-size: 16px;
+	line-height: 1.6;
+	font-weight: 600;
+	color: var(--theme--foreground-accent);
 }
 .driver-popover.tour-group-theme .driver-popover-progress-text {
-  color: var(--theme--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 .driver-popover.tour-group-theme .driver-popover-footer button {
-  text-shadow: none;
-  background-color: var(--theme--background-normal);
-  color: var(--theme--foreground);
-  border: none;
-  border-radius: var(--theme--border-radius);
-  padding: 4px 24px;
+	text-shadow: none;
+	background-color: var(--theme--background-normal);
+	color: var(--theme--foreground);
+	border: none;
+	border-radius: var(--theme--border-radius);
+	padding: 4px 24px;
 }
 .driver-popover.tour-group-theme .driver-popover-footer button:hover {
-  background-color: var(--theme--background-accent);
+	background-color: var(--theme--background-accent);
 }
 .driver-popover.tour-group-theme .driver-popover-footer button:focus {
-  background-color: var(--theme--background-normal);
+	background-color: var(--theme--background-normal);
 }
 .driver-popover.tour-group-theme
-  .driver-popover-arrow-side-left.driver-popover-arrow {
-  border-left-color: var(--theme--background);
+	.driver-popover-arrow-side-left.driver-popover-arrow {
+	border-left-color: var(--theme--background);
 }
 .driver-popover.tour-group-theme
-  .driver-popover-arrow-side-right.driver-popover-arrow {
-  border-right-color: var(--theme--background);
+	.driver-popover-arrow-side-right.driver-popover-arrow {
+	border-right-color: var(--theme--background);
 }
 .driver-popover.tour-group-theme
-  .driver-popover-arrow-side-top.driver-popover-arrow {
-  border-top-color: var(--theme--background);
+	.driver-popover-arrow-side-top.driver-popover-arrow {
+	border-top-color: var(--theme--background);
 }
 .driver-popover.tour-group-theme
-  .driver-popover-arrow-side-bottom.driver-popover-arrow {
-  border-bottom-color: var(--theme--background);
+	.driver-popover-arrow-side-bottom.driver-popover-arrow {
+	border-bottom-color: var(--theme--background);
 }
 </style>
