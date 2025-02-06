@@ -71,7 +71,10 @@ function embed(item: any) {
 async function copyEmbed(item: any) {
 	if (await clipboard.copyToClipboard(embed(item))) {
 		item.copied = true;
-		setTimeout(() => { item.copied = false; }, 2000);
+
+		setTimeout(() => {
+			item.copied = false;
+		}, 2000);
 	}
 }
 
@@ -98,7 +101,7 @@ const videoSearch = debounce(async (value: string) => {
 		try {
 			const fetchedItems = await YT.getVideos(value);
 
-			if (fetchedItems.error) {}
+			if (fetchedItems.error) { /* empty */ }
 
 			items.value = fetchedItems.items;
 			nextPageToken.value = fetchedItems.nextPageToken;
@@ -167,7 +170,7 @@ watch(showDrawer, () => {
 				class="table"
 				fixed-header
 				:show-select="!hideSelect ? 'one' : 'none'"
-				:show-resize="true"
+				show-resize
 				:show-manual-sort="false"
 				:items="items"
 				:loading="loading"

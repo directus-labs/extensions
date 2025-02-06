@@ -3,7 +3,7 @@ import directusConfig from '@directus/eslint-config';
 export default directusConfig({
 	vue: true,
 	eslintConfig: [{
-		ignores: ['**/*.md'],
+		ignores: ['**/*.md', 'packages/**/shims.d.ts'],
 	}, {
 		files: ['**/*.vue'],
 		rules: {
