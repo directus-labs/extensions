@@ -27,6 +27,7 @@ export default defineComponent({
 		},
 		filter: {
 			type: Object,
+			// eslint-disable-next-line vue/require-valid-default-prop
 			default: {},
 		},
 		dataValues: {
@@ -140,7 +141,7 @@ export default defineComponent({
 
 					category_data[category].push({
 						x: formatTitle(label),
-						y: y_value == y_value * 1 ? y_value * 1 : y_value,
+						y: y_value === y_value * 1 ? y_value * 1 : y_value,
 					});
 				});
 
@@ -268,16 +269,16 @@ export default defineComponent({
 
 <template>
 	<div class="treemap-chart" :class="{ 'has-header': showHeader }">
-		<v-info v-if="!collection" type="danger" icon="error" :center="true" title="No Collection Selected" />
-		<v-info v-else-if="!dataValues || !dataLabels" type="warning" icon="warning" :center="true" title="Both Value and Label fields must be selected" />
-		<v-info v-else-if="!canRead" type="danger" icon="error" :center="true" title="Forbidden">
+		<v-info v-if="!collection" type="danger" icon="error" center title="No Collection Selected" />
+		<v-info v-else-if="!dataValues || !dataLabels" type="warning" icon="warning" center title="Both Value and Label fields must be selected" />
+		<v-info v-else-if="!canRead" type="danger" icon="error" center title="Forbidden">
 			You do not have permissions to see this table
 		</v-info>
 		<v-info v-else-if="hasError" type="danger" icon="error" :title="errorResponse?.title">
 			{{ errorResponse?.message }}
 		</v-info>
-		<VProgressCircular v-else-if="isLoading" :indeterminate="true" />
-		<v-info v-else-if="!isLoading && !chartEl" type="danger" icon="error" :center="true" title="Incompatible Data">
+		<VProgressCircular v-else-if="isLoading" indeterminate />
+		<v-info v-else-if="!isLoading && !chartEl" type="danger" icon="error" center title="Incompatible Data">
 			The current data is not compatiple with the scatter plot.
 		</v-info>
 		<div ref="chartEl" />
