@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { useApi, useStores } from "@directus/extensions-sdk";
 	import type { Activity } from "../types";
-	import { schema_collection_name } from "../schema";
+	import { comments_schema } from "../schema";
 	import { ref, watch } from "vue";
 	import CommentInput from "./comment-input.vue";
 	import CommentItemHeader from "./comment-item-header.vue";
@@ -44,7 +44,7 @@
 			savingEdits.value = true;
 
 			try {
-				await api.patch(`/items/${schema_collection_name}/${props.comment.id}`, {
+				await api.patch(`/${comments_schema.endpoint}/${props.comment.id}`, {
 					comment: edits.value,
 					user_updated: currentUser.id,
 				});

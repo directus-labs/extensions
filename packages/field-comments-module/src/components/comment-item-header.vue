@@ -2,7 +2,7 @@
 	import { useApi, useStores } from "@directus/extensions-sdk";
 	import { getAssetUrl } from '../utils/get-asset-url';
 	import { userName } from '../utils/user-name';
-	import { schema_collection_name } from "../schema";
+	import { comments_schema } from "../schema";
 	import { format } from 'date-fns';
 	import { computed, ref } from 'vue';
 	import { useI18n } from 'vue-i18n';
@@ -48,7 +48,7 @@
 			deleting.value = true;
 
 			try {
-				await api.delete(`/items/${schema_collection_name}/${props.comment.id}`);
+				await api.delete(`/${comments_schema.endpoint}/${props.comment.id}`);
 				await props.refresh();
 				confirmDelete.value = false;
 			} catch (error: any) {

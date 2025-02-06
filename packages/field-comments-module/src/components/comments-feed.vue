@@ -4,7 +4,7 @@
     import type { Comment, PrimaryKey } from "@directus/types";
     import type { Locale } from "date-fns";
     import type { CommentsByDateDisplay, Activity } from "../types";
-    import { schema_collection_name } from "../schema";
+    import { comments_schema } from "../schema";
     import { isThisYear, isToday, isYesterday } from "date-fns";
     import { format as formatOriginal } from "date-fns";
     import { flatten, groupBy, orderBy } from "lodash-es";
@@ -31,8 +31,8 @@
     const { usePermissionsStore } = useStores();
     const permissionStore = usePermissionsStore();
     const { hasPermission } = permissionStore;
-    const canAddComments = hasPermission(schema_collection_name, "create");
-    const canReadComments = hasPermission(schema_collection_name, "read");
+    const canAddComments = hasPermission("directus_comments", "create");
+    const canReadComments = hasPermission("directus_comments", "read");
 
     const locales: { lang: string; locale: Locale }[] = [];
 
@@ -76,12 +76,21 @@
             loading.value = true;
 
             try {
-                const response = hasPermission(schema_collection_name, "read") ? (
-                    await api.get(`/items/${schema_collection_name}`, {
+                const response = hasPermission(comments_schema.table, "read") ? (
+                    await api.get(`/${comments_schema.endpoint}`, {
                         params: {
-                            "filter[collection][_eq]": collection.value,
-                            "filter[item][_eq]": primaryKey.value,
-                            "filter[field][_eq]": field.value,
+                            __field_comments__: true,
+                            filter: {
+                                collection: {
+                                    _eq: collection.value,
+                                },
+                                item: {
+                                    _eq: primaryKey.value,
+                                },
+                                field: {
+                                    _eq: field.value,
+                                },
+                            },
                             sort: "-date_created",
                             fields: [
                                 "id",
@@ -150,8 +159,9 @@
             loadingCount.value = true;
 
             try {
-                const response = hasPermission(schema_collection_name, "read") ? await api.get(`/items/${schema_collection_name}`, {
+                const response = hasPermission(comments_schema.table, "read") ? await api.get(`/${comments_schema.endpoint}`, {
                     params: {
+                        __field_comments__: true,
                         filter: {
                             _and: [
                                 {

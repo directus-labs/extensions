@@ -1,10 +1,11 @@
 <script setup lang="ts">
   import { useEventListener } from "@vueuse/core";
-  import { useStores } from "@directus/extensions-sdk";
-  import { ref } from "vue";
+  import { useApi, useStores } from "@directus/extensions-sdk";
+  import { ref, onMounted } from "vue";
   import { OPEN_COMMENTS } from "../constants";
   import CommentsFeed from "./comments-feed.vue";
 
+  const api = useApi();
   const { usePermissionsStore } = useStores();
   const { hasPermission } = usePermissionsStore();
   const permission = hasPermission('directus_comments', 'read');
@@ -25,6 +26,21 @@
   function toggle() {
     active.value = !active.value;
   }
+
+  onMounted(() => {
+    api.interceptors.request.use((config) => {
+      // detect marker param
+      if (config.params?.__field_comments__) {
+        // remove marker
+        delete config.params.__field_comments__;
+      } else if (config.method === "get" && config.url === "/comments") {
+        // forcefully add a null filter for `field`
+        config.params["filter[field][_null]"] = true;
+      }
+
+      return config;
+    });
+  });
 </script>
 
 <template>

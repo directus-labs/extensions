@@ -5,7 +5,7 @@
 	import { md } from '../utils/md';
 	import { userName } from '../utils/user-name';
 	import { Comment, User } from '@directus/types';
-	import { schema_collection_name } from "../schema";
+	import { comments_schema } from "../schema";
 	import { cloneDeep, throttle } from 'lodash-es';
 	import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 	import { useI18n } from 'vue-i18n';
@@ -223,12 +223,12 @@
 
 		try {
 			if (props.existingComment) {
-				await api.patch(`/items/${schema_collection_name}/${props.existingComment.id}`, {
+				await api.patch(`/${comments_schema.endpoint}/${props.existingComment.id}`, {
 					comment: newCommentContent.value,
 					user_updated: currentUser.id,
 				});
 			} else {
-				await api.post(`/items/${schema_collection_name}`, {
+				await api.post(`/${comments_schema.endpoint}`, {
 					field: props.field,
 					collection: props.collection,
 					item: props.primaryKey,

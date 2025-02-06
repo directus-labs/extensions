@@ -7,7 +7,7 @@ import { getDirectusApp, getDirectusAppProvides } from "./get-directus-app";
 import { getDirectusRouter } from "./get-directus-router";
 import { unexpectedError } from "./unexpected-error";
 import { system_field } from "../settings-field";
-import { schema_collection_name, schema_collection, schema_field_field, schema_field_collection, schema_field_item, schema_field_comment, field_relation, collection_relation, schema_field_date_created, schema_field_date_updated, schema_field_user_created, schema_field_user_updated, user_created_relation, user_updated_relation } from "../schema";
+import { schema_directus_comments_field, comments_schema } from "../schema";
 import type { Field } from "@directus/types";
 import type { CommentCollectionType, Packet } from "../types";
 
@@ -57,38 +57,18 @@ async function initializeApp(retry: number = 0){
   const directusApp = getDirectusApp();
   const stores = directusApp._container._vnode.component.provides[STORES_INJECT];
 
-  const { useFieldsStore, useSettingsStore, useUserStore, useCollectionsStore, useRelationsStore } = stores;
+  const { useFieldsStore, useSettingsStore, useUserStore } = stores;
   const fieldStore = useFieldsStore();
   const settingsStore = useSettingsStore();
   const userStore = useUserStore();
-  const collectionStore = useCollectionsStore();
-  const relationStore = useRelationsStore();
 
   const isAdmin = computed(() => userStore.currentUser?.role?.admin_access ?? userStore.currentUser?.admin_access ?? false,);
 
   if(isAdmin){
     
     try {
-      // Create system collection if missing
-      await collectionStore.upsertCollection(schema_collection_name,  schema_collection);
-      await fieldStore.upsertField(schema_collection_name, "field", schema_field_field);
-      relationStore.upsertRelation(schema_collection_name, "field", field_relation);
-
-      await fieldStore.upsertField(schema_collection_name, "collection", schema_field_collection);
-      relationStore.upsertRelation(schema_collection_name, "collection", collection_relation);
-
-      await fieldStore.upsertField(schema_collection_name, "item", schema_field_item);
-      await fieldStore.upsertField(schema_collection_name, "comment", schema_field_comment);
-
-      await fieldStore.upsertField(schema_collection_name, "date_created", schema_field_date_created);
-      await fieldStore.upsertField(schema_collection_name, "date_updated", schema_field_date_updated);
-
-      await fieldStore.upsertField(schema_collection_name, "user_created", schema_field_user_created);
-      await fieldStore.upsertField(schema_collection_name, "user_updated", schema_field_user_updated);
-
-      relationStore.upsertRelation(schema_collection_name, "user_created", user_created_relation);
-      relationStore.upsertRelation(schema_collection_name, "user_updated", user_updated_relation);
-
+      // Create required fields
+      await fieldStore.upsertField(comments_schema.table, "field", schema_directus_comments_field);
       await fieldStore.upsertField("directus_settings", "field_comments_settings", system_field);
       await settingsStore.hydrate();
 
@@ -149,9 +129,10 @@ async function injectApp(to: Record<string,any>, retry: number = 0) {
 
   try {
     // Fetch comment count for all fields
-    const response = hasPermission(schema_collection_name, "read") ? (
-      await api.get(`/items/${schema_collection_name}`, {
+    const response = hasPermission(comments_schema.table, "read") ? (
+      await api.get(`/${comments_schema.endpoint}`, {
         params: {
+          __field_comments__: true,
           filter: {
             _and: [
               {
@@ -167,11 +148,9 @@ async function injectApp(to: Record<string,any>, retry: number = 0) {
                 }
               },
               {
-                comment: {
-                  item: {
-                    _eq: primaryKey
-                  },
-                }
+                item: {
+                  _eq: primaryKey
+                },
               },
             ],
           },
