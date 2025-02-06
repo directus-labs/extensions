@@ -27,17 +27,43 @@ export const system_field: DeepPartial<Field> = {
           },
         },
         {
+          field: "all_fields",
+          type: "boolean",
+          name: "Use All Fields",
+          meta: {
+            interface: "toggle",
+            width: "half",
+          },
+          schema: {
+            default_value: true,
+          }
+        },
+        {
           field: "fields",
           type: "json",
           name: "Fields for Comments",
           meta: {
             interface: "system-field",
             options: {
+              placeholder: "Using All Fields",
               collectionField: "collection",
               multiple: true,
+              allowNone: true,
+              allowPrimaryKey: true,
+              allowForeignKeys: true,
             },
             note: "Select the fields to enable comments.",
             width: "half",
+            conditions: [
+							{
+								rule: {
+									all_fields: {
+										_eq: true,
+									},
+								},
+								hidden: true,
+							},
+						],
           },
         },
       ],

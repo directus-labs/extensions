@@ -187,7 +187,7 @@ async function injectApp(to: Record<string,any>, retry: number = 0) {
     const fieldLabels = document.querySelectorAll(".field-name") ?? [];
     fieldLabels.forEach((f: any) => {
       let label = f.querySelector("div") ? f.querySelector("div")?.innerHTML : f.innerHTML;
-      const matches: Array<Record<string,any>> = fields.filter((i: Field) => fieldCommentSettings.value[0].fields.includes(i.field) && i.name == label);
+      const matches: Array<Record<string,any>> = fields.filter((i: Field) => i.name == label && (fieldCommentSettings.value[0].all_fields || fieldCommentSettings.value[0].fields.includes(i.field)));
       const isEnabled: boolean = matches.length > 0;
 
       if(isEnabled){
