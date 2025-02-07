@@ -1,3 +1,4 @@
+<!-- eslint-disable ts/ban-ts-comment -->
 <script setup lang="ts">
 import type { PropType } from 'vue';
 import { Loader } from '@googlemaps/js-api-loader';
@@ -406,7 +407,7 @@ function setMapType(newValue: MapType) {
 							value: 'terrain',
 						},
 					]"
-					:close-on-content-click="true"
+					close-on-content-click
 					@update:model-value="(newValue) => setMapType(newValue)"
 				/>
 			</div>
@@ -484,7 +485,7 @@ function setMapType(newValue: MapType) {
 					<v-list-item
 						v-if="!props.displayMap"
 						:clickable="false"
-						:disabled="true"
+						disabled
 						class="google-logo"
 					>
 						<img :src="isDark ? googleLogoDark : googleLogo" alt="Google Logo">
@@ -498,8 +499,8 @@ function setMapType(newValue: MapType) {
 <style lang="scss" scoped>
 :deep(.v-select) {
 	/*
-	 * Small style in sync with input-small
-	 * @see https://github.com/directus/directus/blob/28aaf739ba75980f4cb5ed1fa8c31b900dd97765/app/src/components/v-input.vue#L434-L440
+	* Small style in sync with input-small
+	* @see https://github.com/directus/directus/blob/28aaf739ba75980f4cb5ed1fa8c31b900dd97765/app/src/components/v-input.vue#L434-L440
 	*/
 	&.small {
 		.v-input {
