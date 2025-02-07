@@ -66,21 +66,6 @@ async function runFlow() {
 	}
 }
 
-const isConfirmButtonDisabled = computed(() => {
-	for (const field of confirmDetails.value?.fields || []) {
-		if (
-			field.meta?.required
-			&& (!confirmValues.value
-				|| confirmValues.value[field.field] === null
-				|| confirmValues.value[field.field] === undefined)
-		) {
-			return true;
-		}
-	}
-
-	return false;
-});
-
 const confirmDetails = computed(() => {
 	const flow = props.flow;
 
@@ -94,6 +79,21 @@ const confirmDetails = computed(() => {
 			name: !field.name && field.field ? formatTitle(field.field) : field.name,
 		})),
 	};
+});
+
+const isConfirmButtonDisabled = computed(() => {
+	for (const field of confirmDetails.value?.fields || []) {
+		if (
+			field.meta?.required
+			&& (!confirmValues.value
+				|| confirmValues.value[field.field] === null
+				|| confirmValues.value[field.field] === undefined)
+		) {
+			return true;
+		}
+	}
+
+	return false;
 });
 
 const confirmButtonCTA = computed(() => {

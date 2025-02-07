@@ -34,6 +34,7 @@ const PENALTY_SKIPPED = 0.999;
 // 1000 characters are inserted between matches.
 const PENALTY_CASE_MISMATCH = 0.9999;
 // Match higher for letters closer to the beginning of the word
+// eslint-disable-next-line unused-imports/no-unused-vars
 const PENALTY_DISTANCE_FROM_START = 0.9;
 // If the word has more characters than the user typed, it should
 // be penalised slightly.

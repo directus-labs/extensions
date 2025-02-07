@@ -13,6 +13,7 @@ export function zodErrorToValidationErrors(
 
 		switch (issue.code) {
 			case 'invalid_enum_value':
+				// eslint-disable-next-line unused-imports/no-unused-vars
 				valid = issue.options;
 				break;
 			case 'invalid_string':

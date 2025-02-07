@@ -29,7 +29,7 @@ const displayTemplate = computed(() => {
 			{{ result.collection }}
 		</div>
 		<Item
-			v-for="(hit, index) in result.hits"
+			v-for="(hit, _index) in result.hits"
 			:key="`${result.collection}-${hit[result.primaryKeyField.field]}`"
 			:icon="info.icon"
 		>

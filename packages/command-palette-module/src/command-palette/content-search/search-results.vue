@@ -22,6 +22,7 @@ function onHitSelected(result: CollectionSearchResult, index: number) {
 	});
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 function onRecentSelected(entry: RecentSearchEntry) {
 	emit(
 		'open',
@@ -34,6 +35,7 @@ function onRecentSelected(entry: RecentSearchEntry) {
 <template>
 	<v-list class="search-results-list">
 		<template v-if="(query && results.length > 0) || loading">
+			<!-- eslint-disable-next-line vue/valid-v-for -->
 			<ResultGroup
 				v-for="(result, index) in results"
 				:query="query"

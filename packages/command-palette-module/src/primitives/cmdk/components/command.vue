@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/prop-name-casing -->
 <script lang="ts">
 import type { computed, ComputedRef, nextTick, reactive, Ref, ref, watch, watchEffect } from 'vue';
 import { createContext } from '../utils/create-context';
@@ -75,6 +76,7 @@ const props = withDefaults(defineProps<CommandProps>(), {
 defineEmits<CommandEmits>();
 
 const value = defineModel<string>();
+// eslint-disable-next-line unused-imports/no-unused-vars
 const open = defineModel<boolean>('open');
 const search = defineModel<string>('search', { default: '' });
 
@@ -435,6 +437,7 @@ function handleKeyDown(e: KeyboardEvent) {
 		switch (e.key) {
 			case 'n':
 
+			// eslint-disable-next-line no-fallthrough
 			case 'j': {
 				// vim keybind down
 				if (props.vimBindings && e.ctrlKey) {
@@ -451,6 +454,7 @@ function handleKeyDown(e: KeyboardEvent) {
 
 			case 'p':
 
+			// eslint-disable-next-line no-fallthrough
 			case 'k': {
 				// vim keybind up
 				if (props.vimBindings && e.ctrlKey) {

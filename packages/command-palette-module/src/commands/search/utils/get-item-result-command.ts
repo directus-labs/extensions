@@ -14,6 +14,7 @@ export function getItemResultCommand(
 	item: Item,
 	{ info, RenderTemplate, DisplayImage }: Context,
 ) {
+	// eslint-disable-next-line no-lone-blocks
 	{
 		const {
 			collection,
@@ -27,9 +28,7 @@ export function getItemResultCommand(
 		const id = `${collection}:${item[info.value.primaryKeyField]}`;
 
 		const icon
-      = thumbnailField && item[thumbnailField]
-      	? () => h(DisplayImage, { value: { id: item[thumbnailField] } })
-      	: collectionIcon;
+      = thumbnailField && item[thumbnailField] ? () => h(DisplayImage, { value: { id: item[thumbnailField] } }) : collectionIcon;
 
 		return {
 			id: `search-item:${id}`,

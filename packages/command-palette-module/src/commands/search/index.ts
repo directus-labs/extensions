@@ -35,8 +35,7 @@ export const searchCommands = defineCommands({
 
 		function collectionTitle(collection: string) {
 			let name
-        = collections.find(({ collection: c }: Collection) => c === collection)
-        	?.name ?? collection;
+        = collections.find(({ collection: c }: Collection) => c === collection)?.name ?? collection;
 
 			if (name.startsWith('directus_')) {
 				name = name.replace('directus_', '');
@@ -48,6 +47,7 @@ export const searchCommands = defineCommands({
 });
 
 export const dynamicSearchCommands = defineCommands({
+	// eslint-disable-next-line unused-imports/no-unused-vars
 	commands: ({ stores, search }) => {
 		return [];
 	},

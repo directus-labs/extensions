@@ -21,9 +21,7 @@ export const flowCommands = defineCommands({
 		const userStore = useUserStore();
 
 		const isAdmin
-      = userStore.currentUser?.admin_access
-      	?? userStore.currentUser?.role?.admin_access
-      	?? false;
+      = userStore.currentUser?.admin_access ?? userStore.currentUser?.role?.admin_access ?? false;
 
 		return [
 			// {

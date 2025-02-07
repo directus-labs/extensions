@@ -37,6 +37,7 @@ const { add: addToRecents } = useRecentCommands();
 
 const { groups, commands } = useRegisteredCommands(commandContext);
 
+// eslint-disable-next-line symbol-description
 const ungrouped = Symbol();
 const groupIdsSet = computed(() => new Set(groups.value.map(({ id }) => id)));
 

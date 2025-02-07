@@ -103,6 +103,7 @@ async function createGlobalSearchSettings() {
 		);
 	}
 	catch (error) {
+		console.error(error);
 		// @TODO: Handle error
 	}
 }
