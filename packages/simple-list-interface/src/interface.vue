@@ -57,6 +57,7 @@ watch(
 					: [];
 			}
 			catch (error) {
+				console.error(error);
 				localItems.value = [];
 			}
 		}
@@ -245,7 +246,7 @@ function onDragEnd() {
 			:disabled="disabled"
 			item-key="index"
 			handle=".drag-handle"
-			:force-fallback="true"
+			force-fallback
 			class="list-items"
 			@end="onDragEnd"
 		>

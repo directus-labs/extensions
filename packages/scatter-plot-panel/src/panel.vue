@@ -1,3 +1,4 @@
+<!-- eslint-disable no-nested-ternary -->
 <script lang="ts">
 import { useApi, useStores } from '@directus/extensions-sdk';
 import formatTitle from '@directus/format-title';
@@ -28,6 +29,7 @@ export default defineComponent({
 		},
 		filter: {
 			type: Object,
+			// eslint-disable-next-line vue/require-valid-default-prop
 			default: {},
 		},
 		series: {
@@ -133,7 +135,7 @@ export default defineComponent({
 							category_data[category] = [];
 						}
 
-						category_data[category].push([type == 'datetime' ? new Date(x_value) : (x_value == x_value * 1 ? x_value * 1 : x_value), y_value]);
+						category_data[category].push([type === 'datetime' ? new Date(x_value) : (x_value === x_value * 1 ? x_value * 1 : x_value), y_value]);
 					});
 
 					categories = Object.keys(category_data);
@@ -152,7 +154,7 @@ export default defineComponent({
 							data: response.data.data.map((item: Record<string, any>) => {
 								const x_value = get(item, props.xAxis);
 								const y_value = get(item, props.yAxis);
-								return [type == 'datetime' ? new Date(x_value) : (x_value == x_value * 1 ? x_value * 1 : x_value), y_value];
+								return [type === 'datetime' ? new Date(x_value) : (x_value === x_value * 1 ? x_value * 1 : x_value), y_value];
 							}),
 						},
 					];
@@ -173,7 +175,7 @@ export default defineComponent({
 					style: axisStyle,
 				};
 
-				if (type == 'datetime') {
+				if (type === 'datetime') {
 					xLabels.datetimeFormatter = {
 						year: 'yyyy',
 						month: 'MMM \'yy',
@@ -185,7 +187,7 @@ export default defineComponent({
 				}
 				else {
 					xLabels.formatter = function (val: string) {
-						return xField.type == 'integer' ? Number.parseInt(val) : Number.parseFloat(val).toFixed(1);
+						return xField.type === 'integer' ? Number.parseInt(val) : Number.parseFloat(val).toFixed(1);
 					};
 				}
 
@@ -235,8 +237,8 @@ export default defineComponent({
 						enabled: showToolTip,
 						x: {
 							formatter: (value: any) => {
-								const formattedValue = type == 'datetime'
-									? format(value, (xField.type == 'date' ? 'MMM d' : 'MMM d, p'))
+								const formattedValue = type === 'datetime'
+									? format(value, (xField.type === 'date' ? 'MMM d' : 'MMM d, p'))
 									: value > 10000
 										? abbreviateNumber(value, 1)
 										: n(value, 'decimal', {
@@ -348,16 +350,16 @@ export default defineComponent({
 
 <template>
 	<div class="scatter-plot" :class="{ 'has-header': showHeader }">
-		<v-info v-if="!collection" type="danger" icon="error" :center="true" title="No Collection Selected" />
-		<v-info v-else-if="!xAxis || !yAxis" type="warning" icon="warning" :center="true" title="Both Axis must be selected" />
-		<v-info v-else-if="!canRead" type="danger" icon="error" :center="true" title="Forbidden">
+		<v-info v-if="!collection" type="danger" icon="error" center title="No Collection Selected" />
+		<v-info v-else-if="!xAxis || !yAxis" type="warning" icon="warning" center title="Both Axis must be selected" />
+		<v-info v-else-if="!canRead" type="danger" icon="error" center title="Forbidden">
 			You do not have permissions to see this table
 		</v-info>
 		<v-info v-else-if="hasError" type="danger" icon="error" :title="errorResponse?.title">
 			{{ errorResponse?.message }}
 		</v-info>
-		<VProgressCircular v-else-if="isLoading" :indeterminate="true" />
-		<v-info v-else-if="!isLoading && !chartEl" type="danger" icon="error" :center="true" title="Incompatible Data">
+		<VProgressCircular v-else-if="isLoading" indeterminate />
+		<v-info v-else-if="!isLoading && !chartEl" type="danger" icon="error" center title="Incompatible Data">
 			The current data is not compatiple with the scatter plot.
 		</v-info>
 		<div ref="chartEl" />
