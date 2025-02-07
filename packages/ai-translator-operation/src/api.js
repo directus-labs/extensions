@@ -4,7 +4,7 @@ export default {
 	id: 'directus-labs-ai-translation',
 	handler: async ({ api_key, api_plan, text, target_lang }) => {
 		try {
-			const url = `https://api${api_plan == 'free' ? '-free' : ''}.deepl.com/v2/translate`;
+			const url = `https://api${api_plan === 'free' ? '-free' : ''}.deepl.com/v2/translate`;
 
 			const response = await request(url, {
 				method: 'POST',
