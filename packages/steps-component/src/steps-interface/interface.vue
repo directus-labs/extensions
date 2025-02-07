@@ -15,6 +15,7 @@ const props = withDefaults(
 	}>(),
 	{
 		value: null,
+		// eslint-disable-next-line vue/require-valid-default-prop
 		choices: [],
 	},
 );

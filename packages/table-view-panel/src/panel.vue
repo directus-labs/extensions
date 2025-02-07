@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/prop-name-casing -->
 <script lang="ts">
 import { useApi, useStores } from '@directus/extensions-sdk';
 import { get, set } from 'lodash';
@@ -26,6 +27,7 @@ export default defineComponent({
 		},
 		filter: {
 			type: Object,
+			// eslint-disable-next-line vue/require-valid-default-prop
 			default: {},
 		},
 		fields: {
@@ -105,7 +107,7 @@ export default defineComponent({
 								for (let idx = 0; idx < keys.length; idx++) {
 									const key = keys[idx];
 
-									if (key != undefined && content[key] !== undefined && content[key] !== null) {
+									if (key !== undefined && content[key] !== undefined && content[key] !== null) {
 										content = content[key];
 									}
 								}
@@ -119,7 +121,7 @@ export default defineComponent({
 						const rel_item = get(item, field_key);
 						content_length = rel_item == null || String(rel_item).length < minCellWidth ? minCellWidth : String(rel_item).length;
 
-						if (tableCellWidth.value[field_key] == undefined || content_length > tableCellWidth.value[field_key]) {
+						if (tableCellWidth.value[field_key] === undefined || content_length > tableCellWidth.value[field_key]) {
 							tableCellWidth.value[field_key] = content_length;
 						}
 
@@ -156,6 +158,7 @@ export default defineComponent({
 				return relation.field === field || relation.meta?.one_field === field;
 			});
 
+			// eslint-disable-next-line no-nested-ternary
 			const relatedCollection = (relation === undefined ? props.collection : (relation.field === field && relation.related_collection !== props.collection ? relation.related_collection : relation.collection));
 
 			return { collection: relatedCollection, fieldPath: path.join('.') };
@@ -169,7 +172,7 @@ export default defineComponent({
 				const field = fieldsStore.getField(collection, fieldPath);
 				if (!field)
 					return null;
-				if (field.type == 'timestamp' && field.meta.display_options.relative)
+				if (field.type === 'timestamp' && field.meta.display_options.relative)
 					tableCellWidth.value[field_key] = 14;
 
 				return {
@@ -182,7 +185,7 @@ export default defineComponent({
 					field: field.field,
 					type: field.type,
 					value: field_key,
-					width: tableCellWidth.value[field_key] !== undefined && tableCellWidth.value[field_key] < 24 ? tableCellWidth.value[field_key] * 10 + (field.type == 'date' ? 30 : 20) : 390, // previously 160
+					width: tableCellWidth.value[field_key] !== undefined && tableCellWidth.value[field_key] < 24 ? tableCellWidth.value[field_key] * 10 + (field.type === 'date' ? 30 : 20) : 390, // previously 160
 					sortable: !['json'].includes(field.type),
 				};
 			}).filter((field: object | string | null) => field !== null);
@@ -191,7 +194,7 @@ export default defineComponent({
 		async function sortKey(sort_field: string, sort_direction: string): Promise<Array<string>> {
 			if (!sort_field)
 				return [];
-			return [`${sort_direction != 'asc' ? '-' : ''}${sort_field}`];
+			return [`${sort_direction !== 'asc' ? '-' : ''}${sort_field}`];
 		}
 
 		async function editRow(e: any) {
@@ -310,9 +313,9 @@ export default defineComponent({
 
 <template>
 	<div class="panel-table" :class="{ 'has-header': showHeader }">
-		<v-info v-if="!collection" type="danger" icon="error" :center="true" title="No Collection Selected" />
-		<v-info v-else-if="fields.length == 0" type="warning" icon="warning" :center="true" title="No Fields Selected" />
-		<v-info v-else-if="!canRead" type="danger" icon="error" :center="true" title="Forbidden">
+		<v-info v-if="!collection" type="danger" icon="error" center title="No Collection Selected" />
+		<v-info v-else-if="fields.length === 0" type="warning" icon="warning" center title="No Fields Selected" />
+		<v-info v-else-if="!canRead" type="danger" icon="error" center title="Forbidden">
 			You do not have permissions to see this table
 		</v-info>
 		<v-info v-else-if="hasError" type="danger" icon="error" :title="errorResponse?.title">
@@ -326,7 +329,7 @@ export default defineComponent({
 				:item-key="primaryKeyField?.field"
 				:class="{ 'no-last-border': tableData.length <= limit }"
 				:loading="isLoading"
-				:selection-use-keys="true"
+				selection-use-keys
 				:show-resize="false"
 				@click:row="editRow"
 				@update:sort="sortTrigger"
@@ -344,7 +347,7 @@ export default defineComponent({
 					/>
 				</template>
 			</v-table>
-			<div v-if="tableData.length == 0 && !isLoading" class="no-item-message">
+			<div v-if="tableData.length === 0 && !isLoading" class="no-item-message">
 				No Items
 			</div>
 
