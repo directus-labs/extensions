@@ -15,13 +15,15 @@ const emit = defineEmits<{
 	input: [(value: number) => void];
 }>();
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 function handleChange(value: number): void {
+	// eslint-disable-next-line unused-imports/no-unused-vars
 	emit('input', (value: number) => {});
 }
 
 // Helper Functions
 function normalizePercent(value: number, min: number, max: number): number {
-	if (min == max) {
+	if (min === max) {
 		return value < min ? 0 : 100;
 	}
 
@@ -38,6 +40,7 @@ function normalizePercent(value: number, min: number, max: number): number {
 
 // Computed Properties
 const percent = computed(() => {
+	// eslint-disable-next-line ts/no-use-before-define
 	return normalizePercent(props.value, normalizedMin.value, normalizedMax.value);
 });
 
