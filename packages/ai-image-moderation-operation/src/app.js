@@ -10,7 +10,7 @@ export default {
 		},
 		{
 			label: 'Threshold',
-			text: threshold || 80 + '%',
+			text: threshold || `${80}%`,
 		},
 	],
 	options: [
@@ -42,7 +42,7 @@ export default {
 			name: 'Threshold',
 			type: 'integer',
 			schema: {
-				default_value: 80
+				default_value: 80,
 			},
 			meta: {
 				width: 'full',
@@ -50,9 +50,9 @@ export default {
 				options: {
 					max: 99,
 					min: 1,
-					step: 1
-				}
+					step: 1,
+				},
 			},
-		}
+		},
 	],
-}
+};

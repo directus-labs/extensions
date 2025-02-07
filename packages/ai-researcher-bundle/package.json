@@ -1,64 +1,64 @@
 {
-  "name": "@directus-labs/ai-researcher-bundle",
-  "description": "An AI agent for the purpose of content research within the Editor",
-  "icon": "extension",
-  "version": "1.0.0",
-  "license": "MIT",
-  "author": "Directus Labs",
-  "contributors": [
-    {
-      "name": "Dominic Marcelino",
-      "email": "dominic.marcelino@utomic.media"
-    }
-  ],
-  "keywords": [
-    "directus",
-    "directus-extension",
-    "directus-extension-bundle"
-  ],
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "directus:extension": {
-    "type": "bundle",
-    "path": {
-      "app": "dist/app.js",
-      "api": "dist/api.js"
-    },
-    "entries": [
-      {
-        "type": "interface",
-        "name": "ai-researcher-interface",
-        "source": "src/ai-researcher-interface/index.ts"
-      },
-      {
-        "type": "endpoint",
-        "name": "ai-researcher-endpoint",
-        "source": "src/ai-researcher-endpoint/index.ts"
-      }
-    ],
-    "host": "^10.0.0 || ^11.0.0"
-  },
-  "scripts": {
-    "build": "directus-extension build",
-    "dev": "directus-extension build -w --no-minify",
-    "link": "directus-extension link",
-    "add": "directus-extension add",
-    "validate": "directus-extension validate"
-  },
-  "devDependencies": {
-    "@directus/extensions-sdk": "13.0.0",
-    "@directus/types": "^12.2.2",
-    "@types/node": "^22.10.6",
-    "typescript": "^5.7.3",
-    "vue": "^3.5.13"
-  },
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.33.1",
-    "@directus/env": "^4.1.0",
-    "@directus/errors": "^1.0.0",
-    "openai": "^4.78.1",
-    "sass": "^1.83.4"
-  }
+	"name": "@directus-labs/ai-researcher-bundle",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "An AI agent for the purpose of content research within the Editor",
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "Dominic Marcelino",
+			"email": "dominic.marcelino@utomic.media"
+		}
+	],
+	"license": "MIT",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"icon": "extension",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "interface",
+				"name": "ai-researcher-interface",
+				"source": "src/ai-researcher-interface/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "ai-researcher-endpoint",
+				"source": "src/ai-researcher-endpoint/index.ts"
+			}
+		],
+		"host": "^10.0.0 || ^11.0.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"add": "directus-extension add",
+		"validate": "directus-extension validate"
+	},
+	"dependencies": {
+		"@anthropic-ai/sdk": "^0.33.1",
+		"@directus/env": "^4.1.0",
+		"@directus/errors": "^1.0.0",
+		"openai": "^4.78.1",
+		"sass": "^1.83.4"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "13.0.0",
+		"@directus/types": "^12.2.2",
+		"@types/node": "^22.10.6",
+		"typescript": "^5.7.3",
+		"vue": "^3.5.13"
+	}
 }

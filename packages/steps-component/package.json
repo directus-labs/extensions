@@ -1,19 +1,19 @@
 {
 	"name": "@directus-labs/extension-steps-component",
+	"type": "module",
+	"version": "1.0.1",
 	"description": "Displays a clickable list of steps that the user can follow to complete a task.",
-	"icon": "extension",
-    "license": "MIT",
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus-labs/extension-steps-component"
 	},
-	"version": "1.0.1",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-bundle"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],

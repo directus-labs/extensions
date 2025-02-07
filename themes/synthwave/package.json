@@ -1,16 +1,16 @@
 {
 	"name": "directus-extension-synthwave-theme",
-	"description": "A dark 80s-inspired retro-futurstic theme.",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
+	"description": "A dark 80s-inspired retro-futurstic theme.",
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-custom-theme"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": ["dist"],
-	"license": "MIT",
 	"directus:extension": {
 		"type": "theme",
 		"path": "dist/index.js",

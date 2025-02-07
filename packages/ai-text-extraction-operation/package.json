@@ -1,53 +1,53 @@
 {
-  "name": "@directus-labs/ai-text-extraction-operation",
-  "description": "Use Clarifai to find and extract text from image files.",
-  "icon": "extension",
-  "version": "1.0.2",
-  "license": "MIT",
-  "keywords": [
-    "directus",
-    "directus-extension",
-    "directus-extension-operation"
-  ],
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "directus:extension": {
-    "type": "operation",
-    "path": {
-      "app": "dist/app.js",
-      "api": "dist/api.js"
-    },
-    "source": {
-      "app": "src/app.ts",
-      "api": "src/api.ts"
-    },
-    "host": "^10.10.0",
-    "sandbox": {
-      "enabled": true,
-      "requestedScopes": {
-        "log": {},
-        "request": {
-          "methods": [
-            "POST"
-          ],
-          "urls": [
-            "https://api.clarifai.com/v2/**"
-          ]
-        }
-      }
-    }
-  },
-  "scripts": {
-    "build": "directus-extension build",
-    "dev": "directus-extension build -w --no-minify",
-    "link": "directus-extension link"
-  },
-  "devDependencies": {
-    "@directus/extensions-sdk": "11.0.1",
-    "@types/node": "^20.11.26",
-    "typescript": "^5.4.2",
-    "vue": "^3.4.21"
-  }
+	"name": "@directus-labs/ai-text-extraction-operation",
+	"type": "module",
+	"version": "1.0.2",
+	"description": "Use Clarifai to find and extract text from image files.",
+	"license": "MIT",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-operation"
+	],
+	"icon": "extension",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "operation",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"source": {
+			"app": "src/app.ts",
+			"api": "src/api.ts"
+		},
+		"host": "^10.10.0",
+		"sandbox": {
+			"enabled": true,
+			"requestedScopes": {
+				"log": {},
+				"request": {
+					"methods": [
+						"POST"
+					],
+					"urls": [
+						"https://api.clarifai.com/v2/**"
+					]
+				}
+			}
+		}
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "11.0.1",
+		"@types/node": "^20.11.26",
+		"typescript": "^5.4.2",
+		"vue": "^3.4.21"
+	}
 }

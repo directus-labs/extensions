@@ -11,6 +11,7 @@
  * ```
  */
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const SIMPLE_UNITS = [
 	'acre',
 	'bit',
@@ -132,7 +133,9 @@ export function formatNumber(value: number, locales: string | string[], options?
 	try {
 		const formatter: Intl.NumberFormat = new Intl.NumberFormat(locales, options);
 		return formatter.format(value);
-	} catch (e) {
+	}
+	catch (e) {
+		console.error(e);
 		return String(value);
 	}
 }

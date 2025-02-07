@@ -10,18 +10,18 @@ import QuoteTool from '@editorjs/quote';
 import RawToolTool from '@editorjs/raw';
 import TableTool from '@editorjs/table';
 import UnderlineTool from '@editorjs/underline';
-import { Alignment } from './alignment';
 import ToggleBlock from 'editorjs-toggle-block';
+import { Alignment } from './alignment';
 import { AttachesTool, ImageTool } from './plugins';
 // EXAMPLE (Part 3/4): add marker tool
 // import Marker from "@editorjs/marker";
 
-export type UploaderConfig = {
+export interface UploaderConfig {
 	baseURL: string | undefined;
 	setFileHandler: (handler: any) => void;
 	setCurrentPreview?: (url: string) => void;
 	getUploadFieldElement: () => any;
-};
+}
 
 export default function getTools(
 	uploaderConfig: UploaderConfig,
@@ -98,15 +98,16 @@ export default function getTools(
 		alignment: {
 			class: Alignment,
 		},
-        // EXAMPLE (Part 4/4): add marker tool
-        // marker: {
-        //     class: Marker,
-        //     shortcut: "CMD+SHIFT+M",
-        // },
+		// EXAMPLE (Part 4/4): add marker tool
+		// marker: {
+		//     class: Marker,
+		//     shortcut: "CMD+SHIFT+M",
+		// },
 	};
 
 	for (const toolName of selection) {
-		if (!haveFilesAccess && fileRequiresTools.includes(toolName)) continue;
+		if (!haveFilesAccess && fileRequiresTools.includes(toolName))
+			continue;
 
 		if (toolName in defaults) {
 			tools[toolName] = defaults[toolName];
@@ -117,15 +118,15 @@ export default function getTools(
 	// editor.js tools means we need to already declare alignment in the tools object before we can assign it to other tools.
 	if ('alignment' in tools) {
 		if ('paragraph' in tools) {
-			tools['paragraph'].tunes = ['alignment'];
+			tools.paragraph.tunes = ['alignment'];
 		}
 
 		if ('header' in tools) {
-			tools['header'].tunes = ['alignment'];
+			tools.header.tunes = ['alignment'];
 		}
 
 		if ('quote' in tools) {
-			tools['quote'].tunes = ['alignment'];
+			tools.quote.tunes = ['alignment'];
 		}
 	}
 

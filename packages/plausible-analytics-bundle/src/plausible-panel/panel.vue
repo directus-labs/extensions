@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { cssVar } from '@directus/utils/browser';
+import { computed } from 'vue';
 
 interface Props {
 	shareUrl: string;
@@ -39,7 +39,7 @@ const url = computed(() => {
 			frameborder="0"
 			loading="lazy"
 			style="width: 1px; min-width: 100%; height: 100%"
-		></iframe>
+		/>
 	</div>
 </template>
 

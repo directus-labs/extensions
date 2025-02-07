@@ -1,9 +1,9 @@
-import { defineLayout } from '@directus/extensions-sdk';
-import LayoutComponent from './layout.vue';
+import type { Ref } from 'vue';
+import { defineLayout, useCollection, useItems, useSync } from '@directus/extensions-sdk';
+import { computed, ref, toRefs, unref } from 'vue';
 
-import { computed, toRefs, ref, unref, Ref } from 'vue';
-import { useItems, useCollection, useSync } from '@directus/extensions-sdk';
-import Options from './options.vue'
+import LayoutComponent from './layout.vue';
+import Options from './options.vue';
 
 function syncRefProperty<R, T extends keyof R>(ref: Ref<R>, key: T, defaultValue: R[T] | Ref<R[T]>) {
 	return computed<R[T]>({
@@ -27,7 +27,6 @@ export default defineLayout({
 		actions: () => null,
 	},
 	setup(props, { emit }) {
-
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 
 		const labelField = syncRefProperty(layoutOptions, 'labelField', undefined);
@@ -40,7 +39,8 @@ export default defineLayout({
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection as any);
 
 		const page = ref(1);
-		const { 
+
+		const {
 			items,
 			loading,
 			error,
@@ -50,11 +50,11 @@ export default defineLayout({
 			changeManualSort,
 			getItems,
 			getItemCount,
-			getTotalCount
+			getTotalCount,
 		} = useItems(collection, {
 			sort: primaryKeyField.field,
 			limit: '-1',
-			page: page,
+			page,
 			fields: '*',
 			filter,
 			search,
@@ -77,8 +77,8 @@ export default defineLayout({
 			filter,
 			search,
 			fieldsInCollection,
-			selection, 
-			selectMode, 
+			selection,
+			selectMode,
 			readonly,
 			changeManualSort,
 			refresh,
@@ -87,7 +87,13 @@ export default defineLayout({
 			endDateField,
 			dependenciesField,
 			viewMode,
-			error, totalPages, itemCount, totalCount, getItems, getTotalCount, getItemCount
+			error,
+			totalPages,
+			itemCount,
+			totalCount,
+			getItems,
+			getTotalCount,
+			getItemCount,
 		};
 	},
 });

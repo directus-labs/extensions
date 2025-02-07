@@ -1,47 +1,49 @@
-import { isArray } from "lodash-es";
-import { computed, MaybeRef, ref, Ref, unref, VNode, watch } from "vue";
-import { injectCommandRootContext } from "../components/command.vue";
-import { VALUE_ATTR } from "../constants";
-import { getTextContent } from "../utils/get-text-content";
+import type { MaybeRef, Ref, VNode } from 'vue';
+import { isArray } from 'lodash-es';
+import { computed, ref, unref, watch } from 'vue';
+import { injectCommandRootContext } from '../components/command.vue';
+import { VALUE_ATTR } from '../constants';
+import { getTextContent } from '../utils/get-text-content';
 
 export function useValue(
-  id: string,
-  elementRef: Ref<HTMLElement | null>,
-  deps: (
-    | MaybeRef<string>
-    | Ref<HTMLElement | null>
-    | Ref<VNode[]>
-    | undefined
-  )[],
-  aliases?: MaybeRef<string[] | undefined>,
+	id: string,
+	elementRef: Ref<HTMLElement | null>,
+	deps: (
+		| MaybeRef<string>
+		| Ref<HTMLElement | null>
+		| Ref<VNode[]>
+		| undefined
+	)[],
+	aliases?: MaybeRef<string[] | undefined>,
 ) {
-  const internalValue = ref("");
-  const context = injectCommandRootContext();
+	const internalValue = ref('');
+	const context = injectCommandRootContext();
 
-  const value = computed(() => {
-    for (const part of deps) {
-      const _part = unref<string | HTMLElement | VNode[] | null | undefined>(
-        part,
-      );
+	const value = computed(() => {
+		for (const part of deps) {
+			const _part = unref<string | HTMLElement | VNode[] | null | undefined>(
+				part,
+			);
 
-      const content = getTextContent(...(isArray(_part) ? _part : [_part]));
+			const content = getTextContent(...(isArray(_part) ? _part : [_part]));
 
-      if (content) return content;
-    }
+			if (content)
+				return content;
+		}
 
-    return internalValue.value;
-  });
+		return internalValue.value;
+	});
 
-  watch(
-    value,
-    (newValue) => {
-      const keywords = (unref(aliases) ?? []).map((alias) => alias.trim());
-      context.value(id, newValue, keywords);
-      elementRef.value?.setAttribute(VALUE_ATTR, newValue);
-      internalValue.value = newValue;
-    },
-    { immediate: true },
-  );
+	watch(
+		value,
+		(newValue) => {
+			const keywords = (unref(aliases) ?? []).map((alias) => alias.trim());
+			context.value(id, newValue, keywords);
+			elementRef.value?.setAttribute(VALUE_ATTR, newValue);
+			internalValue.value = newValue;
+		},
+		{ immediate: true },
+	);
 
-  return value;
+	return value;
 }

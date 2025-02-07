@@ -1,98 +1,101 @@
+import type {
+	Component,
+	DeepReadonly,
+	Ref,
+} from 'vue';
+import type {
+	_CommandRouteProps,
+	CommandLocation,
+	NamedCommandLocation,
+} from './types';
 import {
-  Component,
-  computed,
-  DeepReadonly,
-  inject,
-  markRaw,
-  provide,
-  readonly,
-  ref,
-  Ref,
-} from "vue";
-import { commandRouterKey } from "./injection-symbols";
-import {
-  _CommandRouteProps,
-  CommandLocation,
-  NamedCommandLocation,
-} from "./types";
+	computed,
+	inject,
+	markRaw,
+	provide,
+	readonly,
+	ref,
+} from 'vue';
+import { commandRouterKey } from './injection-symbols';
 
-type StackRoute = {
-  name: string;
-  component: Component;
-  props?: _CommandRouteProps;
-};
+interface StackRoute {
+	name: string;
+	component: Component;
+	props?: _CommandRouteProps;
+}
 
-export type CommandRouterOptions = {
-  root: Component;
-  rootProps?: Record<string, any>;
-};
+export interface CommandRouterOptions {
+	root: Component;
+	rootProps?: Record<string, any>;
+}
 
 export interface CommandRouter {
-  stack: DeepReadonly<Ref<StackRoute[]>>;
-  currentCommand: Ref<NamedCommandLocation>;
+	stack: DeepReadonly<Ref<StackRoute[]>>;
+	currentCommand: Ref<NamedCommandLocation>;
 
-  push(location: CommandLocation): void;
+	push: (location: CommandLocation) => void;
 
-  pop(): boolean;
+	pop: () => boolean;
 
-  clear(): void;
+	clear: () => void;
 }
 
 export function createCommandRouter(
-  options: CommandRouterOptions,
+	options: CommandRouterOptions,
 ): CommandRouter {
-  const stack: Ref<StackRoute[]> = ref([]);
+	const stack: Ref<StackRoute[]> = ref([]);
 
-  const currentCommand: Ref<NamedCommandLocation> = computed(
-    () => stack.value[stack.value.length - 1] as NamedCommandLocation,
-  );
+	const currentCommand: Ref<NamedCommandLocation> = computed(
+		() => stack.value[stack.value.length - 1] as NamedCommandLocation,
+	);
 
-  stack.value.push({
-    name: "$root",
-    component: markRaw(options.root),
-    props: options.rootProps,
-  });
+	stack.value.push({
+		name: '$root',
+		component: markRaw(options.root),
+		props: options.rootProps,
+	});
 
-  function push(location: CommandLocation) {
-    const name =
-      "name" in location ? location.name : location.component.name ?? "unnamed";
+	function push(location: CommandLocation) {
+		const name
+      = 'name' in location ? location.name : location.component.name ?? 'unnamed';
 
-    stack.value.push({
-      name,
-      component: markRaw(location.component),
-      props: location.props,
-    });
-  }
+		stack.value.push({
+			name,
+			component: markRaw(location.component),
+			props: location.props,
+		});
+	}
 
-  function pop() {
-    // Don't pop the root commands
-    if (stack.value.length === 1) return false;
-    return !!stack.value.pop();
-  }
+	function pop() {
+		// Don't pop the root commands
+		if (stack.value.length === 1)
+			return false;
+		return !!stack.value.pop();
+	}
 
-  function clear() {
-    stack.value = [stack.value[0]!];
-  }
+	function clear() {
+		stack.value = [stack.value[0]!];
+	}
 
-  return {
-    stack: readonly(stack),
-    currentCommand,
-    push,
-    pop,
-    clear,
-  };
+	return {
+		stack: readonly(stack),
+		currentCommand,
+		push,
+		pop,
+		clear,
+	};
 }
 
 export function provideCommandRouter(router: CommandRouter) {
-  provide(commandRouterKey, router);
+	provide(commandRouterKey, router);
 }
 
 export function useCommandRouter() {
-  const router = inject(commandRouterKey);
+	const router = inject(commandRouterKey);
 
-  if (!router) {
-    throw new Error("No CommandRouter provided");
-  }
+	if (!router) {
+		throw new Error('No CommandRouter provided');
+	}
 
-  return router;
+	return router;
 }

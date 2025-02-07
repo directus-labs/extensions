@@ -1,17 +1,17 @@
-import type { Component } from "vue";
+import type { Component } from 'vue';
 
 export type CommandRoutePropFunction = (
-  to: NamedCommandLocation,
+	to: NamedCommandLocation,
 ) => Record<string, any>;
 export type _CommandRouteProps = Record<string, any> | CommandRoutePropFunction;
 
-export type CommandLocationRaw = {
-  component: Component;
-  props?: _CommandRouteProps;
-};
+export interface CommandLocationRaw {
+	component: Component;
+	props?: _CommandRouteProps;
+}
 
 export type NamedCommandLocation = CommandLocationRaw & {
-  name: string;
+	name: string;
 };
 
 export type CommandLocation = CommandLocationRaw | NamedCommandLocation;

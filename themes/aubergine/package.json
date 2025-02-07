@@ -1,15 +1,15 @@
 {
 	"name": "@directus-labs/aubergine-theme",
-	"description": "Slack's default aubergine theme",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.1",
+	"description": "Slack's default aubergine theme",
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-custom-theme"
 	],
-	"license": "MIT",
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],

@@ -1,7 +1,6 @@
 import { definePanel } from '@directus/extensions-sdk';
 import PanelApiMetric from './panel.vue';
 
-
 export default definePanel({
 	id: 'api-metric-panel',
 	name: 'API Metric Panel',

@@ -1,5 +1,6 @@
 import { defineOperationApp } from '@directus/extensions-sdk';
-import options from './options.vue'
+import options from './options.vue';
+
 export default defineOperationApp({
 	id: 'liquidjs-operation',
 	name: 'Liquid Template',
@@ -8,8 +9,8 @@ export default defineOperationApp({
 	overview: ({ text }) => [
 		{
 			label: 'Text',
-			text: text,
+			text,
 		},
 	],
-	options
+	options,
 });

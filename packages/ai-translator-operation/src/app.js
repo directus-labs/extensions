@@ -1,4 +1,4 @@
-import languages from './languages'
+import languages from './languages';
 
 export default {
 	id: 'directus-labs-ai-translation',
@@ -8,11 +8,11 @@ export default {
 	overview: ({ text, target_lang }) => [
 		{
 			label: 'Text',
-			text: text,
+			text,
 		},
 		{
 			label: 'Target Language',
-			text: languages.find(l => l.value == target_lang).text,
+			text: languages.find((l) => l.value === target_lang).text,
 		},
 	],
 	options: [
@@ -41,15 +41,15 @@ export default {
 					choices: [
 						{
 							text: 'Free',
-							value: 'free'
+							value: 'free',
 						},
 						{
 							text: 'Pro',
-							value: 'pro'
+							value: 'pro',
 						},
-					]
-				}
-			}
+					],
+				},
+			},
 		},
 		{
 			field: 'text',
@@ -69,9 +69,9 @@ export default {
 			meta: {
 				interface: 'select-dropdown',
 				options: {
-					choices: languages
-				}
-			}
-		}
+					choices: languages,
+				},
+			},
+		},
 	],
 };

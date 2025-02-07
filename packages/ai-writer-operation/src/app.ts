@@ -1,5 +1,5 @@
 import { defineOperationApp } from '@directus/extensions-sdk';
-import Prompts from './prompts'
+import Prompts from './prompts';
 
 export default defineOperationApp({
 	id: 'directus-labs-ai-writer-operation',
@@ -79,23 +79,26 @@ export default defineOperationApp({
 			{
 				text: 'Meta Llama 3.1-405b-instruct',
 				value: 'meta-llama-3.1-405b-instruct',
-			},{
+			},
+			{
 				text: 'Mistral-7B-v0.1',
 				value: 'mistral-7b-v0.1',
-			}
+			},
 		];
 
 		const getModels = (provider: string) => {
 			if (provider === 'openai') {
 				return openAiModels;
 			}
+
 			if (provider === 'anthropic') {
 				return anthropicModels;
 			}
+
 			if (provider === 'replicate') {
 				return replicateModels;
 			}
-			
+
 			return [];
 		};
 
@@ -189,11 +192,11 @@ export default defineOperationApp({
 					required: true,
 					interface: 'input',
 					width: 'half',
-					note: 'Based on the provider & model this will be either the total max token or the max complection tokens.'
+					note: 'Based on the provider & model this will be either the total max token or the max complection tokens.',
 				},
 				schema: {
 					default_value: 1024,
-				}
+				},
 			},
 			{
 				field: 'promptKey',
@@ -236,7 +239,7 @@ export default defineOperationApp({
 				meta: {
 					width: 'full',
 					hidden: context.promptKey !== Prompts.custom!.value,
-					note: "Always return a JSON object. Make sure your selected AI-Provider and model support JSON mode. See the [OpenAI docs on JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode) for more information.",
+					note: 'Always return a JSON object. Make sure your selected AI-Provider and model support JSON mode. See the [OpenAI docs on JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode) for more information.',
 				},
 				schema: {
 					default_value: false,
@@ -284,7 +287,7 @@ export default defineOperationApp({
 										],
 									},
 									width: 'full',
-								}
+								},
 							},
 							{
 								field: 'content',
@@ -293,13 +296,13 @@ export default defineOperationApp({
 								meta: {
 									interface: 'textarea',
 									width: 'full',
-								}
+								},
 							},
 						],
 					},
-					note: "Visit the [docs of the AI Writer Operation extension](https://github.com/directus-labs/extension-ai-writer-operation/blob/main/README.md) to learn how to use the Messages field",
+					note: 'Visit the [docs of the AI Writer Operation extension](https://github.com/directus-labs/extension-ai-writer-operation/blob/main/README.md) to learn how to use the Messages field',
 				},
 			},
-		]
+		];
 	},
 });

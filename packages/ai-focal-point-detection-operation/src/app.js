@@ -31,6 +31,6 @@ export default {
 				width: 'full',
 				interface: 'input',
 			},
-		}
+		},
 	],
-}
+};

@@ -1,36 +1,36 @@
 {
-  "name": "@directus-labs/youtube-embed-interface",
-  "description": "Search YouTube videos and generate embed codes",
-  "icon": "extension",
-  "license": "MIT",
-  "version": "1.0.0",
-  "keywords": [
-    "directus",
-    "directus-extension",
-    "directus-extension-interface"
-  ],
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "directus:extension": {
-    "type": "interface",
-    "path": "dist/index.js",
-    "source": "src/index.ts",
-    "host": "^10.10.0"
-  },
-  "scripts": {
-    "build": "directus-extension build",
-    "dev": "directus-extension build -w --no-minify",
-    "link": "directus-extension link",
-    "validate": "directus-extension validate"
-  },
-  "devDependencies": {
-    "@directus/extensions-sdk": "13.0.0",
-    "typescript": "^5.7.3",
-    "vue": "^3.5.13"
-  },
-  "dependencies": {
-    "sass": "^1.83.4"
-  }
+	"name": "@directus-labs/youtube-embed-interface",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "Search YouTube videos and generate embed codes",
+	"license": "MIT",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-interface"
+	],
+	"icon": "extension",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "interface",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
+	},
+	"dependencies": {
+		"sass": "^1.83.4"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "13.0.0",
+		"typescript": "^5.7.3",
+		"vue": "^3.5.13"
+	}
 }

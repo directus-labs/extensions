@@ -1,14 +1,14 @@
 {
 	"name": "@directus-labs/table-view-panel",
-	"description": "Display a full table in your insights dashboard.",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
+	"description": "Display a full table in your insights dashboard.",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-custom-panel"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],

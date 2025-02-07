@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
 import { useStores } from '@directus/extensions-sdk';
-import { formatRelative, isPast } from 'date-fns';
 import { useClipboard } from '@vueuse/core';
+import { formatRelative, isPast } from 'date-fns';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getPublicURL } from './get-root-path';
 
@@ -47,7 +47,7 @@ const embedUrl = computed(() => {
 });
 
 const roomName = computed(() => {
-	return props.value?.roomName?.replace(/[^a-zA-Z0-9]/g, '') || 'Meeting Room';
+	return props.value?.roomName?.replace(/[^a-z0-9]/gi, '') || 'Meeting Room';
 });
 
 const expirationDate = computed(() => {
@@ -62,10 +62,11 @@ const isExpired = computed(() => {
 	return props.value?.endDate && isPast(new Date(props.value.endDate));
 });
 
-const openUrl = (url: string) => {
-	if (!url) return;
+function openUrl(url: string) {
+	if (!url)
+		return;
 	window.open(url, '_blank');
-};
+}
 
 const menuItems = computed(() => {
 	const items = [
@@ -148,16 +149,17 @@ const dialogFields = [
 	},
 ];
 
-const updateRoomUrl = () => {
+function updateRoomUrl() {
 	const newHostRoomUrl = dialogForm.value.hostRoomUrl;
 	// Strip the query parameters from the host room URL to get the viewer room URL
 	const viewerRoomUrl = newHostRoomUrl.split('?')[0];
 	// Extract the room name from the viewer room URL
-	const roomName = '/' + viewerRoomUrl.split('/').pop() || '';
+	// eslint-disable-next-line no-constant-binary-expression
+	const roomName = `/${viewerRoomUrl.split('/').pop()}` || '';
 	// Other properties can't be determined from the URL, so we keep the existing values
 	emit('input', { ...props.value, hostRoomUrl: newHostRoomUrl, roomUrl: viewerRoomUrl, roomName });
 	showDialog.value = false;
-};
+}
 
 watch(
 	() => props.value,
@@ -171,7 +173,9 @@ watch(
 <template>
 	<div class="whereby-container interface bordered">
 		<div class="header">
-			<p class="selectable id">{{ roomName }}</p>
+			<p class="selectable id">
+				{{ roomName }}
+			</p>
 			<div v-if="expirationDate" class="expiration" :class="{ expired: isExpired }">
 				{{ isExpired ? 'Expired' : 'Expires' }} {{ expirationDate }}
 			</div>
@@ -197,7 +201,9 @@ watch(
 		</div>
 
 		<div v-else-if="componentState === 'valid' && !loadMeeting" class="info-box">
-			<v-info type="success" title="Meeting Ready" icon="meeting_room">Your Whereby meeting is ready to start.</v-info>
+			<v-info type="success" title="Meeting Ready" icon="meeting_room">
+				Your Whereby meeting is ready to start.
+			</v-info>
 			<v-button class="start-meeting" color="primary" size="large" block @click="loadMeeting = true">
 				Start Meeting
 			</v-button>
@@ -221,7 +227,7 @@ watch(
 				:avatarUrl="avatarUrl"
 				:displayName="userStore.fullName"
 				:externalId="userStore.currentUser?.id"
-			></whereby-embed>
+			/>
 		</template>
 
 		<v-dialog v-model="showDialog" @esc="showDialog = false">
@@ -231,8 +237,12 @@ watch(
 					<v-form v-model="dialogForm" :fields="dialogFields" primary-key="+" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="showDialog = false">{{ t('cancel') }}</v-button>
-					<v-button @click="updateRoomUrl">{{ t('save') }}</v-button>
+					<v-button secondary @click="showDialog = false">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button @click="updateRoomUrl">
+						{{ t('save') }}
+					</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

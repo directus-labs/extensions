@@ -1,21 +1,21 @@
 // CORE-CHANGE start
 // import firaMono2 from "../../assets/fonts/FiraMono-Medium.woff2";
 // import firaMono from "../../assets/fonts/FiraMono-Medium.woff";
-import firaMono from "./base64-fonts/fira-mono-medium";
+import firaMono from './base64-fonts/fira-mono-medium';
 // import merriweatherRegular2 from "../../assets/fonts/merriweather-regular.woff2";
 // import merriweatherRegular from "../../assets/fonts/merriweather-regular.woff";
-import merriweatherRegular from "./base64-fonts/merriweather";
+import merriweatherRegular from './base64-fonts/merriweather';
 // CORE-CHANGE end
 // NOTE: Changed @font-face rules as well
 
 function cssVar(name: string) {
-    return getComputedStyle(document.body).getPropertyValue(name);
+	return getComputedStyle(document.body).getPropertyValue(name);
 }
 
 export default function getEditorStyles(
-    font: "sans-serif" | "serif" | "monospace"
+	font: 'sans-serif' | 'serif' | 'monospace',
 ): string {
-    return `
+	return `
 @font-face {
 	font-family: 'Fira Mono';
 	font-style: normal;
@@ -30,27 +30,27 @@ export default function getEditorStyles(
 }
 
 ::selection {
-	background: ${cssVar("--background-normal-alt")};
+	background: ${cssVar('--background-normal-alt')};
 }
 body {
-	color: ${cssVar("--theme--form--field--input--foreground")};
-	background-color: ${cssVar("--theme--form--field--input--background")};
+	color: ${cssVar('--theme--form--field--input--foreground')};
+	background-color: ${cssVar('--theme--form--field--input--background')};
 	margin: 20px;
-	font-family: ${cssVar("--theme--fonts--sans--font-family")};
+	font-family: ${cssVar('--theme--fonts--sans--font-family')};
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
 }
 body.mce-content-readonly {
-	color: ${cssVar("--foreground-subdued")};
-	background-color: ${cssVar("--background-subdued")};
+	color: ${cssVar('--foreground-subdued')};
+	background-color: ${cssVar('--background-subdued')};
 }
 .mce-offscreen-selection {
 	display: none;
 }
 h1, h2, h3, h4, h5, h6 {
 	font-family: ${cssVar(`--theme--fonts--${font}--font-family`)}, serif;
-	color: ${cssVar("--theme--form--field--input--foreground-accent")};
+	color: ${cssVar('--theme--form--field--input--foreground-accent')};
 	font-weight: 700;
 	margin-bottom: 0;
 }
@@ -95,7 +95,7 @@ p {
 	margin: 1.5em 0;
 }
 a {
-	color: ${cssVar("--theme--primary-accent")};
+	color: ${cssVar('--theme--primary-accent')};
 	text-decoration: none;
 }
 ul, ol {
@@ -119,9 +119,9 @@ code {
 	line-height: 24px;
 	font-weight: 500;
 	padding: 2px 4px;
-	font-family: ${cssVar("--theme--fonts--monospace--font-family")}, monospace;
-	background-color: ${cssVar("--theme--background-accent")};
-	border-radius: ${cssVar("--theme--border-radius")};
+	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
+	background-color: ${cssVar('--theme--background-accent')};
+	border-radius: ${cssVar('--theme--border-radius')};
 	overflow-wrap: break-word;
 }
 pre {
@@ -129,9 +129,9 @@ pre {
 	line-height: 24px;
 	font-weight: 500;
 	padding: 1em;
-	font-family: ${cssVar("--theme--fonts--monospace--font-family")}, monospace;
-	background-color: ${cssVar("--theme--background-accent")};
-	border-radius: ${cssVar("--theme--border-radius")};
+	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
+	background-color: ${cssVar('--theme--background-accent')};
+	border-radius: ${cssVar('--theme--border-radius')};
 	overflow: auto;
 }
 blockquote {
@@ -139,22 +139,22 @@ blockquote {
 	font-size: 15px;
 	line-height: 24px;
 	font-weight: 500;
-	border-left: 2px solid ${cssVar("--theme--form--field--input--border-color")};
+	border-left: 2px solid ${cssVar('--theme--form--field--input--border-color')};
 	padding-left: 1em;
 	margin-left: 0px;
 }
 video,
 img {
 	max-width: 100%;
-	border-radius: ${cssVar("--theme--border-radius")};
+	border-radius: ${cssVar('--theme--border-radius')};
 	height: auto;
 }
 iframe {
 	max-width: 100%;
-	border-radius: ${cssVar("--theme--border-radius")};
+	border-radius: ${cssVar('--theme--border-radius')};
 }
 hr {
-	background-color: ${cssVar("--theme--form--field--input--border-color")};
+	background-color: ${cssVar('--theme--form--field--input--border-color')};
 	height: 1px;
 	border: none;
 	margin-top: 2em;
@@ -168,7 +168,7 @@ table {
 }
 table th,
 table td {
-	border: 1px solid ${cssVar("--theme--form--field--input--border-color")};
+	border: 1px solid ${cssVar('--theme--form--field--input--border-color')};
 	padding: 0.4rem;
 }
 figure {

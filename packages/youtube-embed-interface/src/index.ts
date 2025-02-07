@@ -22,10 +22,11 @@ export default defineInterface({
 				options: {
 					iconRight: 'key',
 					font: 'monospace',
-					masked: true
-				}
-			}
-		},{
+					masked: true,
+				},
+			},
+		},
+		{
 			field: 'channelId',
 			type: 'string',
 			name: 'Channel ID',
@@ -33,10 +34,11 @@ export default defineInterface({
 				interface: 'input',
 				note: 'Limit searches to a single channel. You can find your channel ID in your advanced YouTube settings.',
 				options: {
-					iconRight: 'key'
-				}
-			}
-		},{
+					iconRight: 'key',
+				},
+			},
+		},
+		{
 			field: 'hideSelect',
 			type: 'boolean',
 			name: 'Selection',
@@ -44,13 +46,13 @@ export default defineInterface({
 				interface: 'boolean',
 				note: 'Prevents selecting a video to embed. Check this if you only want to copy embed codes to your clipboard.',
 				options: {
-					label: "Hide Select"
-				}
+					label: 'Hide Select',
+				},
 			},
 			schema: {
 				default_value: false,
 			},
-		}
+		},
 	],
-	types: ['string']
+	types: ['string'],
 });

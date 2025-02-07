@@ -16,7 +16,7 @@ export default definePanel({
 				width: 'full',
 				interface: 'list',
 				options: {
-					template: "{{ trigger.text }}",
+					template: '{{ trigger.text }}',
 					fields: [
 						{
 							field: 'trigger',

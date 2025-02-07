@@ -1,23 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { activities, calls, communications, companies, contacts, deals, email, leads, meetings, notes, products, tasks, tickets } from './endpoints';
 import type { DynamicField, HubSpotOptions } from './types';
-
-const endpoints = {
-	activities,
-	calls,
-	communications,
-	companies,
-	contacts,
-	deals,
-	email,
-	leads,
-	meetings,
-	notes,
-	products,
-	tasks,
-	tickets,
-};
+import { computed, ref, watch } from 'vue';
+import { activities, calls, communications, companies, contacts, deals, email, leads, meetings, notes, products, tasks, tickets } from './endpoints';
 
 const props = withDefaults(
 	defineProps<{
@@ -36,6 +20,22 @@ const emit = defineEmits<{
 	(e: 'input', value: Record<string, any>): void;
 }>();
 
+const endpoints = {
+	activities,
+	calls,
+	communications,
+	companies,
+	contacts,
+	deals,
+	email,
+	leads,
+	meetings,
+	notes,
+	products,
+	tasks,
+	tickets,
+};
+
 const operationValues = ref<HubSpotOptions>(props.value);
 
 const endpoint = computed(() => operationValues.value.endpoint || '');
@@ -43,7 +43,8 @@ const action = computed(() => operationValues.value.action || '');
 
 const endpointActions = computed(() => {
 	const operationEndpoint = endpoints[endpoint.value as keyof typeof endpoints];
-	if (!operationEndpoint) return [];
+	if (!operationEndpoint)
+		return [];
 
 	return Object.entries(operationEndpoint.actions).map(([key, value]) => ({
 		text: value.label,
@@ -54,11 +55,11 @@ const endpointActions = computed(() => {
 
 const defaultFields: DynamicField[] = [
 	{
-		field: "info",
-		type: "alias",
+		field: 'info',
+		type: 'alias',
 		meta: {
-			width: "full",
-			interface: "presentation-notice",
+			width: 'full',
+			interface: 'presentation-notice',
 			options: {
 				icon: false,
 				text: `Learn more and get started at the <a href="https://developers.hubspot.com/" target="_blank">HubSpot Developer Portal</a>. Make sure to document your unique schema from HubSpot to ensure your properties are valid during API calls. See <a href="https://knowledge.hubspot.com/get-started/manage-your-crm-database" target="_blank">Manage your CRM database.</a>`,
@@ -119,10 +120,12 @@ const defaultFields: DynamicField[] = [
 ];
 
 const endpointOptions = computed(() => {
-	if (!endpoint.value || !action.value) return [];
+	if (!endpoint.value || !action.value)
+		return [];
 
 	const operationEndpoint: Record<string, any> = endpoints[endpoint.value as keyof typeof endpoints];
-	if (!operationEndpoint) return [];
+	if (!operationEndpoint)
+		return [];
 
 	return operationEndpoint.actions[action.value]?.options || [];
 });
@@ -134,7 +137,7 @@ const operationFields = computed(() => {
 watch(
 	operationValues,
 	(newVal: Record<string, any>, oldVal: Record<string, any>) => {
-		newVal.action = oldVal.endpoint == newVal.endpoint ? newVal.action : null;
+		newVal.action = oldVal.endpoint === newVal.endpoint ? newVal.action : null;
 		emit('input', newVal);
 	},
 	{ deep: true },

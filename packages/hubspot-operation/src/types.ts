@@ -1,12 +1,12 @@
-import { Field, FieldMeta } from '@directus/types';
+import type { Field, FieldMeta } from '@directus/types';
 
 type PartialExcept<T, K extends keyof T> = Partial<T> & Pick<T, K>;
 
 type DynamicFieldMeta = PartialExcept<FieldMeta, 'interface'>;
 
-type HubSpotProperties = {
-    [key: string]: any;
-};
+interface HubSpotProperties {
+	[key: string]: any;
+}
 
 export type DynamicField = {
 	field: string;
@@ -15,14 +15,14 @@ export type DynamicField = {
 	meta: DynamicFieldMeta;
 } & Partial<Omit<Field, 'meta'>>;
 
-export type HubSpotOptions = {
+export interface HubSpotOptions {
 	apiKey: string;
 	endpoint: string;
 	action: string;
 	[key: string]: any;
-};
+}
 
-export type HubSpotSchema = {
-	associations: Array<Record<string,any>>;
+export interface HubSpotSchema {
+	associations: Array<Record<string, any>>;
 	properties: Record<string, HubSpotProperties>;
-};
+}

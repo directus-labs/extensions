@@ -1,11 +1,11 @@
-import { ref, unref, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import type { PrimaryKey } from '@directus/types';
+import type { Trigger } from '../types/trigger.js';
 import { useApi, useStores } from '@directus/extensions-sdk';
 import formatTitle from '@directus/format-title';
-import type { PrimaryKey } from '@directus/types';
-import type { Trigger } from "../types/trigger.js";
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-type FlowTriggerContext = {
+interface FlowTriggerContext {
 	collection: (trigger: Trigger) => string | undefined;
 	keys: (trigger: Trigger) => PrimaryKey[] | undefined;
 }
@@ -21,11 +21,11 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 
 	const flowMap = computed(() => {
 		const map = new Map<string, any>();
-	
+
 		for (const flow of flowsStore.flows) {
 			map.set(flow.id, flow);
 		}
-	
+
 		return map;
 	});
 
@@ -33,12 +33,13 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 		if (!flowId) {
 			return null;
 		}
-	
+
 		const flow = unref(flowMap).get(flowId);
+
 		if (!flow) {
 			return null;
 		}
-	
+
 		return flow;
 	}
 
@@ -47,6 +48,7 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 	const selectedTrigger = ref<Trigger | null>(null);
 
 	const confirmValues = ref<Record<string, any> | null>();
+
 	const confirmDetails = ref<{
 		description: string;
 		fields: Record<string, any>[];
@@ -56,18 +58,18 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 		if (!selectedTrigger.value) {
 			return true;
 		}
-	
+
 		for (const field of confirmDetails.value?.fields || []) {
 			if (
-				field.meta?.required &&
-				(!confirmValues.value ||
-					confirmValues.value[field.field] === null ||
-					confirmValues.value[field.field] === undefined)
+				field.meta?.required
+				&& (!confirmValues.value
+					|| confirmValues.value[field.field] === null
+					|| confirmValues.value[field.field] === undefined)
 			) {
 				return true;
 			}
 		}
-	
+
 		return false;
 	});
 
@@ -83,12 +85,13 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 		if (trigger.text) {
 			return trigger.text;
 		}
-	
+
 		const flow = getFlow(trigger.flowId);
+
 		if (flow) {
 			return flow.name;
 		}
-	
+
 		return t('run_flow');
 	}
 
@@ -98,6 +101,7 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 		}
 
 		const flow = getFlow(trigger.flowId);
+
 		if (flow) {
 			return flow.icon;
 		}
@@ -107,13 +111,15 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 
 	function confirmRunFlow() {
 		const flow = getFlow(selectedTrigger.value?.flowId);
+
 		if (!flow) {
 			return;
 		}
 
-		if (!Boolean(flow.options?.requireConfirmation)) {
+		if (!flow.options?.requireConfirmation) {
 			runFlow();
-		} else {
+		}
+		else {
 			confirmDetails.value = {
 				description: flow.options.confirmationDescription,
 				fields: (flow.options.fields ?? []).map((field: Record<string, any>) => ({
@@ -126,11 +132,13 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 
 	async function runFlow() {
 		const trigger = unref(selectedTrigger);
+
 		if (!trigger) {
 			return;
 		}
 
 		const flow = getFlow(trigger.flowId);
+
 		if (!flow) {
 			return;
 		}
@@ -143,15 +151,14 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 		const keys = context.keys(trigger);
 		const values = unref(confirmValues) ?? {};
 
-		console.log('values', values);
-
 		try {
 			if (
-				flow.options?.requireSelection === false &&
-				keys?.length === 0
+				flow.options?.requireSelection === false
+				&& keys?.length === 0
 			) {
 				await api.post(`/flows/trigger/${flowId}`, { ...values, collection });
-			} else {
+			}
+			else {
 				await api.post(`/flows/trigger/${flowId}`, { ...values, collection, keys });
 			}
 
@@ -160,9 +167,11 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 			});
 
 			resetConfirm();
-		} catch (error) {
+		}
+		catch (error) {
 			unexpectedError(error);
-		} finally {
+		}
+		finally {
 			selectedTrigger.value = null;
 			runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 		}
@@ -175,10 +184,10 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 	}
 
 	function unexpectedError(error: unknown) {
-		const code =
-			(error as any)?.response?.data?.errors?.[0]?.extensions?.code ||
-			(error as any)?.extensions?.code ||
-			'UNKNOWN';
+		const code
+			= (error as any)?.response?.data?.errors?.[0]?.extensions?.code
+				|| (error as any)?.extensions?.code
+				|| 'UNKNOWN';
 
 		console.warn(error);
 
