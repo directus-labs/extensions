@@ -52,6 +52,7 @@ const triggers = computed(() => {
 
 <template>
 	<div class="panel-flows" :class="{ 'has-header': props.showHeader }">
+		<!-- eslint-disable-next-line vue/require-v-for-key -->
 		<div v-for="{ trigger } in triggers" class="trigger">
 			<v-button
 				full-width

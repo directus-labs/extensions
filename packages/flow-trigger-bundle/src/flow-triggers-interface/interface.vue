@@ -70,6 +70,7 @@ function getButtonDisabled(trigger: Trigger) {
 
 <template>
 	<div v-if="displayInterface" class="interface-flows">
+		<!-- eslint-disable-next-line vue/require-v-for-key -->
 		<div v-for="{ trigger } in props.triggers" class="trigger">
 			<v-button
 				full-width

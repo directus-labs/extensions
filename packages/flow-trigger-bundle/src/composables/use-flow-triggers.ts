@@ -151,8 +151,6 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 		const keys = context.keys(trigger);
 		const values = unref(confirmValues) ?? {};
 
-		console.log('values', values);
-
 		try {
 			if (
 				flow.options?.requireSelection === false
