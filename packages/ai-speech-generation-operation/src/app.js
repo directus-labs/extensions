@@ -12,7 +12,7 @@ export default {
 		},
 		{
 			label: 'Speaker',
-			text: speakers.find((s) => s.value == speaker).text,
+			text: speakers.find((s) => s.value === speaker).text,
 		},
 	],
 	options: [

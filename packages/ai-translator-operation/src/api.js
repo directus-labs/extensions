@@ -18,7 +18,7 @@ export default {
 				}),
 			});
 
-			if (response.status != 200)
+			if (response.status !== 200)
 				throw new Error('An error occurred when accessing DeepL');
 			return response.data.translations[0].text;
 		}

@@ -161,6 +161,7 @@ function clearMessages() {
 
 				<v-card-text>
 					<div class="chat-messages">
+						<!-- eslint-disable-next-line vue/valid-v-for -->
 						<ChatMessage v-for="message in messages" :message="message" />
 					</div>
 				</v-card-text>

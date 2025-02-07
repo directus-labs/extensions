@@ -13,7 +13,7 @@ export default {
 				body: JSON.stringify({ text }),
 			});
 
-			if (response.status != 200)
+			if (response.status !== 200)
 				throw new Error('An error occurred when accessing Deepgram');
 			return response.data.results;
 		}

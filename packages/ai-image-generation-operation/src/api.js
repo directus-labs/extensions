@@ -8,7 +8,7 @@ export default {
 				{ label: 'square', size: '1024x1024' },
 				{ label: 'portrait', size: '1024x1792' },
 				{ label: 'landscape', size: '1792x1024' },
-			].find((d) => d.label == size);
+			].find((d) => d.label === size);
 
 			const response = await request('https://api.openai.com/v1/images/generations', {
 				method: 'POST',
@@ -25,7 +25,7 @@ export default {
 				}),
 			});
 
-			if (response.status != 200)
+			if (response.status !== 200)
 				throw new Error('An error occurred when accessing OpenAI');
 			return response.data.data[0].url;
 		}

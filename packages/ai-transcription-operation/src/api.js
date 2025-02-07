@@ -26,7 +26,7 @@ export default {
 				body: JSON.stringify({ url }),
 			});
 
-			if (response.status != 200)
+			if (response.status !== 200)
 				throw new Error('An error occurred when accessing Deepgram');
 
 			// If a callback URL was provided, we don't want to wait for the transcription to complete

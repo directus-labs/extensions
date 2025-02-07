@@ -32,7 +32,7 @@ export class Anthropic extends Provider {
 			body: JSON.stringify(requestBody),
 		});
 
-		if (response.status != 200) {
+		if (response.status !== 200) {
 			throw new UnexpectedResponseError();
 		}
 

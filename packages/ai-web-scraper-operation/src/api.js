@@ -50,7 +50,7 @@ export default {
 				body: JSON.stringify(payload),
 			});
 
-			if (response.status != 200)
+			if (response.status !== 200)
 				throw new Error('An error occurred when accessing Firecrawl');
 			return response.data.data;
 		}

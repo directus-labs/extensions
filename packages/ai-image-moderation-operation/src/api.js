@@ -19,11 +19,11 @@ export default {
 				}),
 			});
 
-			if (response.status != 200)
+			if (response.status !== 200)
 				throw new Error('An error occurred when accessing Clarifai');
 
 			const concepts = response.data.outputs[0].data.concepts
-				.filter((c) => c.name != 'safe')
+				.filter((c) => c.name !== 'safe')
 				.map((c) => ({
 					name: c.name,
 					value: (Number(c.value) * 100).toFixed(2),

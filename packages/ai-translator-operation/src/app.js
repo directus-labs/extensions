@@ -12,7 +12,7 @@ export default {
 		},
 		{
 			label: 'Target Language',
-			text: languages.find((l) => l.value == target_lang).text,
+			text: languages.find((l) => l.value === target_lang).text,
 		},
 	],
 	options: [

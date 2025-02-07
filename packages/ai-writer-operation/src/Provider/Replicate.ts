@@ -43,7 +43,7 @@ export class Replicate extends Provider {
 			body: JSON.stringify(requestBody),
 		});
 
-		if (response.status != 201) {
+		if (response.status !== 201) {
 			throw new UnexpectedResponseError();
 		}
 

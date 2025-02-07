@@ -13,7 +13,7 @@ export default {
 				body: JSON.stringify({ text, speaker, speed }),
 			});
 
-			if (response.status != 201)
+			if (response.status !== 201)
 				throw new Error('An error occurred when accessing Genny');
 			return response.data.data[0].urls[0];
 		}
