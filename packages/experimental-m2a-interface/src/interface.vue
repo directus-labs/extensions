@@ -18,8 +18,6 @@ const props = withDefaults(defineProps<Props>(), {
 	searchPlaceholder: 'Search...',
 });
 
-console.log(props);
-
 const el = ref<HTMLElement>();
 
 const { targetBuilder } = useNearestBuilderField(el, { onFound: () => removeParentDomElement(el) });
@@ -37,11 +35,12 @@ const filteredButtonMatrix = computed(() => {
 	);
 });
 
+// eslint-disable-next-line ts/no-unsafe-function-type
 function useNearestBuilderField(el: MaybeHTMLRef, { onFound }: { onFound: Function }) {
 	const targetBuilder: MaybeHTMLRef = ref();
 
 	onMounted(() => {
-		const targetSibling = props.target == 'above' ? 'previousElementSibling' : 'nextElementSibling';
+		const targetSibling = props.target === 'above' ? 'previousElementSibling' : 'nextElementSibling';
 		targetBuilder.value = el.value?.closest('.field')?.[targetSibling]?.querySelector('.m2a-builder');
 
 		if (targetBuilder.value)
@@ -58,6 +57,7 @@ function removeParentDomElement(el: MaybeHTMLRef) {
 function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	const label = ref('');
 	const buttonMatrix = ref<MatrixButton[]>([]);
+	// eslint-disable-next-line unused-imports/no-unused-vars
 	let popupId = '';
 	let firstActionButton: MaybeHTML;
 
@@ -71,7 +71,7 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 		if (!firstActionButton)
 			return;
 
-		label.value = firstActionButton.innerText ?? '';
+		label.value = firstActionButton.textContent ?? '';
 
 		const maxTries = 20;
 		let tryCount = 0;
@@ -109,7 +109,7 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 
 	function createButtonMatrix(popup: HTMLElement) {
 		popup.querySelectorAll('.v-list-item.link.clickable')?.forEach((button) => {
-			const label = (button as HTMLElement).innerText;
+			const label = (button as HTMLElement).textContent;
 			const icon = (button.querySelector('.v-icon [data-icon]') as HTMLElement)?.dataset?.icon ?? 'database';
 
 			buttonMatrix.value.push({ label, icon });
@@ -156,7 +156,7 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	<div ref="el">
 		<v-notice
 			v-if="!targetBuilder" type="warning"
-			:icon="`vertical_align_${target == 'above' ? 'top' : 'bottom'}`"
+			:icon="`vertical_align_${target === 'above' ? 'top' : 'bottom'}`"
 		>
 			No Builder (M2A) field found {{ target
 			}} this field!
@@ -181,6 +181,7 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 			</v-input>
 
 			<div class="grid">
+				<!-- eslint-disable-next-line vue/valid-v-for -->
 				<v-button
 					v-for="(button, index) in filteredButtonMatrix"
 					secondary

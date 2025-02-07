@@ -50,6 +50,27 @@ const templateWithDefaults = computed(() =>
 		: '',
 );
 
+const fieldsWithNames = computed(
+	() =>
+		props.fields
+			?.map((field) => {
+				if (!field || !field.field) {
+					console.warn('Invalid field definition:', field);
+					return null;
+				}
+
+				const { field: fieldName, type, name, ...rest } = field;
+
+				return {
+					field: fieldName,
+					name: formatTitle(name || fieldName),
+					type,
+					...rest,
+				};
+			})
+			.filter(Boolean), // Remove any null entries
+);
+
 const showAddNew = computed(() => {
 	if (props.disabled || fieldsWithNames.value.length === 0)
 		return false;
@@ -77,27 +98,6 @@ const defaults = computed(() => {
 	return values;
 });
 
-const fieldsWithNames = computed(
-	() =>
-		props.fields
-			?.map((field) => {
-				if (!field || !field.field) {
-					console.warn('Invalid field definition:', field);
-					return null;
-				}
-
-				const { field: fieldName, type, name, ...rest } = field;
-
-				return {
-					field: fieldName,
-					name: formatTitle(name || fieldName),
-					type,
-					...rest,
-				};
-			})
-			.filter(Boolean), // Remove any null entries
-);
-
 const internalValue = computed({
 	get: () => {
 		if (props.fields && props.sort)
@@ -118,7 +118,10 @@ function isExpanded(index: number) {
 
 const itemToRemove = ref<number | null>(null);
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const validationErrors = ref<any[]>([]);
+
+const confirmDiscard = ref(false);
 
 function removeItem(index: number) {
 	if (props.showConfirmDiscard) {
@@ -194,8 +197,6 @@ function emitValue(value?: Record<string, unknown>[]) {
 
 	return emit('input', value);
 }
-
-const confirmDiscard = ref(false);
 
 function discardAndLeave() {
 	if (itemToRemove.value !== null) {

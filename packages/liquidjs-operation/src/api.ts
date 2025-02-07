@@ -1,3 +1,4 @@
+/* eslint-disable ts/ban-ts-comment */
 /// <reference types="@directus/extensions/api.d.ts" />
 import { defineOperationApi } from '@directus/extensions-sdk';
 import { request } from 'directus:api';
@@ -108,12 +109,13 @@ export default defineOperationApi<Options>({
 			// Operation Mode
 			switch (operationMode) {
 				case 'single':
-					if (Array.isArray(data)) {
-						throw new TypeError('Single operation mode expects a single data object, not an array');
-					}
+				{ if (Array.isArray(data)) {
+					throw new TypeError('Single operation mode expects a single data object, not an array');
+				}
 
-					const rendered = await renderTemplate(data, templateToRender, fields);
-					return { ...returnFields(data), ...rendered };
+				const rendered = await renderTemplate(data, templateToRender, fields);
+				return { ...returnFields(data), ...rendered }; }
+
 				case 'batch':
 					if (!Array.isArray(data)) {
 						throw new TypeError('Batch operation mode expects an array of data objects');
