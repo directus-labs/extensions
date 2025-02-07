@@ -179,6 +179,7 @@ export class ImageTool extends BaseImageTool {
 		});
 	}
 
+	// eslint-disable-next-line accessor-pairs
 	set image(file: { url?: any }) {
 		this._data.file = file || {};
 

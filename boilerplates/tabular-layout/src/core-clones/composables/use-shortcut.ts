@@ -60,9 +60,7 @@ export function useShortcut(
 			return;
 
 		const ref
-            = reference.value instanceof HTMLElement
-            	? reference.value
-            	: (reference.value.$el as HTMLElement);
+            = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
 
 		if (
 			document.activeElement === ref
@@ -110,9 +108,7 @@ function mapKeys(key: KeyboardEvent) {
 	const isLatinAlphabet = /^[a-z0-9]*$/gi;
 
 	let keyString
-        = key.key.match(isLatinAlphabet) === null
-        	? key.code.replace(/(Key|Digit)/g, '')
-        	: key.key;
+        = key.key.match(isLatinAlphabet) === null ? key.code.replace(/(Key|Digit)/g, '') : key.key;
 
 	const keyStringInMap = keyMap[keyString];
 

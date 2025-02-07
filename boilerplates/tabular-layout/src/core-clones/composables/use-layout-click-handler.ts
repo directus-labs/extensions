@@ -1,8 +1,7 @@
 import type { LayoutProps } from '@directus/extensions';
 // CORE CHANGES
 // import { Item } from '@/components/v-table/types';
-import type { Item } from '@directus/types';
-import type { Field, PrimaryKey } from '@directus/types';
+import type { Field, Item, PrimaryKey } from '@directus/types';
 import type { Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getItemRoute } from '../utils/get-route';
@@ -36,7 +35,7 @@ export function useLayoutClickHandler({
 			}
 			else {
 				selection.value = selection.value.filter(
-					(item) => item !== primaryKey,
+					(item: any) => item !== primaryKey,
 				);
 			}
 		}

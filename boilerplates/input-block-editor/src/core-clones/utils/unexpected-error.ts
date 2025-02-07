@@ -20,9 +20,7 @@ export function unexpectedError(error: unknown): void {
 		store = useNotificationsStore();
 
 	const code
-        = (error as RequestError).response?.data?.errors?.[0]?.extensions?.code
-        	|| (error as APIError)?.extensions?.code
-        	|| 'UNKNOWN';
+        = (error as RequestError).response?.data?.errors?.[0]?.extensions?.code || (error as APIError)?.extensions?.code || 'UNKNOWN';
 
 	console.warn(error);
 

@@ -91,12 +91,10 @@ export default function useImage(
 				const lazy = node.getAttribute('loading') === 'lazy';
 
 				const width
-                    = Number(imageUrlParams?.get('width') || undefined)
-                    	|| undefined;
+                    = Number(imageUrlParams?.get('width') || undefined) || undefined;
 
 				const height
-                    = Number(imageUrlParams?.get('height') || undefined)
-                    	|| undefined;
+                    = Number(imageUrlParams?.get('height') || undefined) || undefined;
 
 				const transformationKey
                     = imageUrlParams?.get('key') || undefined;

@@ -62,6 +62,7 @@ export function useAliasFields(
 		for (const field of _fields) {
 			const fieldName = (field.split('.') as [string])[0];
 
+			// eslint-disable-next-line style/no-mixed-operators
 			if (fieldNameCount[fieldName]! > 1 === false) {
 				aliasedFields[field] = {
 					key: field,

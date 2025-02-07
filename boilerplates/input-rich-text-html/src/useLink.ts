@@ -60,7 +60,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 
 				const url = linkNode.value.getAttribute('href');
 				const title = linkNode.value.getAttribute('title');
-				const displayText = linkNode.value.innerText;
+				const displayText = linkNode.value.textContent;
 				const target = linkNode.value.getAttribute('target');
 
 				if (url === null || displayText === null) {
@@ -143,7 +143,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 
 		if (link.url === null) {
 			if (linkNode.value) {
-				editor.value.selection.setContent(linkNode.value.innerText);
+				editor.value.selection.setContent(linkNode.value.textContent);
 				closeLinkDrawer();
 			}
 

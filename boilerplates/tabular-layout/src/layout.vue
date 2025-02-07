@@ -378,47 +378,66 @@ function removeField(fieldKey: string) {
 
 <style lang="scss" scoped>
     .custom-layout {
-        display: contents;
-        margin: var(--content-padding);
-        	ottom: var(--conten	g-bottom);
-    }
+	display: contents;
+	margin: var(--content-padding);
+	margin-bottom: var(--content-padding-bottom);
+}
 
-    .v-table {	 --v-table-sticky-offset-top: var(--layout-offtop        dis	ntents;
+.v-table {
+	--v-table-sticky-offset-top: var(--layout-offset-top);
 
-        & > :deep(table) {
-            min-widt	100% - var(--content	)) !important;
-    		in-left: var(--content-padding);
+	display: contents;
 
-            tr {
-        		in-right: var(--content-padding);
-    		     			ooter {
-        position: sticky;
+	& > :deep(table) {
+		min-width: calc(100% - var(--content-padding)) !important;
+		margin-left: var(--content-padding);
 
- 	is: f
-        a	ms: center;
-      	y-content	between;
-      	 100%;
-        paddin	var(--content-padding);
+		tr {
+			margin-right: var(--content-padding);
+		}
+	}
+}
 
-       	tion {
-      	splay: inline-block;
-        }
+.footer {
+	position: sticky;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 32px var(--content-padding);
 
-       	ge {
-         		flex;
-            align	cen	         jus		: flex-end;
-   		th: 240px;
-          		(--theme--foreground-subdue		     span {
-  		  width: auto;
-                margin-righ		       			.v-select {
- 			olor: var(--theme--
-  		        }
-  			eld {
-        --v-icon-color-hove		me	ou
+	.pagination {
+		display: inline-block;
+	}
 
-    &.active {	     --v-icon-color: var(--theme--foreground);
-  	    }
+	.per-page {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		width: 240px;
+		color: var(--theme--foreground-subdued);
 
-    		    transform: scaleY(-1);
-    }
+		span {
+			width: auto;
+			margin-right: 4px;
+		}
+
+		.v-select {
+			color: var(--theme--foreground);
+		}
+	}
+}
+
+.add-field {
+	--v-icon-color-hover: var(--theme--foreground);
+
+	&.active {
+		--v-icon-color: var(--theme--foreground);
+	}
+}
+
+.flip {
+	transform: scaleY(-1);
+}
 </style>
