@@ -6,7 +6,7 @@ interface CustomField {
 	meta: Record<string, any>;
 }
 
-const props = defineProps<{
+defineProps<{
 	modelValue: Record<string, any>[];
 	fields: CustomField[] | null;
 }>();

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, toRefs } from 'vue';
+import { inject, type Ref, toRefs } from 'vue';
 import { useSeoField } from '../../shared/composables/useSeoField';
 import { seoRules } from '../../shared/rulesets';
 import SeoFieldWrapper from './SeoFieldWrapper.vue';
@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits(['update:modelValue']);
-const values = inject('values');
+const values = inject('values') as Ref<Record<string, any>>;
 
 const { modelValue } = toRefs(props);
 

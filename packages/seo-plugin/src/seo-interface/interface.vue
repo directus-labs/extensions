@@ -125,7 +125,6 @@ const additionalFields = computed(() => {
 		<SearchPreview
 			:title="internalValue.title"
 			:meta-description="internalValue.meta_description"
-			:website-url="websiteUrl"
 			:collection="props.collection || ''"
 		/>
 
@@ -149,7 +148,7 @@ const additionalFields = computed(() => {
 			<div class="form-grid">
 				<div v-for="sitemapField in sitemapFields" :key="sitemapField.key">
 					<v-select
-						:model-value="internalValue.sitemap?.[sitemapField.key] || ''"
+						:model-value="internalValue.sitemap?.[sitemapField.key as keyof typeof internalValue.sitemap] || ''"
 						:items="sitemapField.options"
 						:disabled="props.disabled"
 						:placeholder="sitemapField.label"

@@ -20,7 +20,7 @@ interface ImageUuidInterfaceProps {
 	value?: string | Record<string, any> | null;
 	disabled?: boolean;
 	folder?: string;
-	file_key_to_get?: string;
+	fileKeyToGet?: string;
 	crop?: boolean;
 	letterbox?: boolean;
 	width?: string;
@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<ImageUuidInterfaceProps>(), {
 	value: null,
 	disabled: false,
 	folder: undefined,
-	file_key_to_get: 'filename_disk',
+	fileKeyToGet: 'filename_disk',
 	crop: false,
 	letterbox: false,
 	width: 'auto',
@@ -135,7 +135,7 @@ async function fetchImage() {
 		}
 	}
 	catch (err: any) {
-		console.log(err);
+		throw err;
 	}
 	finally {
 		loading.value = false;
@@ -161,7 +161,7 @@ async function imageErrorHandler() {
 
 function setImage(data: Image) {
 	image.value = data;
-	emit('input', data[props.file_key_to_get]);
+	emit('input', data[props.fileKeyToGet]);
 }
 
 function deselect() {
@@ -175,7 +175,7 @@ function deselect() {
 function stageEdits(newEdits: Record<string, any>) {
 	if (!image.value)
 		return;
-	emit('input', image.value[props.file_key_to_get]);
+	emit('input', image.value[props.fileKeyToGet]);
 }
 
 watch(
