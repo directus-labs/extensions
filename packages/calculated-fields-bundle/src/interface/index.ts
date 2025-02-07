@@ -21,7 +21,9 @@ export default defineInterface({
 			const { useRelationsStore } = useStores();
 			relationsStore = useRelationsStore();
 		}
-		catch (err) {}
+		catch (err) {
+			console.error(err);
+		}
 
 		const { options } = field.meta ?? {};
 
@@ -34,6 +36,7 @@ export default defineInterface({
 				const ast = parseFormula(options?.formula);
 
 				unknownFunctions = [...extractFunctionsFromAst(ast)].filter(
+					// eslint-disable-next-line ts/ban-ts-comment
 					// @ts-ignore
 					(fn) => formulajs[fn] === undefined,
 				);
@@ -128,7 +131,7 @@ export default defineInterface({
 						'color': 'danger',
 						'text': `Invalid field${
 							invalidRelations.length > 1 ? 's' : ''
-						} (calculated fields does not support relations other than M2O) : 
+						} (calculated fields does not support relations other than M2O) :
 
 ${invalidRelations.map((field) => `* ${field}`).join('\n')}`,
 						'data-interface-options': 'calculated', // marker used for CSS overrides

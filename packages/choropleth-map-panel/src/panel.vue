@@ -60,7 +60,7 @@ let svg;
 let data;
 
 function findCountryById(countryValue) {
-	return countryCodes.find((c) => (c['country-code'] == countryValue || c.name == countryValue || c['alpha-2'].toUpperCase() == countryValue.toUpperCase() || c['alpha-3'].toUpperCase() == countryValue.toUpperCase()));
+	return countryCodes.find((c) => (c['country-code'] === countryValue || c.name === countryValue || c['alpha-2'].toUpperCase() === countryValue.toUpperCase() || c['alpha-3'].toUpperCase() === countryValue.toUpperCase()));
 }
 
 async function renderMap() {
@@ -153,6 +153,7 @@ async function updateMap() {
 				.style('pointer-events', 'none')
 				.text(`${c.name}: ${data.get(d.id) ?? 'N/A'}`);
 		})
+		// eslint-disable-next-line unused-imports/no-unused-vars
 		.on('mousemove', (e, d) => {
 			select(tooltip.value)
 				.style('left', `${e.pageX}px`)
@@ -175,7 +176,7 @@ async function fetchData() {
 		let lastNumberOfItems = limit;
 		let page = 1;
 
-		while (lastNumberOfItems == limit) {
+		while (lastNumberOfItems === limit) {
 			const response = await api.get(`/items/${props.collection}`, {
 				params: {
 					page,
@@ -229,6 +230,7 @@ onMounted(async () => {
 	await updateMap();
 
 	if (ResizeObserver) {
+		// eslint-disable-next-line unused-imports/no-unused-vars
 		const resizeObserver = new ResizeObserver(async (entries) => {
 			await updateMap();
 		});
@@ -240,9 +242,9 @@ onMounted(async () => {
 
 <template>
 	<div class="map-panel" :class="{ 'has-header': showHeader }">
-		<v-info v-if="!collection" type="danger" icon="error" :center="true" title="No Collection Selected" />
-		<v-info v-else-if="!aggregateField" type="warning" icon="warning" :center="true" title="No Aggregate Field Selected" />
-		<v-info v-else-if="!canRead" type="danger" icon="error" :center="true" title="Forbidden">
+		<v-info v-if="!collection" type="danger" icon="error" center title="No Collection Selected" />
+		<v-info v-else-if="!aggregateField" type="warning" icon="warning" center title="No Aggregate Field Selected" />
+		<v-info v-else-if="!canRead" type="danger" icon="error" center title="Forbidden">
 			You do not have permissions to see this map
 		</v-info>
 		<v-info v-else-if="hasError" type="danger" icon="error" :title="errorResponse?.title">
@@ -251,10 +253,10 @@ onMounted(async () => {
 		<VProgressLinear
 			v-else-if="isLoading"
 			:colorful="false"
-			:absolute="true"
-			:indeterminate="true"
-			:bottom="true"
-			:rounded="true"
+			absolute
+			indeterminate
+			bottom
+			rounded
 			:fixed="false"
 		/>
 		<svg v-show="!hasError" ref="container" />

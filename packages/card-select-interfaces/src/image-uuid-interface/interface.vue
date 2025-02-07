@@ -20,6 +20,7 @@ interface ImageUuidInterfaceProps {
 	value?: string | Record<string, any> | null;
 	disabled?: boolean;
 	folder?: string;
+	// eslint-disable-next-line vue/prop-name-casing
 	file_key_to_get?: string;
 	crop?: boolean;
 	letterbox?: boolean;
@@ -132,7 +133,7 @@ async function fetchImage() {
 		}
 	}
 	catch (err: any) {
-		console.log(err);
+		console.error(err);
 	}
 	finally {
 		loading.value = false;
@@ -169,6 +170,7 @@ function deselect() {
 	editDrawerActive.value = false;
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 function stageEdits(newEdits: Record<string, any>) {
 	if (!image.value)
 		return;

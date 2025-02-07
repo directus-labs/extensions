@@ -1,3 +1,4 @@
+/* eslint-disable ts/ban-ts-comment */
 import type { BinaryExpressionNode, FunctionNode, Node } from '../types';
 import * as formulajs from '@formulajs/formulajs';
 import { get, has } from 'lodash-es';
@@ -58,9 +59,9 @@ function evaluateBinaryExpression(
 		case '>=':
 			return left >= right;
 		case '==':
-			return left == right;
+			return left === right;
 		case '!=':
-			return left != right;
+			return left !== right;
 	}
 }
 

@@ -62,7 +62,7 @@ function clearSearch() {
 			v-model="selectedValues"
 			:disabled="disabled"
 			class="group"
-			:loop="true"
+			loop
 			role="group"
 			@update:model-value="handleChange"
 		>
