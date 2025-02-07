@@ -44,6 +44,7 @@ export default defineEndpoint((router) => {
 			});
 		}
 		catch (error) {
+			console.error(error);
 			return next(new UnexpectedResponseError());
 		}
 	});

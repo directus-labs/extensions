@@ -4,7 +4,7 @@ function extractValues(paddingString: string): { top: number; right: number; bot
 	const paddingValues: number[] = paddingString
 		.split(' ')
 		.map((value) => Number.parseFloat(value.trim()))
-		.filter((value) => !isNaN(value));
+		.filter((value) => !Number.isNaN(value));
 
 	let top = 0;
 	let right = 0;

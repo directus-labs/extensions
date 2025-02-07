@@ -87,7 +87,7 @@ function adjustPadding() {
 
 	const padding = Math.round(Math.max(8, Math.min(paddingWidth, paddingHeight)));
 
-	if (props.showHeader == true) {
+	if (props.showHeader === true) {
 		container.style.padding = '0px 12px 12px 12px';
 	}
 	else {
@@ -179,6 +179,7 @@ onUpdated(() => {
 });
 
 const unsubscribeInsightsStore = insightsStore.$onAction(
+	// eslint-disable-next-line unused-imports/no-unused-vars
 	({ name, store, args, after, onError }) => {
 		if (name === 'refresh' || name === 'saveChanges') {
 			fetchMetric();
