@@ -115,6 +115,24 @@ const status = computed(() => {
 					<span>SEO Status</span>
 					<v-icon v-tooltip="'Quick checks to see if your SEO is optimized.'" name="info" small class="info-icon neutral" />
 				</label>
+
+				<!-- No Index -->
+				<div v-if="interfaceOptions.showNoIndex" class="preview-box-item">
+					<v-chip v-if="value.no_index" small label>
+						<v-icon
+							name="visibility_off"
+							class="chip-icon"
+							small
+						/>
+						{{ 'Hidden from search' }}
+					</v-chip>
+					<v-chip v-if="value.no_follow" small label>
+						<v-icon name="link_off" class="chip-icon" small />
+						{{ 'Links not followed' }}
+					</v-chip>
+				</div>
+
+				<!-- Title -->
 				<div class="preview-box-item border-bottom-dash">
 					<div class="left">
 						<h3>Title</h3>
@@ -172,22 +190,6 @@ const status = computed(() => {
 							<span v-if="additionalFieldsStatus.text" v-text="additionalFieldsStatus.text" />
 						</v-chip>
 					</div>
-				</div>
-
-				<!-- No Index -->
-				<div v-if="interfaceOptions.showNoIndex" class="preview-box-item">
-					<v-chip v-if="value.no_index" small label>
-						<v-icon
-							name="visibility_off"
-							class="chip-icon"
-							small
-						/>
-						{{ 'Hidden from search' }}
-					</v-chip>
-					<v-chip v-if="value.no_follow" small label>
-						<v-icon name="link_off" class="chip-icon" small />
-						{{ 'Links not followed' }}
-					</v-chip>
 				</div>
 
 				<!-- Omitting the sitemap settings here on purpose. @TODO: Is it worth adding? -->
