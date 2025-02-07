@@ -27,6 +27,7 @@ export default defineComponent({
 		},
 		filter: {
 			type: Object,
+			// eslint-disable-next-line vue/require-valid-default-prop
 			default: {},
 		},
 		dataValues: {
@@ -129,7 +130,7 @@ export default defineComponent({
 					},
 				});
 
-				const data: Array<Record<string, any>> = response.data.data.sort((a: Record<string, any>, b: Record<string, any>) => props.sortDirection == 'desc'
+				const data: Array<Record<string, any>> = response.data.data.sort((a: Record<string, any>, b: Record<string, any>) => props.sortDirection === 'desc'
 					? b[props.labelGrouping].value - a[props.labelGrouping].value
 					: a[props.labelGrouping].value - b[props.labelGrouping].value,
 				);
@@ -137,7 +138,7 @@ export default defineComponent({
 				data.forEach((item: Record<string, any>) => {
 					categories.value.push(formatTitle(get(item, props.dataLabels)));
 					const y_value = get(item[props.labelGrouping], props.dataValues);
-					category_data.value.push(y_value == y_value * 1 ? y_value * 1 : y_value);
+					category_data.value.push(y_value === y_value * 1 ? y_value * 1 : y_value);
 				});
 
 				const series: Array<Record<string, any>> = [{
@@ -203,6 +204,7 @@ export default defineComponent({
 					},
 					tooltip: {
 						enabled: showToolTip,
+						// eslint-disable-next-line unused-imports/no-unused-vars
 						custom({ series, seriesIndex, dataPointIndex, w }: Record<string, any>) {
 							const value: number = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
 							const label: string = w.globals.labels[dataPointIndex];
@@ -279,16 +281,16 @@ export default defineComponent({
 
 <template>
 	<div class="funnnel-chart" :class="{ 'has-header': showHeader }">
-		<v-info v-if="!collection" type="danger" icon="error" :center="true" title="No Collection Selected" />
-		<v-info v-else-if="!dataValues || !dataLabels" type="warning" icon="warning" :center="true" title="Both Value and Label fields must be selected" />
-		<v-info v-else-if="!canRead" type="danger" icon="error" :center="true" title="Forbidden">
+		<v-info v-if="!collection" type="danger" icon="error" center title="No Collection Selected" />
+		<v-info v-else-if="!dataValues || !dataLabels" type="warning" icon="warning" center title="Both Value and Label fields must be selected" />
+		<v-info v-else-if="!canRead" type="danger" icon="error" center title="Forbidden">
 			You do not have permissions to see this table
 		</v-info>
 		<v-info v-else-if="hasError" type="danger" icon="error" :title="errorResponse?.title">
 			{{ errorResponse?.message }}
 		</v-info>
-		<VProgressCircular v-else-if="isLoading" :indeterminate="true" />
-		<v-info v-else-if="!isLoading && !chartEl" type="danger" icon="error" :center="true" title="Incompatible Data">
+		<VProgressCircular v-else-if="isLoading" indeterminate />
+		<v-info v-else-if="!isLoading && !chartEl" type="danger" icon="error" center title="Incompatible Data">
 			The current data is not compatiple with the scatter plot.
 		</v-info>
 		<div ref="chartEl" />
