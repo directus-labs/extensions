@@ -77,7 +77,7 @@ function useAudioSource(
 			if (!service.value)
 				return;
 
-			if (service.value == 'directus')
+			if (service.value === 'directus')
 				return fileID.value;
 
 			return sourceInput.value;
@@ -90,7 +90,7 @@ function useAudioSource(
 	return { source, clearSource };
 
 	function clearSource() {
-		if (service.value == 'directus') {
+		if (service.value === 'directus') {
 			fileID.value = null;
 			return;
 		}
@@ -126,7 +126,7 @@ function useInputField(
 	const sourceInput = ref<AudioSource | null>(null);
 
 	const inputIsClickable = computed(
-		() => !service.value || service.value == 'directus',
+		() => !service.value || service.value === 'directus',
 	);
 
 	const inputPlaceholder = computed(() => {
@@ -147,7 +147,7 @@ function useInputField(
 
 		const clickOnMenu = !!target?.closest('.prepend .v-select');
 
-		if (!clickOnMenu && service.value == 'directus') {
+		if (!clickOnMenu && service.value === 'directus') {
 			fileDrawer.value = true;
 			return;
 		}
@@ -178,7 +178,7 @@ function useInputField(
 			/>
 		</template>
 		<template #append>
-			<v-icon v-if="service == 'directus' && !source" name="attach_file" />
+			<v-icon v-if="service === 'directus' && !source" name="attach_file" />
 			<v-icon
 				v-if="service && source"
 				v-tooltip="t('deselect')"
