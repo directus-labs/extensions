@@ -137,7 +137,7 @@ const operationFields = computed(() => {
 watch(
 	operationValues,
 	(newVal: Record<string, any>, oldVal: Record<string, any>) => {
-		newVal.action = oldVal.endpoint == newVal.endpoint ? newVal.action : null;
+		newVal.action = oldVal.endpoint === newVal.endpoint ? newVal.action : null;
 		emit('input', newVal);
 	},
 	{ deep: true },

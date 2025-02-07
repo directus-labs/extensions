@@ -39,6 +39,7 @@ export default defineOperationApi<HubSpotOptions>({
 			throw new Error(`Unsupported action: ${action} for endpoint: ${endpoint}`);
 		}
 
+		// eslint-disable-next-line ts/no-unsafe-function-type
 		return (selectedAction as { handler: Function }).handler(client, params);
 	},
 });

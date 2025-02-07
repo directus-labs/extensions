@@ -3,7 +3,7 @@ import schema from '../schema';
 export function create(endpoint: string) {
 	return {
 		label: 'Create Record',
-		description: `Create a new record in HubSpot.${endpoint == 'leads' ? ' Must be associated with an existing contacts.' : ''}`,
+		description: `Create a new record in HubSpot.${endpoint === 'leads' ? ' Must be associated with an existing contacts.' : ''}`,
 		icon: 'add',
 		method: 'POST',
 		path: `/crm/v3/objects/${endpoint}`,
