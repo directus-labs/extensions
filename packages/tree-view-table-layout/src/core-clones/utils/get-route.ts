@@ -1,23 +1,23 @@
-import { isSystemCollection } from "@directus/system-data";
+import { isSystemCollection } from '@directus/system-data';
 
 const accessibleSystemCollections = {
-    directus_users: { route: "/users" },
-    directus_files: { route: "/files" },
-    directus_dashboards: { route: "/insights" },
-    directus_activity: { route: "/activity" },
-    directus_settings: { route: "/settings/project", singleton: true },
-    directus_collections: { route: "/settings/data-model" },
-    directus_roles: { route: "/settings/roles" },
-    directus_presets: { route: "/settings/presets" },
-    directus_translations: { route: "/settings/translations" },
-    directus_webhooks: { route: "/settings/webhooks" },
-    directus_flows: { route: "/settings/flows" },
+	directus_users: { route: '/users' },
+	directus_files: { route: '/files' },
+	directus_dashboards: { route: '/insights' },
+	directus_activity: { route: '/activity' },
+	directus_settings: { route: '/settings/project', singleton: true },
+	directus_collections: { route: '/settings/data-model' },
+	directus_roles: { route: '/settings/roles' },
+	directus_presets: { route: '/settings/presets' },
+	directus_translations: { route: '/settings/translations' },
+	directus_webhooks: { route: '/settings/webhooks' },
+	directus_flows: { route: '/settings/flows' },
 } as const;
 
 function isAccessibleSystemCollection(
-    collection: string
+	collection: string,
 ): collection is keyof typeof accessibleSystemCollections {
-    return collection in accessibleSystemCollections;
+	return collection in accessibleSystemCollections;
 }
 
 /**
@@ -27,10 +27,10 @@ function isAccessibleSystemCollection(
  * @returns - URL route for the system collection, empty string if not an accessible system collection
  */
 export function getSystemCollectionRoute(collection: string) {
-    if (isAccessibleSystemCollection(collection))
-        return accessibleSystemCollections[collection].route;
+	if (isAccessibleSystemCollection(collection))
+		return accessibleSystemCollections[collection].route;
 
-    return "";
+	return '';
 }
 
 /**
@@ -40,12 +40,13 @@ export function getSystemCollectionRoute(collection: string) {
  * @returns - URL route for the collection
  */
 export function getCollectionRoute(collection: string | null) {
-    if (collection === null) return "";
+	if (collection === null)
+		return '';
 
-    if (isSystemCollection(collection))
-        return getSystemCollectionRoute(collection);
+	if (isSystemCollection(collection))
+		return getSystemCollectionRoute(collection);
 
-    return `/content/${collection}`;
+	return `/content/${collection}`;
 }
 
 /**
@@ -56,23 +57,26 @@ export function getCollectionRoute(collection: string | null) {
  * @returns - URL route for the item
  */
 export function getItemRoute(
-    collection: string | null,
-    primaryKey: string | number
+	collection: string | null,
+	primaryKey: string | number,
 ) {
-    if (collection === null) return "";
+	if (collection === null)
+		return '';
 
-    const collectionRoute = getCollectionRoute(collection);
+	const collectionRoute = getCollectionRoute(collection);
 
-    if (collectionRoute === "") return "";
+	if (collectionRoute === '')
+		return '';
 
-    if (
-        isAccessibleSystemCollection(collection) &&
-        "singleton" in accessibleSystemCollections[collection]
-    )
-        return collectionRoute;
+	if (
+		isAccessibleSystemCollection(collection)
+		&& 'singleton' in accessibleSystemCollections[collection]
+	) {
+		return collectionRoute;
+	}
 
-    const itemRoute =
-        primaryKey === "+" ? primaryKey : encodeURIComponent(primaryKey);
+	const itemRoute
+        = primaryKey === '+' ? primaryKey : encodeURIComponent(primaryKey);
 
-    return `${collectionRoute}/${itemRoute}`;
+	return `${collectionRoute}/${itemRoute}`;
 }

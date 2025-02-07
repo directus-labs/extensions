@@ -59,6 +59,26 @@ export function useFlows(collection: string) {
 		return flowsCache.value[cacheKey];
 	};
 
+	const showFlowForm = async (flow: any) => {
+		currentFlow.value = flow;
+		showForm.value = true;
+
+		return new Promise((resolve, reject) => {
+			const onSubmit = (values: Record<string, any>) => {
+				showForm.value = false;
+				resolve(values);
+			};
+
+			const onCancel = () => {
+				showForm.value = false;
+				reject(new Error('Flow cancelled'));
+			};
+
+			currentFlow.value = { ...flow, onSubmit, onCancel };
+		});
+		return {};
+	};
+
 	const runFlow = async (flowIdentifier: FlowIdentifier, values: Record<string, any>) => {
 		try {
 			const flow = await getFlow(flowIdentifier);
@@ -97,26 +117,6 @@ export function useFlows(collection: string) {
 				error,
 			});
 		}
-	};
-
-	const showFlowForm = async (flow: any) => {
-		currentFlow.value = flow;
-		showForm.value = true;
-
-		return new Promise((resolve, reject) => {
-			const onSubmit = (values: Record<string, any>) => {
-				showForm.value = false;
-				resolve(values);
-			};
-
-			const onCancel = () => {
-				showForm.value = false;
-				reject(new Error('Flow cancelled'));
-			};
-
-			currentFlow.value = { ...flow, onSubmit, onCancel };
-		});
-		return {};
 	};
 
 	const submitFlow = async (values: Record<string, any>) => {

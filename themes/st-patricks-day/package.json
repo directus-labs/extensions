@@ -1,15 +1,15 @@
 {
 	"name": "@directus-labs/st-patricks-day-theme",
-	"description": "A delightful light green theme for Directus.",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
+	"description": "A delightful light green theme for Directus.",
 	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-theme"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],

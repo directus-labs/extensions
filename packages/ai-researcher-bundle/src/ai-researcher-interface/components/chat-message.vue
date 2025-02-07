@@ -2,10 +2,9 @@
 import type { Message } from '../../_shared/types';
 
 defineProps<{
-	message: Message
-}>()
+	message: Message;
+}>();
 </script>
-
 
 <template>
 	<div :class="`chat-message ${message.role}`">

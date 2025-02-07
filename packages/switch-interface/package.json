@@ -1,14 +1,14 @@
 {
 	"name": "@directus-labs/switch-interface",
-	"description": "Directus toggle switch interface for boolean fields.",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
+	"description": "Directus toggle switch interface for boolean fields.",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-interface"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],

@@ -1,14 +1,14 @@
 {
 	"name": "@directus-labs/scatter-plot-panel",
-	"description": "Present a series of X and Y cooradinates as dots on a graph",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
+	"description": "Present a series of X and Y cooradinates as dots on a graph",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-custom-panel"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],

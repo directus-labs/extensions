@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue';
-import { computed, ref, onMounted, onUpdated, onBeforeUnmount } from 'vue';
-import type { Style, Notation, Unit } from './utils/format-number';
+import type { Notation, Style, Unit } from './utils/format-number';
+import { useSdk, useStores } from '@directus/extensions-sdk';
+import { computed, onBeforeUnmount, onMounted, onUpdated, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAutoFontFit } from './composables/use-auto-fit-text';
 import { formatNumber } from './utils/format-number';
-import { useI18n } from 'vue-i18n';
-import { useSdk, useStores } from '@directus/extensions-sdk';
 
-
-export type Header = {
+export interface Header {
 	header: string;
 	value: string;
-};
+}
 
 type ConditionalFormatting = Record<string, any>;
-
 
 interface Props {
 	showHeader?: boolean;
@@ -22,7 +20,7 @@ interface Props {
 	url: string;
 	resultsPath?: string;
 	fieldIsNumber?: boolean;
-	headers?: Header[],
+	headers?: Header[];
 	body?: string | null;
 	prefix?: string | null;
 	suffix?: string | null;
@@ -81,20 +79,20 @@ let resizeObserver: ResizeObserver | null = null;
 
 function adjustPadding() {
 	const container = labelContainer.value;
-	if (!container) return;
+	if (!container)
+		return;
 
 	const paddingWidth = container.offsetWidth * 0.05;
 	const paddingHeight = container.offsetHeight * 0.05;
 
 	const padding = Math.round(Math.max(8, Math.min(paddingWidth, paddingHeight)));
 
-	if (props.showHeader == true) {
+	if (props.showHeader === true) {
 		container.style.padding = '0px 12px 12px 12px';
-	} else {
+	}
+	else {
 		container.style.padding = `${padding}px`;
 	}
-
-	return;
 }
 
 function unmountResizeObserver() {
@@ -116,7 +114,8 @@ async function updateFit() {
 
 	if (!resizeObserver) {
 		const container = labelContainer.value;
-		if (!container) return;
+		if (!container)
+			return;
 
 		// Create a ResizeObserver to watch for changes in the container's dimensions
 		resizeObserver = new ResizeObserver(() => {
@@ -129,33 +128,31 @@ async function updateFit() {
 	adjustFontSize();
 }
 
-
 function createUrlParams(): string {
-  const params = new URLSearchParams();
+	const params = new URLSearchParams();
 
-  if (props.url && props.url.trim() !== '') {
-    params.append('requestUrl', props.url);
+	if (props.url && props.url.trim() !== '') {
+		params.append('requestUrl', props.url);
 	}
-	
-  if (props.method) {
-    params.append('requestMethod', props.method);
+
+	if (props.method) {
+		params.append('requestMethod', props.method);
 	}
-	
-  if (props.headers && props.headers.length > 0) {
-    params.append('requestHeaders', JSON.stringify(props.headers));
+
+	if (props.headers && props.headers.length > 0) {
+		params.append('requestHeaders', JSON.stringify(props.headers));
 	}
-	
-  if (props.body && Object.keys(props.body).length > 0) {
-    params.append('requestBody', JSON.stringify(props.body));
+
+	if (props.body && Object.keys(props.body).length > 0) {
+		params.append('requestBody', JSON.stringify(props.body));
 	}
 
 	if (props.resultsPath) {
-    params.append('resultsPath', props.resultsPath);
-  }
+		params.append('resultsPath', props.resultsPath);
+	}
 
-  return params.toString();
+	return params.toString();
 }
-
 
 async function fetchMetric() {
 	if (!props.url) {
@@ -163,7 +160,7 @@ async function fetchMetric() {
 	}
 
 	const urlParams = createUrlParams();
-	
+
 	const response = await client.request(() => ({
 		path: `/api-metric-endpoint?${urlParams}`,
 		method: 'GET',
@@ -182,18 +179,18 @@ onUpdated(() => {
 });
 
 const unsubscribeInsightsStore = insightsStore.$onAction(
-	({ name, store, args, after, onError, }) => {
+	// eslint-disable-next-line unused-imports/no-unused-vars
+	({ name, store, args, after, onError }) => {
 		if (name === 'refresh' || name === 'saveChanges') {
 			fetchMetric();
 		}
-	}
-)
+	},
+);
 
 onBeforeUnmount(() => {
 	unmountResizeObserver();
 	unsubscribeInsightsStore();
 });
-
 
 function displayValue(value: MetricType) {
 	if (value === null || value === undefined) {
@@ -215,7 +212,8 @@ function displayValue(value: MetricType) {
 }
 
 const color = computed(() => {
-	if (!metric.value) return null;
+	if (!metric.value)
+		return null;
 
 	let matchingFormat = null as ConditionalFormatting | null;
 
@@ -238,7 +236,8 @@ const color = computed(() => {
 				case '!=':
 					return value !== compareValue;
 			}
-		} else {
+		}
+		else {
 			const value = Number(metric.value);
 			const compareValue = Number(format.value ?? 0);
 
@@ -263,7 +262,6 @@ const color = computed(() => {
 });
 </script>
 
-
 <template>
 	<div ref="labelContainer" class="api-metric type-title selectable" :class="[font, { 'has-header': showHeader }]">
 		<p
@@ -284,9 +282,7 @@ const color = computed(() => {
 			</template>
 		</p>
 	</div>
-
 </template>
-
 
 <style lang="scss"  scoped>
 .api-metric-text {

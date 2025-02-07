@@ -1,194 +1,207 @@
 <script setup lang="ts">
-    // CORE-CHANGE start
-    // import api from '@/api';
-    // import { useCollectionsStore } from '@/stores/collections';
-    import { useApi, useStores } from '@directus/extensions-sdk';
-    // import { unexpectedError } from "@/utils/unexpected-error";
-    import { unexpectedError } from './core-clones/utils/unexpected-error';
-    // CORE-CHANGE end
-    import EditorJS from '@editorjs/editorjs';
-    import { cloneDeep, isEqual } from 'lodash';
-    import { onMounted, onUnmounted, ref, watch } from 'vue';
-    import { useI18n } from 'vue-i18n';
-    import { useRouter } from 'vue-router';
-    import { useBus } from './bus';
-    import getTools from './tools';
-    import { useFileHandler } from './use-file-handler';
+// CORE-CHANGE start
+// import api from '@/api';
+// import { useCollectionsStore } from '@/stores/collections';
+import { useApi, useStores } from '@directus/extensions-sdk';
+// CORE-CHANGE end
+import EditorJS from '@editorjs/editorjs';
+import { cloneDeep, isEqual } from 'lodash';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { useBus } from './bus';
+// import { unexpectedError } from "@/utils/unexpected-error";
+import { unexpectedError } from './core-clones/utils/unexpected-error';
+import getTools from './tools';
+import { useFileHandler } from './use-file-handler';
 
-    // https://github.com/codex-team/editor.js/blob/057bf17a6fc2d5e05c662107918d7c3e943d077c/src/components/events/RedactorDomChanged.ts#L4
-    const RedactorDomChanged = 'redactor dom changed';
+const props = withDefaults(
+	defineProps<{
+		disabled?: boolean;
+		autofocus?: boolean;
+		value?: Record<string, any> | null;
+		bordered?: boolean;
+		placeholder?: string;
+		tools?: string[];
+		folder?: string;
+		font?: 'sans-serif' | 'monospace' | 'serif';
+	}>(),
+	{
+		value: null,
+		bordered: true,
+		tools: () => ['header', 'nestedlist', 'code', 'image', 'paragraph', 'checklist', 'quote', 'underline'],
+		font: 'sans-serif',
+	},
+);
 
-    const props = withDefaults(
-        defineProps<{
-            disabled?: boolean;
-            autofocus?: boolean;
-            value?: Record<string, any> | null;
-            bordered?: boolean;
-            placeholder?: string;
-            tools?: string[];
-            folder?: string;
-            font?: 'sans-serif' | 'monospace' | 'serif';
-        }>(),
-        {
-            value: null,
-            bordered: true,
-            tools: () => ['header', 'nestedlist', 'code', 'image', 'paragraph', 'checklist', 'quote', 'underline'],
-            font: 'sans-serif',
-        },
-    );
+const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
 
-    const bus = useBus();
+// https://github.com/codex-team/editor.js/blob/057bf17a6fc2d5e05c662107918d7c3e943d077c/src/components/events/RedactorDomChanged.ts#L4
+const RedactorDomChanged = 'redactor dom changed';
 
-    const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
+const bus = useBus();
 
-    const { t } = useI18n();
+const { t } = useI18n();
 
-    // CORE-CHANGE start
-    const { useCollectionsStore } = useStores();
-    // CORE-CHANGE end
-    const collectionStore = useCollectionsStore();
+// CORE-CHANGE start
+const { useCollectionsStore } = useStores();
+// CORE-CHANGE end
+const collectionStore = useCollectionsStore();
 
-    const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile } =
-        useFileHandler();
+const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile }
+        = useFileHandler();
 
-    const editorjsRef = ref<EditorJS>();
-    const editorjsIsReady = ref(false);
-    const uploaderComponentElement = ref<HTMLElement>();
-    const editorElement = ref<HTMLElement>();
-    const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
-    const haveValuesChanged = ref(false);
-    const router = useRouter();
+const editorjsRef = ref<EditorJS>();
+const editorjsIsReady = ref(false);
+const uploaderComponentElement = ref<HTMLElement>();
+const editorElement = ref<HTMLElement>();
+const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
+const haveValuesChanged = ref(false);
+const router = useRouter();
 
-    // CORE-CHANGE start
-    const api = useApi();
-    // CORE-CHANGE end
-    const tools = getTools(
-        {
-            baseURL: api.defaults.baseURL,
-            setFileHandler,
-            setCurrentPreview,
-            getUploadFieldElement: () => uploaderComponentElement,
-        },
-        props.tools,
-        haveFilesAccess,
-    );
+// CORE-CHANGE start
+const api = useApi();
 
-    bus.on(async (event) => {
-        if (event.type === 'open-url') {
-            router.push(event.payload);
-        }
-    });
+// CORE-CHANGE end
+const tools = getTools(
+	{
+		baseURL: api.defaults.baseURL,
+		setFileHandler,
+		setCurrentPreview,
+		getUploadFieldElement: () => uploaderComponentElement,
+	},
+	props.tools,
+	haveFilesAccess,
+);
 
-    onMounted(async () => {
-        editorjsRef.value = new EditorJS({
-            logLevel: 'ERROR' as EditorJS.LogLevels,
-            holder: editorElement.value,
-            readOnly: false,
-            placeholder: props.placeholder,
-            minHeight: 72,
-            onChange: (api) => emitValue(api),
-            tools: tools,
-        });
+bus.on(async (event) => {
+	if (event.type === 'open-url') {
+		router.push(event.payload);
+	}
+});
 
-        await editorjsRef.value.isReady;
+onMounted(async () => {
+	editorjsRef.value = new EditorJS({
+		logLevel: 'ERROR' as EditorJS.LogLevels,
+		holder: editorElement.value,
+		readOnly: false,
+		placeholder: props.placeholder,
+		minHeight: 72,
+		onChange: (api) => emitValue(api),
+		tools,
+	});
 
-        const sanitizedValue = sanitizeValue(props.value);
+	await editorjsRef.value.isReady;
 
-        if (sanitizedValue) {
-            await editorjsRef.value.render(sanitizedValue);
-        }
+	const sanitizedValue = sanitizeValue(props.value);
 
-        if (props.autofocus) {
-            editorjsRef.value.focus();
-        }
+	if (sanitizedValue) {
+		await editorjsRef.value.render(sanitizedValue);
+	}
 
-        editorjsRef.value.on(RedactorDomChanged, () => {
-            emitValue(editorjsRef.value!);
-        });
+	if (props.autofocus) {
+		editorjsRef.value.focus();
+	}
 
-        editorjsIsReady.value = true;
-    });
+	editorjsRef.value.on(RedactorDomChanged, () => {
+		emitValue(editorjsRef.value!);
+	});
 
-    onUnmounted(() => {
-        editorjsRef.value?.destroy();
-        bus.reset();
-    });
+	editorjsIsReady.value = true;
+});
 
-    watch(
-        () => props.value,
-        async (newVal, oldVal) => {
-            // First value will be set in 'onMounted'
-            if (!editorjsRef.value || !editorjsIsReady.value) return;
+onUnmounted(() => {
+	editorjsRef.value?.destroy();
+	bus.reset();
+});
 
-            if (haveValuesChanged.value) {
-                haveValuesChanged.value = false;
-                return;
-            }
+watch(
+	() => props.value,
+	async (newVal, oldVal) => {
+		// First value will be set in 'onMounted'
+		if (!editorjsRef.value || !editorjsIsReady.value)
+			return;
 
-            if (isEqual(newVal?.blocks, oldVal?.blocks)) return;
+		if (haveValuesChanged.value) {
+			haveValuesChanged.value = false;
+			return;
+		}
 
-            try {
-                const sanitizedValue = sanitizeValue(newVal);
+		if (isEqual(newVal?.blocks, oldVal?.blocks))
+			return;
 
-                if (sanitizedValue) {
-                    await editorjsRef.value.render(sanitizedValue);
-                } else {
-                    editorjsRef.value.clear();
-                }
-            } catch (error) {
-                unexpectedError(error);
-            }
-        },
-    );
+		try {
+			const sanitizedValue = sanitizeValue(newVal);
 
-    async function emitValue(context: EditorJS.API | EditorJS) {
-        if (props.disabled || !context || !context.saver) return;
+			if (sanitizedValue) {
+				await editorjsRef.value.render(sanitizedValue);
+			}
+			else {
+				editorjsRef.value.clear();
+			}
+		}
+		catch (error) {
+			unexpectedError(error);
+		}
+	},
+);
 
-        try {
-            const result = await context.saver.save();
+async function emitValue(context: EditorJS.API | EditorJS) {
+	if (props.disabled || !context || !context.saver)
+		return;
 
-            haveValuesChanged.value = true;
+	try {
+		const result = await context.saver.save();
 
-            if (!result || result.blocks.length < 1) {
-                emit('input', null);
-                return;
-            }
+		haveValuesChanged.value = true;
 
-            if (isEqual(result.blocks, props.value?.blocks)) return;
+		if (!result || result.blocks.length < 1) {
+			emit('input', null);
+			return;
+		}
 
-            emit('input', result);
-        } catch (error) {
-            unexpectedError(error);
-        }
-    }
+		if (isEqual(result.blocks, props.value?.blocks))
+			return;
 
-    function sanitizeValue(value: any): EditorJS.OutputData | null {
-        if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1) return null;
+		emit('input', result);
+	}
+	catch (error) {
+		unexpectedError(error);
+	}
+}
 
-        return cloneDeep({
-            time: value?.time || Date.now(),
-            version: value?.version || '0.0.0',
-            blocks: value.blocks,
-        });
-    }
+function sanitizeValue(value: any): EditorJS.OutputData | null {
+	if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1)
+		return null;
+
+	return cloneDeep({
+		time: value?.time || Date.now(),
+		version: value?.version || '0.0.0',
+		blocks: value.blocks,
+	});
+}
 </script>
 
 <template>
-    <div class="input-block-editor">
-        <div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
+	<div class="input-block-editor">
+		<div ref="editorElement" :class="{ [font]: true, disabled, bordered }" />
 
-        <v-drawer v-if="haveFilesAccess && !disabled" :model-value="fileHandler !== null" icon="image"
-            :title="t('upload_from_device')" cancelable @update:model-value="unsetFileHandler"
-            @cancel="unsetFileHandler">
-            <div class="uploader-drawer-content">
-                <div v-if="currentPreview" class="uploader-preview-image">
-                    <img :src="currentPreview" />
-                </div>
-                <v-upload :ref="uploaderComponentElement" :multiple="false" :folder="folder" from-library from-url
-                    @input="handleFile" />
-            </div>
-        </v-drawer>
-    </div>
+		<v-drawer
+			v-if="haveFilesAccess && !disabled" :model-value="fileHandler !== null" icon="image"
+			:title="t('upload_from_device')" cancelable @update:model-value="unsetFileHandler"
+			@cancel="unsetFileHandler"
+		>
+			<div class="uploader-drawer-content">
+				<div v-if="currentPreview" class="uploader-preview-image">
+					<img :src="currentPreview">
+				</div>
+				<v-upload
+					:ref="uploaderComponentElement" :multiple="false" :folder="folder" from-library from-url
+					@input="handleFile"
+				/>
+			</div>
+		</v-drawer>
+	</div>
 </template>
 
 <style lang="scss">
@@ -197,70 +210,70 @@
 
 <style lang="scss" scoped>
     .btn--default {
-        color: #fff !important;
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-    }
+	color: #fff !important;
+	background-color: #0d6efd;
+	border-color: #0d6efd;
+}
 
-    .btn--gray {
-        color: #fff !important;
-        background-color: #7c7c7c;
-        border-color: #7c7c7c;
-    }
+.btn--gray {
+	color: #fff !important;
+	background-color: #7c7c7c;
+	border-color: #7c7c7c;
+}
 
-    .disabled {
-        color: var(--theme--form--field--input--foreground-subdued);
-        background-color: var(--theme--form--field--input--background-subdued);
-        border-color: var(--theme--form--field--input--border-color);
-        pointer-events: none;
-    }
+.disabled {
+	color: var(--theme--form--field--input--foreground-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
+	border-color: var(--theme--form--field--input--border-color);
+	pointer-events: none;
+}
 
-    .bordered {
-        padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
-        background-color: var(--theme--background);
-        border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-        border-radius: var(--theme--border-radius);
+.bordered {
+	padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
-        &:hover {
-            border-color: var(--theme--form--field--input--border-color-hover);
-        }
+	&:hover {
+		border-color: var(--theme--form--field--input--border-color-hover);
+	}
 
-        &:focus-within {
-            border-color: var(--theme--form--field--input--border-color-focus);
-        }
-    }
+	&:focus-within {
+		border-color: var(--theme--form--field--input--border-color-focus);
+	}
+}
 
-    .monospace {
-        font-family: var(--theme--fonts--monospace--font-family);
-    }
+.monospace {
+	font-family: var(--theme--fonts--monospace--font-family);
+}
 
-    .serif {
-        font-family: var(--theme--fonts--serif--font-family);
-    }
+.serif {
+	font-family: var(--theme--fonts--serif--font-family);
+}
 
-    .sans-serif {
-        font-family: var(--theme--fonts--sans--font-family);
-    }
+.sans-serif {
+	font-family: var(--theme--fonts--sans--font-family);
+}
 
-    .uploader-drawer-content {
-        padding: var(--content-padding);
-        padding-top: 0;
-        padding-bottom: var(--content-padding);
-    }
+.uploader-drawer-content {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
+}
 
-    .uploader-preview-image {
-        margin-bottom: var(--theme--form--row-gap);
-        background-color: var(--theme--background-normal);
-        border-radius: var(--theme--border-radius);
-    }
+.uploader-preview-image {
+	margin-bottom: var(--theme--form--row-gap);
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
+}
 
-    .uploader-preview-image img {
-        display: block;
-        width: auto;
-        max-width: 100%;
-        height: auto;
-        max-height: 40vh;
-        margin: 0 auto;
-        object-fit: contain;
-    }
+.uploader-preview-image img {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: 40vh;
+	margin: 0 auto;
+	object-fit: contain;
+}
 </style>

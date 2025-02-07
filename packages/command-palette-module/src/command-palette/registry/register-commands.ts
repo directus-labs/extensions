@@ -1,40 +1,40 @@
-import { markRaw } from "vue";
-import { commands, groups } from "./registry";
-import {
-  CommandConfig,
-  CommandsAvailableCallback,
-  GroupConfig,
-  GroupsAvailableCallback,
-} from "./types";
+import type {
+	CommandConfig,
+	CommandsAvailableCallback,
+	GroupConfig,
+	GroupsAvailableCallback,
+} from './types';
+import { markRaw } from 'vue';
+import { commands, groups } from './registry';
 
-export type RegisterCommandsOptions = {
-  groups?: GroupConfig[] | GroupsAvailableCallback;
-  commands?: CommandConfig[] | CommandsAvailableCallback;
-};
+export interface RegisterCommandsOptions {
+	groups?: GroupConfig[] | GroupsAvailableCallback;
+	commands?: CommandConfig[] | CommandsAvailableCallback;
+}
 
 export function defineCommands(
-  options: RegisterCommandsOptions,
+	options: RegisterCommandsOptions,
 ): RegisterCommandsOptions {
-  return options;
+	return options;
 }
 
 export function registerCommands(...options: RegisterCommandsOptions[]) {
-  for (const opt of options) {
-    const { groups: newGroups = [], commands: newCommands = [] } = opt;
+	for (const opt of options) {
+		const { groups: newGroups = [], commands: newCommands = [] } = opt;
 
-    const commandsCallback = markRaw(
-      typeof newCommands === "function"
-        ? newCommands
-        : () => newCommands as CommandConfig[],
-    );
+		const commandsCallback = markRaw(
+			typeof newCommands === 'function'
+				? newCommands
+				: () => newCommands as CommandConfig[],
+		);
 
-    const groupsCallback = markRaw(
-      typeof newGroups === "function"
-        ? newGroups
-        : () => newGroups as GroupConfig[],
-    );
+		const groupsCallback = markRaw(
+			typeof newGroups === 'function'
+				? newGroups
+				: () => newGroups as GroupConfig[],
+		);
 
-    groups.value.push(groupsCallback);
-    commands.value.push(commandsCallback);
-  }
+		groups.value.push(groupsCallback);
+		commands.value.push(commandsCallback);
+	}
 }

@@ -1,10 +1,11 @@
-import { create, read, update, del, list } from './actions';
+import { create, del, list, read, update } from './actions';
+
 const endpoint = 'email';
 export const email = {
 	label: 'Email',
 	icon: 'mail',
 	actions: {
-        create: create(endpoint),
+		create: create(endpoint),
 		retrieve: read(endpoint),
 		update: update(endpoint),
 		delete: del(endpoint),

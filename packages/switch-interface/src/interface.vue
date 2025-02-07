@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/types';
 
 interface Props {
 	value: boolean | null;
@@ -37,9 +37,9 @@ const switchStyles = computed(() => ({
 	'--switch-color-off': props.colorOff ?? 'var(--theme--form--field--input--foreground-subdued)',
 }));
 
-const toggleSwitch = () => {
+function toggleSwitch() {
 	emit('input', !props.value);
-};
+}
 </script>
 
 <template>
@@ -53,13 +53,13 @@ const toggleSwitch = () => {
 				<input
 					type="checkbox"
 					:checked="value ?? false"
-					@change="toggleSwitch"
 					class="switch-input"
 					:aria-checked="value ?? false"
 					:aria-label="label"
-                    role="switch"
+					role="switch"
 					tabindex="0"
-				/>
+					@change="toggleSwitch"
+				>
 				<span class="switch-slider">
 					<v-icon :name="value ? iconOn : iconOff" class="switch-icon" />
 				</span>
@@ -67,7 +67,6 @@ const toggleSwitch = () => {
 		</label>
 	</div>
 </template>
-
 
 <style scoped lang="scss">
 .switch-interface {
@@ -91,7 +90,7 @@ const toggleSwitch = () => {
 	justify-content: space-between;
 	cursor: pointer;
 	width: 100%;
-    padding: var(--theme--form--field--input--padding);
+	padding: var(--theme--form--field--input--padding);
 }
 
 .switch-content {

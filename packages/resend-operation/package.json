@@ -1,14 +1,14 @@
 {
 	"name": "@directus-labs/resend-operation",
-	"description": "Resend API operation for Directus Flows. Send emails, update domains, and more.",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
+	"description": "Resend API operation for Directus Flows. Send emails, update domains, and more.",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-operation"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],

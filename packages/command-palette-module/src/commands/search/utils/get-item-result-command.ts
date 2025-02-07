@@ -1,50 +1,51 @@
-import { Item } from "@directus/types";
-import { isNil } from "lodash-es";
-import { Component, h } from "vue";
-import { useCollectionSearch } from "../../../composables/use-collection-search";
+import type { Item } from '@directus/types';
+import type { Component } from 'vue';
+import type { useCollectionSearch } from '../../../composables/use-collection-search';
+import { isNil } from 'lodash-es';
+import { h } from 'vue';
 
-type Context = {
-  info: ReturnType<typeof useCollectionSearch>["info"];
-  RenderTemplate: Component;
-  DisplayImage: Component;
-};
+interface Context {
+	info: ReturnType<typeof useCollectionSearch>['info'];
+	RenderTemplate: Component;
+	DisplayImage: Component;
+}
 
 export function getItemResultCommand(
-  item: Item,
-  { info, RenderTemplate, DisplayImage }: Context,
+	item: Item,
+	{ info, RenderTemplate, DisplayImage }: Context,
 ) {
-  {
-    const {
-      collection,
-      thumbnailField,
-      descriptionField,
-      displayTemplate,
-      fields,
-      icon: collectionIcon,
-    } = info.value;
-    const id = `${collection}:${item[info.value.primaryKeyField]}`;
+	// eslint-disable-next-line no-lone-blocks
+	{
+		const {
+			collection,
+			thumbnailField,
+			descriptionField,
+			displayTemplate,
+			fields,
+			icon: collectionIcon,
+		} = info.value;
 
-    const icon =
-      thumbnailField && item[thumbnailField]
-        ? () => h(DisplayImage, { value: { id: item[thumbnailField] } })
-        : collectionIcon;
+		const id = `${collection}:${item[info.value.primaryKeyField]}`;
 
-    return {
-      id: `search-item:${id}`,
-      name: id,
-      icon,
-      description: descriptionField ? item[descriptionField] : undefined,
-      keywords: fields
-        ?.map((field) => {
-          return item[field];
-        })
-        .filter((v) => !isNil(v)),
-      render: () =>
-        h(RenderTemplate, {
-          collection,
-          template: displayTemplate,
-          item,
-        }),
-    };
-  }
+		const icon
+      = thumbnailField && item[thumbnailField] ? () => h(DisplayImage, { value: { id: item[thumbnailField] } }) : collectionIcon;
+
+		return {
+			id: `search-item:${id}`,
+			name: id,
+			icon,
+			description: descriptionField ? item[descriptionField] : undefined,
+			keywords: fields
+				?.map((field) => {
+					return item[field];
+				})
+				.filter((v) => !isNil(v)),
+			render: () =>
+				h(RenderTemplate, {
+					collection,
+					template: displayTemplate,
+					item,
+				}),
+		};
+	}
 }

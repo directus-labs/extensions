@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
 import { useApi } from '@directus/extensions-sdk';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { getRootPath } from '../utils/get-root-path';
@@ -20,6 +20,7 @@ interface ImageUuidInterfaceProps {
 	value?: string | Record<string, any> | null;
 	disabled?: boolean;
 	folder?: string;
+	// eslint-disable-next-line vue/prop-name-casing
 	file_key_to_get?: string;
 	crop?: boolean;
 	letterbox?: boolean;
@@ -52,32 +53,36 @@ const { t, te } = useI18n();
 
 function addQueryToPath(path: string, query: Record<string, string>): string {
 	const queryParams: string[] = [];
+
 	for (const [key, value] of Object.entries(query)) {
 		queryParams.push(`${key}=${value}`);
 	}
+
 	return path.includes('?') ? `${path}&${queryParams.join('&')}` : `${path}?${queryParams.join('&')}`;
 }
 
 function getToken(api: any): string | null {
-	return api.defaults.headers.common['Authorization']?.split(' ')[1] || null;
+	return api.defaults.headers.common.Authorization?.split(' ')[1] || null;
 }
 
 function addTokenToURL(api: any, url: string, token?: string): string {
 	const accessToken = token || getToken(api);
-	if (!accessToken) return url;
+	if (!accessToken)
+		return url;
 	return addQueryToPath(url, { access_token: accessToken });
 }
 
 const src = computed(() => {
-	if (!image.value?.type) return null;
+	if (!image.value?.type)
+		return null;
 
 	if (image.value.type.includes('svg')) {
-		return addTokenToURL(api, getRootPath() + `assets/${image.value.id}`);
+		return addTokenToURL(api, `${getRootPath()}assets/${image.value.id}`);
 	}
 
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-		const url = getRootPath() + `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
+		const url = `${getRootPath()}assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
 		return addTokenToURL(api, url);
 	}
 
@@ -85,7 +90,8 @@ const src = computed(() => {
 });
 
 const meta = computed(() => {
-	if (!image.value) return null;
+	if (!image.value)
+		return null;
 	const { filesize, width, height, type } = image.value;
 
 	if (width && height) {
@@ -99,11 +105,13 @@ const edits = computed(() => {
 	if (props.value && typeof props.value === 'object') {
 		return props.value;
 	}
+
 	return {};
 });
 
 async function fetchImage() {
 	loading.value = true;
+
 	try {
 		let id = typeof props.value === 'string' ? props.value : props.value?.id;
 		id = id.split('.').slice(0, -1).join('.');
@@ -119,24 +127,31 @@ async function fetchImage() {
 				...response.data.data,
 				...props.value,
 			};
-		} else {
+		}
+		else {
 			image.value = response.data.data;
 		}
-	} catch (err: any) {
-		console.log(err);
-	} finally {
+	}
+	catch (err: any) {
+		console.error(err);
+	}
+	finally {
 		loading.value = false;
 	}
 }
 
 async function imageErrorHandler() {
 	isImage.value = false;
-	if (!src.value) return;
+	if (!src.value)
+		return;
+
 	try {
 		await api.get(src.value);
-	} catch (err: any) {
+	}
+	catch (err: any) {
 		imageError.value = err.response?.data?.errors[0]?.extensions?.code;
-		if (!imageError.value || !te('errors.' + imageError.value)) {
+
+		if (!imageError.value || !te(`errors.${imageError.value}`)) {
 			imageError.value = 'UNKNOWN';
 		}
 	}
@@ -155,25 +170,31 @@ function deselect() {
 	editDrawerActive.value = false;
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 function stageEdits(newEdits: Record<string, any>) {
-	if (!image.value) return;
+	if (!image.value)
+		return;
 	emit('input', image.value[props.file_key_to_get]);
 }
 
 watch(
 	() => props.value,
 	(newValue, oldValue) => {
-		if (newValue === oldValue) return;
+		if (newValue === oldValue)
+			return;
+
 		if (newValue) {
 			fetchImage();
 		}
+
 		if (oldValue && newValue === null) {
 			deselect();
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 </script>
+
 <template>
 	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
@@ -197,7 +218,7 @@ watch(
 				:alt="image.title || ''"
 				role="presentation"
 				@error="imageErrorHandler"
-			/>
+			>
 
 			<div v-else class="fallback">
 				<v-icon name="description" />
@@ -221,8 +242,12 @@ watch(
 			</div>
 
 			<div class="info">
-				<div class="title">{{ image.title }}</div>
-				<div class="meta">{{ meta }}</div>
+				<div class="title">
+					{{ image.title }}
+				</div>
+				<div class="meta">
+					{{ meta }}
+				</div>
 			</div>
 
 			<drawer-item

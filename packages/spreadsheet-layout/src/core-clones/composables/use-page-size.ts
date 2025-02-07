@@ -1,49 +1,48 @@
-import { ComputedRef, computed } from "vue";
+import type { ComputedRef } from 'vue';
 // CORE CHANGES
 // import { useServerStore } from "@/stores/server";
-import { useStores } from "@directus/extensions-sdk";
+import { useStores } from '@directus/extensions-sdk';
+import { computed } from 'vue';
 
 export function usePageSize<T = any>(
-    availableSizes: number[],
-    mapCallback: (value: number, index: number, array: number[]) => T,
-    defaultSize = 25
+	availableSizes: number[],
+	mapCallback: (value: number, index: number, array: number[]) => T,
+	defaultSize = 25,
 ): { sizes: ComputedRef<T[]>; selected: number } {
-    // CORE CHANGES
-    const { useServerStore } = useStores();
+	// CORE CHANGES
+	const { useServerStore } = useStores();
 
-    const {
-        info: { queryLimit },
-    } = useServerStore();
+	const {
+		info: { queryLimit },
+	} = useServerStore();
 
-    const pageSizes = computed<T[]>(() => {
-        if (queryLimit === undefined || queryLimit.max === -1) {
-            return availableSizes.map(mapCallback);
-        }
+	const pageSizes = computed<T[]>(() => {
+		if (queryLimit === undefined || queryLimit.max === -1) {
+			return availableSizes.map(mapCallback);
+		}
 
-        const sizes = availableSizes.filter((size) => size <= queryLimit.max);
+		const sizes = availableSizes.filter((size) => size <= queryLimit.max);
 
-        if (sizes.length === 0) {
-            sizes.push(queryLimit.max);
-        }
+		if (sizes.length === 0) {
+			sizes.push(queryLimit.max);
+		}
 
-        return sizes.map(mapCallback);
-    });
+		return sizes.map(mapCallback);
+	});
 
-    const initialSize =
-        queryLimit !== undefined
-            ? Math.min(defaultSize, parseLimit(queryLimit.max))
-            : defaultSize;
+	const initialSize
+        = queryLimit !== undefined ? Math.min(defaultSize, parseLimit(queryLimit.max)) : defaultSize;
 
-    return {
-        sizes: pageSizes,
-        selected: initialSize,
-    };
+	return {
+		sizes: pageSizes,
+		selected: initialSize,
+	};
 }
 
 function parseLimit(value: number | undefined) {
-    if (value === undefined || value === -1) {
-        return Infinity;
-    }
+	if (value === undefined || value === -1) {
+		return Infinity;
+	}
 
-    return value;
+	return value;
 }

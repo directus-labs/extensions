@@ -3,7 +3,8 @@
 export function translate(literal: any): string {
 	let translated = literal;
 
-	if (typeof literal === 'string' && literal.startsWith('$t:')) translated = literal.replace('$t:', '');
+	if (typeof literal === 'string' && literal.startsWith('$t:'))
+		translated = literal.replace('$t:', '');
 
 	return translated;
 }

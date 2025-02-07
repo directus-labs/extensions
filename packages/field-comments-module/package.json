@@ -1,0 +1,46 @@
+{
+	"name": "@directus-labs/field-comments",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "Write comments at the field level",
+	"author": "Tim Butterfield",
+	"license": "MIT",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-operation"
+	],
+	"icon": "extension",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "module",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^11.1.2"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
+	},
+	"dependencies": {
+		"@vueuse/core": "^12.3.0",
+		"date-fns": "^4.1.0",
+		"vue-i18n": "^9.14.0",
+		"vue-router": "^4.4.5"
+	},
+	"devDependencies": {
+		"@directus/constants": "^13.0.0",
+		"@directus/extensions-sdk": "^13.0.0",
+		"@directus/types": "^13.0.0",
+		"@directus/utils": "^13.0.0",
+		"dompurify": "^3.2.3",
+		"lodash-es": "^4.17.21",
+		"marked": "^15.0.6",
+		"typescript": "^5.6.3",
+		"vue": "^3.5.13"
+	}
+}

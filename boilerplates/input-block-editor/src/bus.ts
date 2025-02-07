@@ -1,12 +1,12 @@
-import { useEventBus } from "@vueuse/core";
+import { useEventBus } from '@vueuse/core';
 
-type Event = {
-    type: "open-url";
-    payload: string;
-};
+interface Event {
+	type: 'open-url';
+	payload: string;
+}
 
 export function useBus() {
-    const bus = useEventBus<Event>("editorjs");
+	const bus = useEventBus<Event>('editorjs');
 
-    return bus;
+	return bus;
 }

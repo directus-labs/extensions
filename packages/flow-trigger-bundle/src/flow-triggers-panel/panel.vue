@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import type { Trigger } from '../types/trigger';
+import { useStores } from '@directus/extensions-sdk';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useStores } from '@directus/extensions-sdk';
-import { Trigger } from '../types/trigger';
 import { useFlowTriggers } from '../composables/use-flow-triggers';
 
 type TriggerList = TriggerListItem[];
 
-type TriggerListItem = {
+interface TriggerListItem {
 	trigger: Trigger;
-};
+}
 
 const props = withDefaults(
 	defineProps<{
@@ -52,6 +52,7 @@ const triggers = computed(() => {
 
 <template>
 	<div class="panel-flows" :class="{ 'has-header': props.showHeader }">
+		<!-- eslint-disable-next-line vue/require-v-for-key -->
 		<div v-for="{ trigger } in triggers" class="trigger">
 			<v-button
 				full-width

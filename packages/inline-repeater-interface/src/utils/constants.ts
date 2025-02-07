@@ -1,4 +1,4 @@
-import { Type } from '@directus/types';
+import type { Type } from '@directus/types';
 
 export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider: true }> = [
 	{

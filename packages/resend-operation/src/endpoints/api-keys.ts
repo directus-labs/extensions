@@ -49,11 +49,13 @@ export const apiKeys = {
 			],
 			handler: async (client: any, params: any) => {
 				const { name, permission, domainId } = params;
+
 				const createData = {
 					name,
 					permission,
 					domain_id: domainId,
 				};
+
 				return client.fetchRequest('/api-keys', 'POST', createData);
 			},
 		},

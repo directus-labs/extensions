@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, unref, onMounted, computed, inject, watch, nextTick } from 'vue';
 import { cssVar } from '@directus/utils/browser';
+import { computed, inject, nextTick, onMounted, ref, unref, watch } from 'vue';
 
 interface Props {
 	shareUrl: string;
@@ -21,8 +21,9 @@ const pageFilter = computed(() => {
 	if (!props.pageFilter || !valuesLoaded.value || !values) {
 		return '';
 	}
+
 	// Replace {{values}} with the actual values
-	return props.pageFilter.replace(/{{(.*?)}}/g, (match, key) => {
+	return props.pageFilter.replace(/\{\{(.*?)\}\}/g, (match, key) => {
 		return unref(values)[key];
 	});
 });
@@ -37,10 +38,12 @@ const url = computed(() => {
 	if (!valuesLoaded.value) {
 		return '';
 	}
+
 	const url = new URL(props.shareUrl);
 	url.searchParams.append('embed', 'true');
 	url.searchParams.append('theme', getColorScheme());
 	url.searchParams.append('background', theme.value.background);
+
 	// Optional: Add a filter for a specific page
 	if (props.pageFilter) {
 		url.searchParams.append('filters', `((is,page,(${unref(pageFilter)})))`);
@@ -68,7 +71,7 @@ watch(
 			valuesLoaded.value = true;
 		}
 	},
-	{ immediate: true, once: true }
+	{ immediate: true, once: true },
 );
 </script>
 
@@ -83,7 +86,7 @@ watch(
 			frameborder="0"
 			loading="lazy"
 			style="width: 1px; min-width: 100%; height: 1600px"
-		></iframe>
+		/>
 	</div>
 </template>
 

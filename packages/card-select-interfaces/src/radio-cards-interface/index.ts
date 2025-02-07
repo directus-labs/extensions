@@ -1,5 +1,5 @@
-import InterfaceIconRadio from './interface.vue';
 import { options } from '../shared/options';
+import InterfaceIconRadio from './interface.vue';
 
 export default {
 	id: 'radio-cards-interface',
@@ -11,7 +11,7 @@ export default {
 	component: InterfaceIconRadio,
 	types: ['string', 'integer', 'float', 'decimal', 'big_integer'],
 	recommendedDisplays: ['badge'],
-	options: options,
+	options,
 	preview: `<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
 		<rect x="6.5" y="13.5" width="69" height="69" rx="5.5" fill="var(--theme--background)" stroke="var(--theme--primary)"/>
 		<rect x="80.5" y="13.5" width="69" height="69" rx="5.5" fill="var(--theme--background)" stroke="var(--theme--primary)"/>
@@ -19,5 +19,5 @@ export default {
 		<path d="M91 19C87.676 19 85 21.676 85 25C85 28.324 87.676 31 91 31C94.324 31 97 28.324 97 25C97 21.676 94.324 19 91 19ZM91 29.8169C88.3521 29.8169 86.1831 27.6479 86.1831 25C86.1831 22.3521 88.3521 20.1831 91 20.1831C93.6479 20.1831 95.8169 22.3521 95.8169 25C95.8169 27.6479 93.6479 29.8169 91 29.8169Z" fill="var(--theme--primary)" fill-opacity="0.25"/>
 		<path d="M52.6667 36.3333V59.6667H29.3333V36.3333H52.6667ZM52.6667 33H29.3333C27.5 33 26 34.5 26 36.3333V59.6667C26 61.5 27.5 63 29.3333 63H52.6667C54.5 63 56 61.5 56 59.6667V36.3333C56 34.5 54.5 33 52.6667 33ZM44.5667 47.7667L39.5667 54.2167L36 49.9L31 56.3333H51L44.5667 47.7667Z" fill="var(--theme--primary)" fill-opacity="0.5"/>
 		<path d="M126.667 36.3333V59.6667H103.333V36.3333H126.667ZM126.667 33H103.333C101.5 33 100 34.5 100 36.3333V59.6667C100 61.5 101.5 63 103.333 63H126.667C128.5 63 130 61.5 130 59.6667V36.3333C130 34.5 128.5 33 126.667 33ZM118.567 47.7667L113.567 54.2167L110 49.9L105 56.3333H125L118.567 47.7667Z" fill="var(--theme--primary)" fill-opacity="0.5"/>
-		</svg>`
+		</svg>`,
 };
