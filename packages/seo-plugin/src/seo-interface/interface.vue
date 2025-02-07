@@ -7,9 +7,9 @@ import { formatTitle } from '@directus/format-title';
 import { set } from 'lodash-es';
 import { computed, defineEmits, defineProps, toRefs } from 'vue';
 
+import SearchPreview from '../shared/components/SearchPreview.vue';
 import MetaDescriptionField from './components/MetaDescriptionField.vue';
 import OgImage from './components/OgImage.vue';
-import SearchPreview from './components/SearchPreview.vue';
 import TitleField from './components/TitleField.vue';
 import { searchControls, sitemapFields } from './fields';
 
@@ -127,15 +127,6 @@ const additionalFields = computed(() => {
 			:meta-description="internalValue.meta_description"
 			:website-url="websiteUrl"
 			:collection="props.collection || ''"
-		/>
-
-		<Translations
-			class="field"
-			:model-value="internalValue.translations"
-			:disabled="props.disabled"
-			:languages="languages"
-			:fields="fields"
-			@update:model-value="updateField('translations', $event)"
 		/>
 
 		<v-divider class="field" />

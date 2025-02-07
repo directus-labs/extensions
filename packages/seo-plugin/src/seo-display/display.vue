@@ -5,7 +5,7 @@ import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 import { formatTitle } from '@directus/format-title';
 import { computed } from 'vue';
 
-import SearchPreview from '../seo-interface/components/SearchPreview.vue';
+import SearchPreview from '../shared/components/SearchPreview.vue';
 import { useSeoField } from '../shared/composables/useSeoField';
 import { seoRules } from '../shared/rulesets';
 
