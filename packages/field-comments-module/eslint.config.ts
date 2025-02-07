@@ -1,4 +1,4 @@
-import baseConfig from "../../eslint.config";
+import baseConfig from '../../eslint.config';
 
 export default [
 	...await baseConfig,
@@ -7,4 +7,4 @@ export default [
 			'ts/ban-ts-comment': 'off',
 		},
 	},
-]
+];
