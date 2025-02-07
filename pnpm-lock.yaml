@@ -571,8 +571,8 @@ importers:
   packages/liquidjs-operation:
     dependencies:
       liquidjs:
-        specifier: ^10.16.3
-        version: 10.18.0
+        specifier: 10.20.1
+        version: 10.20.1
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.8
@@ -4818,8 +4818,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  liquidjs@10.18.0:
-    resolution: {integrity: sha512-gCJPmpmZ3oi2rMMHo/c+bW1LaRF+ZAKYTWQmKXPp0uK9EkWMFRmgbk3+Io4LSJGAOnpCZSgHJbNzcygx3kfAAQ==}
+  liquidjs@10.20.1:
+    resolution: {integrity: sha512-eZ33jfxjj0It8tkY+I4gbKWfXvMmOvQvvraxVFSLcTjZWCjdWMLBnevk48qw9AQIwIHFp58vZc59vH9Qwdq7mw==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -13726,7 +13726,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  liquidjs@10.18.0:
+  liquidjs@10.20.1:
     dependencies:
       commander: 10.0.1
 
