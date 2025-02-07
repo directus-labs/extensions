@@ -136,7 +136,6 @@ const allFields = computed(() => {
 watch(
 	formValues,
 	(newValues) => {
-		console.log('Form values changed:', newValues);
 		emit('input', newValues);
 	},
 	{ deep: true },
