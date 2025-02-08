@@ -38,7 +38,7 @@ defineProps<Props>();
 	background-color: var(--theme--success);
 }
 .progress.too-long,
-.progress.empty {
+.progress.missing {
 	background-color: var(--theme--danger);
 }
 </style>

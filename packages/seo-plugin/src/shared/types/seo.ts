@@ -3,7 +3,7 @@ export interface SeoFieldRule {
 	maxLength: number;
 }
 
-export type SeoFieldStatus = 'empty' | 'too-short' | 'too-long' | 'ideal';
+export type SeoFieldStatus = 'missing' | 'too-short' | 'too-long' | 'ideal';
 
 export interface SeoFieldState {
 	length: number;

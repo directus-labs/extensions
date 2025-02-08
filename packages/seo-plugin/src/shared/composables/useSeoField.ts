@@ -11,7 +11,7 @@ export interface SeoFieldStateWithIcon extends SeoFieldState {
 }
 
 export const STATUS_CONFIG = {
-	'empty': {
+	'missing': {
 		icon: { name: 'error', class: 'error' },
 		message: 'Missing',
 	},
@@ -47,7 +47,7 @@ export function useSeoField(
 
 	const status = computed<SeoFieldStatus>(() => {
 		if (!modelValue.value || !rule)
-			return 'empty';
+			return 'missing';
 		if (length.value > rule.maxLength)
 			return 'too-long';
 		if (length.value < rule.minLength)
