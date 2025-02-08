@@ -74,6 +74,14 @@ const status = computed(() => {
 		};
 	}
 
+	// Check for OG image if enabled
+	if (props.interfaceOptions.showOgImage && !props.value?.og_image) {
+		return {
+			icon: 'warning',
+			color: 'warning',
+		};
+	}
+
 	// Check for missing required additional fields
 	const hasRequiredFields = props.interfaceOptions.additionalFields?.some(
 		(field: any) => field.required
@@ -83,8 +91,8 @@ const status = computed(() => {
 
 	if (hasRequiredFields) {
 		return {
-			icon: 'warning',
-			color: 'warning',
+			icon: 'error',
+			color: 'error',
 		};
 	}
 
