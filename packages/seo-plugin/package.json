@@ -3,6 +3,7 @@
 	"type": "module",
 	"version": "1.0.0",
 	"description": "SEO plugin for Directus",
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
