@@ -134,9 +134,6 @@ async function fetchImage() {
 			image.value = response.data.data;
 		}
 	}
-	catch (err: any) {
-		throw err;
-	}
 	finally {
 		loading.value = false;
 	}
@@ -172,7 +169,7 @@ function deselect() {
 	editDrawerActive.value = false;
 }
 
-function stageEdits(newEdits: Record<string, any>) {
+function stageEdits() {
 	if (!image.value)
 		return;
 	emit('input', image.value[props.fileKeyToGet]);

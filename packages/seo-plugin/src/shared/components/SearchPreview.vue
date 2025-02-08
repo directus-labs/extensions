@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps, onMounted, ref } from 'vue';
 
-const props = defineProps<{
+defineProps<{
 	title: string;
 	metaDescription: string;
 	collection: string;
