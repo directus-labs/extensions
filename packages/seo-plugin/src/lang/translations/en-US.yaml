@@ -26,12 +26,12 @@ seo:
     search_preview: Search Preview
     sitemap_settings: Sitemap Settings
     search_controls: Search Engine Controls
-    character_recommendation: "{min}-{max} characters recommended"
-    current_length: Current: {length}
+    character_recommendation: '{min}-{max} characters recommended'
+    current_length: 'Current: {length}'
     generate_from_template: Generate from template
     no_image_selected: No image selected
     unsupported_media: Unsupported media type
-    image_metadata: "{width}x{height} • {filesize} • {type}"
+    image_metadata: '{width}x{height} • {filesize} • {type}'
     hidden_from_search: This page will be hidden from search engines
     links_not_followed_warning: Links on this page won't be followed by search engines
     hidden_and_not_followed: This page will be hidden and links won't be followed
@@ -62,12 +62,12 @@ seo:
     title_required: Title is required
     description_required: Meta description is required
     template_error: Template rendering error
-    field_required: "{field} is required"
+    field_required: '{field} is required'
     invalid_dimensions: Invalid image dimensions
     invalid_file_type: Invalid file type
 
   preview:
     search_result_preview: Search Result Preview
     social_media_preview: Social Media Preview
-    additional_fields_status: "{filled} of {total} fields completed"
-    missing_required_fields: "{count} required fields missing"
+    additional_fields_status: '{filled} of {total} fields completed'
+    missing_required_fields: '{count} required fields missing'
