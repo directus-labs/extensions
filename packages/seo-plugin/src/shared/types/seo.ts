@@ -34,7 +34,7 @@ export interface SeoInterfaceOptions {
 	titleTemplate?: string;
 	descriptionTemplate?: string;
 	showOgImage?: boolean;
-	showNoIndex?: boolean;
+	showSearchControls?: boolean;
 	showSitemap?: boolean;
 	defaultChangeFrequency?: string;
 	defaultPriority?: string;

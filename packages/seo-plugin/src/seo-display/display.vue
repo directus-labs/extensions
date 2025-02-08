@@ -125,7 +125,7 @@ const status = computed(() => {
 				</label>
 
 				<!-- No Index -->
-				<div v-if="interfaceOptions.showNoIndex" class="preview-box-item">
+				<div v-if="interfaceOptions.showSearchControls" class="preview-box-item">
 					<v-chip v-if="value.no_index" small label>
 						<v-icon
 							name="visibility_off"

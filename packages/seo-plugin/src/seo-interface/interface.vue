@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SeoValue } from '../shared/types/seo';
+import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 
 // @ts-expect-error - types missing
 import { formatTitle } from '@directus/format-title';
@@ -13,19 +13,14 @@ import OgImage from './components/OgImage.vue';
 import TitleField from './components/TitleField.vue';
 import { searchControls, sitemapFields } from './fields';
 
-const props = defineProps<{
+interface Props extends SeoInterfaceOptions {
+	collection: string;
+	field: string;
 	value: SeoValue | null;
-	showSearchControls?: boolean;
-	showSitemap?: boolean;
-	showOgImage?: boolean;
-	additionalFields?: any[];
-	collection?: string;
-	titleTemplate?: string;
-	descriptionTemplate?: string;
 	disabled?: boolean;
-	defaultChangeFrequency?: string;
-	defaultPriority?: string;
-}>();
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
 	(e: 'input', value: SeoValue): void;

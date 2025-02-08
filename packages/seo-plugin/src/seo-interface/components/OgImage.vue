@@ -16,7 +16,7 @@ interface Image {
 	modified_on?: string;
 }
 
-interface ImageUuidInterfaceProps {
+interface ImageInterfaceProps {
 	value?: string | Record<string, any> | null;
 	disabled?: boolean;
 	folder?: string;
@@ -26,7 +26,7 @@ interface ImageUuidInterfaceProps {
 	width?: string;
 }
 
-const props = withDefaults(defineProps<ImageUuidInterfaceProps>(), {
+const props = withDefaults(defineProps<ImageInterfaceProps>(), {
 	value: null,
 	disabled: false,
 	folder: undefined,
