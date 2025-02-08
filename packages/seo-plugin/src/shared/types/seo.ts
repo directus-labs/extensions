@@ -15,11 +15,11 @@ export interface SeoFieldState {
 export interface SeoValue {
 	title: string;
 	meta_description: string;
-	translations?: {
-		language: string;
-		title: string;
-		meta_description: string;
-	}[];
+	// translations?: {
+	// 	language: string;
+	// 	title: string;
+	// 	meta_description: string;
+	// }[];
 	og_image?: string;
 	additional_fields?: Record<string, string>;
 	sitemap?: {

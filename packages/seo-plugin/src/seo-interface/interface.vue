@@ -218,7 +218,7 @@ const additionalFields = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@use './styles/shared.scss' as *;
+@use '../shared/styles/shared.scss' as *;
 
 .mb-8 {
 	margin-bottom: 1rem;
