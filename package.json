@@ -14,15 +14,17 @@
 		"dev": "pnpm --stream -r dev",
 		"build": "pnpm --recursive run build",
 		"validate": "pnpm --recursive run validate",
+		"lint": "eslint --flag unstable_config_lookup_from_file --cache .",
+		"lint:fix": "pnpm run lint --fix",
 		"package:json": "pnpm --recursive exec node ../../scripts/check-package-json.js",
 		"package:lockfile": "pnpm --recursive exec node ../../scripts/check-lock-files.js",
-		"lint": "eslint --flag unstable_config_lookup_from_file --cache .",
-		"lint:fix": "pnpm run lint --fix"
+		"package:directus-load": "pnpm  --workspace-concurrency=1  --recursive exec node ../../scripts/check-directus-loads.js"
 	},
 	"devDependencies": {
 		"@directus/eslint-config": "github:directus/eslint-config#hannes/temp-workaround",
 		"@nuxt/eslint-config": "^0.7.5",
 		"eslint": "^9.18.0",
+		"execa": "^9.5.2",
 		"jiti": "^2.4.2"
 	}
 }
