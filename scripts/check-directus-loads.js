@@ -1,7 +1,6 @@
-import Buffer from 'node:buffer';
 import fs from 'node:fs';
 import process from 'node:process';
-import { execa, execaSync } from 'execa';
+import { execa } from 'execa';
 
 const DIRECTUS_VERSION = process.argv.slice(2)[0] || 'latest';
 
