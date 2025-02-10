@@ -1,6 +1,6 @@
-const fs = require('node:fs');
-const process = require('node:process');
-const { execa } = require('execa');
+import fs from 'node:fs';
+import process from 'node:process';
+import { execa } from 'execa';
 
 const DIRECTUS_VERSION = process.argv.slice(2)[0] || 'latest';
 
