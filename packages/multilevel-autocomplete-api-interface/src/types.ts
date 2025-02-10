@@ -3,17 +3,17 @@ export enum Source {
 	list = 'List',
 };
 
-export type Step = {
+export interface Step {
 	text: string;
 	value: string | Record<string, any> | null;
-};
+}
 
-export type Value = {
+export interface Value {
 	steps: (Step | null)[];
 	payload?: string | Record<string, any> | null;
-};
+}
 
-export type Scope = {
+export interface Scope {
 	steps?: (Step | null)[];
 	values?: (string | Record<string, any> | null)[];
-};
+}

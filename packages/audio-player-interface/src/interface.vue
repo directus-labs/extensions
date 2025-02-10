@@ -1,163 +1,210 @@
-<template>
-    <v-input v-model="source" :clickable="inputIsClickable" @click="onInputClick" :placeholder="inputPlaceholder">
-        <template #prepend>
-            <v-select v-model="service" :items="services" inline :placeholder="t('source')"
-                placement="bottom-start"></v-select>
-        </template>
-        <template #append>
-            <v-icon v-if="service == 'directus' && !source" name="attach_file" />
-            <v-icon v-if="service && source" v-tooltip="t('deselect')" class="deselect" name="close"
-                @click.stop="clearSource" clickable />
-        </template>
-    </v-input>
-
-    <drawer-files :active="fileDrawer" @update:active="fileDrawer = false" @input="setFileSelection" />
-
-    <plyr v-if="service && source" :service="service" :source="source" />
-</template>
-
-
-
 <script setup lang="ts">
-    import { ref, computed, watch, type Ref } from 'vue';
-    import { useI18n } from "vue-i18n";
-    import Plyr from './plyr.vue'
-    import type { AudioService, AudioSource, Audio } from './types'
+import type { Audio, AudioService, AudioSource } from './types';
+import { computed, ref, type Ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Plyr from './plyr.vue';
 
-    const props = defineProps<{ value?: Audio }>();
-    const emit = defineEmits(['input']);
+const props = defineProps<{ value?: Audio }>();
+const emit = defineEmits(['input']);
 
-    const { t } = useI18n();
+const { t } = useI18n();
 
-    const { services, service } = useAudioServices();
-    const { fileDrawer, fileID, setFileSelection } = useFileSelect(service);
-    const { sourceInput, inputIsClickable, inputPlaceholder, onInputClick } = useInputField(service, fileDrawer);
-    const { source, clearSource } = useAudioSource(service, sourceInput, fileID);
+const { services, service } = useAudioServices();
+const { fileDrawer, fileID, setFileSelection } = useFileSelect(service);
 
-    watch(() => props.value, setServiceAndSource, { immediate: true });
-    watch([service, source], emitInputValue);
+const { sourceInput, inputIsClickable, inputPlaceholder, onInputClick }
+	= useInputField(service, fileDrawer);
 
-    function setServiceAndSource() {
-        if (!props.value) return;
+const { source, clearSource } = useAudioSource(service, sourceInput, fileID);
 
-        service.value = props.value.service;
+watch(() => props.value, setServiceAndSource, { immediate: true });
+watch([service, source], emitInputValue);
 
-        if (service.value == 'directus') {
-            fileID.value = props.value.source;
-            return;
-        }
+function setServiceAndSource() {
+	if (!props.value)
+		return;
 
-        source.value = props.value.source;
-    }
+	service.value = props.value.service;
 
-    function emitInputValue() {
-        if (props.value?.service == service.value && props.value?.source == source.value) return;
+	if (service.value === 'directus') {
+		fileID.value = props.value.source;
+		return;
+	}
 
-        const inputValue = service.value && source.value
-            ? { service: service.value, source: source.value }
-            : null;
-        emit('input', ref(inputValue));
-    }
+	source.value = props.value.source;
+}
 
-    function useAudioServices() {
-        const services: { value: AudioService, text: string }[] = [
-            {
-                value: 'directus',
-                text: 'Directus',
-            },
-            {
-                value: 'external',
-                text: 'External URL',
-            },
-        ];
-        const service = ref<AudioService | null>(null);
+function emitInputValue() {
+	if (
+		props.value?.service === service.value
+		&& props.value?.source === source.value
+	) {
+		return;
+	}
 
-        return { service, services }
-    }
+	const inputValue
+		= service.value && source.value
+			? { service: service.value, source: source.value }
+			: null;
 
-    function useAudioSource(service: Ref<AudioService | null>, sourceInput: Ref<AudioSource | null | undefined>, fileID: Ref<AudioSource | null>) {
-        const source = computed({
-            get() {
-                if (!service.value) return;
+	emit('input', ref(inputValue));
+}
 
-                if (service.value == 'directus') return fileID.value;
+function useAudioServices() {
+	const services: { value: AudioService; text: string }[] = [
+		{
+			value: 'directus',
+			text: 'Directus',
+		},
+		{
+			value: 'external',
+			text: 'External URL',
+		},
+	];
 
-                return sourceInput.value;
-            },
-            set(newValue: AudioSource) {
-                sourceInput.value = newValue;
-            }
-        });
+	const service = ref<AudioService | null>(null);
 
-        return { source, clearSource }
+	return { service, services };
+}
 
-        function clearSource() {
-            if (service.value == 'directus') {
-                fileID.value = null;
-                return;
-            }
+function useAudioSource(
+	service: Ref<AudioService | null>,
+	sourceInput: Ref<AudioSource | null | undefined>,
+	fileID: Ref<AudioSource | null>,
+) {
+	const source = computed({
+		get() {
+			if (!service.value)
+				return;
 
-            source.value = null;
-        }
-    }
+			if (service.value === 'directus')
+				return fileID.value;
 
-    function useFileSelect(service: Ref<AudioService | null>) {
-        const fileDrawer = ref(false);
-        const fileID = ref<AudioSource | null>(null);
+			return sourceInput.value;
+		},
+		set(newValue: AudioSource) {
+			sourceInput.value = newValue;
+		},
+	});
 
-        watch(service, openIfFileEmptyOnSelection);
+	return { source, clearSource };
 
-        return { fileDrawer, fileID, setFileSelection }
+	function clearSource() {
+		if (service.value === 'directus') {
+			fileID.value = null;
+			return;
+		}
 
-        async function setFileSelection(selection: string[] | null) {
-            if (!selection) return;
-            fileID.value = selection[0] ?? null;
-        }
+		source.value = null;
+	}
+}
 
-        function openIfFileEmptyOnSelection(newValue: any, oldValue: any) {
-            if (newValue != oldValue && newValue == 'directus' && !fileID.value)
-                fileDrawer.value = true;
-        }
-    }
+function useFileSelect(service: Ref<AudioService | null>) {
+	const fileDrawer = ref(false);
+	const fileID = ref<AudioSource | null>(null);
 
-    function useInputField(service: Ref<AudioService | null>, fileDrawer: Ref<boolean>) {
-        const sourceInput = ref<AudioSource | null>(null);
-        const inputIsClickable = computed(() => !service.value || service.value == 'directus');
+	watch(service, openIfFileEmptyOnSelection);
 
-        const inputPlaceholder = computed(() => {
-            if (!service.value) return;
+	return { fileDrawer, fileID, setFileSelection };
 
-            if (service.value == 'directus') return t('choose_from_library');
+	async function setFileSelection(selection: string[] | null) {
+		if (!selection)
+			return;
+		fileID.value = selection[0] ?? null;
+	}
 
-            return `Audio Source …`;
-        });
+	function openIfFileEmptyOnSelection(newValue: any, oldValue: any) {
+		if (newValue !== oldValue && newValue === 'directus' && !fileID.value)
+			fileDrawer.value = true;
+	}
+}
 
-        return { sourceInput, inputIsClickable, inputPlaceholder, onInputClick };
+function useInputField(
+	service: Ref<AudioService | null>,
+	fileDrawer: Ref<boolean>,
+) {
+	const sourceInput = ref<AudioSource | null>(null);
 
-        function onInputClick({ target }: { target: HTMLElement }) {
-            if (!inputIsClickable.value) return;
+	const inputIsClickable = computed(
+		() => !service.value || service.value === 'directus',
+	);
 
-            const clickOnMenu = !!target?.closest('.prepend .v-select');
+	const inputPlaceholder = computed(() => {
+		if (!service.value)
+			return;
 
-            if (!clickOnMenu && service.value == 'directus') {
-                fileDrawer.value = true;
-                return;
-            }
+		if (service.value === 'directus')
+			return t('choose_from_library');
 
-            const selectActivator: HTMLElement | null = target?.querySelector('.prepend .v-menu-activator > *');
-            selectActivator?.click();
-        }
-    }
+		return `Audio Source …`;
+	});
+
+	return { sourceInput, inputIsClickable, inputPlaceholder, onInputClick };
+
+	function onInputClick({ target }: { target: HTMLElement }) {
+		if (!inputIsClickable.value)
+			return;
+
+		const clickOnMenu = !!target?.closest('.prepend .v-select');
+
+		if (!clickOnMenu && service.value === 'directus') {
+			fileDrawer.value = true;
+			return;
+		}
+
+		const selectActivator: HTMLElement | null = target?.querySelector(
+			'.prepend .v-menu-activator > *',
+		);
+
+		selectActivator?.click();
+	}
+}
 </script>
 
+<template>
+	<v-input
+		v-model="source"
+		:clickable="inputIsClickable"
+		:placeholder="inputPlaceholder"
+		@click="onInputClick"
+	>
+		<template #prepend>
+			<v-select
+				v-model="service"
+				:items="services"
+				inline
+				:placeholder="t('source')"
+				placement="bottom-start"
+			/>
+		</template>
+		<template #append>
+			<v-icon v-if="service === 'directus' && !source" name="attach_file" />
+			<v-icon
+				v-if="service && source"
+				v-tooltip="t('deselect')"
+				class="deselect"
+				name="close"
+				clickable
+				@click.stop="clearSource"
+			/>
+		</template>
+	</v-input>
 
+	<drawer-files
+		:active="fileDrawer"
+		@update:active="fileDrawer = false"
+		@input="setFileSelection"
+	/>
+
+	<Plyr v-if="service && source" :service="service" :source="source" />
+</template>
 
 <style scoped>
-    .v-input :deep(.input .prepend) {
-        margin-right: 16px;
-    }
+.v-input :deep(.input .prepend) {
+	margin-right: 16px;
+}
 
-    .deselect:hover {
-        --v-icon-color-hover: var(--theme--danger);
-    }
+.deselect:hover {
+	--v-icon-color-hover: var(--theme--danger);
+}
 </style>

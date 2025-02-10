@@ -1,6 +1,6 @@
 export type Alignment = 'left' | 'center' | 'right';
 
-export type HeaderRaw = {
+export interface HeaderRaw {
 	text: string;
 	value: string;
 	description?: string | null;
@@ -8,20 +8,20 @@ export type HeaderRaw = {
 	sortable?: boolean;
 	width?: number | null;
 	[key: string]: any;
-};
+}
 
 export type Header = Required<HeaderRaw>;
 
-export type Item = {
+export interface Item {
 	[key: string]: any;
-};
+}
 
-export type ItemSelectEvent = {
+export interface ItemSelectEvent {
 	value: boolean;
 	item: Item;
-};
+}
 
-export type Sort = {
+export interface Sort {
 	by: string | null;
 	desc: boolean;
-};
+}

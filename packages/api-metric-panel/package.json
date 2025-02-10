@@ -1,9 +1,8 @@
 {
 	"name": "@directus-labs/api-metric-panel",
-	"description": "A panel which allows to display a metric value from an external API",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
-	"license": "MIT",
+	"description": "A panel which allows to display a metric value from an external API",
 	"author": "Directus Labs",
 	"contributors": [
 		{
@@ -11,12 +10,13 @@
 			"email": "dominic.marcelino@utomic.media"
 		}
 	],
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-bundle"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],
@@ -46,17 +46,17 @@
 		"link": "directus-extension link",
 		"add": "directus-extension add"
 	},
+	"dependencies": {
+		"@directus/errors": "^1.0.0",
+		"axios": "^1.7.5"
+	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "12.0.2",
 		"@directus/types": "^12.1.0",
 		"@types/node": "^22.5.5",
-		"node-sass": "^9.0.0",
+		"sass": "^1.84.0",
 		"typescript": "^5.6.2",
 		"vue": "^3.5.6",
 		"vue-i18n": "^9.14.0"
-	},
-	"dependencies": {
-		"@directus/errors": "^1.0.0",
-		"axios": "^1.7.5"
 	}
 }

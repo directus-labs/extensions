@@ -10,7 +10,7 @@ export default {
 		},
 		{
 			label: 'Extract',
-			text: extract ? extract.map(item => item.property).join(', ') : 'Metadata Only',
+			text: extract ? extract.map((item) => item.property).join(', ') : 'Metadata Only',
 		},
 	],
 	options: [
@@ -20,9 +20,9 @@ export default {
 			type: 'string',
 			meta: {
 				width: 'full',
-        required: true,
+				required: true,
 				interface: 'input',
-        note: 'You can find or create an API key from the [Firecrawl dashboard](https://www.firecrawl.dev/app).',
+				note: 'You can find or create an API key from the [Firecrawl dashboard](https://www.firecrawl.dev/app).',
 				options: {
 					masked: true,
 				},
@@ -33,10 +33,10 @@ export default {
 			name: 'Website URL',
 			type: 'string',
 			meta: {
-        required: true,
+				required: true,
 				width: 'full',
 				interface: 'input',
-        note: 'Public URL of the page or PDF to scrape.',
+				note: 'Public URL of the page or PDF to scrape.',
 			},
 		},
 		{
@@ -46,7 +46,7 @@ export default {
 			meta: {
 				width: 'half',
 				interface: 'input',
-        note: 'ISO 3166-1 alpha-2 country code. Defaults to <code>US</code>.',
+				note: 'ISO 3166-1 alpha-2 country code. Defaults to <code>US</code>.',
 			},
 		},
 		{
@@ -56,7 +56,7 @@ export default {
 			meta: {
 				width: 'half',
 				interface: 'tags',
-        note: 'An array of languages/locales. Defaults to location language.',
+				note: 'An array of languages/locales. Defaults to location language.',
 			},
 		},
 		{
@@ -69,7 +69,7 @@ export default {
 				options: {
 					placeholder: 'Enter DOM selectors and press enter to add.',
 					iconRight: '',
-				}
+				},
 			},
 		},
 		{
@@ -82,7 +82,7 @@ export default {
 				options: {
 					placeholder: 'Enter DOM selectors and press enter to add.',
 					iconRight: '',
-				}
+				},
 			},
 		},
 		{
@@ -118,18 +118,18 @@ export default {
 							field: 'options',
 							name: 'Options',
 							type: 'text',
-							default: "{}",
+							default: '{}',
 							meta: {
 								width: 'full',
 								interface: 'input-code',
 								note: 'Refer to the <a href="https://docs.firecrawl.dev/api-reference/endpoint/scrape" target="_blank">Firecrawl API reference</a> for each action\'s available options.',
 								options: {
 									language: 'json',
-								}
+								},
 							},
-						}
+						},
 					],
-				}
+				},
 			},
 		},
 		{
@@ -159,7 +159,7 @@ export default {
 							meta: {
 								width: 'half',
 								interface: 'input',
-								required: true
+								required: true,
 							},
 						},
 						{
@@ -169,11 +169,11 @@ export default {
 							default: true,
 							meta: {
 								width: 'half',
-								interface: 'toggle'
+								interface: 'toggle',
 							},
 						},
 					],
-				}
+				},
 			},
 		},
 		{
@@ -195,8 +195,8 @@ export default {
 						{ text: 'Screenshot', value: 'screenshot' },
 						{ text: 'Extract', value: 'extract' },
 						{ text: 'Screenshot (Full Page)', value: 'screenshot@fullPage' },
-					]
-				}
+					],
+				},
 			},
 		},
 		{
@@ -210,4 +210,4 @@ export default {
 			},
 		},
 	],
-}
+};

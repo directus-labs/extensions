@@ -2,7 +2,7 @@
  * Common shared options for the Radio Cards and Checkbox Cards interfaces
  * @returns {Array} - Array of options
  */
-export const options  = [
+export const options = [
 	{
 		field: 'choices',
 		type: 'json',
@@ -163,4 +163,4 @@ export const options  = [
 			default_value: 4,
 		},
 	},
-]
+];

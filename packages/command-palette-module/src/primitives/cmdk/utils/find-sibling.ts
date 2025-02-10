@@ -1,21 +1,23 @@
 export function findNextSibling(el: Element, selector: string) {
-  let sibling = el.nextElementSibling;
+	let sibling = el.nextElementSibling;
 
-  while (sibling) {
-    if (sibling.matches(selector)) return sibling;
-    sibling = sibling.nextElementSibling;
-  }
+	while (sibling) {
+		if (sibling.matches(selector))
+			return sibling;
+		sibling = sibling.nextElementSibling;
+	}
 
-  return null;
+	return null;
 }
 
 export function findPreviousSibling(el: Element, selector: string) {
-  let sibling = el.previousElementSibling;
+	let sibling = el.previousElementSibling;
 
-  while (sibling) {
-    if (sibling.matches(selector)) return sibling;
-    sibling = sibling.previousElementSibling;
-  }
+	while (sibling) {
+		if (sibling.matches(selector))
+			return sibling;
+		sibling = sibling.previousElementSibling;
+	}
 
-  return null;
+	return null;
 }

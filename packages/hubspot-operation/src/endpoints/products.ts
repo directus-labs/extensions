@@ -1,4 +1,5 @@
-import { create, read, update, del, list } from './actions';
+import { create, del, list, read, update } from './actions';
+
 const endpoint = 'products';
 export const products = {
 	label: 'Products',

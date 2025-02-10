@@ -1,12 +1,14 @@
-import { useStores } from "@directus/extensions-sdk";
-import { Relation } from "@directus/types";
-import { computed, Ref, unref, watch } from "vue";
+import type { Relation } from '@directus/types';
+import type { Ref } from 'vue';
+import type {
+	RelationalFieldPath,
+} from '../lib/field-helpers';
+import { useStores } from '@directus/extensions-sdk';
+import { computed, unref } from 'vue';
 import {
-  isRelationalFieldPath,
-  RelationalFieldPath,
-  splitFieldPath,
-} from "../lib/field-helpers";
-import { getAllM2ORelations } from "../lib/get-all-m2o-relations";
+	isRelationalFieldPath,
+} from '../lib/field-helpers';
+import { getAllM2ORelations } from '../lib/get-all-m2o-relations';
 
 /**
  * Return a list of all M2O related fields for a given collection and fields.
@@ -16,25 +18,25 @@ import { getAllM2ORelations } from "../lib/get-all-m2o-relations";
  * - ['article.author.name'] will return ['article.author.name', [<article-relation>, <author-relation>]]
  */
 export function useM2ORelations(
-  collection: string | Ref<string | null>,
-  fields: Ref<string[]>,
+	collection: string | Ref<string | null>,
+	fields: Ref<string[]>,
 ) {
-  const { useRelationsStore } = useStores();
-  const relationsStore = useRelationsStore();
+	const { useRelationsStore } = useStores();
+	const relationsStore = useRelationsStore();
 
-  const relations = computed(() =>
-    fields.value
-      .filter((field) => isRelationalFieldPath(field))
-      .map((field): [string, Relation[]] => [
-        field,
-        getAllM2ORelations(
-          unref(collection)!,
-          field as RelationalFieldPath,
-          relationsStore,
-        ),
-      ])
-      .filter(([_, relation]) => relation),
-  );
+	const relations = computed(() =>
+		fields.value
+			.filter((field) => isRelationalFieldPath(field))
+			.map((field): [string, Relation[]] => [
+				field,
+				getAllM2ORelations(
+					unref(collection)!,
+					field as RelationalFieldPath,
+					relationsStore,
+				),
+			])
+			.filter(([_, relation]) => relation),
+	);
 
-  return relations;
+	return relations;
 }

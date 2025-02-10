@@ -6,7 +6,7 @@ export default {
 	overview: ({ text }) => [
 		{
 			label: 'Text',
-			text: text,
+			text,
 		},
 	],
 	options: [

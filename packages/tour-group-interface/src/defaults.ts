@@ -1,5 +1,5 @@
 export default {
-    buttonIcon: "subscriptions",
-    buttonTooltip: "Start the tour",
-    exitMessage: "Are you sure you want to leave the tour?",
+	buttonIcon: 'subscriptions',
+	buttonTooltip: 'Start the tour',
+	exitMessage: 'Are you sure you want to leave the tour?',
 };

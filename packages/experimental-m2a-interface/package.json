@@ -1,44 +1,44 @@
 {
-    "name": "@directus-labs/experimental-m2a-interface",
-    "description": "Add a matrix button selector to the built-in M2A interface",
-    "icon": "grid_view",
-    "version": "1.1.0",
-    "license": "MIT",
-    "author": "Directus Labs",
-    "contributors": [
-        {
-            "name": "formfcw",
-            "email": "dev@formfcw.com"
-        }
-    ],
-    "keywords": [
-        "Blocks",
-        "Matrix",
-        "Matrix Buttons",
-        "M2A",
-        "Builder",
-        "directus",
-        "directus-extension",
-        "directus-extension-interface"
-    ],
-    "type": "module",
-    "files": [
-        "dist"
-    ],
-    "directus:extension": {
-        "type": "interface",
-        "path": "dist/index.js",
-        "source": "src/index.ts",
-        "host": "^10.10.0"
-    },
-    "scripts": {
-        "build": "directus-extension build",
-        "dev": "directus-extension build -w --no-minify",
-        "link": "directus-extension link"
-    },
-    "devDependencies": {
-        "@directus/extensions-sdk": "11.0.6",
-        "typescript": "^5.4.5",
-        "vue": "^3.4.27"
-    }
+	"name": "@directus-labs/experimental-m2a-interface",
+	"type": "module",
+	"version": "1.1.0",
+	"description": "Add a matrix button selector to the built-in M2A interface",
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "formfcw",
+			"email": "dev@formfcw.com"
+		}
+	],
+	"license": "MIT",
+	"keywords": [
+		"Blocks",
+		"Matrix",
+		"Matrix Buttons",
+		"M2A",
+		"Builder",
+		"directus",
+		"directus-extension",
+		"directus-extension-interface"
+	],
+	"icon": "grid_view",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "interface",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "11.0.6",
+		"typescript": "^5.4.5",
+		"vue": "^3.4.27"
+	}
 }

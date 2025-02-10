@@ -7,8 +7,8 @@ export default definePanel({
 	icon: 'table',
 	description: 'Output data in a table',
 	component: PanelComponent,
-	options: ({ options }): Array<Object> => {
-		const collection = options?.['collection'];
+	options: ({ options }): Array<object> => {
+		const collection = options?.collection;
 
 		return [
 			{
@@ -104,7 +104,7 @@ export default definePanel({
 					default_value: 10,
 				},
 			},
-	
+
 		];
 	},
 	minWidth: 12,

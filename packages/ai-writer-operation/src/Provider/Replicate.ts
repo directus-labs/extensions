@@ -1,90 +1,86 @@
-import { Provider } from './Provider';
-import { InvalidPayloadError, UnexpectedResponseError } from '@directus/errors';
-import { request, sleep } from 'directus:api';
 import type { AiWriterOperationOptions } from '../api';
 import type { RequestBody } from '../types';
+import { InvalidPayloadError, UnexpectedResponseError } from '@directus/errors';
+import { request, sleep } from 'directus:api';
+import { Provider } from './Provider';
 
 export class Replicate extends Provider {
-  
-  constructor(options: AiWriterOperationOptions) {
-    if (!options.apiKeyReplicate) {
-      throw new InvalidPayloadError({ reason: 'Replicate API Key is missing' });
-    }
+	constructor(options: AiWriterOperationOptions) {
+		if (!options.apiKeyReplicate) {
+			throw new InvalidPayloadError({ reason: 'Replicate API Key is missing' });
+		}
 
-    if (options.model === 'meta-llama-3.1-405b-instruct') {
-      super(options, 'https://api.replicate.com/v1/models/meta/meta-llama-3.1-405b-instruct/predictions', options.apiKeyReplicate);
-    }
+		if (options.model === 'meta-llama-3.1-405b-instruct') {
+			super(options, 'https://api.replicate.com/v1/models/meta/meta-llama-3.1-405b-instruct/predictions', options.apiKeyReplicate);
+		}
 
-    else if (options.model === 'mistral-7b-v0.1') {
-      super(options, 'https://api.replicate.com/v1/models/mistralai/mistral-7b-v0.1/predictions', options.apiKeyReplicate);
-    }
-    
-    else {
-      throw new InvalidPayloadError({ reason: `Model ${options.model} not supported` });
-    }
-  }
+		else if (options.model === 'mistral-7b-v0.1') {
+			super(options, 'https://api.replicate.com/v1/models/mistralai/mistral-7b-v0.1/predictions', options.apiKeyReplicate);
+		}
 
+		else {
+			throw new InvalidPayloadError({ reason: `Model ${options.model} not supported` });
+		}
+	}
 
-  public async messageRequest(): Promise<string> {
-    const messages = this.getMessages();
-    
-    const requestBody: RequestBody = {
-      input: {
-        system_prompt: messages.filter(message => message.role !== 'user').map(message => message.content).join('. '),
-        prompt: messages.filter(message => message.role === 'user').map(message => message.content).join('. '),
-        max_tokens: this.options.maxToken || 0,
-      },
-    };
+	public async messageRequest(): Promise<string> {
+		const messages = this.getMessages();
 
-    const response = await request(this.endpoint, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody)
-    });
+		const requestBody: RequestBody = {
+			input: {
+				system_prompt: messages.filter((message) => message.role !== 'user').map((message) => message.content).join('. '),
+				prompt: messages.filter((message) => message.role === 'user').map((message) => message.content).join('. '),
+				max_tokens: this.options.maxToken || 0,
+			},
+		};
 
-    if (response.status != 201) {
-      throw new UnexpectedResponseError();
-    }
+		const response = await request(this.endpoint, {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${this.apiKey}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(requestBody),
+		});
 
-    const data = response.data as Record<string, any>;
+		if (response.status !== 201) {
+			throw new UnexpectedResponseError();
+		}
 
-    if (!data?.urls?.get) {
-      throw new UnexpectedResponseError();
-    }
-    
-    let hasFinished = false;
-    let message = '';
+		const data = response.data as Record<string, any>;
 
-    while(hasFinished === false) {
-      await sleep(1000);
-      const fetchedMessage = await this.fetchMessage(data.urls.get);
-      message = fetchedMessage || '';
-      hasFinished = !!fetchedMessage;
-    }
+		if (!data?.urls?.get) {
+			throw new UnexpectedResponseError();
+		}
 
-    return message;
-  }
+		let hasFinished = false;
+		let message = '';
 
+		while (hasFinished === false) {
+			await sleep(1000);
+			const fetchedMessage = await this.fetchMessage(data.urls.get);
+			message = fetchedMessage || '';
+			hasFinished = !!fetchedMessage;
+		}
 
-  private async fetchMessage(url: string): Promise<string | false> {
-    const response = await request(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json',
-      },
-    });
+		return message;
+	}
 
-    const data = response.data as Record<string, any>;
-    
-    if (data && data.completed_at) {
-      return data.output.join('');
-    }
+	private async fetchMessage(url: string): Promise<string | false> {
+		const response = await request(url, {
+			method: 'GET',
+			headers: {
+				'Authorization': `Bearer ${this.apiKey}`,
+				'Content-Type': 'application/json',
+			},
+		});
 
-    return false;
-  }
+		const data = response.data as Record<string, any>;
 
+		if (data && data.completed_at) {
+			return data.output.join('');
+		}
+
+		return false;
+	}
 }

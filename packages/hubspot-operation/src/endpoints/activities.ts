@@ -75,7 +75,7 @@ export const activities = {
 			],
 			handler: async (client: any, params: any) => {
 				const { limit, id, after, occurred_after, occurred_before, sort } = params;
-				return client.fetchRequest(`/account-info/v3/activity/audit-logs?limit=${limit??"10"}${after?`&after=${after}`:""}${id?`&actingUserId=${id}`:""}${occurred_after?`&occurredAfter=${occurred_after}`:""}${occurred_before?`&occurredBefore=${occurred_before}`:""}${sort?`&sort=${sort}`:""}`, 'GET');
+				return client.fetchRequest(`/account-info/v3/activity/audit-logs?limit=${limit ?? '10'}${after ? `&after=${after}` : ''}${id ? `&actingUserId=${id}` : ''}${occurred_after ? `&occurredAfter=${occurred_after}` : ''}${occurred_before ? `&occurredBefore=${occurred_before}` : ''}${sort ? `&sort=${sort}` : ''}`, 'GET');
 			},
 		},
 		login: {
@@ -123,7 +123,7 @@ export const activities = {
 			],
 			handler: async (client: any, params: any) => {
 				const { limit, id, after } = params;
-				return client.fetchRequest(`/account-info/v3/activity/login?limit=${limit??"10"}${after?`&after=${after}`:""}${id?`&userId=${id}`:""}`, 'GET');
+				return client.fetchRequest(`/account-info/v3/activity/login?limit=${limit ?? '10'}${after ? `&after=${after}` : ''}${id ? `&userId=${id}` : ''}`, 'GET');
 			},
 		},
 		security: {
@@ -171,7 +171,7 @@ export const activities = {
 			],
 			handler: async (client: any, params: any) => {
 				const { limit, id, after } = params;
-				return client.fetchRequest(`/account-info/v3/activity/security?limit=${limit??"10"}${after?`&after=${after}`:""}${id?`&userId=${id}`:""}`, 'GET');
+				return client.fetchRequest(`/account-info/v3/activity/security?limit=${limit ?? '10'}${after ? `&after=${after}` : ''}${id ? `&userId=${id}` : ''}`, 'GET');
 			},
 		},
 	},

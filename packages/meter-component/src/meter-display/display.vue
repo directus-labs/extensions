@@ -1,10 +1,3 @@
-<template>
-	<div :style="{ '--meter-color': meterColor }" class="meter-container" v-tooltip="tooltip">
-		<meter :value="percent" :min="min" :max="max"></meter>
-		<p v-if="indicator" class="text">{{ percent }}%</p>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -22,18 +15,20 @@ const emit = defineEmits<{
 	input: [(value: number) => void];
 }>();
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 function handleChange(value: number): void {
+	// eslint-disable-next-line unused-imports/no-unused-vars
 	emit('input', (value: number) => {});
 }
 
 // Helper Functions
 function normalizePercent(value: number, min: number, max: number): number {
-	if (min == max) {
+	if (min === max) {
 		return value < min ? 0 : 100;
 	}
 
 	if (min > max) {
-		let temp = min;
+		const temp = min;
 		min = max;
 		max = temp;
 	}
@@ -45,6 +40,7 @@ function normalizePercent(value: number, min: number, max: number): number {
 
 // Computed Properties
 const percent = computed(() => {
+	// eslint-disable-next-line ts/no-use-before-define
 	return normalizePercent(props.value, normalizedMin.value, normalizedMax.value);
 });
 
@@ -55,18 +51,30 @@ const meterColor = computed(() => {
 const tooltip = computed(() => {
 	// Show the percentage on hover if indicator is not shown. Always show the label if it exists.
 	let string = '';
+
 	if (!props.indicator) {
 		string += `${percent.value}%`;
 	}
+
 	if (props.label) {
 		string += `${string ? ' - ' : ''}${props.label}`;
 	}
+
 	return string;
 });
 
 const normalizedMin = computed(() => (props.min > props.max ? props.max : props.min));
 const normalizedMax = computed(() => (props.max < props.min ? props.min : props.max));
 </script>
+
+<template>
+	<div v-tooltip="tooltip" :style="{ '--meter-color': meterColor }" class="meter-container">
+		<meter :value="percent" :min="min" :max="max" />
+		<p v-if="indicator" class="text">
+			{{ percent }}%
+		</p>
+	</div>
+</template>
 
 <style scoped>
 meter {

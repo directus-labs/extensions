@@ -35,19 +35,19 @@ services:
     environment:
       PUBLIC_URL: 'https://extensions.directus.labs'
       EXTENSIONS_AUTO_RELOAD: true
-      WEBSOCKETS_ENABLED: "true"
-      MARKETPLACE_TRUST: "all"
+      WEBSOCKETS_ENABLED: 'true'
+      MARKETPLACE_TRUST: all
 
-      ADMIN_EMAIL: 'admin@directus.dev'
-      ADMIN_PASSWORD: 'password'
+      ADMIN_EMAIL: admin@directus.dev
+      ADMIN_PASSWORD: password
 
       REDIS_HOST: cache
 
-      DB_CLIENT: "sqlite3"
-      DB_FILENAME: "/directus/database/data.db"
+      DB_CLIENT: sqlite3
+      DB_FILENAME: /directus/database/data.db
 
       # Video Player Interface
-      CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC: "https://www.youtube-nocookie.com,https://player.vimeo.com"
+      CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC: 'https://www.youtube-nocookie.com,https://player.vimeo.com'
       CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC: "array:'self', player.vimeo.com 'unsafe-eval', www.youtube.com 'unsafe-eval', www.youtube.com/iframe_api 'unsafe-eval'"
       CONTENT_SECURITY_POLICY_DIRECTIVES__IMG_SRC: "array:'self' data:, i.ytimg.com 'unsafe-eval'"
       CONTENT_SECURITY_POLICY_DIRECTIVES__MEDIA_SRC: "array:'self', cdn.plyr.io"
@@ -56,8 +56,8 @@ services:
       - cache
     labels:
       caddy: extensions.directus.labs
-      caddy.tls: "/data/tls/cert.pem /data/tls/key.pem"
-      caddy.reverse_proxy: "{{upstreams 8055}}"
+      caddy.tls: /data/tls/cert.pem /data/tls/key.pem
+      caddy.reverse_proxy: '{{upstreams 8055}}'
 
 networks:
   sandbox:

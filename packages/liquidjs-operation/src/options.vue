@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, unref, computed, watch } from 'vue';
-import { Field, FieldMeta } from '@directus/types';
-import { getPublicURL } from './get-root-path';
+import type { Field, FieldMeta } from '@directus/types';
 import type { Options as LiquidOptions } from './api';
+import { computed, ref, unref, watch } from 'vue';
+import { getPublicURL } from './get-root-path';
 
 type PartialExcept<T, K extends keyof T> = Partial<T> & Pick<T, K>;
 

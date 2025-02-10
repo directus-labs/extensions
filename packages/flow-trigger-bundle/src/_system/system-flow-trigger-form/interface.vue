@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref, unref, reactive, computed } from 'vue';
 import { useStores } from '@directus/extensions-sdk';
+import { computed, reactive, ref, unref } from 'vue';
 
-type Value = {
+interface Value {
 	flowId: string | null;
 	text?: string;
 	icon?: string;
 	collection?: string;
 	keys?: string;
-};
+}
 
 const props = withDefaults(
 	defineProps<{
@@ -37,16 +37,18 @@ const manualFlows = flowsStore.flows.filter(({ trigger, options }) => {
 	if (trigger === 'manual') {
 		if (props.collection) {
 			return Boolean(options?.collections?.includes(props.collection));
-		} else {
+		}
+		else {
 			return true;
 		}
-	} else {
+	}
+	else {
 		return false;
 	}
 });
 
 const selectedFlow = ref<any>(
-	manualFlows.find(({ id }) => id === internalValue.flowId)
+	manualFlows.find(({ id }) => id === internalValue.flowId),
 );
 
 const collections = computed(() => {
@@ -54,9 +56,10 @@ const collections = computed(() => {
 
 	if (props.collection) {
 		collections = collections.filter(
-			({ collection }) => collection === props.collection
+			({ collection }) => collection === props.collection,
 		);
-	} else if (selectedFlow.value) {
+	}
+	else if (selectedFlow.value) {
 		const flow = unref(selectedFlow);
 		const keep = new Set(flow.options?.collections ?? []);
 		collections = collections.filter(({ collection }) => keep.has(collection));
@@ -96,7 +99,7 @@ const fields = computed(() => {
 		const flow = unref(selectedFlow);
 		const requireSelection = flow?.options?.requireSelection !== false;
 
-		if (!Boolean(props.collection)) {
+		if (!props.collection) {
 			fields = fields.concat([
 				{
 					field: 'collection',
@@ -155,7 +158,7 @@ const fields = computed(() => {
 			},
 		]);
 	}
-	
+
 	return fields;
 });
 
@@ -173,12 +176,13 @@ function updateInternalValue(value: Value) {
 		internalValue.icon = flow.icon;
 
 		selectedFlow.value = flow;
-	} else {
+	}
+	else {
 		internalValue.text = value.text;
 		internalValue.icon = value.icon;
 	}
 
-	if (!Boolean(props.collection)) {
+	if (!props.collection) {
 		internalValue.collection = value.collection;
 		internalValue.keys = value.keys;
 	}
@@ -202,7 +206,7 @@ function updateInternalValue(value: Value) {
 	<v-form
 		v-else
 		class="system-flow-trigger-form"
-		v-bind:class="{ nested: props.nested }"
+		:class="{ nested: props.nested }"
 		:model-value="internalValue"
 		:fields="fields"
 		@update:model-value="updateInternalValue"

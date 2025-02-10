@@ -1,19 +1,19 @@
 {
 	"name": "@directus-labs/card-select-interfaces",
+	"type": "module",
+	"version": "1.0.0",
 	"description": "A bundle of card-based selection interfaces for Directus",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus-labs/extensions"
 	},
-	"icon": "extension",
-	"version": "1.0.0",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-bundle"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],
@@ -48,15 +48,15 @@
 		"link": "directus-extension link",
 		"add": "directus-extension add"
 	},
+	"dependencies": {
+		"reka-ui": "^1.0.0-alpha.7",
+		"vue": "^3.5.11",
+		"vue-i18n": "^10.0.4"
+
+	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "12.0.1",
 		"sass": "^1.83.0",
 		"typescript": "^5.6.3"
-	},
-	"dependencies": {
-		"reka-ui": "^1.0.0-alpha.7",
-		"vue-i18n": "^10.0.4",
-        "vue": "^3.5.11"
-
 	}
 }

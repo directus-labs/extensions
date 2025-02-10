@@ -1,98 +1,102 @@
-import { computed } from "vue";
-import { Field, Item } from "@directus/types";
-import { Parser } from "@json2csv/plainjs";
-import { saveAs } from "file-saver";
+import type { Field, Item } from '@directus/types';
+import { Parser } from '@json2csv/plainjs';
+import { saveAs } from 'file-saver';
+import { computed } from 'vue';
 // CORE CHANGES
-import { useAliasFields } from "../composables/use-alias-fields";
-import { useExtension } from "../composables/use-extension";
+import { useAliasFields } from '../composables/use-alias-fields';
+import { useExtension } from '../composables/use-extension';
 // import { useFieldsStore } from "@/stores/fields";
 
 /**
  * Saves the given collection + items combination as a CSV file
  */
 export async function saveAsCSV(
-    collection: string,
-    fields: string[],
-    items: Item[],
-    // CORE CHANGE
-    system: Record<string, any>
+	collection: string,
+	fields: string[],
+	items: Item[],
+	// CORE CHANGE
+	system: Record<string, any>,
 ) {
-    const { useFieldsStore } = system.stores;
-    const fieldsStore = useFieldsStore();
+	const { useFieldsStore } = system.stores;
+	const fieldsStore = useFieldsStore();
 
-    const fieldsUsed: Record<string, Field | null> = {};
+	const fieldsUsed: Record<string, Field | null> = {};
 
-    for (const key of fields) {
-        fieldsUsed[key] = fieldsStore.getField(collection, key);
-    }
+	for (const key of fields) {
+		fieldsUsed[key] = fieldsStore.getField(collection, key);
+	}
 
-    const { getFromAliasedItem } = useAliasFields(fields, collection, system);
+	const { getFromAliasedItem } = useAliasFields(fields, collection, system);
 
-    const parsedItems = [];
+	const parsedItems = [];
 
-    for (const item of items) {
-        const parsedItem: Record<string, any> = {};
+	for (const item of items) {
+		const parsedItem: Record<string, any> = {};
 
-        for (const key of fields) {
-            let name: string;
+		for (const key of fields) {
+			let name: string;
 
-            const keyParts = key.split(".");
+			const keyParts = key.split('.');
 
-            if (keyParts.length > 1) {
-                const names = keyParts.map((fieldKey, index) => {
-                    const pathPrefix = keyParts.slice(0, index);
-                    const field = fieldsStore.getField(
-                        collection,
-                        [...pathPrefix, fieldKey].join(".")
-                    );
-                    return field?.name ?? fieldKey;
-                });
+			if (keyParts.length > 1) {
+				const names = keyParts.map((fieldKey, index) => {
+					const pathPrefix = keyParts.slice(0, index);
 
-                name = names.join(" -> ");
-            } else {
-                name = fieldsUsed[key]?.name ?? key;
-            }
+					const field = fieldsStore.getField(
+						collection,
+						[...pathPrefix, fieldKey].join('.'),
+					);
 
-            const value = getFromAliasedItem(item, key);
+					return field?.name ?? fieldKey;
+				});
 
-            const display = useExtension(
-                "display",
-                computed(() => fieldsUsed[key]?.meta?.display ?? null),
-                system.extensions
-            );
+				name = names.join(' -> ');
+			}
+			else {
+				name = fieldsUsed[key]?.name ?? key;
+			}
 
-            if (value !== undefined && value !== null) {
-                parsedItem[name] = display.value?.handler
-                    ? await display.value.handler(
-                          value,
-                          fieldsUsed[key]?.meta?.display_options ?? {},
-                          {
-                              interfaceOptions:
+			const value = getFromAliasedItem(item, key);
+
+			const display = useExtension(
+				'display',
+				computed(() => fieldsUsed[key]?.meta?.display ?? null),
+				system.extensions,
+			);
+
+			if (value !== undefined && value !== null) {
+				parsedItem[name] = display.value?.handler
+					? await display.value.handler(
+						value,
+						fieldsUsed[key]?.meta?.display_options ?? {},
+						{
+							interfaceOptions:
                                   fieldsUsed[key]?.meta?.options ?? {},
-                              field: fieldsUsed[key] ?? undefined,
-                              collection: collection,
-                          }
-                      )
-                    : value;
-            } else {
-                parsedItem[name] = value;
-            }
-        }
+							field: fieldsUsed[key] ?? undefined,
+							collection,
+						},
+					)
+					: value;
+			}
+			else {
+				parsedItem[name] = value;
+			}
+		}
 
-        parsedItems.push(parsedItem);
-    }
+		parsedItems.push(parsedItem);
+	}
 
-    const parser = new Parser();
-    const csvContent = parser.parse(parsedItems);
+	const parser = new Parser();
+	const csvContent = parser.parse(parsedItems);
 
-    const now = new Date();
+	const now = new Date();
 
-    const dateString = `${now.getFullYear()}${(now.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}`;
+	const dateString = `${now.getFullYear()}${(now.getMonth() + 1)
+		.toString()
+		.padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}`;
 
-    saveAs(
-        new Blob([csvContent], { type: "text/csv;charset=utf-8" }),
-        `${collection}-${dateString}.csv`
-    );
+	saveAs(
+		new Blob([csvContent], { type: 'text/csv;charset=utf-8' }),
+		`${collection}-${dateString}.csv`,
+	);
 }

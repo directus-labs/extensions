@@ -1,18 +1,19 @@
-import { computed, Ref, unref } from "vue";
+import type { Ref } from 'vue';
+import { computed, unref } from 'vue';
 
 export function syncRefProperty<R, T extends keyof R>(
-    ref: Ref<R>,
-    key: T,
-    defaultValue: R[T] | Ref<R[T]>
+	ref: Ref<R>,
+	key: T,
+	defaultValue: R[T] | Ref<R[T]>,
 ) {
-    return computed<R[T]>({
-        get() {
-            return ref.value?.[key] ?? unref(defaultValue);
-        },
-        set(value: R[T]) {
-            // CORE CHANGE
-            // ref.value = Object.assign({}, ref.value, { [key]: value }) as R;
-            ref.value = { ...ref.value, [key]: value } as R;
-        },
-    });
+	return computed<R[T]>({
+		get() {
+			return ref.value?.[key] ?? unref(defaultValue);
+		},
+		set(value: R[T]) {
+			// CORE CHANGE
+			// ref.value = Object.assign({}, ref.value, { [key]: value }) as R;
+			ref.value = { ...ref.value, [key]: value } as R;
+		},
+	});
 }
