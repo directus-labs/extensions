@@ -8,16 +8,30 @@
 		"node": ">=18.18.0",
 		"pnpm": "~9"
 	},
+	"directus:meta": {
+		"maintained": [
+			"spreadsheet-layout",
+			"gantt-chart-layout",
+			"tour-group-interface",
+			"command-palette-module",
+			"calculated-fields-bundle"
+		]
+	},
 	"scripts": {
 		"premkcert": "mkcert -install",
 		"mkcert": "mkcert -ecdsa -key-file .local/caddy/key.pem -cert-file .local/caddy/cert.pem extensions.directus.labs",
 		"dev": "pnpm --stream -r dev",
 		"build": "pnpm --recursive run build",
 		"validate": "pnpm --recursive run validate",
+		"readme": "node ./scripts/update-readme.js",
 		"package:json": "pnpm --recursive exec node ../../scripts/check-package-json.js",
 		"package:lockfile": "pnpm --recursive exec node ../../scripts/check-lock-files.js",
 		"lint": "eslint --flag unstable_config_lookup_from_file --cache .",
 		"lint:fix": "pnpm run lint --fix"
+	},
+	"dependencies": {
+		"@directus/format-title": "^12.0.0",
+		"mustache": "^4.2.0"
 	},
 	"devDependencies": {
 		"@directus/eslint-config": "github:directus/eslint-config#hannes/temp-workaround",
