@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@directus/format-title':
+        specifier: ^12.0.0
+        version: 12.0.0
+      mustache:
+        specifier: ^4.2.0
+        version: 4.2.0
     devDependencies:
       '@directus/eslint-config':
         specifier: github:directus/eslint-config#hannes/temp-workaround
@@ -5232,6 +5239,10 @@ packages:
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+
+  mustache@4.2.0:
+    resolution: {integrity: sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==}
+    hasBin: true
 
   mute-stream@1.0.0:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
@@ -11162,8 +11173,8 @@ snapshots:
 
   '@rollup/plugin-replace@5.0.7(rollup@3.29.5)':
     dependencies:
-      '@rollup/pluginutils': 5.1.4(rollup@3.29.5)
-      magic-string: 0.30.17
+      '@rollup/pluginutils': 5.1.2(rollup@3.29.5)
+      magic-string: 0.30.12
     optionalDependencies:
       rollup: 3.29.5
 
@@ -11211,6 +11222,14 @@ snapshots:
       picomatch: 2.3.1
     optionalDependencies:
       rollup: 3.29.4
+
+  '@rollup/pluginutils@5.1.2(rollup@3.29.5)':
+    dependencies:
+      '@types/estree': 1.0.6
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+    optionalDependencies:
+      rollup: 3.29.5
 
   '@rollup/pluginutils@5.1.4(rollup@3.29.4)':
     dependencies:
@@ -14630,6 +14649,8 @@ snapshots:
 
   ms@2.1.3: {}
 
+  mustache@4.2.0: {}
+
   mute-stream@1.0.0: {}
 
   mute-stream@2.0.0: {}
@@ -15917,7 +15938,7 @@ snapshots:
   vite@4.5.5(@types/node@22.13.1)(sass@1.84.0)(terser@5.38.1):
     dependencies:
       esbuild: 0.18.20
-      postcss: 8.5.1
+      postcss: 8.4.49
       rollup: 3.29.5
     optionalDependencies:
       '@types/node': 22.13.1
