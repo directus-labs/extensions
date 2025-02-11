@@ -24,7 +24,9 @@
 		"@directus/eslint-config": "github:directus/eslint-config#hannes/temp-workaround",
 		"@nuxt/eslint-config": "^0.7.5",
 		"eslint": "^9.18.0",
-		"execa": "^9.5.2",
 		"jiti": "^2.4.2"
+	},
+	"dependencies": {
+		"execa": "^9.5.2"
 	}
 }

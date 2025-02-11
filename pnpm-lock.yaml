@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      execa:
+        specifier: ^9.5.2
+        version: 9.5.2
     devDependencies:
       '@directus/eslint-config':
         specifier: github:directus/eslint-config#hannes/temp-workaround
@@ -17,9 +21,6 @@ importers:
       eslint:
         specifier: ^9.18.0
         version: 9.19.0(jiti@2.4.2)
-      execa:
-        specifier: ^9.5.2
-        version: 9.5.2
       jiti:
         specifier: ^2.4.2
         version: 2.4.2
