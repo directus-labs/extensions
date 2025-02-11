@@ -1,9 +1,16 @@
 name: README
 
 on:
-  pull_request:
-    branches:
-      - main
+  # Since we're pushing from this CI, don't run this on the push event because
+  # that'll trigger an infinite loop
+  # push: [ main ]
+
+  # Add a schedule to run the job every day at 0:00 UTC
+  schedule:
+    - cron: '0 0 * * *'
+
+  # Allow running this workflow manually
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
