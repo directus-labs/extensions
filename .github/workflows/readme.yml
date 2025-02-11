@@ -47,7 +47,7 @@ jobs:
           git diff-index --quiet HEAD \
             || git commit -m "Autocommit: updated at $(date -u)"
       - name: Commit push and pr
-        uses: golfzaptw/action-commit-push-pr
+        uses: golfzaptw/action-commit-push-pr@1.0.2
         with:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           PREFIX_BRANCHES: chore
