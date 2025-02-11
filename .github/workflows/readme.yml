@@ -44,3 +44,7 @@ jobs:
           git add .
           git diff-index --quiet HEAD \
             || git commit -m "Autocommit: updated at $(date -u)"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          force_with_lease: true
