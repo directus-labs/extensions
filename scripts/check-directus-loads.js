@@ -16,11 +16,14 @@ async function dockerRun(image, name, path, version) {
 	try {
 		const readable = execa({ shell: true })`docker run --rm -v ./packages/${name}:${path} --name ${name}.${version} ${image}`.readable();
 
+		let success = false;
+
 		readable.on('data', (data) => {
 			if (data.toString().includes('App [directus:0] online')) {
 				try {
 					readable.destroy();
 					console.log(`Run ${image} success`);
+					success = true;
 					process.exit(0);
 				}
 				catch (error) {
@@ -29,6 +32,13 @@ async function dockerRun(image, name, path, version) {
 				}
 			}
 		});
+
+		setTimeout(() => {
+			if (!success) {
+				console.error(`Run ${image} fail - timeout`);
+				process.exit(1);
+			}
+		}, 30000);
 	}
 	catch (error) {
 		console.error(error);
