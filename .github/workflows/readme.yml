@@ -50,7 +50,7 @@ jobs:
         uses: golfzaptw/action-commit-push-pr
         with:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          PREFIX_BRANCHES: 'chore'
-          DEFAULT_BRANCHES: 'main'
-          COMMIT_MESSAGE: 'Update readme.md'
+          PREFIX_BRANCHES: chore
+          DEFAULT_BRANCHES: main
+          COMMIT_MESSAGE: Update readme.md
           TITLE_PR: 'Chore: Update readme.md extensions list'
