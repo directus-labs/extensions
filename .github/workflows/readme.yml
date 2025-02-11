@@ -1,0 +1,56 @@
+name: README
+
+on:
+  # Since we're pushing from this CI, don't run this on the push event because
+  # that'll trigger an infinite loop
+  # push: [ main ]
+
+  # Add a schedule to run the job every day at 0:00 UTC
+  schedule:
+    - cron: '0 0 * * *'
+
+  # Allow running this workflow manually
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_OPTIONS: --max_old_space_size=6144
+
+jobs:
+  update-readme:
+    name: Update & PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
+      - name: Update README
+        run: pnpm run readme
+      - name: Commit changes
+        run: |
+          git config --local user.name \
+            "github-actions[bot]"
+          git config --local user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff-index --quiet HEAD \
+            || git commit -m "Autocommit: updated at $(date -u)"
+      - name: Commit push and pr
+        uses: golfzaptw/action-commit-push-pr
+        with:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          PREFIX_BRANCHES: chore
+          DEFAULT_BRANCHES: main
+          COMMIT_MESSAGE: Update readme.md
+          TITLE_PR: 'Chore: Update readme.md extensions list'

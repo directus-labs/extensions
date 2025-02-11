@@ -13,7 +13,7 @@ env:
   NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
-  build:
+  check-package-json:
     name: Package.json
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +25,7 @@ jobs:
         uses: pnpm/action-setup@v4.0.0
       - name: Package
         run: pnpm package:json
-  lockfile:
+  check-package-lockfile:
     name: Lockfiles
     runs-on: ubuntu-latest
     steps:
