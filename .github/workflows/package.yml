@@ -56,17 +56,32 @@ jobs:
     needs: directus_loads_start
     runs-on: ubuntu-latest
     steps:
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
       - name: Loads into Directus:latest
         run: pnpm package:directus-load
   directus_loads_11:
     needs: directus_loads_start
     runs-on: ubuntu-latest
     steps:
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
       - name: Loads into Directus:11
         run: pnpm package:directus-load 11
   directus_loads_10:
     needs: directus_loads_start
     runs-on: ubuntu-latest
     steps:
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
       - name: Loads into Directus:10
         run: pnpm package:directus-load 10
