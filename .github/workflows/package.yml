@@ -37,7 +37,7 @@ jobs:
         uses: pnpm/action-setup@v4.0.0
       - name: Lockfiles
         run: pnpm package:lockfile
-  directus_loads:
+  directus_loads_start:
     name: Loads into Directus
     runs-on: ubuntu-latest
     steps:
@@ -52,9 +52,21 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: pnpm install
+  directus_loads_latest:
+    needs: directus_loads_start
+    runs-on: ubuntu-latest
+    steps:
       - name: Loads into Directus:latest
         run: pnpm package:directus-load
+  directus_loads_11:
+    needs: directus_loads_start
+    runs-on: ubuntu-latest
+    steps:
       - name: Loads into Directus:11
         run: pnpm package:directus-load 11
+  directus_loads_10:
+    needs: directus_loads_start
+    runs-on: ubuntu-latest
+    steps:
       - name: Loads into Directus:10
         run: pnpm package:directus-load 10
