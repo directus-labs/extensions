@@ -49,6 +49,9 @@ jobs:
           node-version: 22
       - name: Setup pnpm
         uses: pnpm/action-setup@v4.0.0
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
       - name: Loads into Directus:latest
         run: pnpm package:directus-load
       - name: Loads into Directus:11
