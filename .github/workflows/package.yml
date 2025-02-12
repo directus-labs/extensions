@@ -43,19 +43,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4.0.0
-      - name: Install dependencies
-        shell: bash
-        run: pnpm install
   directus_loads_latest:
     needs: directus_loads_start
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Setup pnpm
         uses: pnpm/action-setup@v4.0.0
       - name: Install dependencies
@@ -67,6 +64,12 @@ jobs:
     needs: directus_loads_start
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Setup pnpm
         uses: pnpm/action-setup@v4.0.0
       - name: Install dependencies
@@ -78,6 +81,12 @@ jobs:
     needs: directus_loads_start
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Setup pnpm
         uses: pnpm/action-setup@v4.0.0
       - name: Install dependencies
