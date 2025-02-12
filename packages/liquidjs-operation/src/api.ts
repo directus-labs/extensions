@@ -3,7 +3,7 @@
 import { defineOperationApi } from '@directus/extensions-sdk';
 import { request } from 'directus:api';
 // @ts-ignore - Using the browser.esm version in order to make this 'sandboxable'.
-import { Liquid } from 'liquidjs/dist/liquid.browser.esm';
+import { Liquid } from 'liquidjs/dist/liquid.browser.mjs';
 
 export interface Options {
 	mode: 'custom' | 'saved';
