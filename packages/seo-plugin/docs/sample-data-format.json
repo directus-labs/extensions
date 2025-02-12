@@ -1,0 +1,19 @@
+{
+	"title": "Directus | Headless CMS",
+	"meta_description": "Tell me waht's up",
+	"translations": [
+		{ "language": "en-US", "title": "Directus | Headless CMS", "meta_description": "Tell me waht's up" },
+		{ "language": "en-US", "title": "Directus | Headless CMS", "meta_description": "Tell me waht's up" }
+	],
+	"og_image": "f5d20d13-e86a-4aaa-ab1c-241925b89ea3.png",
+	"additional_fields": {
+		"test": "test",
+		"dropdown": "one"
+	},
+	"sitemap": {
+		"change_frequency": "monthly",
+		"priority": "0.5"
+	},
+	"no_index": true,
+	"no_follow": true
+}
