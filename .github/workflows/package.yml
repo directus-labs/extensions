@@ -37,3 +37,37 @@ jobs:
         uses: pnpm/action-setup@v4.0.0
       - name: Lockfiles
         run: pnpm package:lockfile
+  directus_loads_11:
+    name: Loads into Directus:11
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
+      - name: Loads into Directus:11
+        run: pnpm package:directus-load 11
+  directus_loads_10:
+    name: Loads into Directus:10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
+      - name: Loads into Directus:10
+        run: pnpm package:directus-load 10
