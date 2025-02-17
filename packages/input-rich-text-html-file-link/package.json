@@ -12,7 +12,11 @@
 	"keywords": [
 		"directus",
 		"directus-extension",
-		"directus-extension-interface"
+		"directus-extension-interface",
+		"rich-text-editor",
+		"rte",
+		"wysiwyg",
+		"tinymce"
 	],
 	"icon": "extension",
 	"files": [
@@ -31,7 +35,12 @@
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "13.0.1",
+		"@directus/types": "^13.0.0",
+		"@tinymce/tinymce-vue": "^6.0.1",
+		"mime": "^4.0.4",
+		"sass": "^1.84.0",
 		"typescript": "^5.7.3",
-		"vue": "^3.5.13"
+		"vue": "^3.5.13",
+		"vue-i18n": "^9.13.1"
 	}
 }
