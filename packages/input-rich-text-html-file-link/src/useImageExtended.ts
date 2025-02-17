@@ -6,7 +6,6 @@ import mime from 'mime/lite';
 import { ref, watch } from 'vue';
 // CORE-CHANGE start
 // import { i18n } from '@/lang';
-import { useI18n } from 'vue-i18n';
 // import { addQueryToPath } from "@/utils/add-query-to-path";
 import { addQueryToPath } from './core-clones/utils/add-query-to-path';
 // import { getPublicURL } from '@/utils/get-root-path';
@@ -22,6 +21,10 @@ interface ImageExtendedSelection {
 	height?: number | null;
 	transformationKey?: string | null;
 	previewUrl?: string;
+	displayText?: string | null;
+	tooltip?: string | null;
+	target?: boolean | null;
+	download?: boolean;
 }
 
 interface ImageExtendedButton {
@@ -88,15 +91,14 @@ export default function useImage(
 
 				const alt = node.getAttribute('alt');
 				const lazy = node.getAttribute('loading') === 'lazy';
+				const displayText = node.getAttribute('data-display-text');
+				const tooltip = node.getAttribute('data-tooltip');
+				const target = !!node.getAttribute('data-target');
 
-				const width
-                    = Number(imageUrlParams?.get('width') || undefined) || undefined;
-
-				const height
-                    = Number(imageUrlParams?.get('height') || undefined) || undefined;
-
-				const transformationKey
-                    = imageUrlParams?.get('key') || undefined;
+				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
+				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
+				const transformationKey = imageUrlParams?.get('key') || undefined;
+				const download = imageUrlParams?.get('download') === 'true';
 
 				if (imageUrl === null || alt === null) {
 					return;
@@ -125,6 +127,10 @@ export default function useImage(
 						imageUrl,
 						imageToken.value,
 					),
+					displayText,
+					tooltip,
+					target,
+					download,
 				};
 			}
 			else {
@@ -176,6 +182,10 @@ export default function useImage(
 			width: image.width,
 			height: image.height,
 			previewUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
+			displayText: '',
+			tooltip: '',
+			target: false,
+			download: false,
 		};
 	}
 
@@ -192,6 +202,7 @@ export default function useImage(
 		newURL.searchParams.delete('width');
 		newURL.searchParams.delete('height');
 		newURL.searchParams.delete('key');
+		newURL.searchParams.delete('download');
 
 		if (options.storageAssetTransform.value === 'all') {
 			if (img.transformationKey) {
@@ -208,14 +219,22 @@ export default function useImage(
 			}
 		}
 
+		if (img.download) {
+			queries.download = 'true';
+		}
+
 		const resizedImageUrl = addQueryToPath(
 			newURL.toString().replace('file://', ''),
 			queries,
 		);
 
-		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" ${
-			img.lazy ? 'loading="lazy" ' : ''
-		}/>`;
+		const imageHtml = `<img src="${resizedImageUrl}"
+			alt="${img.alt}"
+			${img.lazy ? 'loading="lazy"' : ''}
+			${img.displayText ? `data-display-text="${img.displayText}"` : ''}
+			${img.tooltip ? `data-tooltip="${img.tooltip}"` : ''}
+			${img.target ? `data-target=${!!img.target}` : ''}
+		/>`;
 
 		editor.value.selection.setContent(imageHtml);
 		editor.value.undoManager.add();

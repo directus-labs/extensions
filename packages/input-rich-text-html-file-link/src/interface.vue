@@ -7,6 +7,7 @@ import { useStores } from '@directus/extensions-sdk';
 import Editor from '@tinymce/tinymce-vue';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ImageDrawer from './components/ImageDrawer.vue';
 // CORE-CHANGE end
 import { percentage } from './core-clones/utils/percentage';
 import getEditorStyles from './get-editor-styles';
@@ -418,76 +419,63 @@ function setFocus(val: boolean) {
 			</template>
 		</v-drawer>
 
-		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" icon="image" @cancel="closeImageDrawer">
-			<div class="content">
-				<template v-if="imageSelection">
-					<img class="image-preview" :src="imageSelection.previewUrl">
-					<div class="grid">
-						<div class="field half">
-							<div class="type-label">
-								{{ t('image_url') }}
-							</div>
-							<v-input v-model="imageSelection.imageUrl" />
-						</div>
-						<div class="field half-right">
-							<div class="type-label">
-								{{ t('alt_text') }}
-							</div>
-							<v-input v-model="imageSelection.alt" :nullable="false" />
-						</div>
-						<template v-if="storageAssetTransform === 'all'">
-							<div class="field half">
-								<div class="type-label">
-									{{ t('width') }}
-								</div>
-								<v-input
-									v-model="imageSelection.width"
-									:disabled="!!imageSelection.transformationKey"
-								/>
-							</div>
-							<div class="field half-right">
-								<div class="type-label">
-									{{ t('height') }}
-								</div>
-								<v-input
-									v-model="imageSelection.height"
-									:disabled="!!imageSelection.transformationKey"
-								/>
-							</div>
-						</template>
-						<div class="field half">
-							<div class="type-label">
-								{{ t('wysiwyg_options.lazy_loading') }}
-							</div>
-							<v-checkbox
-								v-model="imageSelection.lazy" block
-								:label="t('wysiwyg_options.lazy_loading_label')"
-							/>
-						</div>
-						<div
-							v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0"
-							class="field half"
-						>
-							<div class="type-label">
-								{{ t('transformation_preset_key') }}
-							</div>
-							<v-select
-								v-model="imageSelection.transformationKey"
-								:items="storageAssetPresets.map((preset: any) => ({ text: preset.key, value: preset.key }))"
-								show-deselect
-							/>
-						</div>
-					</div>
-				</template>
-				<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
-			</div>
+		<ImageDrawer
+			:image-drawer-open="imageDrawerOpen"
+			:image-selection="imageSelection"
+			:storage-asset-transform="storageAssetTransform"
+			:storage-asset-presets="storageAssetPresets"
+			:folder="folder"
+			@close-image-drawer="closeImageDrawer"
+			@save-image="saveImage"
+			@on-image-select="onImageSelect"
+		/>
 
-			<template #actions>
-				<v-button v-tooltip.bottom="t('save_image')" icon rounded @click="saveImage">
-					<v-icon name="check" />
-				</v-button>
+		<ImageDrawer
+			:image-drawer-open="imageExtendedDrawerOpen"
+			:image-selection="imageExtendedSelection"
+			:storage-asset-transform="storageAssetTransform"
+			:storage-asset-presets="storageAssetPresets"
+			:folder="folder"
+			@close-image-drawer="closeImageExtendedDrawer"
+			@save-image="saveImageExtended"
+			@on-image-select="onImageExtendedSelect"
+		>
+			<template #additionalFields="{ imageSelection: extendedImageSelection }">
+				<div class="field half-right">
+					<div class="type-label">
+						Display Text
+					</div>
+					<v-input v-model="extendedImageSelection.displayText" />
+				</div>
+
+				<div class="field half">
+					<div class="type-label">
+						Tooltip
+					</div>
+					<v-input v-model="extendedImageSelection.tooltip" />
+				</div>
+
+				<div class="field half-right">
+					<div class="type-label">
+						Open Link In
+					</div>
+					<v-checkbox
+						v-model="extendedImageSelection.target" block
+						label="New Tab"
+					/>
+				</div>
+
+				<div class="field half">
+					<div class="type-label">
+						Download
+					</div>
+					<v-checkbox
+						v-model="extendedImageSelection.download" block
+						label="Download"
+					/>
+				</div>
 			</template>
-		</v-drawer>
+		</ImageDrawer>
 
 		<v-drawer
 			v-model="mediaDrawerOpen" :title="t('wysiwyg_options.media')" icon="slideshow"
@@ -569,10 +557,7 @@ function setFocus(val: boolean) {
 </style>
 
 <style lang="scss" scoped>
-/* CORE-CHANGE start */
-/* @import '@/styles/mixins/form-grid'; */
 @use './core-clones/styles/mixins/form-grid' as form_grid_mixin;
-/* CORE-CHANGE end */
 
 .body {
 	padding: 20px;
@@ -601,7 +586,6 @@ function setFocus(val: boolean) {
 	color: var(--theme--danger);
 }
 
-.image-preview,
 .media-preview {
 	width: 100%;
 	height: var(--input-height-tall);
