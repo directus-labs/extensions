@@ -1,0 +1,37 @@
+{
+	"name": "input-rich-text-html-file-link",
+	"description": "WYSIWYG Interface Extension for Directus with an add/edit file link interface",
+	"icon": "extension",
+	"version": "1.0.0",
+	"license": "MIT",
+	"author": {
+		"name": "Dominic Marcelino",
+		"email": "dominic.marcelino@utomic.media",
+		"url": "https://utomic.media/"
+	},
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-interface"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "interface",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^10.10.0 || ^11.0.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "13.0.1",
+		"typescript": "^5.7.3",
+		"vue": "^3.5.13"
+	}
+}
