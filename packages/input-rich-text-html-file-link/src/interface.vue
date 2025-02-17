@@ -11,6 +11,7 @@ import { useI18n } from 'vue-i18n';
 import { percentage } from './core-clones/utils/percentage';
 import getEditorStyles from './get-editor-styles';
 import useImage from './useImage';
+import useImageExtended from './useImageExtended';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
@@ -69,6 +70,7 @@ const props = withDefaults(
 			'blockquote',
 			'customLink',
 			'customImage',
+			'customImageExtended',
 			'customMedia',
 			'code',
 			'fullscreen',
@@ -100,6 +102,15 @@ if (settingsStore.settings?.storage_asset_transform) {
 const count = ref(0);
 
 const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
+	editorRef,
+	imageToken!,
+	{
+		storageAssetTransform,
+		storageAssetPresets,
+	},
+);
+
+const { imageExtendedDrawerOpen, imageExtendedSelection, closeImageExtendedDrawer, onImageExtendedSelect, saveImageExtended, imageExtendedButton } = useImageExtended(
 	editorRef,
 	imageToken!,
 	{
@@ -180,9 +191,6 @@ const editorOptions = computed(() => {
 	if (styleFormats) {
 		toolbarString += ' styles';
 	}
-
-	// EXAMPLE (Part 1/2): adding a custom toolbar button
-	// toolbarString += ' myCustomToolbarButton';
 
 	return {
 		skin: false,
@@ -303,11 +311,7 @@ function setup(editor: any) {
 		}
 	});
 
-	// EXAMPLE (Part 2/2): adding a custom toolbar button
-	// editor.ui.registry.addButton('myCustomToolbarButton', {
-	//     text: 'My Custom Button',
-	//     onAction: () => alert('Button clicked!')
-	// });
+	editor.ui.registry.addToggleButton('customImageExtended', imageExtendedButton);
 }
 
 function setFocus(val: boolean) {
@@ -469,7 +473,7 @@ function setFocus(val: boolean) {
 							</div>
 							<v-select
 								v-model="imageSelection.transformationKey"
-								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
+								:items="storageAssetPresets.map((preset: any) => ({ text: preset.key, value: preset.key }))"
 								show-deselect
 							/>
 						</div>
@@ -567,7 +571,7 @@ function setFocus(val: boolean) {
 <style lang="scss" scoped>
 /* CORE-CHANGE start */
 /* @import '@/styles/mixins/form-grid'; */
-@import './core-clones/styles/mixins/form-grid';
+@use './core-clones/styles/mixins/form-grid' as form_grid_mixin;
 /* CORE-CHANGE end */
 
 .body {
@@ -575,7 +579,7 @@ function setFocus(val: boolean) {
 }
 
 .grid {
-	@include form-grid;
+	@include form_grid_mixin.form-grid;
 }
 
 .remaining {
