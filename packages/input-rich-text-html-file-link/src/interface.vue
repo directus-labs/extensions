@@ -560,12 +560,12 @@ function setFocus(val: boolean) {
 </template>
 
 <style lang="scss">
-    @import 'tinymce/skins/ui/oxide/skin.css';
+@import 'tinymce/skins/ui/oxide/skin.css';
 @import './tinymce-overrides.css';
 </style>
 
 <style lang="scss" scoped>
-    /* CORE-CHANGE start */
+/* CORE-CHANGE start */
 /* @import '@/styles/mixins/form-grid'; */
 @import './core-clones/styles/mixins/form-grid';
 /* CORE-CHANGE end */
