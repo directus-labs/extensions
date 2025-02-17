@@ -1,20 +1,20 @@
 {
 	"name": "input-rich-text-html-file-link",
-	"description": "WYSIWYG Interface Extension for Directus with an add/edit file link interface",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
-	"license": "MIT",
+	"description": "WYSIWYG Interface Extension for Directus with an add/edit file link interface",
 	"author": {
 		"name": "Dominic Marcelino",
 		"email": "dominic.marcelino@utomic.media",
 		"url": "https://utomic.media/"
 	},
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-interface"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],
