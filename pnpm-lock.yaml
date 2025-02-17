@@ -576,6 +576,10 @@ importers:
         version: 5.6.3
 
   packages/input-rich-text-html-file-link:
+    dependencies:
+      tinymce:
+        specifier: ^7.6.1
+        version: 7.6.1
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.1
@@ -585,7 +589,7 @@ importers:
         version: 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
       '@tinymce/tinymce-vue':
         specifier: ^6.0.1
-        version: 6.1.0(vue@3.5.13(typescript@5.7.3))
+        version: 6.1.0(tinymce@7.6.1)(vue@3.5.13(typescript@5.7.3))
       mime:
         specifier: ^4.0.4
         version: 4.0.6
@@ -6058,6 +6062,9 @@ packages:
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
 
+  tinymce@7.6.1:
+    resolution: {integrity: sha512-5cHhaAoyyTHfAVTInNfoSp0KkUHmeVUbGSu37QKQbOFIPqxYPhqBiaLm1WVLgoNBYOHRProVc3xzxnNTeWHyoQ==}
+
   tmp@0.0.33:
     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
     engines: {node: '>=0.6.0'}
@@ -11028,9 +11035,11 @@ snapshots:
       '@tanstack/virtual-core': 3.11.2
       vue: 3.5.13(typescript@5.6.3)
 
-  '@tinymce/tinymce-vue@6.1.0(vue@3.5.13(typescript@5.7.3))':
+  '@tinymce/tinymce-vue@6.1.0(tinymce@7.6.1)(vue@3.5.13(typescript@5.7.3))':
     dependencies:
       vue: 3.5.13(typescript@5.7.3)
+    optionalDependencies:
+      tinymce: 7.6.1
 
   '@tootallnate/once@2.0.0':
     optional: true
@@ -15324,6 +15333,8 @@ snapshots:
   tinycolor2@1.6.0: {}
 
   tinyexec@0.3.2: {}
+
+  tinymce@7.6.1: {}
 
   tmp@0.0.33:
     dependencies:

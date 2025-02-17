@@ -33,6 +33,9 @@
 		"dev": "directus-extension build -w --no-minify",
 		"link": "directus-extension link"
 	},
+	"dependencies": {
+		"tinymce": "^7.6.1"
+	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "13.0.1",
 		"@directus/types": "^13.0.0",
