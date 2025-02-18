@@ -30,6 +30,7 @@
 		"lint:fix": "pnpm run lint --fix"
 	},
 	"dependencies": {
+		"@directus-labs/utils": "workspace:*",
 		"@directus/format-title": "^12.0.0",
 		"mustache": "^4.2.0"
 	},
