@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AudioService, AudioSource } from './types';
+import { getAssetUrl } from '@directus-labs/utils';
 import Plyr from 'plyr';
 import { onMounted, ref, watch } from 'vue';
 
@@ -21,10 +22,6 @@ function updateSource() {
 				: { src: props.source },
 		],
 	};
-}
-
-function getAssetUrl(id: AudioSource) {
-	return `/assets/${id}`;
 }
 </script>
 

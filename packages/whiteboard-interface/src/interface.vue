@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { getAssetUrl } from '@directus-labs/utils';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import Upload from './upload.vue';
 import { Whiteboard } from './whiteboard';
@@ -367,7 +368,7 @@ onUnmounted(() => {
 		>
 			<v-icon :name="fullscreen ? 'fullscreen_exit' : 'fullscreen'" />
 		</v-button>
-		<Upload v-model="showUpload" @file-selected="$file => wb.insertImage(`/assets/${$file.id}`)" />
+		<Upload v-model="showUpload" @file-selected="$file => wb.insertImage(getAssetUrl($file.id))" />
 	</div>
 </template>
 

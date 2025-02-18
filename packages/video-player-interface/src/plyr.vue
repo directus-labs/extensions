@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { VideoID, VideoService } from './types';
+import { getAssetUrl } from '@directus-labs/utils';
 import Plyr from 'plyr';
 import { onMounted, ref, watch } from 'vue';
 
@@ -28,10 +29,6 @@ function updateSource() {
 				},
 		],
 	};
-}
-
-function getAssetUrl(id: VideoID) {
-	return `/assets/${id}`;
 }
 </script>
 

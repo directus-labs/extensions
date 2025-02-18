@@ -1,0 +1,12 @@
+{
+	"extends": "@directus/tsconfig/node22",
+	"compilerOptions": {
+		"lib": ["dom"],
+		"outDir": "dist",
+		"verbatimModuleSyntax": false
+	},
+	"include": ["src"],
+	"typedocOptions": {
+		"entryPoints": ["./src/index.ts"]
+	}
+}
