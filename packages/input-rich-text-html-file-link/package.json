@@ -1,5 +1,5 @@
 {
-	"name": "input-rich-text-html-file-link",
+	"name": "@directus-labs/input-rich-text-html-file-link",
 	"type": "module",
 	"version": "1.0.0",
 	"description": "WYSIWYG Interface Extension for Directus with an add/edit file link interface",
