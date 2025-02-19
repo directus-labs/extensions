@@ -1,5 +1,6 @@
 /**
  * Get the full API root URL from the current page href
+ * @returns - Root URL of the Directus instance
  */
 export function getPublicURL(): string {
 	return extract(window.location.href);
