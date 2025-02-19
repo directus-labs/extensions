@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/seo-plugin",
 	"type": "module",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "SEO plugin for Directus",
 	"license": "MIT",
 	"keywords": [
