@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1 (2025-02-21)
+
+### Fixes
+- Fixed issue when running flows from action buttons from within nested relational items.
+
 ## 1.1.0 (2025-01-28)
 
 ### Fixes
