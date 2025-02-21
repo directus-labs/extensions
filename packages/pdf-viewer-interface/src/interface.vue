@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/prop-name-casing -->
 <script setup lang="ts">
+import { getAssetUrl } from '@directus-labs/utils';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { defaultButtonLabel } from './default-button-label';
@@ -28,8 +29,9 @@ function useSelectedFile() {
 	});
 
 	const fileURL = computed(() => {
-		if (!fileID.value || !fileID.value.id) return null;
-		return `/assets/${fileID.value.id}`;
+		if (!fileID.value)
+			return null;
+		return getAssetUrl(fileID.value);
 	});
 
 	const fileIsValid = computed(() => !!fileID.value);

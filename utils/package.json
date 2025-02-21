@@ -1,0 +1,23 @@
+{
+	"name": "@directus-labs/utils",
+	"type": "commonjs",
+	"version": "0.0.0",
+	"description": "Shared components for @directus-labs/extensions",
+	"author": "",
+	"license": "MIT",
+	"main": "dist/index.js",
+	"engines": {
+		"node": ">=12.20.0"
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "3.0.0",
+		"@rollup/plugin-url": "^8.0.2",
+		"@types/node": "^22.13.4",
+		"rollup-plugin-copy": "^3.5.0",
+		"typescript": "5.7.3"
+	}
+}

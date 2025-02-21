@@ -13,7 +13,7 @@ env:
   NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
-  build:
+  directus-validate:
     name: Validate
     runs-on: ubuntu-latest
     steps:

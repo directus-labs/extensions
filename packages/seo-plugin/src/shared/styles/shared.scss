@@ -1,0 +1,64 @@
+.form-grid {
+	display: grid;
+	grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
+	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
+
+	&.with-fill {
+		grid-template-columns:
+			[start] minmax(0, var(--form-column-max-width)) [half] minmax(0, var(--form-column-max-width))
+			[full] 1fr [fill];
+	}
+
+	.field {
+		grid-column: start / fill;
+
+		@media (min-width: 960px) {
+			grid-column: start / full;
+		}
+	}
+
+	.half,
+	.half-left,
+	.half-space {
+		grid-column: start / fill;
+
+		@media (min-width: 960px) {
+			grid-column: start / half;
+		}
+	}
+
+	.half + .half,
+	.half-right {
+		grid-column: start / fill;
+
+		@media (min-width: 960px) {
+			grid-column: half / full;
+		}
+	}
+
+	.full {
+		grid-column: start / fill;
+
+		@media (min-width: 960px) {
+			grid-column: start / full;
+		}
+	}
+
+	.fill {
+		grid-column: start / fill;
+	}
+
+	.first-visible-field :deep(.presentation-divider) {
+		margin-top: 0;
+	}
+
+	&.inline > .no-fields-info {
+		grid-column: 1 / -1;
+	}
+}
+
+.hint {
+	font-size: 0.875rem;
+	line-height: 0.875rem;
+	color: var(--theme--foreground-subdued);
+}
