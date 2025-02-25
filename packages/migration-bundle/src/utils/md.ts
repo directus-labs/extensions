@@ -1,5 +1,5 @@
-import { marked } from 'marked';
 import dompurify from 'dompurify';
+import { marked } from 'marked';
 
 const renderer = new marked.Renderer();
 

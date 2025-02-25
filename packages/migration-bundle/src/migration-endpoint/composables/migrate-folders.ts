@@ -1,67 +1,74 @@
 import type { RestClient } from '@directus/sdk';
 import type { DirectusError, Folder } from '../../types/extension';
+import type { Schema } from '../api';
 import { createFolders, readFolders, updateFolder } from '@directus/sdk';
-import { Schema } from '../api';
 
-const migrateFolders = async ({ res, client, folders, dry_run = false }: { res: any, client: RestClient<Schema>, folders: Folder[] | null, dry_run: boolean }): Promise<{ response: string, name: string } | DirectusError> => {
-  
-  if(!folders){
-    res.write("* Couldn't read data from extract\r\n\r\n");
-    return { name: "Directus Error", status: 404, errors: [{ message: "No folders found"}]};
-  } else if(folders.length == 0){
-    res.write("* No folders to migrate\r\n\r\n");
-    return { response: "Empty", name: "Folders" };
-  }
+async function migrateFolders({ res, client, folders, dry_run = false }: { res: any; client: RestClient<Schema>; folders: Folder[] | null; dry_run: boolean }): Promise<{ response: string; name: string } | DirectusError> {
+	if (!folders) {
+		res.write('* Couldn\'t read data from extract\r\n\r\n');
+		return { name: 'Directus Error', status: 404, errors: [{ message: 'No folders found' }] };
+	}
+	else if (folders.length === 0) {
+		res.write('* No folders to migrate\r\n\r\n');
+		return { response: 'Empty', name: 'Folders' };
+	}
 
-  res.write(`* [Local] Found ${folders.length} folders\r\n\r\n`);
+	res.write(`* [Local] Found ${folders.length} folders\r\n\r\n`);
 
-  try {
-    // Fetch existing folders
-    res.write("* [Remote] Fetching Existing Folders ...");
-    const existingFolders = await client.request(readFolders({
-      limit: -1,
-    }));
-    if(!existingFolders) return { name: "Directus Error", status: 404, errors: [{ message: "Issue Fetching Folders"}]};
-    res.write("done\r\n\r\n");
+	try {
+		// Fetch existing folders
+		res.write('* [Remote] Fetching Existing Folders ...');
 
-    const existingFolderIds = new Set(existingFolders.map(folder => folder.id))
+		const existingFolders = await client.request(readFolders({
+			limit: -1,
+		}));
 
-    const foldersToAdd = folders.filter(folder => {
-      if (existingFolderIds.has(folder.id)) {
-        return false;
-      }
-      return true;
-    });
+		if (!existingFolders)
+			return { name: 'Directus Error', status: 404, errors: [{ message: 'Issue Fetching Folders' }] };
+		res.write('done\r\n\r\n');
 
-    res.write(foldersToAdd.length > 0 ? `* [Remote] Uploading ${foldersToAdd.length} ${foldersToAdd.length > 1 ? "Folders" : "Folder"} `: "* No Folders to migrate\r\n\r\n");
-    if (foldersToAdd.length > 0) {
-      const folderSkeleton = foldersToAdd.map(folder => ({id: folder.id, name: folder.name}));
+		const existingFolderIds = new Set(existingFolders.map((folder) => folder.id));
 
-      // Create the folders
-      res.write(".");
-      await client.request(createFolders(folderSkeleton));
+		const foldersToAdd = folders.filter((folder) => {
+			if (existingFolderIds.has(folder.id)) {
+				return false;
+			}
 
-      // Update the folders with relationships concurrently
-      await Promise.all(foldersToAdd.map(async folder => {
-        const {id, ...rest} = folder;
-        res.write(".");
-        await client.request(updateFolder(id, rest));
-      }));
+			return true;
+		});
 
-      res.write(dry_run ? "skipped\r\n\r\n":"done\r\n\r\n");
-    }
+		res.write(foldersToAdd.length > 0 ? `* [Remote] Uploading ${foldersToAdd.length} ${foldersToAdd.length > 1 ? 'Folders' : 'Folder'} ` : '* No Folders to migrate\r\n\r\n');
 
-    res.write("* Folder Migration Complete\r\n\r\n");
-    return { response: "Success", name: "Folders" };
+		if (foldersToAdd.length > 0) {
+			const folderSkeleton = foldersToAdd.map((folder) => ({ id: folder.id, name: folder.name }));
 
-  } catch (error) {
-    let errorResponse = error as DirectusError;
-    res.write("error\r\n\r\n");
-    if(errorResponse.errors && errorResponse.errors.length > 0){
-      res.write(`${errorResponse.errors[0]?.message}\r\n\r\n`);
-    }
-    return errorResponse;
-  }
-};
+			// Create the folders
+			res.write('.');
+			await client.request(createFolders(folderSkeleton));
+
+			// Update the folders with relationships concurrently
+			await Promise.all(foldersToAdd.map(async (folder) => {
+				const { id, ...rest } = folder;
+				res.write('.');
+				await client.request(updateFolder(id, rest));
+			}));
+
+			res.write(dry_run ? 'skipped\r\n\r\n' : 'done\r\n\r\n');
+		}
+
+		res.write('* Folder Migration Complete\r\n\r\n');
+		return { response: 'Success', name: 'Folders' };
+	}
+	catch (error) {
+		const errorResponse = error as DirectusError;
+		res.write('error\r\n\r\n');
+
+		if (errorResponse.errors && errorResponse.errors.length > 0) {
+			res.write(`${errorResponse.errors[0]?.message}\r\n\r\n`);
+		}
+
+		return errorResponse;
+	}
+}
 
 export default migrateFolders;

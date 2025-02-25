@@ -1,14 +1,14 @@
 {
 	"name": "@directus-labs/migration-bundle",
-	"description": "Migrate from the current source Directus instance to another target Directus instance.",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
+	"description": "Migrate from the current source Directus instance to another target Directus instance.",
 	"keywords": [
 		"directus",
 		"directus-extension",
 		"directus-extension-bundle"
 	],
-	"type": "module",
+	"icon": "extension",
 	"files": [
 		"dist"
 	],
@@ -39,13 +39,6 @@
 		"add": "directus-extension add",
 		"validate": "directus-extension validate"
 	},
-	"devDependencies": {
-		"@directus/extensions-sdk": "13.0.1",
-		"@directus/types": "^13.0.0",
-		"@types/node": "^22.13.4",
-		"typescript": "^5.7.3",
-		"vue": "^3.5.13"
-	},
 	"dependencies": {
 		"@directus/sdk": "^19.0.1",
 		"@directus/utils": "^13.0.0",
@@ -54,5 +47,12 @@
 		"dompurify": "^3.2.4",
 		"formdata-node": "^6.0.3",
 		"marked": "^15.0.7"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "13.0.1",
+		"@directus/types": "^13.0.0",
+		"@types/node": "^22.13.4",
+		"typescript": "^5.7.3",
+		"vue": "^3.5.13"
 	}
 }
