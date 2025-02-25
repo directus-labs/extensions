@@ -3,6 +3,7 @@
 	"type": "module",
 	"version": "1.0.0",
 	"description": "Migrate from the current source Directus instance to another target Directus instance.",
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
