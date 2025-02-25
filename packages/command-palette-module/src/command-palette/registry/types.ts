@@ -36,7 +36,7 @@ export interface CommandActionContext {
 export type CommandConfigWithAction = CommandConfigBase & {
 	action: (
 		context: CommandActionContext,
-	) => Promise<boolean | void> | boolean | void;
+	) => Promise<boolean | undefined> | boolean | undefined;
 
 	component?: never;
 	props?: never;

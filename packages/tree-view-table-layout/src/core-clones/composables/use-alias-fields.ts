@@ -1,7 +1,7 @@
-/* eslint-disable style/no-mixed-operators */
 import type { Query } from '@directus/types';
+import type { ComputedRef, Ref } from 'vue';
 import { get, getSimpleHash } from '@directus/utils';
-import { computed, type ComputedRef, type Ref, unref } from 'vue';
+import { computed, unref } from 'vue';
 // CORE IMPORTS
 import { adjustFieldsForDisplays } from '../../core-clones/utils/adjust-fields-for-displays';
 
@@ -63,6 +63,7 @@ export function useAliasFields(
 		for (const field of _fields) {
 			const fieldName = (field.split('.') as [string])[0];
 
+			// eslint-disable-next-line @stylistic/no-mixed-operators
 			if (fieldNameCount[fieldName]! > 1 === false) {
 				aliasedFields[field] = {
 					key: field,
@@ -87,15 +88,12 @@ export function useAliasFields(
 						_collection,
 						system,
 					).map((displayField) => {
-						if (displayField.includes('.')) {
-							return `${alias}.${displayField
+						return displayField.includes('.')
+							? `${alias}.${displayField
 								.split('.')
 								.slice(1)
-								.join('.')}`;
-						}
-						else {
-							return alias;
-						}
+								.join('.')}`
+							: alias;
 					}),
 					aliased: true,
 				};

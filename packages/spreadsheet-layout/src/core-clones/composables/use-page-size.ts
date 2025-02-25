@@ -30,8 +30,8 @@ export function usePageSize<T = any>(
 		return sizes.map(mapCallback);
 	});
 
-	const initialSize
-        = queryLimit !== undefined ? Math.min(defaultSize, parseLimit(queryLimit.max)) : defaultSize;
+	const initialSize =
+        queryLimit !== undefined ? Math.min(defaultSize, parseLimit(queryLimit.max)) : defaultSize;
 
 	return {
 		sizes: pageSizes,

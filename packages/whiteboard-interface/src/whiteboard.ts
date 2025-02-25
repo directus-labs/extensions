@@ -1,6 +1,7 @@
+/* eslint-disable @eslint-community/eslint-comments/disable-enable-pair */
 /* eslint-disable no-useless-call */
 /* eslint-disable new-cap */
-/* eslint-disable ts/no-unsafe-function-type */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { fabric } from 'fabric';
 import tinycolor from 'tinycolor2';
 import { markRaw } from 'vue';

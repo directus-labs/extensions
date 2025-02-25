@@ -8,7 +8,7 @@ export async function injectCommentsApp() {
 	const ID = 'field-comments-model';
 
 	// If drawer missing from App
-	if (!document.getElementById(ID)) {
+	if (!document.querySelector(`#${ID}`)) {
 		const app = createApp(FieldCommentsApp, {});
 		const directusApp = getDirectusApp();
 
@@ -48,7 +48,7 @@ export async function injectCommentsApp() {
 		// Mount the app
 		const container = document.createElement('div');
 		container.id = ID;
-		document.body.appendChild(container);
+		document.body.append(container);
 
 		app.mount(container);
 	}

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/extensions';
+import type { Ref } from 'vue';
 // CORE CHANGES
 // import type { Header, Item } from "./types";
 import type { Header, Item } from '../core-clones/components/v-table/types';
-import { computed, inject, type Ref } from 'vue';
+import { computed, inject } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

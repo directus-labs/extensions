@@ -52,10 +52,10 @@ function useEdits() {
 			props.refresh();
 		}
 		catch (error: any) {
-			const code
-					= error?.response?.data?.errors?.[0]?.extensions?.code
-						|| error?.extensions?.code
-						|| 'UNKNOWN';
+			const code =
+					error?.response?.data?.errors?.[0]?.extensions?.code
+					|| error?.extensions?.code
+					|| 'UNKNOWN';
 
 			console.warn(error);
 
@@ -237,9 +237,7 @@ function useEdits() {
 	font-size: 12px;
 	background-color: var(--theme--background-normal);
 	border-radius: 12px;
-	transition:
-		color var(--fast) var(--transition),
-		background-color var(--fast) var(--transition);
+	transition: color var(--fast) var(--transition), background-color var(--fast) var(--transition);
 }
 
 .comment-item.expand .content .expand-text:hover span {

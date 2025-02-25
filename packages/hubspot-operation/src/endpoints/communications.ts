@@ -1,6 +1,7 @@
 import { create, del, list, read, update } from './actions';
 
 const endpoint = 'communications';
+
 export const communications = {
 	label: 'Communications',
 	icon: 'chat_bubble',

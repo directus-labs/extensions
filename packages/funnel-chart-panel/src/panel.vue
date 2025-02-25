@@ -196,7 +196,7 @@ export default defineComponent({
 					dataLabels: {
 						enabled: props.showDataLabel,
 						formatter(value: number, opt: Record<string, any>) {
-							return `${opt.w.globals.labels[opt.dataPointIndex]}:  ${value > 10000 ? abbreviateNumber(value, 1) : value}`;
+							return `${opt.w.globals.labels[opt.dataPointIndex]}:  ${value > 10_000 ? abbreviateNumber(value, 1) : value}`;
 						},
 						dropShadow: {
 							enabled: true,
@@ -209,7 +209,7 @@ export default defineComponent({
 							const value: number = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
 							const label: string = w.globals.labels[dataPointIndex];
 							const color = w.globals.colors[seriesIndex];
-							return `<div class="funnel-tooltip"><span><strong style="color: ${color || 'var(--theme--primary'});">${label}</strong></span>:&nbsp;<span>${(value > 10000 ? abbreviateNumber(value, 1) : value)}</span></div>`;
+							return `<div class="funnel-tooltip"><span><strong style="color: ${color || 'var(--theme--primary'});">${label}</strong></span>:&nbsp;<span>${(value > 10_000 ? abbreviateNumber(value, 1) : value)}</span></div>`;
 						},
 					},
 					grid: {

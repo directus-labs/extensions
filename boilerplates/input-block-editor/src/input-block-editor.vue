@@ -48,8 +48,8 @@ const { useCollectionsStore } = useStores();
 // CORE-CHANGE end
 const collectionStore = useCollectionsStore();
 
-const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile }
-        = useFileHandler();
+const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile } =
+        useFileHandler();
 
 const editorjsRef = ref<EditorJS>();
 const editorjsIsReady = ref(false);
@@ -155,7 +155,7 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 
 		haveValuesChanged.value = true;
 
-		if (!result || result.blocks.length < 1) {
+		if (!result || result.blocks.length === 0) {
 			emit('input', null);
 			return;
 		}
@@ -171,7 +171,7 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 }
 
 function sanitizeValue(value: any): EditorJS.OutputData | null {
-	if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1)
+	if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length === 0)
 		return null;
 
 	return cloneDeep({

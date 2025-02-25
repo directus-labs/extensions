@@ -122,10 +122,10 @@ const videoSearch = debounce(async (value: string) => {
 			items.value = fetchedItems.items;
 			nextPageToken.value = fetchedItems.nextPageToken;
 		}
-		catch (ex: any) {
+		catch (error_: any) {
 			items.value = [];
 			nextPageToken.value = '';
-			error.value = ex.message;
+			error.value = error_.message;
 		}
 	}
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, type Ref } from 'vue';
+import type { Ref } from 'vue';
+import { ref } from 'vue';
 import VuePdfEmbed from 'vue-pdf-embed';
 // essential styles
 import 'vue-pdf-embed/dist/style/index.css';

@@ -202,7 +202,7 @@ export default defineComponent({
 					dataLabels: {
 						enabled: props.showDataLabel,
 						formatter(text: string, opt: Record<string, any>) {
-							return `${text}: ${(opt.value > 10000 ? abbreviateNumber(opt.value, 1) : opt.value)}`;
+							return `${text}: ${(opt.value > 10_000 ? abbreviateNumber(opt.value, 1) : opt.value)}`;
 						},
 						dropShadow: {
 							enabled: true,

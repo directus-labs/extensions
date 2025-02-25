@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import type { Ref } from 'vue';
 import type { Audio, AudioService, AudioSource } from './types';
-import { computed, ref, type Ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Plyr from './plyr.vue';
 
@@ -12,8 +13,8 @@ const { t } = useI18n();
 const { services, service } = useAudioServices();
 const { fileDrawer, fileID, setFileSelection } = useFileSelect(service);
 
-const { sourceInput, inputIsClickable, inputPlaceholder, onInputClick }
-	= useInputField(service, fileDrawer);
+const { sourceInput, inputIsClickable, inputPlaceholder, onInputClick } =
+	useInputField(service, fileDrawer);
 
 const { source, clearSource } = useAudioSource(service, sourceInput, fileID);
 
@@ -42,8 +43,8 @@ function emitInputValue() {
 		return;
 	}
 
-	const inputValue
-		= service.value && source.value
+	const inputValue =
+		service.value && source.value
 			? { service: service.value, source: source.value }
 			: null;
 
@@ -136,7 +137,7 @@ function useInputField(
 		if (service.value === 'directus')
 			return t('choose_from_library');
 
-		return `Audio Source …`;
+		return 'Audio Source …';
 	});
 
 	return { sourceInput, inputIsClickable, inputPlaceholder, onInputClick };

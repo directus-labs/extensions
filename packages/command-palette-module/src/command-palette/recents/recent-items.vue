@@ -19,7 +19,7 @@ const { commands: commandIds } = useRecentCommands();
 const commands = computed(() =>
 	commandIds.value
 		.map((id) => props.availableCommands.find((cmd) => cmd.id === id))
-		.filter((cmd): cmd is CommandConfig => cmd),
+		.filter(Boolean),
 );
 </script>
 

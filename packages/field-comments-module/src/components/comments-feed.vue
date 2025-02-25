@@ -40,8 +40,8 @@ const collection = ref(props.collection);
 const primaryKey = ref(props.primaryKey);
 const field = ref(props.field);
 
-const { comments, getComments, loading, refresh, getCommentsCount, userPreviews }
-        = useComments(collection, field, primaryKey);
+const { comments, getComments, loading, refresh, getCommentsCount, userPreviews } =
+        useComments(collection, field, primaryKey);
 
 onMounted(() => {
 	getCommentsCount();
@@ -120,7 +120,7 @@ function useComments(collection: Ref<string>, field: Ref<number>, primaryKey: Re
 			const commentsWithTaggedUsers = (response as Comment[]).map((c) => {
 				const display = dompurify
 					.sanitize(c.comment as string, { ALLOWED_TAGS: [] })
-					.replace(regex, (match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`);
+					.replaceAll(regex, (match) => `<mark>${userPreviews.value[match.slice(2)]}</mark>`);
 
 				return {
 					...c,
@@ -205,7 +205,7 @@ function useComments(collection: Ref<string>, field: Ref<number>, primaryKey: Re
 
 			commentsCount.value = Number(response.data.data[0].count.id);
 
-			const fieldLabelExtension = document.getElementById(`field-comments-${field.value}`);
+			const fieldLabelExtension = document.querySelector(`#field-comments-${field.value}`);
 			const Badge = fieldLabelExtension?.querySelector<Element>('.badge span');
 
 			if (Badge) {
@@ -255,7 +255,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 	if (uniqIds.length > 0) {
 		const response = await api.get('/users', {
 			params: {
-				filter: { id: { _in: uniqIds.map((id) => id.substring(2)) } },
+				filter: { id: { _in: uniqIds.map((id) => id.slice(2)) } },
 				fields: ['first_name', 'last_name', 'email', 'id'],
 			},
 		});

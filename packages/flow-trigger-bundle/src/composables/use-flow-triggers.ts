@@ -152,15 +152,10 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 		const values = unref(confirmValues) ?? {};
 
 		try {
-			if (
-				flow.options?.requireSelection === false
+			await (flow.options?.requireSelection === false
 				&& keys?.length === 0
-			) {
-				await api.post(`/flows/trigger/${flowId}`, { ...values, collection });
-			}
-			else {
-				await api.post(`/flows/trigger/${flowId}`, { ...values, collection, keys });
-			}
+				? api.post(`/flows/trigger/${flowId}`, { ...values, collection })
+				: api.post(`/flows/trigger/${flowId}`, { ...values, collection, keys }));
 
 			notificationStore.add({
 				title: t('run_flow_success', { flow: flow.name }),
@@ -184,10 +179,10 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 	}
 
 	function unexpectedError(error: unknown) {
-		const code
-			= (error as any)?.response?.data?.errors?.[0]?.extensions?.code
-				|| (error as any)?.extensions?.code
-				|| 'UNKNOWN';
+		const code =
+			(error as any)?.response?.data?.errors?.[0]?.extensions?.code
+			|| (error as any)?.extensions?.code
+			|| 'UNKNOWN';
 
 		console.warn(error);
 

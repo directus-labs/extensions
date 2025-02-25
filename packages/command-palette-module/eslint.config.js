@@ -5,7 +5,7 @@ export default [
 	{
 		rules: {
 			'@typescript-eslint/ban-ts-comment': 'off',
-			'no-nested-ternary': 'off',
+			'unicorn/no-nested-ternary': 'off',
 		},
 	},
 ];

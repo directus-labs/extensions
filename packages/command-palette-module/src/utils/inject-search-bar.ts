@@ -27,7 +27,7 @@ export function injectSearchBar() {
 }
 
 function injectApp(retry: number = 0) {
-	if (document.getElementById(ID))
+	if (document.querySelector(`#${ID}`))
 		return;
 
 	const titleContainer = document.querySelector('.title-container');
@@ -44,7 +44,7 @@ function injectApp(retry: number = 0) {
 	const searchBar = document.createElement('div');
 	searchBar.id = ID;
 
-	titleContainer!.appendChild(searchBar);
+	titleContainer!.append(searchBar);
 
 	if (app) {
 		app.unmount();
@@ -64,8 +64,8 @@ function injectApp(retry: number = 0) {
 }
 
 function checkEnabled() {
-	const stores
-    = getDirectusApp()._container._vnode.component.provides[STORES_INJECT];
+	const stores =
+    getDirectusApp()._container._vnode.component.provides[STORES_INJECT];
 
 	return isModuleEnabled(stores);
 }

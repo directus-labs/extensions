@@ -32,7 +32,7 @@ export function useEditsGuard(hasEdits: Ref<boolean>, opts?: EditsGuardOptions) 
 	function isSubpath(currentPath: string, newPath: string) {
 		return (
 			currentPath === newPath
-			|| (newPath.startsWith(currentPath) && newPath.substring(currentPath.length).includes('/'))
+			|| (newPath.startsWith(currentPath) && newPath.slice(currentPath.length).includes('/'))
 		);
 	}
 

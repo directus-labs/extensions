@@ -34,8 +34,8 @@ export const searchCommands = defineCommands({
 			}));
 
 		function collectionTitle(collection: string) {
-			let name
-        = collections.find(({ collection: c }: Collection) => c === collection)?.name ?? collection;
+			let name =
+        collections.find(({ collection: c }: Collection) => c === collection)?.name ?? collection;
 
 			if (name.startsWith('directus_')) {
 				name = name.replace('directus_', '');

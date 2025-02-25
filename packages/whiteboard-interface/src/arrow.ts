@@ -1,4 +1,4 @@
-export default function (fabric: any) {
+export default function useArrow(fabric: any) {
 	fabric.Arrow = fabric.util.createClass(fabric.Line, {
 		initialize(e: any, t: any) {
 			this.callSuper('initialize', e, t);
@@ -36,7 +36,7 @@ export default function (fabric: any) {
 
 			e.lineWidth = this.strokeWidth;
 
-			// eslint-disable-next-line ts/no-unused-expressions, no-sequences
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions, no-sequences
 			e.strokeStyle = this.stroke || e.fillStyle, this.stroke && this._renderStroke(e), e.strokeStyle = s;
 		},
 		complexity() {

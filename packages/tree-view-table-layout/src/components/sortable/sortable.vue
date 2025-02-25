@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, type ModelRef, provide, ref, type Ref } from 'vue';
+import type { ModelRef, Ref } from 'vue';
+import { computed, provide, ref } from 'vue';
 
     type Item = Record<string, any>;
     type ItemID = string | number;
@@ -8,8 +9,8 @@ interface SortUpdateParams {
 	parent: { id: ItemID; parent: ItemID | null } | null;
 }
 
-const { itemKey, itemSort, itemDepth, itemParent, snapStep, disabled }
-        = defineProps<{ itemKey: string;itemSort: string;itemDepth: string;itemParent: string | null;snapStep: number;disabled?: boolean }>();
+const { itemKey, itemSort, itemDepth, itemParent, snapStep, disabled } =
+        defineProps<{ itemKey: string; itemSort: string; itemDepth: string; itemParent: string | null; snapStep: number; disabled?: boolean }>();
 
 const emit = defineEmits(['manual-sort']);
 
@@ -21,8 +22,8 @@ const depthChangeMax = defineModel<number>('depthChangeMax', {
 
 const nestable = computed(() => itemParent !== null);
 
-const { draggedChildrenIds, onSortStart, onDragOver, isSorting, getDepth }
-        = useSortable({ items: items as ModelRef<Item[]>, depthChangeMax, snapStep, nestable });
+const { draggedChildrenIds, onSortStart, onDragOver, isSorting, getDepth } =
+        useSortable({ items: items as ModelRef<Item[]>, depthChangeMax, snapStep, nestable });
 
 provide('sortable', { onSortStart, nestable });
 
@@ -92,12 +93,12 @@ function useSortable({
 
 			let allChildren = [...children];
 
-			children.forEach((child) => {
+			for (const child of children) {
 				allChildren = [
 					...allChildren,
 					...getChildren(child[itemKey]),
 				];
-			});
+			}
 
 			return allChildren;
 		}
@@ -108,7 +109,7 @@ function useSortable({
 			(item: Item) => item[itemKey] === draggedItemId.value,
 		);
 
-		return index > -1 ? index : null;
+		return index !== -1 ? index : null;
 	}
 
 	function getCurrentDepth() {
@@ -143,11 +144,11 @@ function useSortable({
 			value: rawSnapDepth,
 		});
 
-		intendedDepthChange.value
-                = currentDepth + draggedItemDepthOffset.value;
+		intendedDepthChange.value =
+                currentDepth + draggedItemDepthOffset.value;
 
-		depthChangeMax.value
-                = getMaxCurrentDepthWithChildren() + draggedItemDepthOffset.value;
+		depthChangeMax.value =
+                getMaxCurrentDepthWithChildren() + draggedItemDepthOffset.value;
 
 		function getMaxCurrentDepthWithChildren() {
 			if (!draggedChildrenCount.value)
@@ -163,8 +164,8 @@ function useSortable({
 
 			const maxIndex = items.value?.length - 1;
 
-			const nextIndex
-                    = draggedItemIndex.value! + 1 + draggedChildrenCount.value;
+			const nextIndex =
+                    draggedItemIndex.value! + 1 + draggedChildrenCount.value;
 
 			if (nextIndex > maxIndex)
 				return 0;
@@ -234,21 +235,23 @@ function useSortable({
 		emit('manual-sort', updates);
 
 		function updateDepth() {
-			items.value[draggedItemIndex.value!][itemDepth]
-                    = intendedDepthChange.value;
+			items.value[draggedItemIndex.value!][itemDepth] =
+                    intendedDepthChange.value;
 		}
 
 		function updateDraggedChildrenDepth() {
-			draggedChildrenIds.value?.forEach((childId) => {
-				const child = items.value.find(
-					(item) => item[itemKey] === childId,
-				);
+			if (draggedChildrenIds.value) {
+				for (const childId of draggedChildrenIds.value) {
+					const child = items.value.find(
+						(item) => item[itemKey] === childId,
+					);
 
-				if (!child)
-					return;
+					if (!child)
+						continue;
 
-				child[itemDepth] += draggedItemDepthOffset.value;
-			});
+					child[itemDepth] += draggedItemDepthOffset.value;
+				}
+			}
 		}
 
 		function updateParent() {
@@ -271,8 +274,8 @@ function useSortable({
 				items.value[draggedItemIndex.value!][itemParent!]
 				!== parentId
 			) {
-				items.value[draggedItemIndex.value!][itemParent!]
-                        = parentId;
+				items.value[draggedItemIndex.value!][itemParent!] =
+                        parentId;
 
 				updates.parent = {
 					id: items.value[draggedItemIndex.value!][itemKey!],

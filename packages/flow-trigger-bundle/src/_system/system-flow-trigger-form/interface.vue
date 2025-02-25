@@ -35,12 +35,7 @@ const internalValue = reactive<Value>(props.value ?? { flowId: null });
 
 const manualFlows = flowsStore.flows.filter(({ trigger, options }) => {
 	if (trigger === 'manual') {
-		if (props.collection) {
-			return Boolean(options?.collections?.includes(props.collection));
-		}
-		else {
-			return true;
-		}
+		return props.collection ? Boolean(options?.collections?.includes(props.collection)) : true;
 	}
 	else {
 		return false;
@@ -100,63 +95,57 @@ const fields = computed(() => {
 		const requireSelection = flow?.options?.requireSelection !== false;
 
 		if (!props.collection) {
-			fields = fields.concat([
-				{
-					field: 'collection',
-					name: 'Collection',
-					type: 'string',
-					meta: {
-						required: true,
-						readonly: (collections.value.length === 0),
-						width: 'half',
-						interface: 'select-dropdown',
-						options: {
-							placeholder: (collections.value.length === 0) ? 'No collections available' : 'Select a collection',
-							choices: collections.value,
-							allowNone: false,
-						},
+			fields = [...fields, {
+				field: 'collection',
+				name: 'Collection',
+				type: 'string',
+				meta: {
+					required: true,
+					readonly: (collections.value.length === 0),
+					width: 'half',
+					interface: 'select-dropdown',
+					options: {
+						placeholder: (collections.value.length === 0) ? 'No collections available' : 'Select a collection',
+						choices: collections.value,
+						allowNone: false,
 					},
 				},
-				{
-					field: 'keys',
-					name: 'IDs',
-					type: 'csv',
-					meta: {
-						required: requireSelection,
-						width: 'half',
-						interface: 'tags',
-						options: {
-							placeholder: 'Add an ID and press Enter...',
-							iconRight: 'vpn_key',
-						},
+			}, {
+				field: 'keys',
+				name: 'IDs',
+				type: 'csv',
+				meta: {
+					required: requireSelection,
+					width: 'half',
+					interface: 'tags',
+					options: {
+						placeholder: 'Add an ID and press Enter...',
+						iconRight: 'vpn_key',
 					},
 				},
-			]);
+			}];
 		}
 
-		fields = fields.concat([
-			{
-				field: 'text',
-				name: 'Button Text',
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'input',
-					options: {
-						placeholder: 'Button Text',
-					},
+		fields = [...fields, {
+			field: 'text',
+			name: 'Button Text',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'input',
+				options: {
+					placeholder: 'Button Text',
 				},
 			},
-			{
-				field: 'icon',
-				name: 'Button Icon',
-				type: 'string',
-				meta: {
-					width: 'half',
-					interface: 'select-icon',
-				},
+		}, {
+			field: 'icon',
+			name: 'Button Icon',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'select-icon',
 			},
-		]);
+		}];
 	}
 
 	return fields;
@@ -192,7 +181,7 @@ function updateInternalValue(value: Value) {
 </script>
 
 <template>
-	<template v-if="manualFlows.length < 1">
+	<template v-if="manualFlows.length === 0">
 		<v-notice v-if="!canReadFlows" type="warning">
 			You do not have permission to view flows.
 		</v-notice>

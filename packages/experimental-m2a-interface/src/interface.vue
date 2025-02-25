@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, type Ref, watch } from 'vue';
+import type { Ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
     type MaybeHTML = HTMLElement | null | undefined;
     type MaybeHTMLRef = Ref<MaybeHTML>;
-interface MatrixButton { label: string; icon: string }
+interface MatrixButton {
+	label: string;
+	icon: string;
+}
 
 interface Props {
 	value: string;
@@ -35,7 +39,7 @@ const filteredButtonMatrix = computed(() => {
 	);
 });
 
-// eslint-disable-next-line ts/no-unsafe-function-type
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 function useNearestBuilderField(el: MaybeHTMLRef, { onFound }: { onFound: Function }) {
 	const targetBuilder: MaybeHTMLRef = ref();
 
@@ -164,7 +168,7 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	</div>
 
 	<Teleport v-if="!!targetBuilder" :to="targetBuilder">
-		<div v-if="buttonMatrix.length" class="btn-matrix">
+		<div v-if="buttonMatrix.length > 0" class="btn-matrix">
 			<v-divider v-if="label" inline-title class="label">
 				{{ label }}
 			</v-divider>

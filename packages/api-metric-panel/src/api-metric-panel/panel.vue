@@ -87,12 +87,7 @@ function adjustPadding() {
 
 	const padding = Math.round(Math.max(8, Math.min(paddingWidth, paddingHeight)));
 
-	if (props.showHeader === true) {
-		container.style.padding = '0px 12px 12px 12px';
-	}
-	else {
-		container.style.padding = `${padding}px`;
-	}
+	container.style.padding = props.showHeader === true ? '0px 12px 12px 12px' : `${padding}px`;
 }
 
 function unmountResizeObserver() {

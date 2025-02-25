@@ -31,7 +31,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: Layout,
 	slots: {
 		options: Options,
-		sidebar: () => undefined,
+		sidebar: () => {},
 		actions: Actions,
 	},
 	headerShadow: false,
@@ -46,8 +46,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
-		const { collection, filter, filterSystem, filterUser, search }
-            = toRefs(props);
+		const { collection, filter, filterSystem, filterUser, search } =
+            toRefs(props);
 
 		const {
 			info,
@@ -212,14 +212,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const fields = computed({
 				get() {
-					if (layoutQuery.value?.fields) {
-						return layoutQuery.value.fields.filter((field) =>
-							fieldsStore.getField(collection.value!, field),
-						);
-					}
-					else {
-						return unref(fieldsDefaultValue);
-					}
+					return layoutQuery.value?.fields
+						? layoutQuery.value.fields.filter((field) =>
+								fieldsStore.getField(collection.value!, field),
+							)
+						: unref(fieldsDefaultValue);
 				},
 				set(value) {
 					layoutQuery.value = Object.assign({}, layoutQuery.value, {
@@ -247,7 +244,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					return null;
 				}
 				else if (sort.value?.[0].startsWith('-')) {
-					return { by: sort.value[0].substring(1), desc: true };
+					return { by: sort.value[0].slice(1), desc: true };
 				}
 				else {
 					return { by: sort.value[0], desc: false };
@@ -347,11 +344,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				set(val) {
 					const widths = {} as { [field: string]: number };
 
-					val.forEach((header) => {
+					for (const header of val) {
 						if (header.width) {
 							widths[header.value] = header.width;
 						}
-					});
+					}
 
 					localWidths.value = widths;
 
@@ -373,7 +370,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						return 32;
 					case 'comfortable':
 						return 64;
-					case 'cozy':
 					default:
 						return 48;
 				}
@@ -411,7 +407,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			) {
 				layoutOptions.value = Object.assign({}, layoutOptions.value, {
 					align: {
-						...(layoutOptions.value?.align ?? {}),
+						...layoutOptions.value?.align,
 						[field]: align,
 					},
 				});
