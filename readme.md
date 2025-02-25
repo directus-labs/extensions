@@ -12,59 +12,59 @@ The extensions in this repository are all published to the Directus Marketplace.
 
 Some of the published extensions may not be compatible with the sandbox requirements currently, and are only available on Directus instances with the `MARKETPLACE_TRUST` env set to `all`.
 
-
-| Extension                                                                                                                             | Type      | Sandboxed | Maintained |
-| ------------------------------------------------------------------------------------------------------------------------------------- | --------- | --------- | ---------- |
-| [AI Alt Text Writer](//github.com/directus-labs/extensions/tree/main/packages/ai-alt-text-writer)                                     | Operation | ✅        |            |
-| [AI Focal Point Detection](//github.com/directus-labs/extensions/tree/main/packages/ai-focal-point-detection-operation)               | Operation | ✅        |            |
-| [AI Image Generation](//github.com/directus-labs/extensions/tree/main/packages/ai-image-generation-operation)                         | Operation | ✅        |            |
-| [AI Image Moderation](//github.com/directus-labs/extensions/tree/main/packages/ai-image-moderation-operation)                         | Operation | ✅        |            |
-| [AI Speech Generation](//github.com/directus-labs/extensions/tree/main/packages/ai-speech-generation-operation)                       | Operation | ✅        |            |
-| [AI Text Extraction](//github.com/directus-labs/extensions/tree/main/packages/ai-text-extraction-operation)                           | Operation | ✅        |            |
-| [AI Text Intelligence](//github.com/directus-labs/extensions/tree/main/packages/ai-text-intelligence-operation)                       | Operation | ✅        |            |
-| [AI Transcription](//github.com/directus-labs/extensions/tree/main/packages/ai-transcription-operation)                               | Operation | ✅        |            |
-| [AI Translator](//github.com/directus-labs/extensions/tree/main/packages/ai-translator-operation)                                     | Operation | ✅        |            |
-| [AI Writer](//github.com/directus-labs/extensions/tree/main/packages/ai-writer-operation)                                             | Operation | ✅        |            |
-| [AI Web Scraper](//github.com/directus-labs/extensions/tree/main/packages/ai-web-scraper-operation)                                   | Operation | ✅        |            |
-| [RSS to JSON](//github.com/directus-labs/extensions/tree/main/packages/rss-to-json-operation)                                         | Operation | ✅        |            |
-| [LiquidJS Template](//github.com/directus-labs/extensions/tree/main/packages/liquidjs-operation)                                      | Operation | ✅        |            |
-| [Resend](//github.com/directus-labs/extensions/tree/main/packages/resend-operation)                                                   | Operation | ✅        |            |
-| [Hubspot](//github.com/directus-labs/extensions/tree/main/packages/hubspot-operation)                                                 | Operation | ✅        |            |
-| [Spreadsheet](//github.com/directus-labs/extensions/tree/main/packages/spreadsheet-layout)                                            | Layout    | N/A       | ⭐         |
-| [Gantt Chart](//github.com/directus-labs/extensions/tree/main/packages/gantt-chart-layout)                                            | Layout    | N/A       | ⭐         |
-| [Video Player](//github.com/directus-labs/extensions/tree/main/packages/video-player-interface)                                       | Interface | N/A       |            |
-| [Audio Player](//github.com/directus-labs/extensions/tree/main/packages/audio-player-interface)                                       | Interface | N/A       |            |
-| [PDF Viewer](//github.com/directus-labs/extensions/tree/main/packages/pdf-viewer-interface)                                           | Interface | N/A       |            |
-| [Whiteboard](//github.com/directus-labs/extensions/tree/main/packages/whiteboard-interface)                                           | Interface | N/A       |            |
-| [Multilevel Autocomplete Input (API)](//github.com/directus-labs/extensions/tree/main/packages/multilevel-autocomplete-api-interface) | Interface | N/A       |            |
-| [Experimental M2A Interface](//github.com/directus-labs/extensions/tree/main/packages/experimental-m2a-interface)                     | Interface | N/A       |            |
-| [Super Header Interface](//github.com/directus-labs/extensions/tree/main/packages/super-header-interface)                             | Interface | N/A       |            |
-| [Switch Interface](//github.com/directus-labs/extensions/tree/main/packages/switch-interface)                                         | Interface | N/A       |            |
-| [Simple List](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface)                                         | Interface | N/A       |            |
-| [Whereby Embed](//github.com/directus-labs/extensions/tree/main/packages/whereby-embedded-interface)                                  | Interface | N/A       |            |
-| [Address Completion](//github.com/directus-labs/extensions/tree/main/packages/address-completion-interface)                           | Interface | N/A       |            |
-| [Tour Group](//github.com/directus-labs/extensions/tree/main/packages/tour-group-interface)                                           | Interface | N/A       | ⭐         |
-| [Table View](//github.com/directus-labs/extensions/tree/main/packages/table-view-panel)                                               | Panel     | N/A       |            |
-| [Scatter Plot](//github.com/directus-labs/extensions/tree/main/packages/scatter-plot-panel)                                           | Panel     | N/A       |            |
-| [Funnel Chart](//github.com/directus-labs/extensions/tree/main/packages/funnel-chart-panel)                                           | Panel     | N/A       |            |
-| [Tree Map Chart](//github.com/directus-labs/extensions/tree/main/packages/treemap-chart-panel)                                        | Panel     | N/A       |            |
-| [Timeline Chart](//github.com/directus-labs/extensions/tree/main/packages/timeline-chart-panel)                                       | Panel     | N/A       |            |
-| [Cholopleth Map](//github.com/directus-labs/extensions/tree/main/packages/choropleth-map-panel)                                       | Panel     | N/A       |            |
-| [Command Palette](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module)                                    | Module    | N/A       | ⭐         |
-| [Plausible Analytics](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle)                            | Bundle    | N/A       |            |
-| [Card Select Interfaces](//github.com/directus-labs/extensions/tree/main/packages/card-select-interfaces)                             | Bundle    | N/A       |            |
-| [Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component)                                           | Bundle    | N/A       |            |
-| [Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component)                                           | Bundle    | N/A       |            |
-| [Calculated Fields](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle)                                | Bundle    | N/A       | ⭐         |
-| [Flow Trigger](//github.com/directus-labs/extensions/tree/main/packages/flow-trigger-bundle)                                          | Bundle    | N/A       |            |
-| [API Metric Panel](//github.com/directus-labs/extensions/tree/main/packages/api-metric-panel)                                         | Bundle    | ❌        |            |
-
-<!-- Tentatively Upcoming - no promises!
-
-| [AI Research](//github.com/directus-labs/extensions/tree/main/packages/ai-research-interface) | Interface | Planned | N/A |
-| [-------------------------------------------------------------------------------------------) | I-------e | P-----d | N-A |
-
--->
+<!-- Generated by `pnpm readme` -->
+| Extension | Type | Sandboxed | Maintained |
+| --------- | --------- | --------- | ---------- |
+| [Address Completion Interface](//github.com/directus-labs/extensions/tree/main/packages/address-completion-interface) | Interface | N&#x2F;A |  |
+| [AI Alt Text Writer Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-alt-text-writer) | Operation | ✅ |  |
+| [AI Focal Point Detection Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-focal-point-detection-operation) | Operation | ✅ |  |
+| [AI Image Generation Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-image-generation-operation) | Operation | ✅ |  |
+| [AI Image Moderation Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-image-moderation-operation) | Operation | ✅ |  |
+| [AI Researcher Bundle](//github.com/directus-labs/extensions/tree/main/packages/ai-researcher-bundle) | Bundle | N&#x2F;A |  |
+| [AI Speech Generation Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-speech-generation-operation) | Operation | ✅ |  |
+| [AI Text Extraction Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-text-extraction-operation) | Operation | ✅ |  |
+| [AI Text Intelligence Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-text-intelligence-operation) | Operation | ✅ |  |
+| [AI Transcription Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-transcription-operation) | Operation | ✅ |  |
+| [AI Translator Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-translator-operation) | Operation | ✅ |  |
+| [AI Web Scraper Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-web-scraper-operation) | Operation | ✅ |  |
+| [AI Writer Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-writer-operation) | Operation | ✅ |  |
+| [API Metric Panel](//github.com/directus-labs/extensions/tree/main/packages/api-metric-panel) | Bundle | N&#x2F;A |  |
+| [Audio Player Interface](//github.com/directus-labs/extensions/tree/main/packages/audio-player-interface) | Interface | N&#x2F;A |  |
+| [Calculated Fields Bundle](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle) | Bundle | N&#x2F;A | ⭐ |
+| [Card Select Interfaces](//github.com/directus-labs/extensions/tree/main/packages/card-select-interfaces) | Bundle | N&#x2F;A |  |
+| [Choropleth Map Panel](//github.com/directus-labs/extensions/tree/main/packages/choropleth-map-panel) | Panel | N&#x2F;A |  |
+| [Command Palette Module](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module) | Module | N&#x2F;A | ⭐ |
+| [Experimental M2A Interface](//github.com/directus-labs/extensions/tree/main/packages/experimental-m2a-interface) | Interface | N&#x2F;A |  |
+| [Field Comments](//github.com/directus-labs/extensions/tree/main/packages/field-comments-module) | Module | N&#x2F;A |  |
+| [Flow Trigger Bundle](//github.com/directus-labs/extensions/tree/main/packages/flow-trigger-bundle) | Bundle | N&#x2F;A |  |
+| [Funnel Chart Panel](//github.com/directus-labs/extensions/tree/main/packages/funnel-chart-panel) | Panel | N&#x2F;A |  |
+| [Gantt Chart Layout](//github.com/directus-labs/extensions/tree/main/packages/gantt-chart-layout) | Layout | N&#x2F;A | ⭐ |
+| [Hubspot Operation](//github.com/directus-labs/extensions/tree/main/packages/hubspot-operation) | Operation | ✅ |  |
+| [Inline Repeater Interface](//github.com/directus-labs/extensions/tree/main/packages/inline-repeater-interface) | Interface | N&#x2F;A |  |
+| [Liquidjs Operation](//github.com/directus-labs/extensions/tree/main/packages/liquidjs-operation) | Operation | ✅ |  |
+| [Extension Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component) | Bundle | N&#x2F;A |  |
+| [Multilevel Autocomplete API Interface](//github.com/directus-labs/extensions/tree/main/packages/multilevel-autocomplete-api-interface) | Interface | N&#x2F;A |  |
+| [PDF Viewer Interface](//github.com/directus-labs/extensions/tree/main/packages/pdf-viewer-interface) | Interface | N&#x2F;A |  |
+| [Plausible Analytics Bundle](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle) | Bundle | N&#x2F;A |  |
+| [Resend Operation](//github.com/directus-labs/extensions/tree/main/packages/resend-operation) | Operation | ✅ |  |
+| [Rss to JSON Operation](//github.com/directus-labs/extensions/tree/main/packages/rss-to-json-operation) | Operation | ✅ |  |
+| [Scatter Plot Panel](//github.com/directus-labs/extensions/tree/main/packages/scatter-plot-panel) | Panel | N&#x2F;A |  |
+| [SEO Plugin](//github.com/directus-labs/extensions/tree/main/packages/seo-plugin) | Bundle | N&#x2F;A |  |
+| [Simple List Interface](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface) | Interface | N&#x2F;A |  |
+| [Spreadsheet Layout](//github.com/directus-labs/extensions/tree/main/packages/spreadsheet-layout) | Layout | N&#x2F;A | ⭐ |
+| [Extension Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component) | Bundle | N&#x2F;A |  |
+| [Super Header Interface](//github.com/directus-labs/extensions/tree/main/packages/super-header-interface) | Interface | N&#x2F;A |  |
+| [Switch Interface](//github.com/directus-labs/extensions/tree/main/packages/switch-interface) | Interface | N&#x2F;A |  |
+| [Table View Panel](//github.com/directus-labs/extensions/tree/main/packages/table-view-panel) | Panel | N&#x2F;A |  |
+| [Timeline Chart Panel](//github.com/directus-labs/extensions/tree/main/packages/timeline-chart-panel) | Panel | N&#x2F;A |  |
+| [Tour Group Interface](//github.com/directus-labs/extensions/tree/main/packages/tour-group-interface) | Interface | N&#x2F;A | ⭐ |
+| [Tree View Table Layout](//github.com/directus-labs/extensions/tree/main/packages/tree-view-table-layout) | Layout | N&#x2F;A |  |
+| [Treemap Chart Panel](//github.com/directus-labs/extensions/tree/main/packages/treemap-chart-panel) | Panel | N&#x2F;A |  |
+| [Video Player Interface](//github.com/directus-labs/extensions/tree/main/packages/video-player-interface) | Interface | N&#x2F;A |  |
+| [Whereby Embedded Interface](//github.com/directus-labs/extensions/tree/main/packages/whereby-embedded-interface) | Interface | N&#x2F;A |  |
+| [Whiteboard Interface](//github.com/directus-labs/extensions/tree/main/packages/whiteboard-interface) | Interface | N&#x2F;A |  |
+| [YouTube Embed Interface](//github.com/directus-labs/extensions/tree/main/packages/youtube-embed-interface) | Interface | N&#x2F;A |  |
+<!-- Generated by `pnpm readme` -->
 
 ## 🔧 &nbsp;Boilerplates
 

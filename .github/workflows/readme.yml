@@ -46,7 +46,11 @@ jobs:
           git add .
           git diff-index --quiet HEAD \
             || git commit -m "Autocommit: updated at $(date -u)"
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - name: Commit push and pr
+        uses: golfzaptw/action-commit-push-pr@1.0.2
         with:
-          force_with_lease: true
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          PREFIX_BRANCHES: chore
+          DEFAULT_BRANCHES: main
+          COMMIT_MESSAGE: Update readme.md
+          TITLE_PR: 'Chore: Update readme.md extensions list'

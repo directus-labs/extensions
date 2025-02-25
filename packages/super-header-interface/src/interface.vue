@@ -19,7 +19,7 @@ const { t } = useI18n();
 const { useFieldsStore } = useStores();
 const fieldsStore = useFieldsStore();
 
-const { fetchFlows, showForm, submitFlow, currentFlow, runFlow } = useFlows(props.collection);
+const { fetchFlows, showForm, submitFlow, currentFlow, runFlow } = useFlows(props.collection, props.primaryKey);
 
 const expanded = ref(false);
 const flowFormData = ref<Record<string, any>>({});

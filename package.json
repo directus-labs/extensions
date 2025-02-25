@@ -24,12 +24,13 @@
 		"build": "pnpm --recursive run build",
 		"validate": "pnpm --recursive run validate",
 		"readme": "node ./scripts/update-readme.js",
-		"package:json": "pnpm --recursive exec node ../../scripts/check-package-json.js",
-		"package:lockfile": "pnpm --recursive exec node ../../scripts/check-lock-files.js",
+		"package:json": "pnpm --recursive --filter=!utils exec node ../../scripts/check-package-json.js",
+		"package:lockfile": "pnpm --recursive --filter=!utils exec node ../../scripts/check-lock-files.js",
 		"lint": "eslint --flag unstable_config_lookup_from_file --cache .",
 		"lint:fix": "pnpm run lint --fix"
 	},
 	"dependencies": {
+		"@directus-labs/utils": "workspace:*",
 		"@directus/format-title": "^12.0.0",
 		"@directus/types": "^13.0.0",
 		"mustache": "^4.2.0"
