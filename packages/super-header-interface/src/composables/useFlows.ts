@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router';
 const showForm = ref(false);
 const currentFlow = ref<any>(null);
 
-export function useFlows(collection: string) {
+export function useFlows(collection: string, primaryKey: string | number | null) {
 	const { t } = useI18n();
 	const api = useApi();
 	const formValues = inject('values') as Record<string, any>;
@@ -91,7 +91,7 @@ export function useFlows(collection: string) {
 			const response = await api.post(`/flows/trigger/${flow.id}`, {
 				...formData,
 				collection,
-				keys: route.params?.primaryKey ? [route.params.primaryKey] : [],
+				keys: primaryKey ? [primaryKey] : [],
 				$values: formValues.value,
 				$route: {
 					params: route.params,
