@@ -20,8 +20,8 @@ export const flowCommands = defineCommands({
 		const { useUserStore } = stores;
 		const userStore = useUserStore();
 
-		const isAdmin
-      = userStore.currentUser?.admin_access ?? userStore.currentUser?.role?.admin_access ?? false;
+		const isAdmin =
+      userStore.currentUser?.admin_access ?? userStore.currentUser?.role?.admin_access ?? false;
 
 		return [
 			// {
@@ -100,38 +100,35 @@ export const collectionItemFlowCommands = defineCommands({
 				group: 'context',
 			};
 
-			if (!flow.options?.requireConfirmation) {
-				return {
-					...common,
-					action: async () => {
-						try {
-							await api.post(`/flows/trigger/${flow.id}`, {
-								collection,
-								...(flow.options?.requireSelection === false
-									? {}
-									: { keys: [primaryKey] }),
-							});
+			return !flow.options?.requireConfirmation
+				? {
+						...common,
+						action: async () => {
+							try {
+								await api.post(`/flows/trigger/${flow.id}`, {
+									collection,
+									...(flow.options?.requireSelection === false
+										? {}
+										: { keys: [primaryKey] }),
+								});
 
-							notificationsStore.add({
-								title: t('run_flow_success', { flow: flow.name }),
-							});
-						}
-						catch (err) {
-							unexpectedError(err);
-						}
-					},
-				};
-			}
-			else {
-				return {
-					...common,
-					component: RunFlow,
-					props: {
-						flow,
-						location,
-					},
-				};
-			}
+								notificationsStore.add({
+									title: t('run_flow_success', { flow: flow.name }),
+								});
+							}
+							catch (error) {
+								unexpectedError(error);
+							}
+						},
+					}
+				: {
+						...common,
+						component: RunFlow,
+						props: {
+							flow,
+							location,
+						},
+					};
 		}
 	},
 });

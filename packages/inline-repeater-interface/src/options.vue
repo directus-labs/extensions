@@ -29,7 +29,7 @@ const repeaterValue = computed({
 		}));
 
 		emit('input', {
-			...(props.value || {}),
+			...props.value,
 			fields,
 		});
 	},
@@ -209,7 +209,7 @@ const template = computed({
 	},
 	set(newTemplate: string) {
 		emit('input', {
-			...(props.value || {}),
+			...props.value,
 			template: newTemplate,
 		});
 	},
@@ -221,7 +221,7 @@ const showConfirmDiscard = computed({
 	},
 	set(newShowConfirmDiscard: boolean) {
 		emit('input', {
-			...(props.value || {}),
+			...props.value,
 			showConfirmDiscard: newShowConfirmDiscard,
 		});
 	},
@@ -233,7 +233,7 @@ const addLabel = computed({
 	},
 	set(newAddLabel: string) {
 		emit('input', {
-			...(props.value || {}),
+			...props.value,
 			addLabel: newAddLabel,
 		});
 	},
@@ -245,7 +245,7 @@ const sort = computed({
 	},
 	set(newSort: string) {
 		emit('input', {
-			...(props.value || {}),
+			...props.value,
 			sort: newSort,
 		});
 	},

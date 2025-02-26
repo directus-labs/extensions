@@ -40,7 +40,7 @@ async function runFlow() {
 			&& selection.value.length === 0
 		) {
 			await api.post(`/flows/trigger/${flow.id}`, {
-				...(unref(confirmValues) ?? {}),
+				...unref(confirmValues),
 				collection: collection.value,
 			});
 		}

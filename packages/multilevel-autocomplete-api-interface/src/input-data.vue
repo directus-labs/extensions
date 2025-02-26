@@ -57,8 +57,8 @@ const items = computed<any[]>(() => {
 			}
 		});
 	}
-	catch (err: any) {
-		console.warn(err);
+	catch (error: any) {
+		console.warn(error);
 		return [];
 	}
 });

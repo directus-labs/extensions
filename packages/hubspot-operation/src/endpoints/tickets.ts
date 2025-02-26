@@ -1,6 +1,7 @@
 import { create, del, list, read, update } from './actions';
 
 const endpoint = 'tickets';
+
 export const tickets = {
 	label: 'Ticket',
 	icon: 'support_agent',

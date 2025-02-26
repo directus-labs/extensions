@@ -43,7 +43,7 @@ export const contentCommands = defineCommands({
 				name: `Create ${formatTitle(collectionSingular(collection, i18n))}`,
 				icon: 'add',
 				group: `collection:${collection.collection}`,
-				before: `view-collection:*`,
+				before: 'view-collection:*',
 				action: ({ router }: CommandActionContext) => {
 					router.push(`/content/${collection.collection}/+`);
 				},

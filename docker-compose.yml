@@ -60,4 +60,4 @@ services:
       caddy.reverse_proxy: '{{upstreams 8055}}'
 
 networks:
-  sandbox:
+  sandbox: {}

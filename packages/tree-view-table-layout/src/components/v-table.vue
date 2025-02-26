@@ -2,6 +2,7 @@
 import type { ShowSelect } from '@directus/extensions';
 
 import type { PrimaryKey } from '@directus/types';
+import type { ComputedRef, Ref } from 'vue';
 import type {
 	Header,
 	HeaderRaw,
@@ -13,9 +14,9 @@ import { useSessionStorage } from '@vueuse/core';
 import { clone, cloneDeep, forEach, pick } from 'lodash';
 import {
 	computed,
-	type ComputedRef,
+
 	ref,
-	type Ref,
+
 	toRef,
 	useSlots,
 	watch,
@@ -288,9 +289,9 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 		if (props.showManualSort)
 			controlColumnWidth += controlIconWidth;
 
-		// eslint-disable-next-line ts/no-use-before-define
+		// eslint-disable-next-line @typescript-eslint/no-use-before-define
 		if (gridTemplateTreeColumnWidth.value)
-			// eslint-disable-next-line ts/no-use-before-define
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
 			controlColumnWidth += gridTemplateTreeColumnWidth.value;
 
 		if (controlColumnWidth)
@@ -432,14 +433,14 @@ function useTreeView({
 	function calculateTreeProps(data: Item[]) {
 		const map = {};
 
-		data.forEach((item) => {
+		for (const item of data) {
 			item[itemParent] = getParentId(item);
 			item[childrenKey] = [];
 			item[collapsedKey] = isCollapsed(item[itemKey.value]);
 			item[collapsedParentsKey] = [];
 
 			map[item[itemKey.value]] = item;
-		});
+		}
 
 		for (const key in map) {
 			const item = map[key];
@@ -513,11 +514,11 @@ function useTreeView({
 
 			children.sort(sortBySortKey);
 
-			children.forEach((child) => {
+			for (const child of children) {
 				item[childrenKey].push(child[itemKey.value]);
 				const childrenIds = addItem(child);
 				item[childrenKey].push(...childrenIds);
-			});
+			}
 
 			return item[childrenKey];
 		}
@@ -536,11 +537,11 @@ function useTreeView({
 		let edits = {};
 
 		if (sort) {
-			internalItems.value.forEach((item) => {
+			for (const item of internalItems.value) {
 				edits[item[props.itemKey]] = {
 					[props.manualSortKey!]: item[props.manualSortKey!],
 				};
-			});
+			}
 		}
 
 		if (parent && parentField.value) {
@@ -591,7 +592,7 @@ function useTreeView({
 		function toggleItem(id: PrimaryKey): boolean {
 			const index = collapsedState.value.indexOf(id);
 
-			if (index > -1) {
+			if (index !== -1) {
 				collapsedState.value.splice(index, 1);
 				return false;
 			}
@@ -614,24 +615,23 @@ function useTreeView({
 			id: PrimaryKey,
 			childrenIds: PrimaryKey[],
 		) {
-			internalItems.value
+			for (const childItem of internalItems.value
 				.filter((internalItem) =>
 					childrenIds.includes(internalItem[itemKey.value]),
-				)
-				.forEach((childItem) => {
-					const parentIndex
-                            = childItem[collapsedParentsKey]?.indexOf(id);
+				)) {
+				const parentIndex =
+                            childItem[collapsedParentsKey]?.indexOf(id);
 
-					if (parentIndex > -1) {
-						childItem[collapsedParentsKey].splice(
-							parentIndex,
-							1,
-						);
-					}
-					else {
-						childItem[collapsedParentsKey].push(id);
-					}
-				});
+				if (parentIndex > -1) {
+					childItem[collapsedParentsKey].splice(
+						parentIndex,
+						1,
+					);
+				}
+				else {
+					childItem[collapsedParentsKey].push(id);
+				}
+			}
 		}
 	}
 }

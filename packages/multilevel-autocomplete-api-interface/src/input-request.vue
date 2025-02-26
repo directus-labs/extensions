@@ -49,7 +49,7 @@ async function fetchResultsRaw(inputValue: string) {
 	});
 
 	try {
-		let reqOpt: any = { method: (props.method ? props.method : 'GET') };
+		let reqOpt: any = { method: props.method || 'GET' };
 
 		if (props.headers) {
 			const fetchHeaders = new Headers();
@@ -88,13 +88,13 @@ async function fetchResultsRaw(inputValue: string) {
 			}
 		});
 	}
-	catch (err: any) {
-		console.warn(err);
+	catch (error: any) {
+		console.warn(error);
 	}
 }
 
-const fetchResults
-	= props.trigger === 'debounce'
+const fetchResults =
+	props.trigger === 'debounce'
 		? debounce(fetchResultsRaw, Number(props.rate))
 		: throttle(fetchResultsRaw, Number(props.rate));
 

@@ -8,26 +8,23 @@ export const copyApiUrlCommands = defineCommands({
 			primaryKey: string | undefined;
 		};
 
-		if (collection) {
-			return [
-				{
-					id: 'copy-api-url',
-					name: 'Copy API URL',
-					icon: 'content_copy',
-					group: 'context',
-					action: () => {
-						const path = `items/${collection}${
-							primaryKey ? `/${primaryKey}` : ''
-						}`;
+		return collection
+			? [
+					{
+						id: 'copy-api-url',
+						name: 'Copy API URL',
+						icon: 'content_copy',
+						group: 'context',
+						action: () => {
+							const path = `items/${collection}${
+								primaryKey ? `/${primaryKey}` : ''
+							}`;
 
-						const url = new URL(path, getPublicURL());
-						navigator.clipboard?.writeText(url.toString());
+							const url = new URL(path, getPublicURL());
+							navigator.clipboard?.writeText(url.toString());
+						},
 					},
-				},
-			];
-		}
-		else {
-			return [];
-		}
+				]
+			: [];
 	},
 });

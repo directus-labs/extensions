@@ -98,8 +98,8 @@ export function useCollectionSearch(
 	async function fetch(limit: number, searchFilter: Filter | null) {
 		const _collection = unref(collection);
 
-		const { sort, filter, descriptionField, thumbnailField }
-      = collectionSearchInfo.value!;
+		const { sort, filter, descriptionField, thumbnailField } =
+      collectionSearchInfo.value!;
 
 		const query = {
 			limit,
@@ -126,8 +126,8 @@ export function useCollectionSearch(
 				primaryKeyField.value,
 			);
 		}
-		catch (e) {
-			error.value = e;
+		catch (error_) {
+			error.value = error_;
 			results.value = [];
 		}
 		finally {

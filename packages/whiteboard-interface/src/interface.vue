@@ -6,9 +6,7 @@ import { Whiteboard } from './whiteboard';
 
 const props = withDefaults(defineProps<{
 	value?: any;
-}>(), {
-
-});
+}>(), {});
 
 const emit = defineEmits(['input']);
 const showUpload = ref(false);
@@ -201,7 +199,7 @@ onUnmounted(() => {
 						</div>
 					</VMenu>
 
-					<template v-if="['pencil', 'line', 'arrow'].indexOf(wb.currentTool) !== -1 || ['path', 'line', 'arrow'].indexOf(wb.selectedShapeType) !== -1">
+					<template v-if="['pencil', 'line', 'arrow'].includes(wb.currentTool) || ['path', 'line', 'arrow'].includes(wb.selectedShapeType)">
 						<v-button
 							v-tooltip.tol="'Small'"
 							small
@@ -233,7 +231,7 @@ onUnmounted(() => {
 						</v-button>
 					</template>
 
-					<template v-if="['rect', 'ellipse'].indexOf(wb.currentTool) !== -1 || ['rect', 'ellipse'].indexOf(wb.selectedShapeType) !== -1">
+					<template v-if="['rect', 'ellipse'].includes(wb.currentTool) || ['rect', 'ellipse'].includes(wb.selectedShapeType)">
 						<VMenu
 							placement="top"
 						>
@@ -407,9 +405,7 @@ onUnmounted(() => {
 	border-radius: var(--theme--border-radius);
 	box-shadow: var(--theme--public--form--field--input--box-shadow);
 	position: relative;
-	transition:
-		border-color var(--fast) var(--transition),
-		box-shadow var(--fast) var(--transition);
+	transition: border-color var(--fast) var(--transition), box-shadow var(--fast) var(--transition);
 	--whiteboard-default-height: 400px;
 
 	&:hover {

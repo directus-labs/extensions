@@ -10,7 +10,7 @@ on:
     - cron: '0 0 * * *'
 
   # Allow running this workflow manually
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

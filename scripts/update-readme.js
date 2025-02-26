@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const { formatTitle } = require('@directus/format-title');
 const Mustache = require('mustache');
 
-const metaData = JSON.parse(fs.readFileSync(`./package.json`))['directus:meta'];
+const metaData = JSON.parse(fs.readFileSync('./package.json'))['directus:meta'];
 
 /* Update the packages */
 const packages = fs.readdirSync('./packages');
@@ -13,7 +13,7 @@ function removePrefix(name) {
 	}
 
 	if (name.startsWith('directus-extension-')) {
-		name = name.substring('directus-extension-'.length);
+		name = name.slice('directus-extension-'.length);
 	}
 
 	return name;

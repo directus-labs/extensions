@@ -23,7 +23,7 @@ const pageFilter = computed(() => {
 	}
 
 	// Replace {{values}} with the actual values
-	return props.pageFilter.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+	return props.pageFilter.replaceAll(/\{\{(.*?)\}\}/g, (match, key) => {
 		return unref(values)[key];
 	});
 });
@@ -60,7 +60,7 @@ onMounted(() => {
 		script.src = 'https://plausible.io/js/embed.host.js';
 
 		// Append the script to the document head
-		document.head.appendChild(script);
+		document.head.append(script);
 	});
 });
 

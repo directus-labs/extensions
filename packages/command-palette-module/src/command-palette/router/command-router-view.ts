@@ -12,8 +12,8 @@ export const CommandRouterView = defineComponent({
 		return () => {
 			const currentCommand = router.currentCommand.value;
 
-			const props
-        = typeof currentCommand.props === 'function' ? currentCommand.props(currentCommand) : currentCommand.props;
+			const props =
+        typeof currentCommand.props === 'function' ? currentCommand.props(currentCommand) : currentCommand.props;
 
 			const ViewComponent = currentCommand.component;
 

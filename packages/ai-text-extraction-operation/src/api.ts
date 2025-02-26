@@ -7,7 +7,7 @@ const operation: SandboxOperationConfig = {
 	id: 'directus-labs-ai-text-extraction-operation',
 	handler: async ({ apiKey, url }) => {
 		try {
-			const response = await request(`https://api.clarifai.com/v2/users/clarifai/apps/main/models/ocr-scene-english-paddleocr/versions/46e99516c2d94f58baf2bcaf5a6a53a9/outputs`, {
+			const response = await request('https://api.clarifai.com/v2/users/clarifai/apps/main/models/ocr-scene-english-paddleocr/versions/46e99516c2d94f58baf2bcaf5a6a53a9/outputs', {
 				method: 'POST',
 				headers: {
 					'Authorization': `Key ${apiKey}`,

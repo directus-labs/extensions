@@ -1,4 +1,5 @@
 import type { Field, Filter, Item, PrimaryKey } from '@directus/types';
+import type { ComputedRef, Ref } from 'vue';
 import type { HeaderRaw, Sort } from './core-clones/components/v-table/types';
 import type { LayoutOptions, LayoutQuery } from './types';
 import {
@@ -14,10 +15,10 @@ import { getEndpoint } from '@directus/utils';
 import { debounce, flatten } from 'lodash';
 import {
 	computed,
-	type ComputedRef,
+
 	provide,
 	ref,
-	type Ref,
+
 	toRefs,
 	unref,
 	watch,
@@ -43,7 +44,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: Layout,
 	slots: {
 		options: Options,
-		sidebar: () => undefined,
+		sidebar: () => {},
 		actions: Actions,
 	},
 	headerShadow: false,
@@ -58,8 +59,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
-		const { collection, filter, filterSystem, filterUser, search }
-            = toRefs(props);
+		const { collection, filter, filterSystem, filterUser, search } =
+            toRefs(props);
 
 		const {
 			info,
@@ -235,14 +236,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const fields = computed({
 				get() {
-					if (layoutQuery.value?.fields) {
-						return layoutQuery.value.fields.filter((field) =>
-							fieldsStore.getField(collection.value!, field),
-						);
-					}
-					else {
-						return unref(fieldsDefaultValue);
-					}
+					return layoutQuery.value?.fields
+						? layoutQuery.value.fields.filter((field) =>
+								fieldsStore.getField(collection.value!, field),
+							)
+						: unref(fieldsDefaultValue);
 				},
 				set(value) {
 					layoutQuery.value = Object.assign({}, layoutQuery.value, {
@@ -270,7 +268,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					return null;
 				}
 				else if (sort.value?.[0].startsWith('-')) {
-					return { by: sort.value[0].substring(1), desc: true };
+					return { by: sort.value[0].slice(1), desc: true };
 				}
 				else {
 					return { by: sort.value[0], desc: false };
@@ -370,11 +368,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				set(val) {
 					const widths = {} as { [field: string]: number };
 
-					val.forEach((header) => {
+					for (const header of val) {
 						if (header.width) {
 							widths[header.value] = header.width;
 						}
-					});
+					}
 
 					localWidths.value = widths;
 
@@ -396,7 +394,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						return 32;
 					case 'comfortable':
 						return 64;
-					case 'cozy':
 					default:
 						return 48;
 				}
@@ -434,7 +431,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			) {
 				layoutOptions.value = Object.assign({}, layoutOptions.value, {
 					align: {
-						...(layoutOptions.value?.align ?? {}),
+						...layoutOptions.value?.align,
 						[field]: align,
 					},
 				});
@@ -476,8 +473,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				function addSortField() {
 					if (
 						sortField.value
-						&& !fieldsToQuery.find(
-							(field) => field === sortField.value,
+						&& !fieldsToQuery.includes(
+							sortField.value,
 						)
 					) {
 						fieldsToQuery.push(sortField.value);
@@ -488,7 +485,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					if (
 						parentField.value
 						&& primaryKeyField.value
-						&& !fieldsToQuery.find(
+						&& !fieldsToQuery.some(
 							(field) =>
 								field === parentField.value
 								|| field
@@ -570,8 +567,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 				return {
 					unexpectedError(error: any) {
-						const code
-                            = error.response?.data?.errors?.[0]?.extensions?.code || error?.extensions?.code || 'UNKNOWN';
+						const code =
+                            error.response?.data?.errors?.[0]?.extensions?.code || error?.extensions?.code || 'UNKNOWN';
 
 						notificationStore.add({
 							title: t(`errors.${code}`),

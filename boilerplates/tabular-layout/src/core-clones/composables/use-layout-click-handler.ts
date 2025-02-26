@@ -30,14 +30,11 @@ export function useLayoutClickHandler({
 		const primaryKey = item[primaryKeyField.value.field];
 
 		if (props.selectMode || selection.value?.length > 0) {
-			if (selection.value?.includes(primaryKey) === false) {
-				selection.value = selection.value.concat(primaryKey);
-			}
-			else {
-				selection.value = selection.value.filter(
-					(item: any) => item !== primaryKey,
-				);
-			}
+			selection.value = selection.value?.includes(primaryKey) === false
+				? selection.value.concat(primaryKey)
+				: selection.value.filter(
+						(item: any) => item !== primaryKey,
+					);
 		}
 		else {
 			const route = getItemRoute(props.collection, primaryKey);

@@ -83,8 +83,8 @@ export function useGlobalSearch(options?: GlobalSearchOptions) {
 
 					const displayFields = getFieldsFromTemplate(displayTemplate) || [];
 
-					const primaryKeyField
-            = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field || 'id';
+					const primaryKeyField =
+            fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field || 'id';
 
 					// Use the mergeFilters utility to combine the existing query filter with the search filter
 					const paramsFilter = mergeFilters(filter ?? null, {

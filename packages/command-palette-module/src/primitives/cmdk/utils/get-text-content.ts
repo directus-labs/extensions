@@ -4,7 +4,7 @@ export function getTextContent(
 	...els: (string | HTMLElement | VNode | undefined | null)[]
 ) {
 	const result = els
-		.filter((el) => el)
+		.filter(Boolean)
 		.map((el) => {
 			if (typeof el === 'string') {
 				return el.trim();

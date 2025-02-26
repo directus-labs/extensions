@@ -35,7 +35,7 @@ export default {
 				payload.extract = {
 					schema: {
 						type: 'object',
-						properties: extract.reduce((acc, item) => ({ ...acc, [item.property]: { type: item.type } }), {}),
+						properties: Object.fromEntries(extract.map((item) => [item.property, { type: item.type }])),
 						required: extract.filter((item) => item.required).map((item) => item.property),
 					},
 				};

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { inject, type Ref, toRefs } from 'vue';
+import type { Ref } from 'vue';
+import { inject, toRefs } from 'vue';
 import { useSeoField } from '../../shared/composables/useSeoField';
 import { seoRules } from '../../shared/rulesets';
 import SeoFieldWrapper from './SeoFieldWrapper.vue';
@@ -8,9 +9,7 @@ const props = withDefaults(defineProps<{
 	modelValue?: string;
 	template?: string;
 	disabled?: boolean;
-}>(), {
-
-});
+}>(), {});
 
 const emit = defineEmits(['update:modelValue']);
 const values = inject('values') as Ref<Record<string, any>>;

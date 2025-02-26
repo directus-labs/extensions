@@ -16,13 +16,13 @@ const config = { attributes: false, childList: true, subtree: true };
 let app: App | null = null;
 
 const observer = new MutationObserver((mutations, observer) => {
-	if (mutations.filter((e) => (e.target as HTMLElement).classList[0] === 'field-name' || (e.target as HTMLElement).classList[0] === 'v-detail' || (e.target as HTMLElement).classList[0] === 'accordion-section').length > 0) {
+	if (mutations.some((e) => (e.target as HTMLElement).classList[0] === 'field-name' || (e.target as HTMLElement).classList[0] === 'v-detail' || (e.target as HTMLElement).classList[0] === 'accordion-section')) {
 		observer.disconnect();
 		injectFieldLabels({ update: true });
 	}
 });
 
-export function injectFieldLabels(options: Record<string, boolean> = { update: false }) {
+export function injectFieldLabels(options: { update?: boolean } = {}) {
 	const router = getDirectusRouter();
 
 	if (router) {
@@ -178,10 +178,10 @@ async function injectApp(to: Record<string, any>, retry: number = 0) {
 
 			if (isEnabled) {
 				const ID = `field-comments-${matches[0]?.meta.id}`;
-				const fieldLabelExtension = document.getElementById(ID) ?? document.createElement('span');
+				const fieldLabelExtension = document.querySelector(`#${ID}`) ?? document.createElement('span');
 
 				// If element doesn't already exist
-				if (!document.getElementById(ID)) {
+				if (!document.querySelector(`#${ID}`)) {
 					fieldLabelExtension.id = ID;
 					// fieldLabelExtension.classList.add("v-badge");
 
@@ -199,7 +199,7 @@ async function injectApp(to: Record<string, any>, retry: number = 0) {
 						});
 					}
 					else {
-						f.appendChild(fieldLabelExtension);
+						f.append(fieldLabelExtension);
 					}
 
 					fieldLabelExtension.addEventListener('click', (e) => {
@@ -210,7 +210,7 @@ async function injectApp(to: Record<string, any>, retry: number = 0) {
 
 					const injects = getDirectusAppProvides(directusApp);
 
-					app = createApp(FieldLabel, { count: response.filter((i: Record<string, number | Record<string, string>>) => i.field === matches[0]?.meta.id)[0]?.count?.id ?? 0 });
+					app = createApp(FieldLabel, { count: response.find((i: Record<string, number | Record<string, string>>) => i.field === matches[0]?.meta.id)?.count?.id ?? 0 });
 					app.provide(STORES_INJECT, injects[STORES_INJECT]);
 
 					directusApp.runWithContext(() => {
@@ -224,11 +224,11 @@ async function injectApp(to: Record<string, any>, retry: number = 0) {
 		});
 
 		// Watch for dynamic fields in the DOM
-		const mainContent = document.getElementById('main-content');
+		const mainContent = document.querySelector('#main-content');
 		observer.observe(mainContent as HTMLElement, config);
 	}
-	catch (err: any) {
-		unexpectedError(err, stores);
+	catch (error: any) {
+		unexpectedError(error, stores);
 	}
 }
 
@@ -247,11 +247,11 @@ function injectCommentsMenuItem(packet: Packet) {
 	}
 
 	if (v_divider) {
-		v_list?.appendChild(v_divider);
+		v_list?.append(v_divider);
 	}
 
 	if (v_list_item) {
-		v_list?.appendChild(v_list_item);
+		v_list?.append(v_list_item);
 
 		v_list_item.addEventListener('click', () => {
 			window.dispatchEvent(new CustomEvent(OPEN_COMMENTS, { detail: packet }));

@@ -37,9 +37,9 @@ export class YouTubeHelper {
 
 			return items;
 		}
-		catch (ex) {
+		catch (error) {
 			this.working = false;
-			throw ex;
+			throw error;
 		}
 	}
 }

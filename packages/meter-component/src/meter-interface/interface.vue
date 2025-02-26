@@ -12,16 +12,6 @@ const props = defineProps<{
 
 }>();
 
-const emit = defineEmits<{
-	input: [(value: number) => void];
-}>();
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-function handleChange(value: number): void {
-	// eslint-disable-next-line unused-imports/no-unused-vars
-	emit('input', (value: number) => {});
-}
-
 // Helper Functions
 function normalizePercent(value: number, min: number, max: number): number {
 	if (min === max) {
@@ -39,18 +29,17 @@ function normalizePercent(value: number, min: number, max: number): number {
 	return Math.max(0, Math.min(100, percent));
 }
 
+const normalizedMin = computed(() => Math.min(props.min, props.max));
+const normalizedMax = computed(() => Math.max(props.max, props.min));
+
 // Computed Properties
 const meterProgress = computed(() => {
-	// eslint-disable-next-line ts/no-use-before-define
 	return normalizePercent(props.value, normalizedMin.value, normalizedMax.value);
 });
 
 const meterColor = computed(() => {
 	return props.color || 'var(--theme--primary)';
 });
-
-const normalizedMin = computed(() => props.min > props.max ? props.max : props.min);
-const normalizedMax = computed(() => props.max < props.min ? props.min : props.max);
 </script>
 
 <template>

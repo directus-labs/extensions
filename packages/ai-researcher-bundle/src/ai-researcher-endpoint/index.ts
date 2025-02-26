@@ -8,6 +8,7 @@ interface DirectusRequest extends Request {
 }
 
 const AiCompletionError = createError('AI_COMPLETION_FAILED', 'AI request failed to perform a chat completion', 503);
+
 export const AiMissingKeyError = createError('AI_KEY_MISSING', 'AI request failed due to missing API key', 503);
 
 export default {

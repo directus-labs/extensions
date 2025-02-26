@@ -231,7 +231,7 @@ export default defineComponent({
 							const item: Record<string, any> = w.globals.initialSeries[seriesIndex];
 							const data: Record<string, any> = item.data[dataPointIndex];
 							const color = w.globals.colors[seriesIndex];
-							return `<div class="timeline-tooltip">`
+							return '<div class="timeline-tooltip">'
 								+ `<span><strong style="color: ${color || 'var(--theme--primary'});">${data.x}${data.task ? `: ${data.task}` : ''}</strong></span>`
 								+ `<br/><span>${format(data.y[0], 'd MMM')} - ${format(data.y[1], 'd MMM')}</span>${
 									item?.name ? `<br/><span><span class="timeline-series-circle" style="background-color: ${color};"></span> <em>${item.name}</em></span>` : ''

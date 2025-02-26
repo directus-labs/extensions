@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/extensions';
 import type { Field, Filter, Item } from '@directus/types';
+import type { ComponentPublicInstance, Ref } from 'vue';
 // CORE CLONES
 import type { HeaderRaw } from './core-clones/components/v-table/types';
 import type { AliasFields } from './core-clones/composables/use-alias-fields';
@@ -10,7 +11,7 @@ import type { Collection } from './core-clones/types/collections';
 // import { useSync } from '@directus/composables';
 // import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useStores, useSync } from '@directus/extensions-sdk';
-import { type ComponentPublicInstance, computed, inject, ref, type Ref, toRefs, watch } from 'vue';
+import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useAliasFields } from './core-clones/composables/use-alias-fields';
@@ -31,7 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
 	sortField: undefined,
 	filterUser: undefined,
 	search: undefined,
-	onAlignChange: () => undefined,
+	onAlignChange: () => {},
 });
 
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields', 'update:edits']);
@@ -115,7 +116,7 @@ watch(
 
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
-	(value) => String(value),
+	String,
 	props.limit,
 );
 

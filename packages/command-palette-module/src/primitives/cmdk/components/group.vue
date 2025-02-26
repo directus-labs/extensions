@@ -8,8 +8,8 @@ export interface CommandGroupContext {
 	forceMount: Ref<boolean>;
 }
 
-export const [injectCommandGroupContext, provideCommandGroupContext]
-  = createContext<CommandGroupContext>('CommandGroup');
+export const [injectCommandGroupContext, provideCommandGroupContext] =
+  createContext<CommandGroupContext>('CommandGroup');
 </script>
 
 <script setup lang="ts">

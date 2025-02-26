@@ -32,7 +32,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	component: Layout,
 	slots: {
 		options: Options,
-		sidebar: () => undefined,
+		sidebar: () => {},
 		actions: Actions,
 	},
 	headerShadow: false,
@@ -212,14 +212,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const fields = computed({
 				get() {
-					if (layoutQuery.value?.fields) {
-						return layoutQuery.value.fields.filter((field: any) =>
-							filterAllowedFields(field),
-						);
-					}
-					else {
-						return unref(fieldsDefaultValue);
-					}
+					return layoutQuery.value?.fields
+						? layoutQuery.value.fields.filter((field: any) =>
+								filterAllowedFields(field),
+							)
+						: unref(fieldsDefaultValue);
 				},
 				set(value) {
 					layoutQuery.value = Object.assign({}, layoutQuery.value, {
@@ -243,7 +240,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					return null;
 				}
 				else if (sort.value?.[0].startsWith('-')) {
-					return { by: sort.value[0].substring(1), desc: true };
+					return { by: sort.value[0].slice(1), desc: true };
 				}
 				else {
 					return { by: sort.value[0], desc: false };
@@ -350,11 +347,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				set(val) {
 					const widths = {} as { [field: string]: number };
 
-					val.forEach((header) => {
+					for (const header of val) {
 						if (header.width) {
 							widths[header.value] = header.width;
 						}
-					});
+					}
 
 					localWidths.value = widths;
 
@@ -376,7 +373,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						return 32;
 					case 'comfortable':
 						return 64;
-					case 'cozy':
 					default:
 						return 48;
 				}
@@ -413,7 +409,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			) {
 				layoutOptions.value = Object.assign({}, layoutOptions.value, {
 					align: {
-						...(layoutOptions.value?.align ?? {}),
+						...layoutOptions.value?.align,
 						[field]: align,
 					},
 				});
@@ -442,8 +438,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			return {
 				unexpectedError(error: any) {
-					const code
-                        = error.response?.data?.errors?.[0]?.extensions?.code || error?.extensions?.code || 'UNKNOWN';
+					const code =
+                        error.response?.data?.errors?.[0]?.extensions?.code || error?.extensions?.code || 'UNKNOWN';
 
 					notificationStore.add({
 						title: t(`errors.${code}`),
@@ -522,7 +518,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function useAllowedFields() {
-			const allowedTypes = [
+			const allowedTypes = new Set([
 				// strings
 				'string',
 				'text',
@@ -539,9 +535,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				'date',
 				'time',
 				'timestamp',
-			];
+			]);
 
-			const allowedInlineInterfaces = [
+			const allowedInlineInterfaces = new Set([
 				'boolean',
 				'collection-item-dropdown',
 				'datetime',
@@ -556,7 +552,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				'select-icon',
 				'select-multiple-dropdown',
 				'slider',
-			];
+			]);
 
 			const allowedFields = computed(() =>
 				fieldsInCollection.value
@@ -577,10 +573,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					&& !field.meta?.hidden
 					&& !field.meta?.readonly
 					&& (!field.type
-						|| (field.type && allowedTypes.includes(field.type)))
+						|| (field.type && allowedTypes.has(field.type)))
 					&& (!field.meta?.interface
 						|| (field.meta.interface
-							&& allowedInlineInterfaces.includes(
+							&& allowedInlineInterfaces.has(
 								field.meta.interface,
 							)))
 				);

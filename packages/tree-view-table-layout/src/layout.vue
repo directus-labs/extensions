@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/extensions';
 import type { Field, Filter, Item, PrimaryKey } from '@directus/types';
+import type { ComponentPublicInstance, Ref } from 'vue';
 // CORE CLONES
 import type { HeaderRaw } from './core-clones/components/v-table/types';
 import type { AliasFields } from './core-clones/composables/use-alias-fields';
@@ -16,8 +17,7 @@ import {
 	toRefs,
 	watch,
 	computed,
-	type ComponentPublicInstance,
-	type Ref,
+
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 // CUSTOMIZED TABLE COMPONENT
@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
 	sortField: undefined,
 	filterUser: undefined,
 	search: undefined,
-	onAlignChange: () => undefined,
+	onAlignChange: () => {},
 });
 
 const emit = defineEmits([
@@ -128,7 +128,7 @@ useShortcut(
 
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
-	(value) => String(value),
+	String,
 	props.limit,
 	system,
 );

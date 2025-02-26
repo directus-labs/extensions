@@ -1,6 +1,7 @@
 import { create, del, list, read, update } from './actions';
 
 const endpoint = 'contacts';
+
 export const contacts = {
 	label: 'Contacts',
 	icon: 'person',

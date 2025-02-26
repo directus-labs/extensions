@@ -134,8 +134,8 @@ export function formatNumber(value: number, locales: string | string[], options?
 		const formatter: Intl.NumberFormat = new Intl.NumberFormat(locales, options);
 		return formatter.format(value);
 	}
-	catch (e) {
-		console.error(e);
+	catch (error) {
+		console.error(error);
 		return String(value);
 	}
 }

@@ -1,6 +1,7 @@
 import { create, del, list, read, update } from './actions';
 
 const endpoint = 'notes';
+
 export const notes = {
 	label: 'Notes',
 	icon: 'sticky_note_2',

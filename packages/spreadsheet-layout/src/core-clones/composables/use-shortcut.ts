@@ -1,7 +1,7 @@
 import type { ComponentPublicInstance, Ref } from 'vue';
 import { onMounted, onUnmounted, ref } from 'vue';
 
-type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => void | any | boolean;
+type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => any | boolean;
 
 export const keyMap: Record<string, string> = {
 	Control: 'meta',
@@ -52,18 +52,18 @@ export function useShortcut(
 	};
 
 	onMounted(() => {
-		[shortcuts].flat().forEach((shortcut) => {
+		for (const shortcut of [shortcuts].flat()) {
 			if (shortcut in handlers) {
 				handlers[shortcut]?.unshift(callback);
 			}
 			else {
 				handlers[shortcut] = [callback];
 			}
-		});
+		}
 	});
 
 	onUnmounted(() => {
-		[shortcuts].flat().forEach((shortcut) => {
+		for (const shortcut of [shortcuts].flat()) {
 			const shortcutHandler = handlers[shortcut];
 
 			if (shortcutHandler) {
@@ -75,14 +75,14 @@ export function useShortcut(
 					delete handlers[shortcut];
 				}
 			}
-		});
+		}
 	});
 }
 
 function mapKeys(key: KeyboardEvent) {
 	const isLatinAlphabet = /^[a-z0-9]*$/gi;
 
-	let keyString = key.key.match(isLatinAlphabet) === null ? key.code.replace(/(Key|Digit)/g, '') : key.key;
+	let keyString = key.key.match(isLatinAlphabet) === null ? key.code.replaceAll(/(Key|Digit)/g, '') : key.key;
 
 	const keyStringInMap = keyMap[keyString];
 
@@ -106,10 +106,10 @@ function callHandlers(event: KeyboardEvent) {
 				return;
 		}
 
-		for (let i = 0; i < value.length; i++) {
+		for (const element of value) {
 			let cancel = false;
 
-			value[i]?.(event, () => {
+			element?.(event, () => {
 				cancel = true;
 			});
 

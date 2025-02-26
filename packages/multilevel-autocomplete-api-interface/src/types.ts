@@ -1,7 +1,9 @@
 export enum Source {
 	request = 'Web Request',
 	list = 'List',
-};
+}
+
+;
 
 export interface Step {
 	text: string;

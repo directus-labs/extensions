@@ -48,7 +48,7 @@ const showBack = computed(() => router.stack.value.length > 1);
 	max-height: 50vh;
 	overflow-y: scroll;
 	height: var(--cmdk-list-height);
-	//transition: height 100ms ease;
+	/* transition: height 100ms ease; */
 }
 
 :deep([cmdk-list-sizer]) {

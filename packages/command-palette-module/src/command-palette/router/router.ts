@@ -46,7 +46,7 @@ export function createCommandRouter(
 	const stack: Ref<StackRoute[]> = ref([]);
 
 	const currentCommand: Ref<NamedCommandLocation> = computed(
-		() => stack.value[stack.value.length - 1] as NamedCommandLocation,
+		() => stack.value.at(-1) as NamedCommandLocation,
 	);
 
 	stack.value.push({
@@ -56,8 +56,8 @@ export function createCommandRouter(
 	});
 
 	function push(location: CommandLocation) {
-		const name
-      = 'name' in location ? location.name : location.component.name ?? 'unnamed';
+		const name =
+      'name' in location ? location.name : location.component.name ?? 'unnamed';
 
 		stack.value.push({
 			name,

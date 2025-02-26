@@ -1,7 +1,7 @@
-import baseConfig from '../../eslint.config';
+import baseConfig from '../../eslint.config.mjs';
 
 export default [
-	...await baseConfig,
+	...baseConfig,
 	{
 		files: ['**/*.vue'],
 		rules: {

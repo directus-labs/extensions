@@ -26,7 +26,7 @@
 		"readme": "node ./scripts/update-readme.js",
 		"package:json": "pnpm --recursive --filter=!utils exec node ../../scripts/check-package-json.js",
 		"package:lockfile": "pnpm --recursive --filter=!utils exec node ../../scripts/check-lock-files.js",
-		"lint": "eslint --flag unstable_config_lookup_from_file --cache .",
+		"lint": "eslint --flag unstable_config_lookup_from_file --cache",
 		"lint:fix": "pnpm run lint --fix"
 	},
 	"dependencies": {
@@ -35,9 +35,8 @@
 		"mustache": "^4.2.0"
 	},
 	"devDependencies": {
-		"@directus/eslint-config": "github:directus/eslint-config#hannes/temp-workaround",
-		"@nuxt/eslint-config": "^0.7.5",
-		"eslint": "^9.18.0",
-		"jiti": "^2.4.2"
+		"@directus/eslint-config": "^0.1.0",
+		"@nuxt/eslint-config": "^1.1.0",
+		"eslint": "^9.21.0"
 	}
 }

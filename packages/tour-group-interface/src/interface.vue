@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import type { Field, ValidationError } from '@directus/types';
+import type { AllowedButtons, Config, Driver, DriveStep } from 'driver.js';
 import {
-	type AllowedButtons,
-	type Config,
+
 	driver,
-	type Driver,
-	type DriveStep,
+
 } from 'driver.js';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

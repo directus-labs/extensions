@@ -1,6 +1,7 @@
 import { create, del, list, read, update } from './actions';
 
 const endpoint = 'leads';
+
 export const leads = {
 	label: 'Leads',
 	icon: 'ads_click',

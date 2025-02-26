@@ -22,8 +22,8 @@ export function useUnexpectedError(context?: {
 	const store = useNotificationsStore();
 
 	return (error: unknown) => {
-		const code
-      = (error as RequestError).response?.data?.errors?.[0]?.extensions?.code || (error as APIError)?.extensions?.code || 'UNKNOWN';
+		const code =
+      (error as RequestError).response?.data?.errors?.[0]?.extensions?.code || (error as APIError)?.extensions?.code || 'UNKNOWN';
 
 		console.warn(error);
 

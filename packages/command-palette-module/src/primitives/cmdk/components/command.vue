@@ -37,8 +37,8 @@ export interface CommandRootContext {
 	listInnerRef: Ref<HTMLDivElement | null>;
 }
 
-export const [injectCommandRootContext, provideCommandRootContext]
-  = createContext<CommandRootContext>('CommandRoot');
+export const [injectCommandRootContext, provideCommandRootContext] =
+  createContext<CommandRootContext>('CommandRoot');
 
 export interface CommandState {
 	search: string;
@@ -50,8 +50,8 @@ export interface CommandState {
 	};
 }
 
-export const [injectState, provideState]
-  = createContext<CommandState>('CommandState');
+export const [injectState, provideState] =
+  createContext<CommandState>('CommandState');
 </script>
 
 <script setup lang="ts">
@@ -217,19 +217,19 @@ function sort() {
 	// Sort the groups
 	const groups: [string, number][] = [];
 
-	state.filtered.groups.forEach((value) => {
+	for (const value of state.filtered.groups) {
 		const items = allGroups.value.get(value);
 
 		// Get the maximum score of the group's items
 		let max = 0;
 
-		items.forEach((item) => {
+		for (const item of items) {
 			const score = scores.get(item);
 			max = Math.max(score, max);
-		});
+		}
 
 		groups.push([value, max]);
-	});
+	}
 
 	// Sort items within groups to bottom
 	// Sort items outside of groups
@@ -237,40 +237,38 @@ function sort() {
 	const listInsertionElement = listInnerRef.value;
 
 	// Sort the items
-	getValidItems()
+	for (const item of getValidItems()
 		.sort((a, b) => {
 			const valueA = a.getAttribute('id')!;
 			const valueB = b.getAttribute('id')!;
 			return (scores.get(valueB) ?? 0) - (scores.get(valueA) ?? 0);
-		})
-		.forEach((item) => {
-			const group = item.closest(GROUP_ITEMS_SELECTOR);
+		})) {
+		const group = item.closest(GROUP_ITEMS_SELECTOR);
 
-			if (group) {
-				group.appendChild(
-					item.parentElement === group
-						? item
-						: item.closest(`${GROUP_ITEMS_SELECTOR} > *`),
-				);
-			}
-			else {
-				listInsertionElement?.appendChild(
-					item.parentElement === listInsertionElement
-						? item
-						: item.closest(`${GROUP_ITEMS_SELECTOR} > *`),
-				);
-			}
-		});
-
-	groups
-		.sort((a, b) => b[1] - a[1])
-		.forEach(([id, _]) => {
-			const element = listInnerRef.value?.querySelector(
-				`#${id.replace(/:/g, '\\:')}`,
+		if (group) {
+			group.append(
+				item.parentElement === group
+					? item
+					: item.closest(`${GROUP_ITEMS_SELECTOR} > *`),
 			);
+		}
+		else {
+			listInsertionElement?.append(
+				item.parentElement === listInsertionElement
+					? item
+					: item.closest(`${GROUP_ITEMS_SELECTOR} > *`),
+			);
+		}
+	}
 
-			element?.parentElement?.appendChild(element);
-		});
+	for (const [id, _] of groups
+		.sort((a, b) => b[1] - a[1])) {
+		const element = listInnerRef.value?.querySelector(
+			`#${id.replaceAll(':', String.raw`\:`)}`,
+		);
+
+		element?.parentElement?.append(element);
+	}
 }
 
 function selectFirstItem() {
@@ -341,9 +339,7 @@ function getSelectedItem() {
 }
 
 function getValidItems() {
-	return Array.from(
-		listInnerRef.value?.querySelectorAll(VALID_ITEM_SELECTOR) || [],
-	);
+	return [...listInnerRef.value?.querySelectorAll(VALID_ITEM_SELECTOR) || []];
 }
 
 function updateSelectedToIndex(index: number) {
@@ -356,15 +352,15 @@ function updateSelectedToIndex(index: number) {
 function updateSelectedByItem(change: 1 | -1) {
 	const selected = getSelectedItem();
 	const items = getValidItems();
-	const index = items.findIndex((item) => item === selected);
+	const index = items.indexOf(selected);
 
 	// Get item at this index
 	let newSelected = items[index + change];
 
 	if (props.loop) {
-		newSelected
-      = index + change < 0
-				? items[items.length - 1]
+		newSelected =
+			index + change < 0
+				? items.at(-1)
 				: index + change === items.length
 					? items[0]
 					: items[index + change];
@@ -380,8 +376,8 @@ function updateSelectedByGroup(change: 1 | -1) {
 	let item: HTMLElement;
 
 	while (group && !item) {
-		group
-      = change > 0
+		group =
+			change > 0
 				? findNextSibling(group, GROUP_SELECTOR)
 				: findPreviousSibling(group, GROUP_SELECTOR);
 

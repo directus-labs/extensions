@@ -27,8 +27,8 @@ export function useCalculatedFormula({
 		try {
 			return parseFormula(formula.value);
 		}
-		catch (err) {
-			parseError.value = err;
+		catch (error) {
+			parseError.value = error;
 		}
 	});
 
@@ -44,8 +44,8 @@ export function useCalculatedFormula({
 		try {
 			return [...extractFieldsFromAst(ast.value)];
 		}
-		catch (err) {
-			parseError.value = err;
+		catch (error) {
+			parseError.value = error;
 		}
 
 		return [];
@@ -73,8 +73,6 @@ export function useCalculatedFormula({
 						// replaces the local primary key value.
 						return injectedVal;
 					}
-
-					return undefined;
 				},
 			);
 		},
@@ -98,8 +96,8 @@ export function useCalculatedFormula({
 			try {
 				result.value = evaluateFormula(ast.value, valuesWithDefaults);
 			}
-			catch (err) {
-				evalError.value = err;
+			catch (error) {
+				evalError.value = error;
 			}
 		},
 		{ immediate: true, deep: true },

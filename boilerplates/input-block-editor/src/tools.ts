@@ -29,7 +29,7 @@ export default function getTools(
 	haveFilesAccess: boolean,
 ): Record<string, object> {
 	const tools: Record<string, any> = {};
-	const fileRequiresTools = ['attaches', 'image'];
+	const fileRequiresTools = new Set(['attaches', 'image']);
 
 	const defaults: Record<string, any> = {
 		header: {
@@ -106,7 +106,7 @@ export default function getTools(
 	};
 
 	for (const toolName of selection) {
-		if (!haveFilesAccess && fileRequiresTools.includes(toolName))
+		if (!haveFilesAccess && fileRequiresTools.has(toolName))
 			continue;
 
 		if (toolName in defaults) {

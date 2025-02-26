@@ -91,7 +91,7 @@ const parts = computed<HighlightPart[]>(() => {
 
 	const parts: HighlightPart[] = [];
 
-	mergedMatches.forEach(([start, end], index) => {
+	for (const [index, [start, end]] of mergedMatches.entries()) {
 		const precedingText = props.text
 			.slice(0, start)
 			.split(' ')
@@ -118,7 +118,7 @@ const parts = computed<HighlightPart[]>(() => {
 		if (precedingText) {
 			parts.push({
 				highlighted: false,
-				text: (precedingText.match(/\s$/) ? '...' : '... ') + precedingText,
+				text: (/\s$/.test(precedingText) ? '...' : '... ') + precedingText,
 			});
 		}
 		else if (start > 0) {
@@ -137,7 +137,7 @@ const parts = computed<HighlightPart[]>(() => {
 			if (end + followingText.length < normalizedText.length) {
 				parts.push({
 					highlighted: false,
-					text: followingText + (followingText.match(/^\s/) ? '...' : ' ...'),
+					text: followingText + (/^\s/.test(followingText) ? '...' : ' ...'),
 				});
 			}
 			else {
@@ -153,7 +153,7 @@ const parts = computed<HighlightPart[]>(() => {
 				text: '...',
 			});
 		}
-	});
+	}
 
 	return parts;
 });

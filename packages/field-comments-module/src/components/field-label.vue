@@ -89,11 +89,7 @@ useEventListener(event_key.value, (e: Record<string, any>) => {
 	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
 	font-feature-settings: 'liga';
-	font-variation-settings:
-		'FILL' 0,
-		'wght' 400,
-		'GRAD' 0,
-		'opsz' 24;
+	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 .v-icon i::after {
@@ -101,11 +97,7 @@ useEventListener(event_key.value, (e: Record<string, any>) => {
 }
 
 .v-icon i.filled {
-	font-variation-settings:
-		'FILL' 1,
-		'wght' 400,
-		'GRAD' 0,
-		'opsz' 24;
+	font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 .v-icon svg {

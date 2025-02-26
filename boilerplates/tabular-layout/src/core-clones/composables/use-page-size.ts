@@ -1,4 +1,5 @@
-import { computed, type ComputedRef, type MaybeRef, unref } from 'vue';
+import type { ComputedRef, MaybeRef } from 'vue';
+import { computed, unref } from 'vue';
 // CORE CHANGES
 // import { useServerStore } from "@/stores/server";
 
@@ -32,8 +33,8 @@ export function usePageSize<T = any>(
 		return sizes.map(mapCallback);
 	});
 
-	const initialSize
-        = queryLimit !== undefined ? Math.min(defaultSize, parseLimit(queryLimit.max)) : defaultSize;
+	const initialSize =
+        queryLimit !== undefined ? Math.min(defaultSize, parseLimit(queryLimit.max)) : defaultSize;
 
 	return {
 		sizes: pageSizes,

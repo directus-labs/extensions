@@ -1,6 +1,7 @@
 import { create, del, list, read, update } from './actions';
 
 const endpoint = 'companies';
+
 export const companies = {
 	label: 'Companies',
 	icon: 'domain',

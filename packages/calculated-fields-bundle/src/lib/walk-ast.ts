@@ -8,15 +8,24 @@ export function walkAst(
 	if (order === 'pre')
 		visit(node);
 
-	if (node.type === 'BinaryExpression') {
-		walkAst(node.left, visit);
-		walkAst(node.right, visit);
-	}
-	else if (node.type === 'UnaryExpression') {
-		walkAst(node.value, visit);
-	}
-	else if (node.type === 'Function') {
-		node.arguments.forEach((arg) => walkAst(arg, visit));
+	switch (node.type) {
+		case 'BinaryExpression': {
+			walkAst(node.left, visit);
+			walkAst(node.right, visit);
+
+			break;
+		}
+		case 'UnaryExpression': {
+			walkAst(node.value, visit);
+
+			break;
+		}
+		case 'Function': {
+			for (const arg of node.arguments) walkAst(arg, visit);
+
+			break;
+		}
+	// No default
 	}
 
 	if (order === 'post')

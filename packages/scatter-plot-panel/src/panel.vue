@@ -239,12 +239,12 @@ export default defineComponent({
 							formatter: (value: any) => {
 								const formattedValue = type === 'datetime'
 									? format(value, (xField.type === 'date' ? 'MMM d' : 'MMM d, p'))
-									: value > 10000
-										? abbreviateNumber(value, 1)
-										: n(value, 'decimal', {
-												minimumFractionDigits: 0,
-												maximumFractionDigits: 2,
-											} as any);
+									: (value > 10_000
+											? abbreviateNumber(value, 1)
+											: n(value, 'decimal', {
+													minimumFractionDigits: 0,
+													maximumFractionDigits: 2,
+												} as any));
 
 								return `${xField.name}: ${formattedValue}`;
 							},
@@ -296,7 +296,7 @@ export default defineComponent({
 						labels: {
 							show: ['both', 'yAxis'].includes(props.showAxisLabels),
 							formatter: (value: number) => {
-								return value > 10000
+								return value > 10_000
 									? abbreviateNumber(value, 1)
 									: n(value, 'decimal', {
 											minimumFractionDigits: 0,

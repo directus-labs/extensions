@@ -43,7 +43,7 @@ export function injectCommandPalette() {
 	// Mount the app
 	const container = document.createElement('div');
 	container.id = 'global-search-command-palette';
-	document.body.appendChild(container);
+	document.body.append(container);
 
 	app.mount(container);
 }

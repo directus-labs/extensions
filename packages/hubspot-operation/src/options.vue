@@ -62,7 +62,7 @@ const defaultFields: DynamicField[] = [
 			interface: 'presentation-notice',
 			options: {
 				icon: false,
-				text: `Learn more and get started at the <a href="https://developers.hubspot.com/" target="_blank">HubSpot Developer Portal</a>. Make sure to document your unique schema from HubSpot to ensure your properties are valid during API calls. See <a href="https://knowledge.hubspot.com/get-started/manage-your-crm-database" target="_blank">Manage your CRM database.</a>`,
+				text: 'Learn more and get started at the <a href="https://developers.hubspot.com/" target="_blank">HubSpot Developer Portal</a>. Make sure to document your unique schema from HubSpot to ensure your properties are valid during API calls. See <a href="https://knowledge.hubspot.com/get-started/manage-your-crm-database" target="_blank">Manage your CRM database.</a>',
 			},
 		},
 	},

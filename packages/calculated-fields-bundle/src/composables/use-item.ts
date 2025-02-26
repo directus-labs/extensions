@@ -16,10 +16,6 @@ export interface UseItemOptions {
 
 /**
  * Composable that takes care of fetching the fields in the item
- * @param collection
- * @param primaryKey
- * @param fields
- * @param localValues
  */
 export function useItem({
 	collection,
@@ -62,8 +58,8 @@ export function useItem({
 
 			// Walk the relations and combine them into paths, always comparing the new local value to the old local value,
 			// if they differ we need to fetch the value starting from the currently constructed field path
-			for (let i = 0; i < relations.length; ++i) {
-				const relation = relations[i]!;
+			for (const relation_ of relations) {
+				const relation = relation_!;
 
 				fieldPath.push(relation.field);
 				const path = fieldPath.join('.');
@@ -80,7 +76,7 @@ export function useItem({
 			}
 		}
 
-		if (toFetch.length) {
+		if (toFetch.length > 0) {
 			fetchRelated(toFetch);
 		}
 	});
@@ -111,8 +107,8 @@ export function useItem({
 				)
 			).data?.data;
 		}
-		catch (err) {
-			error.value = err;
+		catch (error_) {
+			error.value = error_;
 		}
 		finally {
 			loading.value = false;
@@ -120,8 +116,8 @@ export function useItem({
 	}
 
 	async function fetchRelated(relations: [[string, string], Relation][]) {
-		const results: [[string, string], Record<string, any>][]
-			= await Promise.all(
+		const results: [[string, string], Record<string, any>][] =
+			await Promise.all(
 				relations.map(async ([[relationKey, fieldKey], relation]) => {
 					const collection = relation.related_collection!;
 
@@ -134,8 +130,8 @@ export function useItem({
 						) as Field | null;
 
 						if (primaryKeyField) {
-							primaryKey
-								= (localFieldValue as Record<string, any>)[
+							primaryKey =
+								(localFieldValue as Record<string, any>)[
 									primaryKeyField.field
 								] ?? null;
 						}

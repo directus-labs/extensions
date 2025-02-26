@@ -19,8 +19,8 @@ export const usersCommands = defineCommands({
 		const permissionsStore = usePermissionsStore();
 		const isAdmin = isAdminFromStores(stores);
 
-		const hasUserReadPermissions
-      = isAdmin || permissionsStore.hasPermission('directus_users', 'read');
+		const hasUserReadPermissions =
+      isAdmin || permissionsStore.hasPermission('directus_users', 'read');
 
 		if (!hasUserReadPermissions)
 			return [];

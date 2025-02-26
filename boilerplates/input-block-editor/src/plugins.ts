@@ -219,13 +219,13 @@ export class ImageTool extends BaseImageTool {
 			iconElement.classList.add('ce-popover-item__icon');
 			const iElement = document.createElement('i');
 			iElement.innerHTML = tune.icon;
-			iconElement.appendChild(iElement);
-			tuneElement.appendChild(iconElement);
+			iconElement.append(iElement);
+			tuneElement.append(iconElement);
 
 			const titleElement = document.createElement('div');
 			titleElement.classList.add('ce-popover-item__title');
 			titleElement.innerHTML = tune.title;
-			tuneElement.appendChild(titleElement);
+			tuneElement.append(titleElement);
 
 			if (tune.onActivate) {
 				tuneElement.addEventListener('click', tune.onActivate);
@@ -237,7 +237,7 @@ export class ImageTool extends BaseImageTool {
 				});
 			}
 
-			wrapperElement.appendChild(tuneElement);
+			wrapperElement.append(tuneElement);
 		}
 
 		return wrapperElement;

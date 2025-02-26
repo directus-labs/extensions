@@ -16,7 +16,7 @@ export function adjustFieldsForDisplays(
 	const fieldsStore = useFieldsStore();
 
 	const adjustedFields: string[] = fields
-		.map((fieldKey) => {
+		.flatMap((fieldKey) => {
 			const field: Field | null = fieldsStore.getField(
 				parentCollection,
 				fieldKey,
@@ -82,8 +82,7 @@ export function adjustFieldsForDisplays(
 			}
 
 			return fieldKey;
-		})
-		.flat();
+		});
 
 	return adjustedFields;
 }
