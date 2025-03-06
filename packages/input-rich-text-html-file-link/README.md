@@ -1,5 +1,5 @@
-# WYSIWYS Interface (Extended)
-An extended WYSIWYG Interface which allows to add some additional data to images.
+# WYSIWYG (Add/Edit File Link)
+An extended WYSIWYG Interface which allows to add links to files.
 
 
 ## Installation
@@ -11,7 +11,7 @@ Simply create a text-field and select the `WYSIWYG (Add/Edit File Link)` interfa
 
 ![](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/input-rich-text-html-file-link/docs/interface.png)
 
-By default the interface will have the default `Add / Edit Image` and the newly added `Add/Edit File Link` enabled. The `Add/Edit File Link` action is fully compatible with the `Add / Edit Image`  and can be used as a replacement.
+By default the interface will have the newly added `Add/Edit File Link` enabled.
 
 ![](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/input-rich-text-html-file-link/docs/toolbar.png)
 
