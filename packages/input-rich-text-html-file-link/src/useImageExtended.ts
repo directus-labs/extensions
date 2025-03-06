@@ -13,7 +13,7 @@ import { getPublicURL } from './core-clones/utils/get-root-path';
 // import { readableMimeType } from "@/utils/readable-mime-type";
 import { readableMimeType } from './core-clones/utils/readable-mime-type';
 
-interface ImageExtendedSelection {
+interface FileLinkSelection {
 	imageUrl: string;
 	alt: string;
 	lazy?: boolean;
@@ -35,11 +35,11 @@ interface FileLinkButton {
 }
 
 interface UsableImage {
-	imageExtendedDrawerOpen: Ref<boolean>;
-	imageExtendedSelection: Ref<ImageExtendedSelection | null>;
-	closeImageExtendedDrawer: () => void;
-	onImageExtendedSelect: (image: File) => void;
-	saveImageExtended: () => void;
+	fileLinkDrawerOpen: Ref<boolean>;
+	fileLinkSelection: Ref<FileLinkSelection | null>;
+	closeFileLinkDrawer: () => void;
+	onFileLinkSelect: (image: File) => void;
+	saveFileLink: () => void;
 	fileLinkButton: FileLinkButton;
 }
 
@@ -51,22 +51,22 @@ export default function useImage(
 		storageAssetPresets: Ref<SettingsStorageAssetPreset[]>;
 	},
 ): UsableImage {
-	const imageExtendedDrawerOpen = ref(false);
-	const imageExtendedSelection = ref<ImageExtendedSelection | null>(null);
+	const fileLinkDrawerOpen = ref(false);
+	const fileLinkSelection = ref<FileLinkSelection | null>(null);
 	const selectedPreset = ref<SettingsStorageAssetPreset | undefined>();
 
 	watch(
-		() => imageExtendedSelection.value?.transformationKey,
+		() => fileLinkSelection.value?.transformationKey,
 		(newKey) => {
 			selectedPreset.value = options.storageAssetPresets.value.find(
 				(preset: SettingsStorageAssetPreset) => preset.key === newKey,
 			);
 
 			if (selectedPreset.value) {
-				imageExtendedSelection.value!.width
+				fileLinkSelection.value!.width
                     = selectedPreset.value.width ?? undefined;
 
-				imageExtendedSelection.value!.height
+				fileLinkSelection.value!.height
                     = selectedPreset.value.height ?? undefined;
 			}
 		},
@@ -77,7 +77,7 @@ export default function useImage(
 		tooltip: 'Add/Edit File Link',
 		// CORE-CHANGE end
 		onAction: (buttonApi: any) => {
-			imageExtendedDrawerOpen.value = true;
+			fileLinkDrawerOpen.value = true;
 
 			if (buttonApi === true || buttonApi.isActive()) {
 				const node
@@ -112,7 +112,7 @@ export default function useImage(
 						);
 				}
 
-				imageExtendedSelection.value = {
+				fileLinkSelection.value = {
 					imageUrl,
 					alt,
 					lazy,
@@ -134,7 +134,7 @@ export default function useImage(
 				};
 			}
 			else {
-				imageExtendedSelection.value = null;
+				fileLinkSelection.value = null;
 			}
 		},
 		onSetup: (buttonApi: any) => {
@@ -151,20 +151,20 @@ export default function useImage(
 	};
 
 	return {
-		imageExtendedDrawerOpen,
-		imageExtendedSelection,
-		closeImageExtendedDrawer,
-		onImageExtendedSelect,
-		saveImageExtended,
+		fileLinkDrawerOpen,
+		fileLinkSelection,
+		closeFileLinkDrawer,
+		onFileLinkSelect,
+		saveFileLink,
 		fileLinkButton,
 	};
 
-	function closeImageExtendedDrawer() {
-		imageExtendedSelection.value = null;
-		imageExtendedDrawerOpen.value = false;
+	function closeFileLinkDrawer() {
+		fileLinkSelection.value = null;
+		fileLinkDrawerOpen.value = false;
 	}
 
-	function onImageExtendedSelect(image: File) {
+	function onFileLinkSelect(image: File) {
 		const fileExtension = image.type
 			? readableMimeType(image.type, true)
 			: readableMimeType(
@@ -175,7 +175,7 @@ export default function useImage(
 		const assetUrl
             = `${getPublicURL()}assets/${image.id}.${fileExtension}`;
 
-		imageExtendedSelection.value = {
+		fileLinkSelection.value = {
 			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
 			alt: image.title!,
 			lazy: false,
@@ -189,10 +189,10 @@ export default function useImage(
 		};
 	}
 
-	function saveImageExtended() {
+	function saveFileLink() {
 		editor.value.fire('focus');
 
-		const img = imageExtendedSelection.value;
+		const img = fileLinkSelection.value;
 		if (img === null)
 			return;
 
@@ -238,7 +238,7 @@ export default function useImage(
 
 		editor.value.selection.setContent(imageHtml);
 		editor.value.undoManager.add();
-		closeImageExtendedDrawer();
+		closeFileLinkDrawer();
 	}
 
 	function replaceUrlAccessToken(

@@ -111,7 +111,7 @@ const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveIm
 	},
 );
 
-const { imageExtendedDrawerOpen, imageExtendedSelection, closeImageExtendedDrawer, onImageExtendedSelect, saveImageExtended, fileLinkButton } = useImageExtended(
+const { fileLinkDrawerOpen, fileLinkSelection, closeFileLinkDrawer, onFileLinkSelect, saveFileLink, fileLinkButton } = useImageExtended(
 	editorRef,
 	imageToken!,
 	{
@@ -431,28 +431,28 @@ function setFocus(val: boolean) {
 		/>
 
 		<ImageDrawer
-			:image-drawer-open="imageExtendedDrawerOpen"
-			:image-selection="imageExtendedSelection"
+			:image-drawer-open="fileLinkDrawerOpen"
+			:image-selection="fileLinkSelection"
 			:storage-asset-transform="storageAssetTransform"
 			:storage-asset-presets="storageAssetPresets"
 			:folder="folder"
-			@close-image-drawer="closeImageExtendedDrawer"
-			@save-image="saveImageExtended"
-			@on-image-select="onImageExtendedSelect"
+			@close-image-drawer="closeFileLinkDrawer"
+			@save-image="saveFileLink"
+			@on-image-select="onFileLinkSelect"
 		>
-			<template #additionalFields="{ imageSelection: extendedImageSelection }">
+			<template #additionalFields="{ imageSelection: fileLinkSelection }">
 				<div class="field half-right">
 					<div class="type-label">
 						Display Text
 					</div>
-					<v-input v-model="extendedImageSelection.displayText" />
+					<v-input v-model="fileLinkSelection.displayText" />
 				</div>
 
 				<div class="field half">
 					<div class="type-label">
 						Tooltip
 					</div>
-					<v-input v-model="extendedImageSelection.tooltip" />
+					<v-input v-model="fileLinkSelection.tooltip" />
 				</div>
 
 				<div class="field half-right">
@@ -460,7 +460,7 @@ function setFocus(val: boolean) {
 						Open Link In
 					</div>
 					<v-checkbox
-						v-model="extendedImageSelection.target" block
+						v-model="fileLinkSelection.target" block
 						label="New Tab"
 					/>
 				</div>
@@ -470,7 +470,7 @@ function setFocus(val: boolean) {
 						Download
 					</div>
 					<v-checkbox
-						v-model="extendedImageSelection.download" block
+						v-model="fileLinkSelection.download" block
 						label="Download"
 					/>
 				</div>
