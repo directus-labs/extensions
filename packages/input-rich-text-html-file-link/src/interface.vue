@@ -440,19 +440,19 @@ function setFocus(val: boolean) {
 			@save-image="saveFileLink"
 			@on-image-select="onFileLinkSelect"
 		>
-			<template #additionalFields="{ imageSelection: fileLinkSelection }">
+			<template #additionalFields="{ imageSelection: selectedFileLink }">
 				<div class="field half-right">
 					<div class="type-label">
 						Display Text
 					</div>
-					<v-input v-model="fileLinkSelection.displayText" />
+					<v-input v-model="selectedFileLink.displayText" />
 				</div>
 
 				<div class="field half">
 					<div class="type-label">
 						Tooltip
 					</div>
-					<v-input v-model="fileLinkSelection.tooltip" />
+					<v-input v-model="selectedFileLink.tooltip" />
 				</div>
 
 				<div class="field half-right">
@@ -460,7 +460,7 @@ function setFocus(val: boolean) {
 						Open Link In
 					</div>
 					<v-checkbox
-						v-model="fileLinkSelection.target" block
+						v-model="selectedFileLink.target" block
 						label="New Tab"
 					/>
 				</div>
@@ -470,7 +470,7 @@ function setFocus(val: boolean) {
 						Download
 					</div>
 					<v-checkbox
-						v-model="fileLinkSelection.download" block
+						v-model="selectedFileLink.download" block
 						label="Download"
 					/>
 				</div>
