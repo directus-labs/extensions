@@ -48,11 +48,18 @@ const imageSelection = computed({
 						</div>
 						<v-input v-model="imageSelection.imageUrl" />
 					</div>
-					<div class="field half-right">
+					<div
+						v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0"
+						class="field half-right"
+					>
 						<div class="type-label">
-							{{ t('alt_text') }}
+							{{ t('transformation_preset_key') }}
 						</div>
-						<v-input v-model="imageSelection.alt" :nullable="false" />
+						<v-select
+							v-model="imageSelection.transformationKey"
+							:items="storageAssetPresets.map((preset: any) => ({ text: preset.key, value: preset.key }))"
+							show-deselect
+						/>
 					</div>
 					<template v-if="storageAssetTransform === 'all'">
 						<div class="field half">
@@ -74,28 +81,6 @@ const imageSelection = computed({
 							/>
 						</div>
 					</template>
-					<div class="field half">
-						<div class="type-label">
-							{{ t('wysiwyg_options.lazy_loading') }}
-						</div>
-						<v-checkbox
-							v-model="imageSelection.lazy" block
-							:label="t('wysiwyg_options.lazy_loading_label')"
-						/>
-					</div>
-					<div
-						v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0"
-						class="field half"
-					>
-						<div class="type-label">
-							{{ t('transformation_preset_key') }}
-						</div>
-						<v-select
-							v-model="imageSelection.transformationKey"
-							:items="storageAssetPresets.map((preset: any) => ({ text: preset.key, value: preset.key }))"
-							show-deselect
-						/>
-					</div>
 
 					<slot name="additionalFields" :image-selection="imageSelection" />
 				</div>

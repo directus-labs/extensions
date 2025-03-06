@@ -13,10 +13,8 @@ import { getPublicURL } from './core-clones/utils/get-root-path';
 // import { readableMimeType } from "@/utils/readable-mime-type";
 import { readableMimeType } from './core-clones/utils/readable-mime-type';
 
-interface ImageExtendedSelection {
+interface FileLinkSelection {
 	imageUrl: string;
-	alt: string;
-	lazy?: boolean;
 	width?: number | null;
 	height?: number | null;
 	transformationKey?: string | null;
@@ -27,7 +25,7 @@ interface ImageExtendedSelection {
 	download?: boolean;
 }
 
-interface ImageExtendedButton {
+interface FileLinkButton {
 	icon: string;
 	tooltip: string;
 	onAction: (buttonApi: any) => void;
@@ -35,12 +33,12 @@ interface ImageExtendedButton {
 }
 
 interface UsableImage {
-	imageExtendedDrawerOpen: Ref<boolean>;
-	imageExtendedSelection: Ref<ImageExtendedSelection | null>;
-	closeImageExtendedDrawer: () => void;
-	onImageExtendedSelect: (image: File) => void;
-	saveImageExtended: () => void;
-	imageExtendedButton: ImageExtendedButton;
+	fileLinkDrawerOpen: Ref<boolean>;
+	fileLinkSelection: Ref<FileLinkSelection | null>;
+	closeFileLinkDrawer: () => void;
+	onFileLinkSelect: (image: File) => void;
+	saveFileLink: () => void;
+	fileLinkButton: FileLinkButton;
 }
 
 export default function useImage(
@@ -51,56 +49,54 @@ export default function useImage(
 		storageAssetPresets: Ref<SettingsStorageAssetPreset[]>;
 	},
 ): UsableImage {
-	const imageExtendedDrawerOpen = ref(false);
-	const imageExtendedSelection = ref<ImageExtendedSelection | null>(null);
+	const fileLinkDrawerOpen = ref(false);
+	const fileLinkSelection = ref<FileLinkSelection | null>(null);
 	const selectedPreset = ref<SettingsStorageAssetPreset | undefined>();
 
 	watch(
-		() => imageExtendedSelection.value?.transformationKey,
+		() => fileLinkSelection.value?.transformationKey,
 		(newKey) => {
 			selectedPreset.value = options.storageAssetPresets.value.find(
 				(preset: SettingsStorageAssetPreset) => preset.key === newKey,
 			);
 
 			if (selectedPreset.value) {
-				imageExtendedSelection.value!.width
+				fileLinkSelection.value!.width
                     = selectedPreset.value.width ?? undefined;
 
-				imageExtendedSelection.value!.height
+				fileLinkSelection.value!.height
                     = selectedPreset.value.height ?? undefined;
 			}
 		},
 	);
 
-	const imageExtendedButton = {
-		icon: 'image',
-		tooltip: 'Add / Edit Image (Extended)',
+	const fileLinkButton = {
+		icon: 'non-breaking',
+		tooltip: 'Add/Edit File Link',
 		// CORE-CHANGE end
 		onAction: (buttonApi: any) => {
-			imageExtendedDrawerOpen.value = true;
+			fileLinkDrawerOpen.value = true;
 
 			if (buttonApi === true || buttonApi.isActive()) {
 				const node
-                    = editor.value.selection.getNode() as HTMLImageElement;
+					= editor.value.selection.getNode() as HTMLImageElement;
 
-				const imageUrl = node.getAttribute('src');
+				const imageUrl = node.getAttribute('href');
+
+				const displayText = node.textContent;
+				const tooltip = node.getAttribute('title');
+				const target = !!node.getAttribute('target');
 
 				const imageUrlParams = imageUrl
 					? new URL(imageUrl).searchParams
 					: undefined;
-
-				const alt = node.getAttribute('alt');
-				const lazy = node.getAttribute('loading') === 'lazy';
-				const displayText = node.getAttribute('data-display-text');
-				const tooltip = node.getAttribute('data-tooltip');
-				const target = !!node.getAttribute('data-target');
 
 				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
 				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
 				const transformationKey = imageUrlParams?.get('key') || undefined;
 				const download = imageUrlParams?.get('download') === 'true';
 
-				if (imageUrl === null || alt === null) {
+				if (imageUrl === null) {
 					return;
 				}
 
@@ -112,10 +108,8 @@ export default function useImage(
 						);
 				}
 
-				imageExtendedSelection.value = {
+				fileLinkSelection.value = {
 					imageUrl,
-					alt,
-					lazy,
 					width: selectedPreset.value
 						? selectedPreset.value.width ?? undefined
 						: width,
@@ -134,12 +128,12 @@ export default function useImage(
 				};
 			}
 			else {
-				imageExtendedSelection.value = null;
+				fileLinkSelection.value = null;
 			}
 		},
 		onSetup: (buttonApi: any) => {
 			const onImageNodeSelect = (eventApi: any) => {
-				buttonApi.setActive(eventApi.element.tagName === 'IMG');
+				buttonApi.setActive(eventApi.element.tagName === 'A');
 			};
 
 			editor.value.on('NodeChange', onImageNodeSelect);
@@ -151,20 +145,20 @@ export default function useImage(
 	};
 
 	return {
-		imageExtendedDrawerOpen,
-		imageExtendedSelection,
-		closeImageExtendedDrawer,
-		onImageExtendedSelect,
-		saveImageExtended,
-		imageExtendedButton,
+		fileLinkDrawerOpen,
+		fileLinkSelection,
+		closeFileLinkDrawer,
+		onFileLinkSelect,
+		saveFileLink,
+		fileLinkButton,
 	};
 
-	function closeImageExtendedDrawer() {
-		imageExtendedSelection.value = null;
-		imageExtendedDrawerOpen.value = false;
+	function closeFileLinkDrawer() {
+		fileLinkSelection.value = null;
+		fileLinkDrawerOpen.value = false;
 	}
 
-	function onImageExtendedSelect(image: File) {
+	function onFileLinkSelect(image: File) {
 		const fileExtension = image.type
 			? readableMimeType(image.type, true)
 			: readableMimeType(
@@ -175,10 +169,8 @@ export default function useImage(
 		const assetUrl
             = `${getPublicURL()}assets/${image.id}.${fileExtension}`;
 
-		imageExtendedSelection.value = {
+		fileLinkSelection.value = {
 			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
-			alt: image.title!,
-			lazy: false,
 			width: image.width,
 			height: image.height,
 			previewUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
@@ -189,10 +181,10 @@ export default function useImage(
 		};
 	}
 
-	function saveImageExtended() {
+	function saveFileLink() {
 		editor.value.fire('focus');
 
-		const img = imageExtendedSelection.value;
+		const img = fileLinkSelection.value;
 		if (img === null)
 			return;
 
@@ -228,17 +220,22 @@ export default function useImage(
 			queries,
 		);
 
-		const imageHtml = `<img src="${resizedImageUrl}"
-			alt="${img.alt}"
-			${img.lazy ? 'loading="lazy"' : ''}
-			${img.displayText ? `data-display-text="${img.displayText}"` : ''}
-			${img.tooltip ? `data-tooltip="${img.tooltip}"` : ''}
-			${img.target ? `data-target=${!!img.target}` : ''}
-		/>`;
+		const linkHtml = `<a href="${resizedImageUrl}"
+			${img.tooltip ? `title="${img.tooltip}"` : ''}
+			${img.target ? `target="_blank" rel="noopener"` : ''}
+		>${img.displayText || 'View File'}</a>`;
 
-		editor.value.selection.setContent(imageHtml);
+		const currentNode = editor.value.selection.getNode();
+		const isAnchor = currentNode.nodeName === 'A';
+
+		// On update of an existing tag, remove the current and save the new one
+		if (isAnchor) {
+			editor.value.dom.remove(currentNode);
+		}
+
+		editor.value.selection.setContent(linkHtml);
 		editor.value.undoManager.add();
-		closeImageExtendedDrawer();
+		closeFileLinkDrawer();
 	}
 
 	function replaceUrlAccessToken(

@@ -3,7 +3,7 @@ import InterfaceComponent from './interface.vue';
 
 export default defineInterface({
 	id: 'input-rich-text-html-file-link',
-	name: 'WYSIWYG (Extended)',
+	name: 'WYSIWYG (Add/Edit File Link)',
 	icon: 'format_quote',
 	description: 'WYSIWYG Interface Extension for Directus, Extended with a more powerful add/edit file link interface',
 	component: InterfaceComponent,
@@ -29,7 +29,7 @@ export default defineInterface({
 						'blockquote',
 						'customLink',
 						'customImage',
-						'customImageExtended',
+						'fileLink',
 						'customMedia',
 						'hr',
 						'code',
@@ -190,8 +190,8 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.image',
 							},
 							{
-								value: 'customImageExtended',
-								text: 'Add / Edit Image (Extended)',
+								value: 'fileLink',
+								text: 'Add/Edit File Link',
 							},
 							{
 								value: 'customMedia',
