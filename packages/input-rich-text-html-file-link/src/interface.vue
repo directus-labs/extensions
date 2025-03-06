@@ -11,8 +11,8 @@ import ImageDrawer from './components/ImageDrawer.vue';
 // CORE-CHANGE end
 import { percentage } from './core-clones/utils/percentage';
 import getEditorStyles from './get-editor-styles';
+import useFileLink from './useFileLink';
 import useImage from './useImage';
-import useImageExtended from './useImageExtended';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
@@ -111,7 +111,7 @@ const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveIm
 	},
 );
 
-const { fileLinkDrawerOpen, fileLinkSelection, closeFileLinkDrawer, onFileLinkSelect, saveFileLink, fileLinkButton } = useImageExtended(
+const { fileLinkDrawerOpen, fileLinkSelection, closeFileLinkDrawer, onFileLinkSelect, saveFileLink, fileLinkButton } = useFileLink(
 	editorRef,
 	imageToken!,
 	{
