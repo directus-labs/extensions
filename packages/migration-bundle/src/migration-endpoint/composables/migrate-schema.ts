@@ -24,16 +24,13 @@ export async function migrateSchema({ res, client, schema, dry_run = false, forc
 			res.write('2. Applying Schemas ...');
 
 			if (!dry_run) {
-				if (!force) {
-					await client.request(schemaApply(diff));
-				}
-				else {
-					await client.request(() => ({
-						body: JSON.stringify(diff),
-						method: 'POST',
-						path: '/schema/apply?force=true',
-					}));
-				}
+				await (!force
+					? client.request(schemaApply(diff))
+					: client.request(() => ({
+							body: JSON.stringify(diff),
+							method: 'POST',
+							path: '/schema/apply?force=true',
+						})));
 
 				res.write('done\r\n\r\n');
 			}

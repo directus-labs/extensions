@@ -5,16 +5,16 @@ import { join } from 'node:path';
 
 async function createTmpFile() {
 	const dir = await createTmpDirectory();
-	const filename = createHash2('sha1').update((/* @__PURE__ */ new Date()).toString()).digest('hex').substring(0, 8);
+	const filename = createHash2('sha1').update((/* @__PURE__ */ new Date()).toString()).digest('hex').slice(0, 8);
 	const path4 = join(dir.path, filename);
 
 	try {
 		const fd = await fs.open(path4, 'wx');
 		await fd.close();
 	}
-	catch (err) {
+	catch (error) {
 		await dir.cleanup();
-		throw err;
+		throw error;
 	}
 
 	async function cleanup() {

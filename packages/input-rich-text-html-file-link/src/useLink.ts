@@ -163,7 +163,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		// Parent node is an anchor tag
 		else if (currentSelectionNode.value) {
 			currentSelectionNode.value.innerHTML = link.displayText || link.url;
-			linkNode.value.setAttribute('data-mce-href', link.url); // Required for tinymce to update changes
+			linkNode.value.dataset.mceHref = link.url; // Required for tinymce to update changes
 			linkNode.value.setAttribute('href', link.url);
 			if (link.title)
 				linkNode.value.setAttribute('title', link.title);

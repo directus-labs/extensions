@@ -63,11 +63,11 @@ export default function useImage(
 			);
 
 			if (selectedPreset.value) {
-				imageExtendedSelection.value!.width
-                    = selectedPreset.value.width ?? undefined;
+				imageExtendedSelection.value!.width =
+                    selectedPreset.value.width ?? undefined;
 
-				imageExtendedSelection.value!.height
-                    = selectedPreset.value.height ?? undefined;
+				imageExtendedSelection.value!.height =
+                    selectedPreset.value.height ?? undefined;
 			}
 		},
 	);
@@ -80,8 +80,8 @@ export default function useImage(
 			imageExtendedDrawerOpen.value = true;
 
 			if (buttonApi === true || buttonApi.isActive()) {
-				const node
-                    = editor.value.selection.getNode() as HTMLImageElement;
+				const node =
+                    editor.value.selection.getNode() as HTMLImageElement;
 
 				const imageUrl = node.getAttribute('src');
 
@@ -91,9 +91,9 @@ export default function useImage(
 
 				const alt = node.getAttribute('alt');
 				const lazy = node.getAttribute('loading') === 'lazy';
-				const displayText = node.getAttribute('data-display-text');
-				const tooltip = node.getAttribute('data-tooltip');
-				const target = !!node.getAttribute('data-target');
+				const displayText = node.dataset.displayText;
+				const tooltip = node.dataset.tooltip;
+				const target = !!node.dataset.target;
 
 				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
 				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
@@ -105,11 +105,11 @@ export default function useImage(
 				}
 
 				if (transformationKey) {
-					selectedPreset.value
-                        = options.storageAssetPresets.value.find(
-							(preset: SettingsStorageAssetPreset) =>
-								preset.key === transformationKey,
-						);
+					selectedPreset.value =
+                        options.storageAssetPresets.value.find(
+                        	(preset: SettingsStorageAssetPreset) =>
+                        		preset.key === transformationKey,
+                        );
 				}
 
 				imageExtendedSelection.value = {
@@ -172,8 +172,8 @@ export default function useImage(
 					true,
 				);
 
-		const assetUrl
-            = `${getPublicURL()}assets/${image.id}.${fileExtension}`;
+		const assetUrl =
+            `${getPublicURL()}assets/${image.id}.${fileExtension}`;
 
 		imageExtendedSelection.value = {
 			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
@@ -213,10 +213,8 @@ export default function useImage(
 				queries.height = img.height;
 			}
 		}
-		else if (options.storageAssetTransform.value === 'presets') {
-			if (img.transformationKey) {
-				queries.key = img.transformationKey;
-			}
+		else if (options.storageAssetTransform.value === 'presets' && img.transformationKey) {
+			queries.key = img.transformationKey;
 		}
 
 		if (img.download) {

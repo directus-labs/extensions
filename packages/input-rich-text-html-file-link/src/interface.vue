@@ -182,10 +182,10 @@ const editorOptions = computed(() => {
 	let toolbarString = (props.toolbar ?? [])
 		.map((t) =>
 			t
-				.replace(/^link$/g, 'customLink')
-				.replace(/^media$/g, 'customMedia')
-				.replace(/^code$/g, 'customCode')
-				.replace(/^image$/g, 'customImage'),
+				.replaceAll(/^link$/g, 'customLink')
+				.replaceAll(/^media$/g, 'customMedia')
+				.replaceAll(/^code$/g, 'customCode')
+				.replaceAll(/^image$/g, 'customImage'),
 		)
 		.join(' ');
 
@@ -229,7 +229,7 @@ const editorOptions = computed(() => {
 		directionality: props.direction,
 		paste_data_images: false,
 		setup,
-		...(props.tinymceOverrides || {}),
+		...props.tinymceOverrides,
 	};
 });
 
@@ -239,7 +239,7 @@ let observer: MutationObserver;
 let emittedValue: any;
 
 function setCount() {
-	const iframeContents = editorRef.value?.contentWindow.document.getElementById('tinymce');
+	const iframeContents = editorRef.value?.contentWindow.document.querySelector('#tinymce');
 	count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
 }
 
@@ -262,7 +262,7 @@ function setupContentWatcher() {
 	if (observer)
 		return;
 
-	const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
+	const iframeContents = editorRef.value.contentWindow.document.querySelector('#tinymce');
 
 	observer = new MutationObserver((_mutations) => {
 		contentUpdated();
