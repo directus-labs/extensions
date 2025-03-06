@@ -428,7 +428,26 @@ function setFocus(val: boolean) {
 			@close-image-drawer="closeImageDrawer"
 			@save-image="saveImage"
 			@on-image-select="onImageSelect"
-		/>
+		>
+			<template #additionalFields="{ imageSelection: selectedImage }">
+				<div class="field half">
+					<div class="type-label">
+						{{ t('wysiwyg_options.lazy_loading') }}
+					</div>
+					<v-checkbox
+						v-model="selectedImage.lazy" block
+						:label="t('wysiwyg_options.lazy_loading_label')"
+					/>
+				</div>
+
+				<div class="field half-right">
+					<div class="type-label">
+						{{ t('alt_text') }}
+					</div>
+					<v-input v-model="selectedImage.alt" :nullable="false" />
+				</div>
+			</template>
+		</ImageDrawer>
 
 		<ImageDrawer
 			:image-drawer-open="fileLinkDrawerOpen"
@@ -441,21 +460,21 @@ function setFocus(val: boolean) {
 			@on-image-select="onFileLinkSelect"
 		>
 			<template #additionalFields="{ imageSelection: selectedFileLink }">
-				<div class="field half-right">
+				<div class="field half">
 					<div class="type-label">
 						Display Text
 					</div>
 					<v-input v-model="selectedFileLink.displayText" />
 				</div>
 
-				<div class="field half">
+				<div class="field half-right">
 					<div class="type-label">
 						Tooltip
 					</div>
 					<v-input v-model="selectedFileLink.tooltip" />
 				</div>
 
-				<div class="field half-right">
+				<div class="field half">
 					<div class="type-label">
 						Open Link In
 					</div>
@@ -465,7 +484,7 @@ function setFocus(val: boolean) {
 					/>
 				</div>
 
-				<div class="field half">
+				<div class="field half-right">
 					<div class="type-label">
 						Download
 					</div>
