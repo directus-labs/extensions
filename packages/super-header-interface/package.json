@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/super-header-interface",
 	"type": "module",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "A super powerful header interface for Directus that allows you to create rich page headers with titles, subtitles, help information, and interactive actions. Perfect for enhancing the user experience with contextual information and quick access to common tasks.",
 	"license": "MIT",
 	"repository": {

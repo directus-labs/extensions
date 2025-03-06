@@ -14,6 +14,9 @@ importers:
       '@directus/format-title':
         specifier: ^12.0.0
         version: 12.0.0
+      '@directus/types':
+        specifier: ^13.0.0
+        version: 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
       mustache:
         specifier: ^4.2.0
         version: 4.2.0
@@ -640,6 +643,46 @@ importers:
         specifier: ^3.4.25
         version: 3.4.31(typescript@5.5.3)
 
+  packages/migration-bundle:
+    dependencies:
+      '@directus/sdk':
+        specifier: ^19.0.1
+        version: 19.0.1
+      '@directus/utils':
+        specifier: ^13.0.0
+        version: 13.0.0(vue@3.5.13(typescript@5.7.3))
+      bottleneck:
+        specifier: ^2.19.5
+        version: 2.19.5
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
+      dompurify:
+        specifier: ^3.2.4
+        version: 3.2.4
+      formdata-node:
+        specifier: ^6.0.3
+        version: 6.0.3
+      marked:
+        specifier: ^15.0.7
+        version: 15.0.7
+    devDependencies:
+      '@directus/extensions-sdk':
+        specifier: 13.0.1
+        version: 13.0.1(@types/node@22.13.4)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.84.0)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+      '@directus/types':
+        specifier: ^13.0.0
+        version: 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
+      '@types/node':
+        specifier: ^22.13.4
+        version: 22.13.4
+      typescript:
+        specifier: ^5.7.3
+        version: 5.7.3
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.7.3)
+
   packages/multilevel-autocomplete-api-interface:
     devDependencies:
       '@directus/extensions-sdk':
@@ -794,9 +837,6 @@ importers:
       micromustache:
         specifier: ^8.0.3
         version: 8.0.3
-      sass:
-        specifier: ^1.84.0
-        version: 1.84.0
       vue-i18n:
         specifier: ^10.0.5
         version: 10.0.5(vue@3.5.13(typescript@5.7.3))
@@ -804,9 +844,9 @@ importers:
       '@directus/extensions-sdk':
         specifier: 13.0.1
         version: 13.0.1(@types/node@22.13.4)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.84.0)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
-      saas:
-        specifier: ^1.0.0
-        version: 1.0.0
+      sass:
+        specifier: ^1.84.0
+        version: 1.84.0
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -1642,6 +1682,10 @@ packages:
   '@directus/sdk@16.1.1':
     resolution: {integrity: sha512-vF/vk4PvyndxBE9SwININy3bfqjVPfQ35AXbsvDaJpE5OVclmQGbLqkYP6233GHqVUnveJDDUJssuz/QjeSYyQ==}
     engines: {node: '>=18.0.0'}
+
+  '@directus/sdk@19.0.1':
+    resolution: {integrity: sha512-6KwWedA/vxrMN2aRm5L52TEgB+42vkz0Ae8kwOitHuBPT4VWtUNOXenzaHnZyXyNrEgh/VBLJ36f3UEe3b/Wfw==}
+    engines: {node: '>=22'}
 
   '@directus/storage@11.0.0':
     resolution: {integrity: sha512-BXR3mw8sr1QZYJ38EdDdDEnb6NOmslEQ4pqPl66fKKxDodr0wO5YewqoHp8VxqW13FWNC7Gf3Q/tvf5OlQ+/Ug==}
@@ -3553,6 +3597,9 @@ packages:
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
+  bottleneck@2.19.5:
+    resolution: {integrity: sha512-VHiNCbI1lKdl44tGrhNfU3lup0Tj/ZBMJB5/2ZbNXRCPuRCO7ed2mgcK4r17y+KB2EfuYuRaVlwNbAeaWGSpbw==}
+
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
 
@@ -4461,6 +4508,10 @@ packages:
     resolution: {integrity: sha512-0iirZp3uVDjVGt9p49aTaqjk84TrglENEDuqfdlZQ1roC9CWlPk6Avf8EEnZNcAqPonwkG35x4n3ww/1THYAeQ==}
     engines: {node: '>= 12.20'}
 
+  formdata-node@6.0.3:
+    resolution: {integrity: sha512-8e1++BCiTzUno9v5IZ2J6bv4RU+3UKDmqWUQD0MIMVCd9AdhWkO1gw57oo1mNEX1dMq2EGI+FbWz4B92pscSQg==}
+    engines: {node: '>= 18'}
+
   fs-extra@10.1.0:
     resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
     engines: {node: '>=12'}
@@ -4952,6 +5003,11 @@ packages:
 
   marked@15.0.6:
     resolution: {integrity: sha512-Y07CUOE+HQXbVDCGl3LXggqJDbXDP2pArc2C1N1RRMN0ONiShoSsIInMd5Gsxupe7fKLpgimTV+HOJ9r7bA+pg==}
+    engines: {node: '>= 18'}
+    hasBin: true
+
+  marked@15.0.7:
+    resolution: {integrity: sha512-dgLIeKGLx5FwziAnsk4ONoGwHwGPJzselimvlVskE9XLN4Orv9u2VA3GWw/lYUqjfA0rUT/6fqKwfZJapP9BEg==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -5802,9 +5858,6 @@ packages:
 
   rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
-
-  saas@1.0.0:
-    resolution: {integrity: sha512-FgayhFS18BlPfcyMcOqxD7PIyNyUjqyv8R+rsr3X2KRK2icEUL4uvWBF+lZ0IPqJIO2kUO0d20OXY+R+pdriqg==}
 
   safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
@@ -9209,6 +9262,8 @@ snapshots:
     dependencies:
       '@directus/system-data': 1.1.0
 
+  '@directus/sdk@19.0.1': {}
+
   '@directus/storage@11.0.0': {}
 
   '@directus/system-data@1.0.1': {}
@@ -12473,6 +12528,8 @@ snapshots:
 
   boolbase@1.0.0: {}
 
+  bottleneck@2.19.5: {}
+
   brace-expansion@1.1.11:
     dependencies:
       balanced-match: 1.0.2
@@ -13552,6 +13609,8 @@ snapshots:
       node-domexception: 1.0.0
       web-streams-polyfill: 4.0.0-beta.3
 
+  formdata-node@6.0.3: {}
+
   fs-extra@10.1.0:
     dependencies:
       graceful-fs: 4.2.11
@@ -14183,6 +14242,8 @@ snapshots:
   markdown-table@3.0.4: {}
 
   marked@15.0.6: {}
+
+  marked@15.0.7: {}
 
   mdast-util-find-and-replace@3.0.2:
     dependencies:
@@ -15262,8 +15323,6 @@ snapshots:
   rxjs@7.8.1:
     dependencies:
       tslib: 2.8.0
-
-  saas@1.0.0: {}
 
   safe-buffer@5.2.1: {}
 
