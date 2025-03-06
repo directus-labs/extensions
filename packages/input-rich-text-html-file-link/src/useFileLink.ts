@@ -79,17 +79,17 @@ export default function useImage(
 
 			if (buttonApi === true || buttonApi.isActive()) {
 				const node
-                    = editor.value.selection.getNode() as HTMLImageElement;
+					= editor.value.selection.getNode() as HTMLImageElement;
 
-				const imageUrl = node.getAttribute('src');
+				const imageUrl = node.getAttribute('href');
+
+				const displayText = node.textContent;
+				const tooltip = node.getAttribute('title');
+				const target = !!node.getAttribute('target');
 
 				const imageUrlParams = imageUrl
 					? new URL(imageUrl).searchParams
 					: undefined;
-
-				const displayText = node.getAttribute('data-display-text');
-				const tooltip = node.getAttribute('data-tooltip');
-				const target = !!node.getAttribute('data-target');
 
 				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
 				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
@@ -133,7 +133,7 @@ export default function useImage(
 		},
 		onSetup: (buttonApi: any) => {
 			const onImageNodeSelect = (eventApi: any) => {
-				buttonApi.setActive(eventApi.element.tagName === 'IMG');
+				buttonApi.setActive(eventApi.element.tagName === 'A');
 			};
 
 			editor.value.on('NodeChange', onImageNodeSelect);
@@ -220,13 +220,20 @@ export default function useImage(
 			queries,
 		);
 
-		const imageHtml = `<img src="${resizedImageUrl}"
-			${img.displayText ? `data-display-text="${img.displayText}"` : ''}
-			${img.tooltip ? `data-tooltip="${img.tooltip}"` : ''}
-			${img.target ? `data-target=${!!img.target}` : ''}
-		/>`;
+		const linkHtml = `<a href="${resizedImageUrl}"
+			${img.tooltip ? `title="${img.tooltip}"` : ''}
+			${img.target ? `target="_blank" rel="noopener"` : ''}
+		>${img.displayText || 'View File'}</a>`;
 
-		editor.value.selection.setContent(imageHtml);
+		const currentNode = editor.value.selection.getNode();
+		const isAnchor = currentNode.nodeName === 'A';
+
+		// On update of an existing tag, remove the current and save the new one
+		if (isAnchor) {
+			editor.value.dom.remove(currentNode);
+		}
+
+		editor.value.selection.setContent(linkHtml);
 		editor.value.undoManager.add();
 		closeFileLinkDrawer();
 	}
