@@ -15,8 +15,6 @@ import { readableMimeType } from './core-clones/utils/readable-mime-type';
 
 interface FileLinkSelection {
 	imageUrl: string;
-	alt: string;
-	lazy?: boolean;
 	width?: number | null;
 	height?: number | null;
 	transformationKey?: string | null;
@@ -89,8 +87,6 @@ export default function useImage(
 					? new URL(imageUrl).searchParams
 					: undefined;
 
-				const alt = node.getAttribute('alt');
-				const lazy = node.getAttribute('loading') === 'lazy';
 				const displayText = node.getAttribute('data-display-text');
 				const tooltip = node.getAttribute('data-tooltip');
 				const target = !!node.getAttribute('data-target');
@@ -100,7 +96,7 @@ export default function useImage(
 				const transformationKey = imageUrlParams?.get('key') || undefined;
 				const download = imageUrlParams?.get('download') === 'true';
 
-				if (imageUrl === null || alt === null) {
+				if (imageUrl === null) {
 					return;
 				}
 
@@ -114,8 +110,6 @@ export default function useImage(
 
 				fileLinkSelection.value = {
 					imageUrl,
-					alt,
-					lazy,
 					width: selectedPreset.value
 						? selectedPreset.value.width ?? undefined
 						: width,
@@ -177,8 +171,6 @@ export default function useImage(
 
 		fileLinkSelection.value = {
 			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
-			alt: image.title!,
-			lazy: false,
 			width: image.width,
 			height: image.height,
 			previewUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
@@ -229,8 +221,6 @@ export default function useImage(
 		);
 
 		const imageHtml = `<img src="${resizedImageUrl}"
-			alt="${img.alt}"
-			${img.lazy ? 'loading="lazy"' : ''}
 			${img.displayText ? `data-display-text="${img.displayText}"` : ''}
 			${img.tooltip ? `data-tooltip="${img.tooltip}"` : ''}
 			${img.target ? `data-target=${!!img.target}` : ''}
