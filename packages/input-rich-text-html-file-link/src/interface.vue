@@ -71,7 +71,7 @@ const props = withDefaults(
 			'blockquote',
 			'customLink',
 			'customImage',
-			'customImageExtended',
+			'fileLink',
 			'customMedia',
 			'code',
 			'fullscreen',
@@ -111,7 +111,7 @@ const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveIm
 	},
 );
 
-const { imageExtendedDrawerOpen, imageExtendedSelection, closeImageExtendedDrawer, onImageExtendedSelect, saveImageExtended, imageExtendedButton } = useImageExtended(
+const { imageExtendedDrawerOpen, imageExtendedSelection, closeImageExtendedDrawer, onImageExtendedSelect, saveImageExtended, fileLinkButton } = useImageExtended(
 	editorRef,
 	imageToken!,
 	{
@@ -312,7 +312,7 @@ function setup(editor: any) {
 		}
 	});
 
-	editor.ui.registry.addToggleButton('customImageExtended', imageExtendedButton);
+	editor.ui.registry.addToggleButton('fileLink', fileLinkButton);
 }
 
 function setFocus(val: boolean) {

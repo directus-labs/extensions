@@ -27,7 +27,7 @@ interface ImageExtendedSelection {
 	download?: boolean;
 }
 
-interface ImageExtendedButton {
+interface FileLinkButton {
 	icon: string;
 	tooltip: string;
 	onAction: (buttonApi: any) => void;
@@ -40,7 +40,7 @@ interface UsableImage {
 	closeImageExtendedDrawer: () => void;
 	onImageExtendedSelect: (image: File) => void;
 	saveImageExtended: () => void;
-	imageExtendedButton: ImageExtendedButton;
+	fileLinkButton: FileLinkButton;
 }
 
 export default function useImage(
@@ -72,9 +72,9 @@ export default function useImage(
 		},
 	);
 
-	const imageExtendedButton = {
-		icon: 'image',
-		tooltip: 'Add / Edit Image (Extended)',
+	const fileLinkButton = {
+		icon: 'non-breaking',
+		tooltip: 'Add/Edit File Link',
 		// CORE-CHANGE end
 		onAction: (buttonApi: any) => {
 			imageExtendedDrawerOpen.value = true;
@@ -156,7 +156,7 @@ export default function useImage(
 		closeImageExtendedDrawer,
 		onImageExtendedSelect,
 		saveImageExtended,
-		imageExtendedButton,
+		fileLinkButton,
 	};
 
 	function closeImageExtendedDrawer() {
