@@ -581,6 +581,37 @@ importers:
         specifier: ^5.5.4
         version: 5.6.3
 
+  packages/input-rich-text-html-file-link:
+    dependencies:
+      tinymce:
+        specifier: ^7.6.1
+        version: 7.6.1
+    devDependencies:
+      '@directus/extensions-sdk':
+        specifier: 13.0.1
+        version: 13.0.1(@types/node@22.13.1)(@unhead/vue@1.9.14(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@2.1.7(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.84.0)(terser@5.36.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+      '@directus/types':
+        specifier: ^13.0.0
+        version: 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
+      '@tinymce/tinymce-vue':
+        specifier: ^6.0.1
+        version: 6.1.0(tinymce@7.6.1)(vue@3.5.13(typescript@5.7.3))
+      mime:
+        specifier: ^4.0.4
+        version: 4.0.6
+      sass:
+        specifier: ^1.84.0
+        version: 1.84.0
+      typescript:
+        specifier: ^5.7.3
+        version: 5.7.3
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.7.3)
+      vue-i18n:
+        specifier: ^9.13.1
+        version: 9.14.1(vue@3.5.13(typescript@5.7.3))
+
   packages/liquidjs-operation:
     dependencies:
       liquidjs:
@@ -2824,6 +2855,15 @@ packages:
     resolution: {integrity: sha512-y0b1p1FTlzxcSt/ZdGWY1AZ52ddwSU69pvFRYAELUSdLLxV8QOPe9dyT/KATO43UCb3DAwiyzi96h2IoYstBOQ==}
     peerDependencies:
       vue: ^2.7.0 || ^3.0.0
+
+  '@tinymce/tinymce-vue@6.1.0':
+    resolution: {integrity: sha512-7JdaKMOaohuFWpjKwRmaZJbT/eNVUUYHG93R7+lUf7SUN+hSqd2spbuqZcki+tG9kaSAGd2ZmvJIsmzWDNAzpw==}
+    peerDependencies:
+      tinymce: ^7.0.0 || ^6.0.0 || ^5.5.1
+      vue: ^3.0.0
+    peerDependenciesMeta:
+      tinymce:
+        optional: true
 
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
@@ -5119,6 +5159,11 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
 
+  mime@4.0.6:
+    resolution: {integrity: sha512-4rGt7rvQHBbaSOF9POGkk1ocRP16Md1x36Xma8sz8h8/vfCUI2OtEIeCqe4Ofes853x4xDoPiFLIT47J5fI/7A==}
+    engines: {node: '>=16'}
+    hasBin: true
+
   mimic-fn@2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
     engines: {node: '>=6'}
@@ -6097,6 +6142,9 @@ packages:
 
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
+
+  tinymce@7.6.1:
+    resolution: {integrity: sha512-5cHhaAoyyTHfAVTInNfoSp0KkUHmeVUbGSu37QKQbOFIPqxYPhqBiaLm1WVLgoNBYOHRProVc3xzxnNTeWHyoQ==}
 
   tmp@0.0.33:
     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
@@ -11236,6 +11284,12 @@ snapshots:
       '@tanstack/virtual-core': 3.11.2
       vue: 3.5.13(typescript@5.6.3)
 
+  '@tinymce/tinymce-vue@6.1.0(tinymce@7.6.1)(vue@3.5.13(typescript@5.7.3))':
+    dependencies:
+      vue: 3.5.13(typescript@5.7.3)
+    optionalDependencies:
+      tinymce: 7.6.1
+
   '@tootallnate/once@2.0.0':
     optional: true
 
@@ -14505,6 +14559,8 @@ snapshots:
 
   mime@3.0.0: {}
 
+  mime@4.0.6: {}
+
   mimic-fn@2.1.0: {}
 
   mimic-fn@4.0.0: {}
@@ -15550,6 +15606,8 @@ snapshots:
   tinycolor2@1.6.0: {}
 
   tinyexec@0.3.2: {}
+
+  tinymce@7.6.1: {}
 
   tmp@0.0.33:
     dependencies:
