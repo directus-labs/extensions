@@ -16,57 +16,9 @@ body:
       label: Extension
       description: Which extension does this issue relate to?
       options:
-        - Address Completion Interface
-        - AI Alt Text Writer Operation
-        - AI Focal Point Detection Operation
-        - AI Image Generation Operation
-        - AI Image Moderation Operation
-        - AI Researcher Bundle
-        - AI Speech Generation Operation
-        - AI Text Extraction Operation
-        - AI Text Intelligence Operation
-        - AI Transcription Operation
-        - AI Translator Operation
-        - AI Web Scraper Operation
-        - AI Writer Operation
-        - API Metric Panel
-        - Audio Player Interface
-        - Calculated Fields Bundle
-        - Card Select Interfaces
-        - Choropleth Map Panel
-        - Command Palette Module
-        - Experimental M2A Interface
-        - Field Comments
-        - Flow Trigger Bundle
-        - Funnel Chart Panel
-        - Gantt Chart Layout
-        - Hubspot Operation
-        - Inline Repeater Interface
-        - Input Rich Text HTML File Link
-        - Liquidjs Operation
-        - Extension Meter Component
-        - Migration Bundle
-        - Multilevel Autocomplete API Interface
-        - PDF Viewer Interface
-        - Plausible Analytics Bundle
-        - Resend Operation
-        - Rss to JSON Operation
-        - Scatter Plot Panel
-        - SEO Plugin
-        - Simple List Interface
-        - Spreadsheet Layout
-        - Extension Steps Component
-        - Super Header Interface
-        - Switch Interface
-        - Table View Panel
-        - Timeline Chart Panel
-        - Tour Group Interface
-        - Tree View Table Layout
-        - Treemap Chart Panel
-        - Video Player Interface
-        - Whereby Embedded Interface
-        - Whiteboard Interface
-        - YouTube Embed Interface
+{{#extensions}}
+        - {{name}}
+{{/extensions}}
         - Something else
     validations:
       required: true
