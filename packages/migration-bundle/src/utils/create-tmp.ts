@@ -1,12 +1,12 @@
 import { createHash as createHash2 } from 'node:crypto';
 import fs from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import path from 'node:path';
 
 async function createTmpFile() {
 	const dir = await createTmpDirectory();
 	const filename = createHash2('sha1').update((/* @__PURE__ */ new Date()).toString()).digest('hex').slice(0, 8);
-	const path4 = join(dir.path, filename);
+	const path4 = path.join(dir.path, filename);
 
 	try {
 		const fd = await fs.open(path4, 'wx');
@@ -29,7 +29,7 @@ async function createTmpFile() {
 }
 
 async function createTmpDirectory() {
-	const path4 = await fs.mkdtemp(join(tmpdir(), 'directus-'));
+	const path4 = await fs.mkdtemp(path.join(tmpdir(), 'directus-'));
 
 	async function cleanup() {
 		return await fs.rmdir(path4);
