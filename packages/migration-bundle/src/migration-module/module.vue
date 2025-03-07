@@ -75,7 +75,7 @@ export default defineComponent({
 
 		const checkHost = async ({ baseURL, token }: Payload): Promise<void> => {
 			isValidating.value = true;
-			const response = await api.post(`/migration/check`, { baseURL, token, scope });
+			const response = await api.post('/migration/check', { baseURL, token, scope });
 			isValidating.value = false;
 			validationMessage.value = response ? response.data : { status: 'danger', icon: 'error', message: 'An unknow error occured. Please check logs for more information' };
 		};
@@ -370,11 +370,7 @@ h3.skipped .icon i {
 	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
 	font-feature-settings: 'liga';
-	font-variation-settings:
-		'FILL' 0,
-		'wght' 400,
-		'GRAD' 0,
-		'opsz' 24;
+	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 h3.done .icon i::after {

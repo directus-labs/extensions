@@ -104,7 +104,7 @@ export async function initLimiter() {
 			return delay;
 		}
 
-		console.warn(`Max retries reached, not retrying further`);
+		console.warn('Max retries reached, not retrying further');
 	});
 
 	limiter.on('retry', (error, jobInfo) => {
@@ -114,7 +114,7 @@ export async function initLimiter() {
 
 	limiter.on('depleted', (empty) => {
 		if (empty) {
-			console.warn(`Rate limit quota depleted. Requests will be queued.`);
+			console.warn('Rate limit quota depleted. Requests will be queued.');
 		}
 	});
 

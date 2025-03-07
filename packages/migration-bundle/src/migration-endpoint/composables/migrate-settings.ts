@@ -50,7 +50,7 @@ function mergeJsonStrings(current: string, incoming: string): string {
 }
 
 async function migrateSettings({ res, client, settings, dry_run = false }: { res: any; client: RestClient<Schema>; settings: Settings | null; dry_run: boolean }): Promise<{ response: string; name: string } | DirectusError> {
-	res.write(`* [Local] Loading Settings\r\n\r\n`);
+	res.write('* [Local] Loading Settings\r\n\r\n');
 
 	try {
 		const currentSettings = await client.request(readSettings());

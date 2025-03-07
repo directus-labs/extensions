@@ -30,6 +30,7 @@ const ariaRole = computed(() => props.selectionType === 'radio' ? 'radio' : 'che
 <template>
 	<div class="preview" :role="ariaRole" :aria-checked="isSelected" :aria-disabled="disabled">
 		<template v-if="choice.icon_type === 'image' || choice.icon_type === 'svg'">
+			<!-- eslint-disable-next-line vue/no-v-html -->
 			<span v-if="isSVG(choice.svg_icon)" class="svg" v-html="choice.svg_icon" />
 			<div v-else-if="choice.image" class="image">
 				<v-image

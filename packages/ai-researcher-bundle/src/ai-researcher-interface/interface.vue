@@ -81,16 +81,16 @@ async function submitMessage() {
 			const chunk = decoder.decode(value);
 			const lines = chunk.split('\n');
 
-			lines.forEach((line) => {
+			for (const line of lines) {
 				if (line.startsWith('data: ')) {
 					const data = line.slice(6);
 					if (data === '[DONE]')
-						return;
+						continue;
 
 					const { content } = JSON.parse(data);
 					streamResponse.value = `${streamResponse.value}${content}`;
 				}
-			});
+			}
 		}
 
 		messages.push(
@@ -148,8 +148,8 @@ function clearMessages() {
 				</template>
 			</v-input>
 
-			<v-button icon x-large secondary :disabled="!messages.length" @click="showMessages = true">
-				<v-icon name="forum" :color="messages.length ? 'var(--theme--primary)' : 'inherit'" />
+			<v-button icon x-large secondary :disabled="messages.length === 0" @click="showMessages = true">
+				<v-icon name="forum" :color="messages.length > 0 ? 'var(--theme--primary)' : 'inherit'" />
 			</v-button>
 		</div>
 

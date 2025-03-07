@@ -165,7 +165,7 @@ export default defineEndpoint({
 					}
 
 					// Validation
-					res.write(`Validating System Data: `);
+					res.write('Validating System Data: ');
 
 					let isValid = await validate_system({
 						...systemFetch,
@@ -177,7 +177,7 @@ export default defineEndpoint({
 					// Step 1.3: Data
 					res.write(`<div class="pending"><h3>${spinner} Extracting Content</h3>\r\n\r\n`);
 					const dataFetch = await extractContent({ res, services, accountability, schema, scope, folder, storage });
-					res.write(`Validating Content: `);
+					res.write('Validating Content: ');
 
 					isValid = isValid
 						? await validate_data({

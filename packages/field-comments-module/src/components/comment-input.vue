@@ -77,7 +77,7 @@ let triggerCaretPosition = 0;
 const selectedKeyboardIndex = ref<number>(0);
 
 const loadUsers = throttle(async (name: string): Promise<any> => {
-	const regex = /\s@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi;
+	const regex = /\s@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/i;
 
 	let filter: Record<string, any> = {
 		_or: [
@@ -99,7 +99,7 @@ const loadUsers = throttle(async (name: string): Promise<any> => {
 		],
 	};
 
-	if (name.match(regex)) {
+	if (regex.test(name)) {
 		filter = {
 			id: {
 				_in: name,
@@ -184,7 +184,7 @@ function insertText(text: string) {
 }
 
 function insertUser(user: Record<string, any>) {
-	const text = newCommentContent.value?.replaceAll(String.fromCharCode(160), ' ');
+	const text = newCommentContent.value?.replaceAll(String.fromCodePoint(160), ' ');
 	if (!text)
 		return;
 
@@ -201,8 +201,8 @@ function insertUser(user: Record<string, any>) {
 		countAfter++;
 	}
 
-	const before = text.substring(0, countBefore + (text.charAt(countBefore) === '\n' ? 1 : 0));
-	const after = text.substring(countAfter);
+	const before = text.slice(0, Math.max(0, countBefore + (text.charAt(countBefore) === '\n' ? 1 : 0)));
+	const after = text.slice(Math.max(0, countAfter));
 
 	newCommentContent.value = `${before} @${user.id}${after}`;
 }
@@ -227,21 +227,18 @@ async function postComment() {
 	saving.value = true;
 
 	try {
-		if (props.existingComment) {
-			await api.patch(`/${comments_schema.endpoint}/${props.existingComment.id}`, {
-				comment: newCommentContent.value,
-				user_updated: currentUser.id,
-			});
-		}
-		else {
-			await api.post(`/${comments_schema.endpoint}`, {
-				field: props.field,
-				collection: props.collection,
-				item: props.primaryKey,
-				comment: newCommentContent.value,
-				user_created: currentUser.id,
-			});
-		}
+		await (props.existingComment
+			? api.patch(`/${comments_schema.endpoint}/${props.existingComment.id}`, {
+					comment: newCommentContent.value,
+					user_updated: currentUser.id,
+				})
+			: api.post(`/${comments_schema.endpoint}`, {
+					field: props.field,
+					collection: props.collection,
+					item: props.primaryKey,
+					comment: newCommentContent.value,
+					user_created: currentUser.id,
+				}));
 
 		props.refresh();
 
@@ -252,10 +249,10 @@ async function postComment() {
 		});
 	}
 	catch (error: any) {
-		const code
-				= error?.response?.data?.errors?.[0]?.extensions?.code
-					|| error?.extensions?.code
-					|| 'UNKNOWN';
+		const code =
+				error?.response?.data?.errors?.[0]?.extensions?.code
+				|| error?.extensions?.code
+				|| 'UNKNOWN';
 
 		console.warn(error);
 
@@ -366,9 +363,7 @@ function pressedEnter() {
 }
 
 .v-template-input {
-	transition:
-		height var(--fast) var(--transition),
-		padding var(--fast) var(--transition);
+	transition: height var(--fast) var(--transition), padding var(--fast) var(--transition);
 }
 
 .collapsed .v-template-input {

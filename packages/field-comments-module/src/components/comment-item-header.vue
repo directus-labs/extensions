@@ -54,10 +54,10 @@ function useDelete() {
 			confirmDelete.value = false;
 		}
 		catch (error: any) {
-			const code
-					= error?.response?.data?.errors?.[0]?.extensions?.code
-						|| error?.extensions?.code
-						|| 'UNKNOWN';
+			const code =
+					error?.response?.data?.errors?.[0]?.extensions?.code
+					|| error?.extensions?.code
+					|| 'UNKNOWN';
 
 			console.warn(error);
 

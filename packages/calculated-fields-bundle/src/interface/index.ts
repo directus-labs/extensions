@@ -21,8 +21,8 @@ export default defineInterface({
 			const { useRelationsStore } = useStores();
 			relationsStore = useRelationsStore();
 		}
-		catch (err) {
-			console.error(err);
+		catch (error) {
+			console.error(error);
 		}
 
 		const { options } = field.meta ?? {};
@@ -36,8 +36,7 @@ export default defineInterface({
 				const ast = parseFormula(options?.formula);
 
 				unknownFunctions = [...extractFunctionsFromAst(ast)].filter(
-					// eslint-disable-next-line ts/ban-ts-comment
-					// @ts-ignore
+					// @ts-expect-error existing is checked here
 					(fn) => formulajs[fn] === undefined,
 				);
 
@@ -71,8 +70,8 @@ export default defineInterface({
 				}
 			}
 		}
-		catch (err) {
-			parseError = err;
+		catch (error) {
+			parseError = error;
 		}
 
 		return [

@@ -8,12 +8,12 @@ export function translate<T extends Record<string, any> | string>(obj: T): T {
 	else {
 		const newObj = cloneDeep(obj);
 
-		Object.entries(newObj).forEach(([key, val]) => {
+		for (const [key, val] of Object.entries(newObj)) {
 			if (val && typeof val === 'object')
 				(newObj as Record<string, any>)[key] = translate(val);
 			if (val && typeof val === 'string')
 				(newObj as Record<string, any>)[key] = translateString(val);
-		});
+		}
 
 		return newObj;
 	}

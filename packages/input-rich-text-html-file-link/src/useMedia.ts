@@ -141,10 +141,10 @@ export default function useMedia(
 		}
 		else {
 			embed.value = embed.value
-				.replace(/src=".*?"/g, `src="${vid?.sourceUrl}"`)
-				.replace(/width=".*?"/g, `width="${vid?.width}"`)
-				.replace(/height=".*?"/g, `height="${vid?.height}"`)
-				.replace(/type=".*?"/g, `type="${vid?.type}"`)
+				.replaceAll(/src=".*?"/g, `src="${vid?.sourceUrl}"`)
+				.replaceAll(/width=".*?"/g, `width="${vid?.width}"`)
+				.replaceAll(/height=".*?"/g, `height="${vid?.height}"`)
+				.replaceAll(/type=".*?"/g, `type="${vid?.type}"`)
 				.replaceAll(/<(video|audio|iframe)/g, `<${vid?.tag}`)
 				.replaceAll(/<\/(video|audio|iframe)/g, `</${vid?.tag}`);
 		}
@@ -163,11 +163,11 @@ export default function useMedia(
 
 			const sourceUrl = /src="(.*?)"/.exec(newEmbed)?.[1] || undefined;
 
-			const width
-                = Number(/width="(.*?)"/.exec(newEmbed)?.[1]) || undefined;
+			const width =
+                Number(/width="(.*?)"/.exec(newEmbed)?.[1]) || undefined;
 
-			const height
-                = Number(/height="(.*?)"/.exec(newEmbed)?.[1]) || undefined;
+			const height =
+                Number(/height="(.*?)"/.exec(newEmbed)?.[1]) || undefined;
 
 			const type = /type="(.*?)"/.exec(newEmbed)?.[1] || undefined;
 

@@ -31,7 +31,7 @@ useResizeObserver(context.listInnerRef, () => {
 		const height = el.offsetHeight;
 
 		currentRef.value?.style.setProperty(
-			`--cmdk-list-height`,
+			'--cmdk-list-height',
 			`${height.toFixed(1)}px`,
 		);
 	});

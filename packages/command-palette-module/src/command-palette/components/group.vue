@@ -20,6 +20,5 @@ defineProps<{
 </template>
 
 <style scoped lang="scss">
-[cmdk-group] {
-}
+[cmdk-group] {}
 </style>

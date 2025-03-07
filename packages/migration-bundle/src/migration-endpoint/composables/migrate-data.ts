@@ -117,7 +117,7 @@ async function getExistingPrimaryKeys(res: any, client: any, collection: string,
 	return existingKeys;
 }
 
-// eslint-disable-next-line ts/no-unsafe-function-type
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 async function uploadBatch(res: any, client: any, collection: string, batch: Item[], method: Function, dry_run: boolean) {
 	try {
 		if (!dry_run) {

@@ -149,8 +149,8 @@ function onResizeHandleMouseDown(header: Header, event: PointerEvent) {
 
 function onMouseMove(event: PointerEvent) {
 	if (resizing.value === true) {
-		const newWidth
-                = resizeStartWidth.value + (event.pageX - resizeStartX.value);
+		const newWidth =
+                resizeStartWidth.value + (event.pageX - resizeStartX.value);
 
 		const currentHeaders = clone(props.headers);
 

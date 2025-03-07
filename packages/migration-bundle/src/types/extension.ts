@@ -86,7 +86,9 @@ export interface Access {
 	role?: null | string;
 	sort: null | number;
 	user: null | string;
-};
+}
+
+;
 
 export interface Dashboard {
 	id: string;
@@ -178,18 +180,24 @@ export interface Scope {
 	extensions: boolean;
 	flows: boolean;
 	force: boolean;
-};
+}
+
+;
 
 export interface UserCollectionItems {
 	collection: string;
 	primaryKeyField: string;
 	items: Item[] | null;
-};
+}
+
+;
 
 export interface UserCollectionItem {
 	collection: string;
 	item: Item | null;
-};
+}
+
+;
 
 export interface SystemExtract {
 	roles: RoleRaw[] | null;
@@ -210,7 +218,9 @@ export interface SystemExtract {
 	shares: Share[] | null;
 	system_errors: DirectusError | null;
 	scope?: Scope;
-};
+}
+
+;
 
 export interface DataExtract {
 	collections: Collection[] | null;
@@ -219,19 +229,27 @@ export interface DataExtract {
 	files: File[] | null;
 	data_errors: DirectusError | null;
 	scope?: Scope;
-};
+}
+
+;
 
 export interface DashboardRaw extends Omit<Dashboard, 'date_created'> {
 	date_created?: 'datetime' | null;
-};
+}
+
+;
 
 export interface PanelRaw extends Omit<Panel, 'date_created'> {
 	date_created?: 'datetime' | null;
-};
+}
+
+;
 
 export interface ModifiedFlowRaw extends Omit<FlowRaw, 'date_created'> {
 	date_created?: 'datetime';
-};
+}
+
+;
 
 export interface CommentRaw extends Omit<Comment, 'item' | 'date_created' | 'date_updated' | 'user_created' | 'user_updated'> {
 	item?: string;
@@ -239,6 +257,8 @@ export interface CommentRaw extends Omit<Comment, 'item' | 'date_created' | 'dat
 	date_updated: 'datetime' | null;
 	user_created: string | null;
 	user_updated: string | null;
-};
+}
+
+;
 
 export type JSONInput = SchemaOverview | Role | RoleRaw | Policy | PolicyRaw | Permission | User | UserRaw | Access | Folder | File | Dashboard | DashboardRaw | FlowRaw | ModifiedFlowRaw | OperationRaw | Panel | Operation | Settings | Translation | Preset | Extension | Comment | CommentRaw | Share | UserCollectionItems | UserCollectionItem;

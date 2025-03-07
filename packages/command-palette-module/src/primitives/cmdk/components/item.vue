@@ -37,7 +37,7 @@ const state = injectState();
 const context = injectCommandRootContext();
 const groupContext = injectCommandGroupContext(null);
 
-const value = useValue(
+const internalValue = useValue(
 	id,
 	currentRef,
 	[propValue, currentRef, defaultSlot],
@@ -49,7 +49,7 @@ const forceMount = computed(
 );
 
 const selected = useCommandMenu(
-	(state) => !!state.value && state.value === value.value,
+	(state) => !!state.value && state.value === internalValue.value,
 );
 
 const render = useCommandMenu((state) =>
@@ -66,14 +66,14 @@ useEventListener(currentRef, SELECT_EVENT, onSelect);
 
 function onSelect() {
 	select();
-	emit('select', value.value);
+	emit('select', internalValue.value);
 }
 
 function select() {
-	state.value = value.value;
+	state.value = internalValue.value;
 }
 
-let unregister: () => void | null = null;
+let unregister: () => null = null;
 
 onMounted(() => {
 	if (!forceMount.value) {

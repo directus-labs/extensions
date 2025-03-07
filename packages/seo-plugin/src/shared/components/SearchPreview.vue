@@ -9,14 +9,14 @@ defineProps<{
 
 function getFavicon(): string {
 	// Check for favicon in different possible locations in current document
-	const favicon
+	const favicon =
 		// Check apple-touch-icon first (usually higher quality)
-		= window.document.querySelector('link[rel=\'apple-touch-icon\']')?.getAttribute('href')
+		window.document.querySelector('link[rel=\'apple-touch-icon\']')?.getAttribute('href')
 		// Check for explicit favicon link
-			|| window.document.querySelector('link[rel=\'icon\']')?.getAttribute('href')
-			|| window.document.querySelector('link[rel=\'shortcut icon\']')?.getAttribute('href')
+		|| window.document.querySelector('link[rel=\'icon\']')?.getAttribute('href')
+		|| window.document.querySelector('link[rel=\'shortcut icon\']')?.getAttribute('href')
 		// Fallback to default favicon.ico
-			|| '/favicon.ico';
+		|| '/favicon.ico';
 
 	return favicon;
 }

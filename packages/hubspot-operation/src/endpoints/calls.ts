@@ -1,6 +1,7 @@
 import { create, del, list, read, update } from './actions';
 
 const endpoint = 'calls';
+
 export const calls = {
 	label: 'Calls',
 	icon: 'call',

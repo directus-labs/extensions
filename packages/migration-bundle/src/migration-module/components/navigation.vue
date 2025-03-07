@@ -11,7 +11,7 @@ export default {
 				color: '',
 				name: 'Home',
 				collection: 'home',
-				to: `/migration`,
+				to: '/migration',
 			},
 		]);
 
