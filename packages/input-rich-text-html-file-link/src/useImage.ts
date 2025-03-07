@@ -104,11 +104,7 @@ export default function useImage(
 				}
 
 				if (transformationKey) {
-					selectedPreset.value =
-                        options.storageAssetPresets.value.find(
-                        	(preset: SettingsStorageAssetPreset) =>
-                        		preset.key === transformationKey,
-                        );
+					selectedPreset.value = options.storageAssetPresets.value.find((preset: SettingsStorageAssetPreset) => preset.key === transformationKey);
 				}
 
 				imageSelection.value = {

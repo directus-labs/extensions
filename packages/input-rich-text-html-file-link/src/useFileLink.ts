@@ -61,11 +61,11 @@ export default function useImage(
 			);
 
 			if (selectedPreset.value) {
-				fileLinkSelection.value!.width
-                    = selectedPreset.value.width ?? undefined;
+				fileLinkSelection.value!.width =
+                    selectedPreset.value.width ?? undefined;
 
-				fileLinkSelection.value!.height
-                    = selectedPreset.value.height ?? undefined;
+				fileLinkSelection.value!.height =
+                    selectedPreset.value.height ?? undefined;
 			}
 		},
 	);
@@ -78,8 +78,8 @@ export default function useImage(
 			fileLinkDrawerOpen.value = true;
 
 			if (buttonApi === true || buttonApi.isActive()) {
-				const node
-					= editor.value.selection.getNode() as HTMLImageElement;
+				const node =
+					editor.value.selection.getNode() as HTMLImageElement;
 
 				const imageUrl = node.getAttribute('href');
 
@@ -101,11 +101,7 @@ export default function useImage(
 				}
 
 				if (transformationKey) {
-					selectedPreset.value =
-                        options.storageAssetPresets.value.find(
-                        	(preset: SettingsStorageAssetPreset) =>
-                        		preset.key === transformationKey,
-                        );
+					selectedPreset.value = options.storageAssetPresets.value.find((preset: SettingsStorageAssetPreset) => preset.key === transformationKey);
 				}
 
 				fileLinkSelection.value = {
@@ -220,7 +216,7 @@ export default function useImage(
 
 		const linkHtml = `<a href="${resizedImageUrl}"
 			${img.tooltip ? `title="${img.tooltip}"` : ''}
-			${img.target ? `target="_blank" rel="noopener"` : ''}
+			${img.target ? 'target="_blank" rel="noopener"' : ''}
 		>${img.displayText || 'View File'}</a>`;
 
 		const currentNode = editor.value.selection.getNode();

@@ -248,7 +248,7 @@ function contentUpdated() {
 
 	if (!observer)
 		return;
-
+	// eslint-disable-next-line unicorn/prefer-logical-operator-over-ternary
 	const newValue = editorRef.value.getContent() ? editorRef.value.getContent() : null;
 
 	if (newValue === emittedValue)
