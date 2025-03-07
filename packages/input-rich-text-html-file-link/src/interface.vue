@@ -11,8 +11,8 @@ import ImageDrawer from './components/ImageDrawer.vue';
 // CORE-CHANGE end
 import { percentage } from './core-clones/utils/percentage';
 import getEditorStyles from './get-editor-styles';
+import useFileLink from './useFileLink';
 import useImage from './useImage';
-import useImageExtended from './useImageExtended';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
@@ -71,7 +71,7 @@ const props = withDefaults(
 			'blockquote',
 			'customLink',
 			'customImage',
-			'customImageExtended',
+			'fileLink',
 			'customMedia',
 			'code',
 			'fullscreen',
@@ -111,7 +111,7 @@ const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveIm
 	},
 );
 
-const { imageExtendedDrawerOpen, imageExtendedSelection, closeImageExtendedDrawer, onImageExtendedSelect, saveImageExtended, imageExtendedButton } = useImageExtended(
+const { fileLinkDrawerOpen, fileLinkSelection, closeFileLinkDrawer, onFileLinkSelect, saveFileLink, fileLinkButton } = useFileLink(
 	editorRef,
 	imageToken!,
 	{
@@ -312,7 +312,7 @@ function setup(editor: any) {
 		}
 	});
 
-	editor.ui.registry.addToggleButton('customImageExtended', imageExtendedButton);
+	editor.ui.registry.addToggleButton('fileLink', fileLinkButton);
 }
 
 function setFocus(val: boolean) {
@@ -428,49 +428,68 @@ function setFocus(val: boolean) {
 			@close-image-drawer="closeImageDrawer"
 			@save-image="saveImage"
 			@on-image-select="onImageSelect"
-		/>
+		>
+			<template #additionalFields="{ imageSelection: selectedImage }">
+				<div class="field half">
+					<div class="type-label">
+						{{ t('wysiwyg_options.lazy_loading') }}
+					</div>
+					<v-checkbox
+						v-model="selectedImage.lazy" block
+						:label="t('wysiwyg_options.lazy_loading_label')"
+					/>
+				</div>
+
+				<div class="field half-right">
+					<div class="type-label">
+						{{ t('alt_text') }}
+					</div>
+					<v-input v-model="selectedImage.alt" :nullable="false" />
+				</div>
+			</template>
+		</ImageDrawer>
 
 		<ImageDrawer
-			:image-drawer-open="imageExtendedDrawerOpen"
-			:image-selection="imageExtendedSelection"
+			:image-drawer-open="fileLinkDrawerOpen"
+			:image-selection="fileLinkSelection"
 			:storage-asset-transform="storageAssetTransform"
 			:storage-asset-presets="storageAssetPresets"
 			:folder="folder"
-			@close-image-drawer="closeImageExtendedDrawer"
-			@save-image="saveImageExtended"
-			@on-image-select="onImageExtendedSelect"
+			@close-image-drawer="closeFileLinkDrawer"
+			@save-image="saveFileLink"
+			@on-image-select="onFileLinkSelect"
 		>
-			<template #additionalFields="{ imageSelection: extendedImageSelection }">
-				<div class="field half-right">
+			<template #additionalFields="{ imageSelection: selectedFileLink }">
+				<div class="field half">
 					<div class="type-label">
 						Display Text
 					</div>
-					<v-input v-model="extendedImageSelection.displayText" />
-				</div>
-
-				<div class="field half">
-					<div class="type-label">
-						Tooltip
-					</div>
-					<v-input v-model="extendedImageSelection.tooltip" />
+					<v-input v-model="selectedFileLink.displayText" />
 				</div>
 
 				<div class="field half-right">
+					<div class="type-label">
+						Tooltip
+					</div>
+					<v-input v-model="selectedFileLink.tooltip" />
+				</div>
+
+				<div class="field half">
 					<div class="type-label">
 						Open Link In
 					</div>
 					<v-checkbox
-						v-model="extendedImageSelection.target" block
+						v-model="selectedFileLink.target" block
 						label="New Tab"
 					/>
 				</div>
 
-				<div class="field half">
+				<div class="field half-right">
 					<div class="type-label">
 						Download
 					</div>
 					<v-checkbox
-						v-model="extendedImageSelection.download" block
+						v-model="selectedFileLink.download" block
 						label="Download"
 					/>
 				</div>
