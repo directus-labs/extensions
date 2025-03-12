@@ -1,6 +1,7 @@
 import { create, del, list, read, update } from './actions';
 
 const endpoint = 'meetings';
+
 export const meetings = {
 	label: 'Meetings',
 	icon: 'meeting_room',

@@ -21,13 +21,13 @@ defineEmits<{
 const { forwardRef } = useForwardExpose();
 const isControlled = computed(() => props.value !== null);
 const search = useCommandMenu((state) => state.search);
-const value = useCommandMenu((state) => state.value);
+const internalValue = useCommandMenu((state) => state.value);
 const state = injectState();
 const context = injectCommandRootContext();
 
 const selectedItemId = computed(() => {
 	const item = context.listInnerRef.value?.querySelector(
-		`${ITEM_SELECTOR}[${VALUE_ATTR}="${encodeURIComponent(value)}"]`,
+		`${ITEM_SELECTOR}[${VALUE_ATTR}="${encodeURIComponent(internalValue)}"]`,
 	);
 
 	return item?.getAttribute('id') ?? undefined;

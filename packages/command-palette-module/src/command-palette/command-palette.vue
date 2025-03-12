@@ -32,10 +32,7 @@ useEventListener(commandPalette, 'keydown', (e) => {
 	if (e.defaultPrevented)
 		return;
 
-	if (e.key === 'Backspace' && search.value === '') {
-		if (commandRouter.pop())
-			e.preventDefault();
-	}
+	if (e.key === 'Backspace' && search.value === '' && commandRouter.pop()) e.preventDefault();
 });
 
 // Ignore click events from the dialog and menu outlets
@@ -68,12 +65,7 @@ function customFilter(value: string, search: string, keywords: string[]) {
 
 		const sort = el?.dataset.sort;
 
-		if (sort !== undefined) {
-			return 1 / (sort + 1);
-		}
-		else {
-			return 1 / Number.MAX_SAFE_INTEGER;
-		}
+		return sort !== undefined ? 1 / (sort + 1) : 1 / Number.MAX_SAFE_INTEGER;
 	}
 	else {
 		return commandScore(value, search, keywords);

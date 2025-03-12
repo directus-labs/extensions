@@ -206,14 +206,14 @@ async function fetchData() {
 
 		data = new Map(newData);
 	}
-	catch (ex) {
+	catch (error) {
 		errorResponse.value = {
 			title: 'An error occured',
-			message: ex.message,
+			message: error.message,
 		};
 
 		hasError.value = true;
-		console.error(ex);
+		console.error(error);
 	}
 
 	isLoading.value = false;

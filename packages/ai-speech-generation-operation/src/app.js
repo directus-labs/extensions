@@ -66,7 +66,7 @@ export default {
 				width: 'half',
 				interface: 'slider',
 				options: {
-					max: 3.0,
+					max: 3,
 					min: 0.1,
 					step: 0.1,
 				},

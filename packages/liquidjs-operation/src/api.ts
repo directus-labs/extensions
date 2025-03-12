@@ -1,8 +1,7 @@
-/* eslint-disable ts/ban-ts-comment */
 /// <reference types="@directus/extensions/api.d.ts" />
 import { defineOperationApi } from '@directus/extensions-sdk';
 import { request } from 'directus:api';
-// @ts-ignore - Using the browser.esm version in order to make this 'sandboxable'.
+// @ts-expect-error - Using the browser.esm version in order to make this 'sandboxable'.
 import { Liquid } from 'liquidjs/dist/liquid.browser.mjs';
 
 export interface Options {

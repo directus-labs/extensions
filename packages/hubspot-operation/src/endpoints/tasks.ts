@@ -1,6 +1,7 @@
 import { create, del, list, read, update } from './actions';
 
 const endpoint = 'tasks';
+
 export const tasks = {
 	label: 'Tasks',
 	icon: 'check_box',

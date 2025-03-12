@@ -27,8 +27,8 @@ export function getItemResultCommand(
 
 		const id = `${collection}:${item[info.value.primaryKeyField]}`;
 
-		const icon
-      = thumbnailField && item[thumbnailField] ? () => h(DisplayImage, { value: { id: item[thumbnailField] } }) : collectionIcon;
+		const icon =
+      thumbnailField && item[thumbnailField] ? () => h(DisplayImage, { value: { id: item[thumbnailField] } }) : collectionIcon;
 
 		return {
 			id: `search-item:${id}`,

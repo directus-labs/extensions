@@ -1,0 +1,54 @@
+name: Report a bug
+description: Let us know if an extension is not working as intended
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Hi, thank you for taking the time to create an issue! Before you get started, please ensure the following are correct:
+
+        - I'm using the [latest version of Directus](https://github.com/directus/directus/releases)
+        - There's [no other issue](https://github.com/directus-labs/extensions/issues?q=is%3Aissue) that already describes the problem.
+
+        _For issues specific to the core project, please [submit issues](https://github.com/directus/directus/issues/new/choose) at the [official GitHub organisation for Directus](https://github.com/directus)._
+  - type: dropdown
+    id: extension
+    attributes:
+      label: Extension
+      description: Which extension does this issue relate to?
+      options:
+{{#extensions}}
+        - {{name}}
+{{/extensions}}
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: To Reproduce
+      description:
+        Steps to reproduce the behavior. Contributors should be able to follow the steps provided in order to reproduce
+        the bug.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Directus Version
+      placeholder: v10.x.x
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Hosting Strategy
+      options:
+        - Self-Hosted (Docker Image)
+        - Self-Hosted (Custom)
+        - Directus Cloud
+    validations:
+      required: true

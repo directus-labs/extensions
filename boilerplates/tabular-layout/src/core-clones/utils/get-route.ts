@@ -75,8 +75,8 @@ export function getItemRoute(
 		return collectionRoute;
 	}
 
-	const itemRoute
-        = primaryKey === '+' ? primaryKey : encodeURIComponent(primaryKey);
+	const itemRoute =
+        primaryKey === '+' ? primaryKey : encodeURIComponent(primaryKey);
 
 	return `${collectionRoute}/${itemRoute}`;
 }

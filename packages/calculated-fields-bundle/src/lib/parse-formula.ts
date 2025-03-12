@@ -5,12 +5,8 @@ export function parseFormula(formula: string) {
 	try {
 		return parse(formula, { grammarSource: 'formula' });
 	}
-	catch (err: unknown) {
-		if (isObject(err) && 'format' in err && typeof err.format === 'function') {
-			throw err.format([{ source: 'formula', text: formula }]);
-		}
-		else {
-			throw err;
-		}
+	catch (error_: unknown) {
+		const error = isObject(error_) && 'format' in error_ && typeof error_.format === 'function' ? error_.format([{ source: 'formula', text: formula }]) : error_;
+		throw error;
 	}
 }

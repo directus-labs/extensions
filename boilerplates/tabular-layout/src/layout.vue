@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/extensions';
 import type { Field, Filter, Item } from '@directus/types';
+import type { ComponentPublicInstance, Ref } from 'vue';
 // CORE CLONES
 import type { HeaderRaw } from './core-clones/components/v-table/types';
 import type {
@@ -12,11 +13,11 @@ import type { Collection } from './core-clones/types/collections';
 // import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useSync } from '@directus/extensions-sdk';
 import {
-	type ComponentPublicInstance,
+
 	computed,
 	inject,
 	ref,
-	type Ref,
+
 	toRefs,
 	watch,
 } from 'vue';
@@ -40,7 +41,7 @@ const props = withDefaults(defineProps<Props>(), {
 	sortField: undefined,
 	filterUser: undefined,
 	search: undefined,
-	onAlignChange: () => undefined,
+	onAlignChange: () => {},
 });
 
 const emit = defineEmits([
@@ -136,7 +137,7 @@ useShortcut(
 
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
-	(value) => String(value),
+	String,
 	props.limit,
 	system,
 );

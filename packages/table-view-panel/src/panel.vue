@@ -80,7 +80,7 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/items/${props.collection}`, {
 					params: {
-						limit: props.limit ? props.limit : 10,
+						limit: props.limit || 10,
 						filter: props.filter,
 						fields,
 						sort: await sortKey(options?.sort_field, options?.sort_direction),
@@ -95,7 +95,7 @@ export default defineComponent({
 					if (tableIDs.value.includes(String(id)))
 						return null;
 
-					props.fields.forEach((field_key) => {
+					for (const field_key of props.fields) {
 						let content_length = minCellWidth;
 
 						if (field_key.includes('.')) {
@@ -104,9 +104,7 @@ export default defineComponent({
 							if (keys.length > 2) {
 								let content: Record<string, any> = item;
 
-								for (let idx = 0; idx < keys.length; idx++) {
-									const key = keys[idx];
-
+								for (const key of keys) {
 									if (key !== undefined && content[key] !== undefined && content[key] !== null) {
 										content = content[key];
 									}
@@ -126,7 +124,7 @@ export default defineComponent({
 						}
 
 						tableIDs.value.push(String(id));
-					});
+					}
 
 					return item;
 				}).filter((field: object | null) => field !== null);
@@ -158,7 +156,6 @@ export default defineComponent({
 				return relation.field === field || relation.meta?.one_field === field;
 			});
 
-			// eslint-disable-next-line no-nested-ternary
 			const relatedCollection = (relation === undefined ? props.collection : (relation.field === field && relation.related_collection !== props.collection ? relation.related_collection : relation.collection));
 
 			return { collection: relatedCollection, fieldPath: path.join('.') };

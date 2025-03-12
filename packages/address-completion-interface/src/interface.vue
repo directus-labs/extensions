@@ -1,13 +1,9 @@
-<!-- eslint-disable ts/ban-ts-comment -->
 <script setup lang="ts">
 import type { PropType } from 'vue';
 import { Loader } from '@googlemaps/js-api-loader';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-// @ts-ignore
 import googleLogoDark from './assets/images/google_on_non_white_hdpi.png';
-
-// @ts-ignore
 import googleLogo from './assets/images/google_on_white_hdpi.png';
 import { getCurrentLanguage } from './utils/get-current-lang';
 
@@ -499,8 +495,8 @@ function setMapType(newValue: MapType) {
 <style lang="scss" scoped>
 :deep(.v-select) {
 	/*
-	* Small style in sync with input-small
-	* @see https://github.com/directus/directus/blob/28aaf739ba75980f4cb5ed1fa8c31b900dd97765/app/src/components/v-input.vue#L434-L440
+	Small style in sync with input-small
+	@see https://github.com/directus/directus/blob/28aaf739ba75980f4cb5ed1fa8c31b900dd97765/app/src/components/v-input.vue#L434-L440
 	*/
 	&.small {
 		.v-input {
@@ -551,7 +547,7 @@ function setMapType(newValue: MapType) {
 	.map-type-select-container,
 	.map-controls-container {
 		margin: 10px;
-		font-size: 15px; /* Align with the #main-content base font-size  */
+		font-size: 15px; /* Align with the #main-content base font-size */
 	}
 
 	.search-container {

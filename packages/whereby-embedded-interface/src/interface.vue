@@ -35,11 +35,11 @@ onMounted(() => {
 	const script = document.createElement('script');
 	script.src = 'https://cdn.srv.whereby.com/embed/v2-embed.js';
 	script.type = 'module';
-	document.head.appendChild(script);
+	document.head.append(script);
 
-	script.onload = () => {
+	script.addEventListener('load', () => {
 		valuesLoaded.value = true;
-	};
+	});
 });
 
 const embedUrl = computed(() => {

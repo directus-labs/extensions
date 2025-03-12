@@ -64,7 +64,7 @@ function flowIdentifiers() {
 		.map((action) => action.flow as FlowIdentifier);
 }
 
-if (flowIdentifiers().length) {
+if (flowIdentifiers().length > 0) {
 	fetchFlows(flowIdentifiers());
 }
 

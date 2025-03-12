@@ -10,5 +10,5 @@ export interface GlobalCommandContext {
 	clearSearch: () => void;
 }
 
-export const [useCommandContext, provideGlobalCommandContext]
-  = createContext<GlobalCommandContext>('GlobalCommand');
+export const [useCommandContext, provideGlobalCommandContext] =
+  createContext<GlobalCommandContext>('GlobalCommand');

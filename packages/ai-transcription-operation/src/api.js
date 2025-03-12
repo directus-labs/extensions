@@ -11,9 +11,9 @@ export default {
 			requestUrl += `&diarize=${diarize}`;
 
 		if (keywords && keywords.length > 0) {
-			keywords.forEach((keyword) => {
+			for (const keyword of keywords) {
 				requestUrl += `&keywords=${keyword}`;
-			});
+			}
 		}
 
 		try {
@@ -30,15 +30,12 @@ export default {
 				throw new Error('An error occurred when accessing Deepgram');
 
 			// If a callback URL was provided, we don't want to wait for the transcription to complete
-			if (callback) {
-				return {
-					request_id: response.data.request_id,
-					message: 'Transcription request submitted for processing.',
-				};
-			}
-			else {
-				return response.data.results.channels[0].alternatives[0];
-			}
+			return callback
+				? {
+						request_id: response.data.request_id,
+						message: 'Transcription request submitted for processing.',
+					}
+				: response.data.results.channels[0].alternatives[0];
 		}
 		catch (error) {
 			log(error.message);

@@ -1,9 +1,10 @@
 // https://github.com/radix-vue/radix-vue/blob/c55327a868484aeee141b4178575677b9287c737/packages/radix-vue/src/shared/useForwardExpose.ts
 
+import type { ComponentPublicInstance } from 'vue';
 // reference: https://github.com/vuejs/rfcs/issues/258#issuecomment-1068697672
 import { unrefElement } from '@vueuse/core';
 import {
-	type ComponentPublicInstance,
+
 	computed,
 	getCurrentInstance,
 	ref,

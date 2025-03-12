@@ -122,18 +122,15 @@ async function fetchImage() {
 			},
 		});
 
-		if (props.value !== null && typeof props.value === 'object') {
-			image.value = {
-				...response.data.data,
-				...props.value,
-			};
-		}
-		else {
-			image.value = response.data.data;
-		}
+		image.value = props.value !== null && typeof props.value === 'object'
+			? {
+					...response.data.data,
+					...props.value,
+				}
+			: response.data.data;
 	}
-	catch (err: any) {
-		console.error(err);
+	catch (error: any) {
+		console.error(error);
 	}
 	finally {
 		loading.value = false;
@@ -148,8 +145,8 @@ async function imageErrorHandler() {
 	try {
 		await api.get(src.value);
 	}
-	catch (err: any) {
-		imageError.value = err.response?.data?.errors[0]?.extensions?.code;
+	catch (error: any) {
+		imageError.value = error.response?.data?.errors[0]?.extensions?.code;
 
 		if (!imageError.value || !te(`errors.${imageError.value}`)) {
 			imageError.value = 'UNKNOWN';

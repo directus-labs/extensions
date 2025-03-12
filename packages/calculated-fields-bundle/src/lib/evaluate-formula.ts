@@ -1,4 +1,3 @@
-/* eslint-disable ts/ban-ts-comment */
 import type { BinaryExpressionNode, FunctionNode, Node } from '../types';
 import * as formulajs from '@formulajs/formulajs';
 import { get, has } from 'lodash-es';
@@ -36,19 +35,19 @@ function evaluateBinaryExpression(
 
 	switch (node.operator) {
 		case '+':
-			// @ts-ignore
+			// @ts-expect-error types ensured via formulajs
 			return left + right;
 		case '-':
-			// @ts-ignore
+			// @ts-expect-error types ensured via formulajs
 			return left - right;
 		case '*':
-			// @ts-ignore
+			// @ts-expect-error types ensured via formulajs
 			return left * right;
 		case '/':
-			// @ts-ignore
+			// @ts-expect-error types ensured via formulajs
 			return left / right;
 		case '%':
-			// @ts-ignore
+			// @ts-expect-error types ensured via formulajs
 			return left % right;
 		case '<':
 			return left < right;
@@ -66,7 +65,7 @@ function evaluateBinaryExpression(
 }
 
 function evaluateFunction(node: FunctionNode, value: Record<string, any>) {
-	// @ts-ignore
+	// @ts-expect-error existence is checked here
 	const func = formulajs[node.name];
 
 	if (!func) {

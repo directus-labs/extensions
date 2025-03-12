@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import type { Ref } from 'vue';
 import { onClickOutside, onKeyStroke } from '@vueuse/core';
-import { computed, nextTick, ref, type Ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
@@ -106,7 +107,7 @@ function useCellNavigation(preventNavigation: Ref<boolean>, enterCell: any, leav
 }
 
 function useDisplayEdits() {
-	const fieldHasEdits = computed(() => typeof props.fieldEdits !== 'undefined');
+	const fieldHasEdits = computed(() => props.fieldEdits !== undefined);
 
 	const mergedItemWithEdits = computed(() => {
 		if (!fieldHasEdits.value)

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { ValidationError } from '@directus/types';
+import type { Ref } from 'vue';
 import type { SearchConfigType } from './types';
 import { useStores } from '@directus/extensions-sdk';
 import { useMagicKeys } from '@vueuse/core';
 import { clone, merge } from 'lodash-es';
-import { computed, ref, type Ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ZodError } from 'zod';
 import SearchNavigation from './components/navigation.vue';

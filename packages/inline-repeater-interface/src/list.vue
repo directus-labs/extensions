@@ -105,8 +105,8 @@ const internalValue = computed({
 		return value.value;
 	},
 	set: (newVal) => {
-		value.value
-			= props.fields && props.sort ? sortBy(value.value, props.sort) : newVal;
+		value.value =
+			props.fields && props.sort ? sortBy(value.value, props.sort) : newVal;
 	},
 });
 
@@ -146,9 +146,9 @@ function performRemoval(index: number) {
 function addNew() {
 	const newDefaults: any = {};
 
-	props.fields.forEach((field) => {
+	for (const field of props.fields) {
 		newDefaults[field.field!] = field.schema?.default_value;
-	});
+	}
 
 	if (Array.isArray(internalValue.value)) {
 		const newIndex = internalValue.value.length;
@@ -160,7 +160,7 @@ function addNew() {
 		// Focus the first input of the last form
 		nextTick(() => {
 			const forms = document.querySelectorAll('.list-item-form');
-			const lastForm = forms[forms.length - 1];
+			const lastForm = forms.at(-1);
 			const firstInput = lastForm?.querySelector('input, select, textarea');
 
 			if (firstInput instanceof HTMLElement) {
@@ -310,7 +310,7 @@ function discardAndLeave() {
 			<div v-if="internalValue" class="action-bar">
 				<v-button
 					v-tooltip="t('collapse_all')"
-					:disabled="!expandedItems.length"
+					:disabled="expandedItems.length === 0"
 					icon
 					kind="secondary"
 					title="Collapse all"

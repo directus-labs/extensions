@@ -85,7 +85,7 @@ const value = reactive<Value>(getInitialValue(props.value));
 const scope = ref<Scope>(getScope(props.value));
 
 const breadcrumbs = computed<Step[]>(() => {
-	return value.steps.filter((step) => Boolean(step)) as Step[];
+	return value.steps.filter(Boolean) as Step[];
 });
 
 const hasBreadcrumbs = computed<boolean>(() => {
@@ -93,12 +93,7 @@ const hasBreadcrumbs = computed<boolean>(() => {
 });
 
 function isStepDisabled(index: number): boolean {
-	if (index === 0) {
-		return false;
-	}
-	else {
-		return value.steps[index - 1] === null;
-	}
+	return index === 0 ? false : value.steps[index - 1] === null;
 }
 
 function clearStepsAfterIndex(index: number): void {
@@ -118,9 +113,9 @@ watch(
 watch(
 	() => value.steps,
 	() => {
-		const nullIndex = value.steps.findIndex((step) => step === null);
+		const nullIndex = value.steps.indexOf(null);
 
-		if (nullIndex > -1) {
+		if (nullIndex !== -1) {
 			for (let index = nullIndex + 1; index < value.steps.length; index++) {
 				value.steps[index] = null;
 			}
@@ -136,8 +131,8 @@ watch(
 				value.payload = parseJSON(payload);
 			}
 		}
-		catch (err: any) {
-			console.warn(err);
+		catch (error: any) {
+			console.warn(error);
 		}
 	},
 	{ deep: true },

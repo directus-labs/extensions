@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { inject, type Ref, toRefs } from 'vue';
+import type { Ref } from 'vue';
+import { inject, toRefs } from 'vue';
 import { useSeoField } from '../../shared/composables/useSeoField';
 import { seoRules } from '../../shared/rulesets';
 import SeoFieldWrapper from './SeoFieldWrapper.vue';

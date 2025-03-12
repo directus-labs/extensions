@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { Ref } from 'vue';
 import type { Video, VideoID, VideoService } from './types';
 import getVideoId from 'get-video-id';
-import { computed, ref, type Ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Plyr from './plyr.vue';
 
@@ -124,7 +125,7 @@ function useInputField(service: Ref<VideoService | null>, fileDrawer: Ref<boolea
 		if (service.value === 'directus')
 			return t('choose_from_library');
 
-		return `Video ID …`;
+		return 'Video ID …';
 	});
 
 	return { idInput, inputIsClickable, inputPlaceholder, onInputClick };
