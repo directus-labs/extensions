@@ -1,6 +1,12 @@
 {
-	"name": "github-operation",
-	"description": "Please enter a description for your extension",
+	"name": "@directus-labs/github-operation",
+	"description": "An Operation to allow Flows to send a webhook request to start GitHub Action",
+	"author": {
+		"name": "Dominic Marcelino",
+		"email": "dominic.marcelino@utomic.media",
+		"url": "https://utomic.media"
+	},
+	"license": "MIT",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [
@@ -22,7 +28,7 @@
 			"app": "src/app.ts",
 			"api": "src/api.ts"
 		},
-		"host": "^10.10.0"
+		"host": "^10.10.0 || ^11.0.0"
 	},
 	"scripts": {
 		"build": "directus-extension build",
