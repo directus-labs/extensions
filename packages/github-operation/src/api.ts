@@ -5,7 +5,7 @@ type Options = {
 };
 
 export default defineOperationApi<Options>({
-	id: 'custom',
+	id: 'directus-labs-github-operation',
 	handler: ({ text }) => {
 		console.log(text);
 	},
