@@ -17,7 +17,8 @@ export default defineOperationApp({
 		{
 			label: 'Event Type',
 			text: options.eventType,
-		},{
+		},
+		{
 			label: 'Client Payload',
 			text: options.clientPayload,
 		},

@@ -1,9 +1,9 @@
 /// <reference types="@directus/extensions/api.d.ts" />
-import { defineOperationApi } from '@directus/extensions-sdk';
 import { InvalidPayloadError } from '@directus/errors';
-import { request, log } from 'directus:api';
+import { defineOperationApi } from '@directus/extensions-sdk';
+import { log, request } from 'directus:api';
 
-type GithubOperationOptions = {
+interface GithubOperationOptions {
 	owner: string;
 	repo: string;
 	accessToken: string;
@@ -11,10 +11,10 @@ type GithubOperationOptions = {
 	clientPayload: JSON;
 };
 
-type RequestBody = {
+interface RequestBody {
 	event_type: string;
 	client_payload?: JSON;
-}
+};
 
 export default defineOperationApi<GithubOperationOptions>({
 	id: 'directus-labs-github-operation',
@@ -47,9 +47,10 @@ export default defineOperationApi<GithubOperationOptions>({
 			});
 
 			return { status: 204 };
-		} catch (error: any) {
+		}
+		catch (error: any) {
 			const response = JSON.parse(error.response);
-			const errorString = JSON.stringify(response.data) || 'Github Request failed, please check your configuration'
+			const errorString = JSON.stringify(response.data) || 'Github Request failed, please check your configuration';
 			log(errorString);
 
 			throw new Error(errorString);
