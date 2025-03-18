@@ -1,0 +1,43 @@
+{
+	"name": "elasticsearch-operation",
+	"description": "Intergrate Directus content with Elasticsearch. ",
+	"icon": "extension",
+	"version": "1.0.0",
+	"license": "MIT",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-operation"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "operation",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"source": {
+			"app": "src/app.ts",
+			"api": "src/api.ts"
+		},
+		"host": "^10.10.0 | ^11.0.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "13.0.3",
+		"@eslint/js": "^9.22.0",
+		"@types/node": "^22.13.10",
+		"vue": "^3.5.13"
+	},
+	"dependencies": {
+		"@elastic/elasticsearch": "^8.17.1"
+	}
+}
