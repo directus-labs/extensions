@@ -1,5 +1,5 @@
 {
-	"name": "elasticsearch-operation",
+	"name": "@directus-labs/elasticsearch-operation",
 	"type": "module",
 	"version": "1.0.0",
 	"description": "Intergrate Directus content with Elasticsearch. ",
