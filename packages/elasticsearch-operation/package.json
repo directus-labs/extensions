@@ -33,7 +33,6 @@
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "13.0.3",
-		"@eslint/js": "^9.22.0",
 		"@types/node": "^22.13.10",
 		"vue": "^3.5.13"
 	},
