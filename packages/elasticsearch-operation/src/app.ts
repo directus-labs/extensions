@@ -6,7 +6,7 @@ export default defineOperationApp({
 	name: 'Elastic Search Operation',
 	icon: 'search',
 	description: 'Index Directus content into Elastic Search.',
-	overview: ({ search_index, action, }) => [
+	overview: ({ search_index, action }) => [
 		{
 			label: 'Index',
 			text: search_index,
@@ -17,7 +17,6 @@ export default defineOperationApp({
 		},
 	],
 	options: (options): Array<object> => {
-
 		const action = options?.['action'];
 
 		return [
@@ -87,30 +86,32 @@ export default defineOperationApp({
 					interface: 'input',
 					note: 'The item id for this document',
 					required: true,
-				}
+				},
 			},
 			{
 				field: 'document',
 				name: 'Item Data',
 				type: 'json',
-				meta: ['create','update'].includes(action) ? {
-					width: 'full',
-					interface: 'input-code',
-					note: 'The item object to create in the search index.',
-					options: {
-						language: 'json',
-						placeholder: JSON.stringify(schema.create, null, 2),
-						template: JSON.stringify(schema.create),
-					},
-					required: true,
-				} : {
-					width: 'full',
-					interface: 'presentation-notice',
-					options: {
-						icon: false,
-						text: 'Document not required.',
-					},
-				},
+				meta: ['create', 'update'].includes(action)
+					? {
+							width: 'full',
+							interface: 'input-code',
+							note: 'The item object to create in the search index.',
+							options: {
+								language: 'json',
+								placeholder: JSON.stringify(schema.create, null, 2),
+								template: JSON.stringify(schema.create),
+							},
+							required: true,
+						}
+					: {
+							width: 'full',
+							interface: 'presentation-notice',
+							options: {
+								icon: false,
+								text: 'Document not required.',
+							},
+						},
 			},
 		];
 	},
