@@ -7,7 +7,7 @@ Intergrate Directus content with OpenSearch.
 ## Requirements
 
 - An OpenSearch cloud project or selfhosted project with access to the API.
-- An API key with full write access.
+- A username and password with full write access.
 
 _The operation is processed on the server side. If using localhost, opensearch must be on the same server._
 
@@ -21,8 +21,8 @@ Once installed, select the OpenSearch as an operation in the flow, then required
 
 |  Field  |  Type  |  Comments  |
 |---------|--------|------------|
-| Host    | `URL` | For cloud projects, the URL will look something like this: `https://my-elasticsearch-project-a0123bc.es.reigon-1.aws.elastic.cloud`. A local project will have a URL like this: `http://localhost:9200` |
-| Force&nbsp;SSL | `boolean` | Rejects connection if SSL fails |
+| Host    | `URL` | For cloud projects, the URL will look something like this: `https://my-opensearch-project-a0123bc.es.reigon-1.aws.elastic.cloud`. A local project will have a URL like this: `http://localhost:9200` |
+| Force&nbsp;SSL | `boolean` | Rejects connection if SSL fails. Set to false if using self-signed certificates |
 | Username | `string` | The username of the opensource instance |
 | Password | `string` | The password for the opensource instance. |
 | Index | `string` | The identifier for the index. This is usually the collection such as the `{{$trigger.collection}}` variable. |
