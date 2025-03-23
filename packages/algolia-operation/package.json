@@ -3,6 +3,7 @@
 	"description": "Use Algolia to index your Directus data.",
 	"icon": "extension",
 	"version": "1.0.0",
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
