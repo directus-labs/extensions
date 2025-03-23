@@ -2,25 +2,25 @@ import { defineOperationApp } from '@directus/extensions-sdk';
 
 const actions = [
 	{
-		text: "Add or replace a record",
-		value: "add-or-replace"
+		text: 'Add or replace a record',
+		value: 'add-or-replace',
 	},
 	{
-		text: "Add or update attributes",
-		value: "add-or-update-attributes"
+		text: 'Add or update attributes',
+		value: 'add-or-update-attributes',
 	},
 	{
-		text: "Delete a record",
-		value: "delete"
+		text: 'Delete a record',
+		value: 'delete',
 	},
 	{
-		text: "Retrieve a record",
-		value: "retrieve"
+		text: 'Retrieve a record',
+		value: 'retrieve',
 	},
 	{
-		text: "Search",
-		value: "search"
-	}
+		text: 'Search',
+		value: 'search',
+	},
 ];
 
 export default defineOperationApp({
@@ -31,11 +31,11 @@ export default defineOperationApp({
 	overview: ({ index, action }) => [
 		{
 			label: 'Index',
-			text: index
+			text: index,
 		},
 		{
 			label: 'Action',
-			text: actions.find(item => item.value == action)?.text
+			text: actions.find((item) => item.value === action)?.text,
 		},
 	],
 	options: ({ action }) => {
@@ -49,9 +49,9 @@ export default defineOperationApp({
 					interface: 'input',
 					options: {
 						font: 'monospace',
-						placeholder: 'Your Algolia application ID'
-					}
-				}
+						placeholder: 'Your Algolia application ID',
+					},
+				},
 			},
 			{
 				field: 'apiKey',
@@ -64,9 +64,9 @@ export default defineOperationApp({
 						iconRight: 'key',
 						font: 'monospace',
 						placeholder: 'Your Algolia API key',
-						masked: true
-					}
-				}
+						masked: true,
+					},
+				},
 			},
 			{
 				field: 'index',
@@ -77,8 +77,8 @@ export default defineOperationApp({
 					interface: 'input',
 					options: {
 						font: 'monospace',
-						placeholder: 'Name of your index'
-					}
+						placeholder: 'Name of your index',
+					},
 				},
 			},
 			{
@@ -89,10 +89,10 @@ export default defineOperationApp({
 					width: 'half',
 					interface: 'select-dropdown',
 					options: {
-						choices: actions
-					}
-				}
-			}
+						choices: actions,
+					},
+				},
+			},
 		];
 
 		const objectIdField = {
@@ -106,7 +106,7 @@ export default defineOperationApp({
 					font: 'monospace',
 					placeholder: '{{$trigger.key}}',
 				},
-			}
+			},
 		};
 
 		const bodyField = {
@@ -117,9 +117,9 @@ export default defineOperationApp({
 				width: 'full',
 				interface: 'input-code',
 				options: {
-					language: 'json'
-				}
-			}
+					language: 'json',
+				},
+			},
 		};
 
 		const paramsField = {
@@ -132,30 +132,30 @@ export default defineOperationApp({
 				options: {
 					language: 'json',
 					template: '{ "query": "" }',
-				}
-			}
+				},
+			},
 		};
 
-		if (action == 'add-or-replace') {
+		if (action === 'add-or-replace') {
 			fields.push(objectIdField, bodyField);
 		}
 
-		if (action == 'add-or-update-attributes') {
+		if (action === 'add-or-update-attributes') {
 			fields.push(objectIdField, bodyField);
 		}
 
-		if (action == 'delete') {
+		if (action === 'delete') {
 			fields.push(objectIdField);
 		}
 
-		if (action == 'retrieve') {
+		if (action === 'retrieve') {
 			fields.push(objectIdField);
 		}
 
-		if (action == 'search') {
+		if (action === 'search') {
 			fields.push(paramsField);
 		}
 
-		return fields
-	}
+		return fields;
+	},
 });
