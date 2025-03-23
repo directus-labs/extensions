@@ -1,5 +1,5 @@
 {
-	"name": "algolia-operation",
+	"name": "@directus-labs/algolia-operation",
 	"description": "Use Algolia to index your Directus data.",
 	"icon": "extension",
 	"version": "1.0.0",
