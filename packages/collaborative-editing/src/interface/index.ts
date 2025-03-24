@@ -2,8 +2,8 @@ import { defineInterface } from '@directus/extensions-sdk';
 import InterfaceComponent from './interface.vue';
 
 export default defineInterface({
-	id: 'custom',
-	name: 'Custom',
+	id: 'collaborative-editing',
+	name: 'Collaborative Editing',
 	icon: 'box',
 	description: 'This is my custom interface!',
 	component: InterfaceComponent,
