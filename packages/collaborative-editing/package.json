@@ -1,0 +1,72 @@
+{
+	"name": "collaborative-editing-bundle",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "Please enter a description for your extension",
+	"icon": "extension",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "hook",
+				"name": "collaborative-editing-hook",
+				"source": "src/server/hook.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "endpoint",
+				"source": "src/server/endpoint.ts"
+			},
+			{
+				"type": "interface",
+				"name": "interface",
+				"source": "src/interface/index.ts"
+			}
+		],
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"add": "directus-extension add"
+	},
+	"dependencies": {
+		"@directus/composables": "^11.1.8",
+		"@directus/constants": "^13.0.0",
+		"@directus/sdk": "^19.0.1",
+		"@directus/types": "^13.0.0",
+		"@directus/utils": "^13.0.2",
+		"@hocuspocus/extension-database": "^2.15.2",
+		"@hocuspocus/server": "^2.15.2",
+		"@rollup/plugin-node-resolve": "^16.0.1",
+		"@types/lodash-es": "^4.17.12",
+		"@types/ws": "^8.5.10",
+		"@vueuse/core": "^13.0.0",
+		"colorjs.io": "^0.5.0",
+		"express": "^4.21.2",
+		"express-ws": "^5.0.2",
+		"js-base64": "^3.7.7",
+		"lib0": "^0.2.94",
+		"lodash-es": "^4.17.21",
+		"vue-router": "4"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "13.0.3",
+		"@types/node": "^22.13.13",
+		"typescript": "^5.8.2",
+		"vue": "^3.5.13"
+	}
+}
