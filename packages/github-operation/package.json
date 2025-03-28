@@ -1,0 +1,62 @@
+{
+	"name": "@directus-labs/github-operation",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "An Operation to allow Flows to send a webhook request to start GitHub Action",
+	"author": {
+		"name": "Dominic Marcelino",
+		"email": "dominic.marcelino@utomic.media",
+		"url": "https://utomic.media"
+	},
+	"license": "MIT",
+	"icon": "github",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-operation"
+	],
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "operation",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"source": {
+			"app": "src/app.ts",
+			"api": "src/api.ts"
+		},
+		"host": "^10.10.0 || ^11.0.0",
+		"sandbox": {
+			"enabled": true,
+			"requestedScopes": {
+				"log": {},
+				"request": {
+					"methods": [
+						"POST"
+					],
+					"urls": [
+						"https://api.github.com/**"
+					]
+				}
+			}
+		}
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
+	},
+	"dependencies": {
+		"@directus/errors": "^1.0.0"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "13.0.3",
+		"@types/node": "^22.13.10",
+		"typescript": "^5.8.2",
+		"vue": "^3.5.13"
+	}
+}
