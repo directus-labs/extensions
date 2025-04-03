@@ -1,60 +1,40 @@
 <script setup lang="ts">
 import { HocuspocusProvider } from '@hocuspocus/provider';
-import Collaboration from '@tiptap/extension-collaboration';
-
-import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
+import CollaborationExtension from '@tiptap/extension-collaboration';
+import CollaborationCursorExtension from '@tiptap/extension-collaboration-cursor';
 import { StarterKit } from '@tiptap/starter-kit';
 import { EditorContent, useEditor } from '@tiptap/vue-3';
+import { defineProps, onMounted, onUnmounted } from 'vue';
 import * as Y from 'yjs';
 import { useCurrentUser } from '../composables/use-current-user';
 
+const props = defineProps<{
+	url?: string;
+	fieldName?: string;
+}>();
+
 const currentUser = useCurrentUser();
 
+// Use provided URL or default
+const url = props.url || 'http://localhost:8055/collaboration/1';
+
 const provider = new HocuspocusProvider({
-	url: 'http://0.0.0.0:1234',
+	url,
 	name: 'collaborative-editing',
-	onOpen() {
-		console.log('onOpen');
-	},
 	onConnect() {
-		console.log('onConnect');
+		// Update awareness state with field information
+		if (props.fieldName) {
+			provider.setAwarenessField('activeField', {
+				field: props.fieldName,
+			});
+		}
 	},
-	// onAuthenticated() {
-	// 	console.log('onAuthenticated');
-	// },
-	// onAuthenticationFailed: ({ reason }) => {
-	// 	console.log('onAuthenticationFailed', reason);
-	// },
 	onStatus: ({ status }) => {
-		console.log('onStatus', status);
+		console.warn('Collaboration status:', status);
 	},
-	// onMessage: ({ event, message }) => {
-	// 	console.log('onMessage', event, message);
-	// },
-	// onOutgoingMessage: ({ message }) => {
-	// 	console.log('onOutgoingMessage', message);
-	// },
-	// onSynced: ({ state }) => {
-	// 	console.log('onSynced', state);
-	// },
-	// onClose: ({ event }) => {
-	// 	console.log('onClose', event);
-	// },
-	// onDisconnect: ({ event }) => {
-	// 	console.log('onDisconnect', event);
-	// },
-	// onDestroy() {
-	// 	console.log('onDestroy');
-	// },
-	// onAwarenessUpdate: ({ added, updated, removed }) => {
-	// 	console.log('onAwarenessUpdate', added, updated, removed);
-	// },
-	// onAwarenessChange: ({ states }) => {
-	// 	console.log('onAwarenessChange', states);
-	// },
-	// onStateless: ({ payload }) => {
-	// 	console.log('onStateless', payload);
-	// },
+	onAwarenessUpdate: ({ states }) => {
+		console.warn('Awareness updated:', states.length, 'users connected');
+	},
 });
 
 const editor = useEditor({
@@ -62,11 +42,11 @@ const editor = useEditor({
 		StarterKit.configure({
 			history: false,
 		}),
-		Collaboration.configure({
+		CollaborationExtension.configure({
 			document: provider.document,
-			field: 'content',
+			field: props.fieldName || 'content',
 		}),
-		CollaborationCursor.configure({
+		CollaborationCursorExtension.configure({
 			provider,
 			user: {
 				name: currentUser.value.first_name,
@@ -74,6 +54,27 @@ const editor = useEditor({
 			},
 		}),
 	],
+});
+
+onMounted(() => {
+	if (props.fieldName) {
+		const updateAwareness = () => {
+			provider.setAwarenessField('activeField', {
+				field: props.fieldName,
+			});
+		};
+
+		// Update on focus
+		const editorElement = document.querySelector('.ProseMirror');
+
+		if (editorElement) {
+			editorElement.addEventListener('focus', updateAwareness);
+		}
+	}
+});
+
+onUnmounted(() => {
+	provider.destroy();
 });
 </script>
 

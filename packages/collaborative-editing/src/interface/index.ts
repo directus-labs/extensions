@@ -2,11 +2,16 @@ import { defineInterface } from '@directus/extensions-sdk';
 import InterfaceComponent from './interface.vue';
 
 export default defineInterface({
-	id: 'collaborative-editing',
-	name: 'Collaborative Editing',
-	icon: 'box',
-	description: 'This is my custom interface!',
+	id: 'presentation-collab-settings-interface',
+	name: 'Collaboration Settings',
+	icon: 'arrow_selector_tool',
+	description: 'Collaboration Settings',
 	component: InterfaceComponent,
 	options: null,
-	types: ['string'],
+	hideLabel: true,
+	hideLoader: true,
+	autoKey: true,
+	types: ['alias'],
+	localTypes: ['presentation'],
+	group: 'presentation',
 });
