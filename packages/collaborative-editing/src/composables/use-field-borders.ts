@@ -1,7 +1,7 @@
 import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import Color from 'colorjs.io';
 import { watch } from 'vue';
-import { findBorderElement } from '../interface/utils/find-border-element';
+import { findBorderElement } from '../utils/find-border-element';
 
 export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvider>) {
 	const allFields = new Set<string>();

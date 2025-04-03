@@ -24,7 +24,6 @@
 				"name": "collaborative-editing-hook",
 				"source": "src/server/hook.ts"
 			},
-
 			{
 				"type": "interface",
 				"name": "interface",
@@ -58,9 +57,11 @@
 		"@types/ws": "^8.5.10",
 		"@vueuse/core": "^13.0.0",
 		"colorjs.io": "^0.5.0",
+		"cookie": "^1.0.2",
 		"express": "^4.21.2",
 		"express-ws": "^5.0.2",
 		"js-base64": "^3.7.7",
+		"jsonwebtoken": "^9.0.2",
 		"lib0": "^0.2.94",
 		"lodash-es": "^4.17.21",
 		"vue-router": "4",
