@@ -26,25 +26,48 @@ export function injectSearchBar() {
 	});
 }
 
-function injectApp(retry: number = 0) {
+function injectApp(retry = 0) {
 	if (document.querySelector(`#${ID}`))
 		return;
 
-	const titleContainer = document.querySelector('.title-container');
+	const navigationWrapper = document.querySelector('.module-nav-content');
 
-	if (!titleContainer) {
-		// This is needed for the initial page load, as things might be slow to set up
-		if (retry < 3) {
-			setTimeout(() => injectApp(retry + 1), 100);
-		}
+	const searchInputContainer = navigationWrapper?.querySelector('.search-input');
 
-		return;
+	let searchBar: HTMLElement | null = null;
+
+	if (searchInputContainer) {
+		searchBar = document.createElement('div');
+		searchBar.id = ID;
+
+		// Replace the existing search input with our custom one
+		searchInputContainer.parentNode?.replaceChild(searchBar, searchInputContainer);
 	}
+	else {
+		// If search input container not found but navigation wrapper exists, inject into it
+		if (navigationWrapper) {
+			searchBar = document.createElement('div');
+			searchBar.id = ID;
+			navigationWrapper.prepend(searchBar);
+		}
+		else {
+			// Fall back to the header spacer if no navigation wrapper is found
+			const container = document.querySelector('header > .spacer');
 
-	const searchBar = document.createElement('div');
-	searchBar.id = ID;
+			if (!container) {
+				// This is needed for the initial page load, as things might be slow to set up
+				if (retry < 3) {
+					setTimeout(() => injectApp(retry + 1), 100);
+				}
 
-	titleContainer!.append(searchBar);
+				return;
+			}
+
+			searchBar = document.createElement('div');
+			searchBar.id = ID;
+			container.append(searchBar);
+		}
+	}
 
 	if (app) {
 		app.unmount();
@@ -57,7 +80,11 @@ function injectApp(retry: number = 0) {
 	app.provide(STORES_INJECT, injects[STORES_INJECT]);
 
 	directusApp.runWithContext(() => {
-		app!.provide(routerKey, inject(routerKey)!);
+		const router = inject(routerKey);
+
+		if (app && router) {
+			app.provide(routerKey, router);
+		}
 	});
 
 	app.mount(searchBar);

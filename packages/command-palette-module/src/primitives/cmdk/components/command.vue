@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/prop-name-casing -->
 <script lang="ts">
-import type { computed, ComputedRef, nextTick, reactive, Ref, ref, watch, watchEffect } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
+import { computed, nextTick, reactive, ref, toRefs, watch, watchEffect } from 'vue';
 import { createContext } from '../utils/create-context';
 
 export interface CommandEmits {

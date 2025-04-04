@@ -24,7 +24,7 @@ function onClick() {
 
 <template>
 	<div class="search-bar" @click="onClick">
-		<span>Search...</span>
+		<span>Global Search</span>
 		<span v-if="commandPaletteEnabled" class="keys">
 			<kbd>{{ isMacOS() ? "⌘" : "Ctrl+" }}</kbd>
 			<kbd>K</kbd>
@@ -36,6 +36,7 @@ function onClick() {
 .search-bar {
 	cursor: pointer;
 	display: flex;
+
 	gap: 8px;
 	justify-content: center;
 	align-items: center;
@@ -46,6 +47,7 @@ function onClick() {
 	color: var(--theme--foreground-subdued);
 
 	transition: all var(--fast) var(--transition);
+	margin-right: 12px;
 }
 
 .search-bar:hover {
