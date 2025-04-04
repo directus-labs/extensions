@@ -30,9 +30,10 @@ function injectApp(retry = 0) {
 	if (document.querySelector(`#${ID}`))
 		return;
 
-	const navigationWrapper = document.querySelector('.module-nav-content');
+	const moduleNavContent = document.querySelector('.module-nav-content');
+	const contentNavigationWrapper = document.querySelector('.content-navigation-wrapper');
 
-	const searchInputContainer = navigationWrapper?.querySelector('.search-input');
+	const searchInputContainer = moduleNavContent?.querySelector('.search-input');
 
 	let searchBar: HTMLElement | null = null;
 
@@ -45,10 +46,17 @@ function injectApp(retry = 0) {
 	}
 	else {
 		// If search input container not found but navigation wrapper exists, inject into it
-		if (navigationWrapper) {
+		if (contentNavigationWrapper) {
 			searchBar = document.createElement('div');
 			searchBar.id = ID;
-			navigationWrapper.prepend(searchBar);
+			contentNavigationWrapper.prepend(searchBar);
+		}
+
+		// Fallback to module nav content if no navigation wrapper is found
+		else if (moduleNavContent) {
+			searchBar = document.createElement('div');
+			searchBar.id = ID;
+			moduleNavContent.prepend(searchBar);
 		}
 		else {
 			// Fall back to the header spacer if no navigation wrapper is found

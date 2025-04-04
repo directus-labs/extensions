@@ -23,31 +23,35 @@ function onClick() {
 </script>
 
 <template>
-	<div class="search-bar" @click="onClick">
-		<span>Global Search</span>
-		<span v-if="commandPaletteEnabled" class="keys">
-			<kbd>{{ isMacOS() ? "⌘" : "Ctrl+" }}</kbd>
-			<kbd>K</kbd>
-		</span>
+	<div class="search-bar-container">
+		<div class="search-bar" @click="onClick">
+			<span>Global Search</span>
+			<span v-if="commandPaletteEnabled" class="keys">
+				<kbd>{{ isMacOS() ? "⌘" : "Ctrl+" }}</kbd>
+				<kbd>K</kbd>
+			</span>
+		</div>
 	</div>
 </template>
 
 <style scoped>
+.search-bar-container {
+	padding: 12px 12px 0;
+}
+
 .search-bar {
 	cursor: pointer;
 	display: flex;
-
+	background-color: var(--theme--background);
 	gap: 8px;
 	justify-content: center;
 	align-items: center;
 	border: 1px solid var(--theme--border-color);
 	padding: 6px 12px;
 	border-radius: var(--theme--border-radius);
-	margin-left: 24px;
 	color: var(--theme--foreground-subdued);
 
 	transition: all var(--fast) var(--transition);
-	margin-right: 12px;
 }
 
 .search-bar:hover {
