@@ -26,25 +26,56 @@ export function injectSearchBar() {
 	});
 }
 
-function injectApp(retry: number = 0) {
+function injectApp(retry = 0) {
 	if (document.querySelector(`#${ID}`))
 		return;
 
-	const titleContainer = document.querySelector('.title-container');
+	const moduleNavContent = document.querySelector('.module-nav-content');
+	const contentNavigationWrapper = document.querySelector('.content-navigation-wrapper');
 
-	if (!titleContainer) {
-		// This is needed for the initial page load, as things might be slow to set up
-		if (retry < 3) {
-			setTimeout(() => injectApp(retry + 1), 100);
+	const searchInputContainer = moduleNavContent?.querySelector('.search-input');
+
+	let searchBar: HTMLElement | null = null;
+
+	if (searchInputContainer) {
+		searchBar = document.createElement('div');
+		searchBar.id = ID;
+
+		// Replace the existing search input with our custom one
+		searchInputContainer.parentNode?.replaceChild(searchBar, searchInputContainer);
+	}
+	else {
+		// If search input container not found but navigation wrapper exists, inject into it
+		if (contentNavigationWrapper) {
+			searchBar = document.createElement('div');
+			searchBar.id = ID;
+			contentNavigationWrapper.prepend(searchBar);
 		}
 
-		return;
+		// Fallback to module nav content if no navigation wrapper is found
+		else if (moduleNavContent) {
+			searchBar = document.createElement('div');
+			searchBar.id = ID;
+			moduleNavContent.prepend(searchBar);
+		}
+		else {
+			// Fall back to the header spacer if no navigation wrapper is found
+			const container = document.querySelector('header > .spacer');
+
+			if (!container) {
+				// This is needed for the initial page load, as things might be slow to set up
+				if (retry < 3) {
+					setTimeout(() => injectApp(retry + 1), 100);
+				}
+
+				return;
+			}
+
+			searchBar = document.createElement('div');
+			searchBar.id = ID;
+			container.append(searchBar);
+		}
 	}
-
-	const searchBar = document.createElement('div');
-	searchBar.id = ID;
-
-	titleContainer!.append(searchBar);
 
 	if (app) {
 		app.unmount();
@@ -57,7 +88,11 @@ function injectApp(retry: number = 0) {
 	app.provide(STORES_INJECT, injects[STORES_INJECT]);
 
 	directusApp.runWithContext(() => {
-		app!.provide(routerKey, inject(routerKey)!);
+		const router = inject(routerKey);
+
+		if (app && router) {
+			app.provide(routerKey, router);
+		}
 	});
 
 	app.mount(searchBar);
