@@ -28,17 +28,20 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [AI Translator Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-translator-operation) | Operation | ✅ |  |
 | [AI Web Scraper Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-web-scraper-operation) | Operation | ✅ |  |
 | [AI Writer Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-writer-operation) | Operation | ✅ |  |
+| [Algolia Operation](//github.com/directus-labs/extensions/tree/main/packages/algolia-operation) | Operation | N&#x2F;A |  |
 | [API Metric Panel](//github.com/directus-labs/extensions/tree/main/packages/api-metric-panel) | Bundle | N&#x2F;A |  |
 | [Audio Player Interface](//github.com/directus-labs/extensions/tree/main/packages/audio-player-interface) | Interface | N&#x2F;A |  |
 | [Calculated Fields Bundle](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle) | Bundle | N&#x2F;A | ⭐ |
 | [Card Select Interfaces](//github.com/directus-labs/extensions/tree/main/packages/card-select-interfaces) | Bundle | N&#x2F;A |  |
 | [Choropleth Map Panel](//github.com/directus-labs/extensions/tree/main/packages/choropleth-map-panel) | Panel | N&#x2F;A |  |
 | [Command Palette Module](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module) | Module | N&#x2F;A | ⭐ |
+| [Elasticsearch Operation](//github.com/directus-labs/extensions/tree/main/packages/elasticsearch-operation) | Operation | N&#x2F;A |  |
 | [Experimental M2A Interface](//github.com/directus-labs/extensions/tree/main/packages/experimental-m2a-interface) | Interface | N&#x2F;A |  |
 | [Field Comments](//github.com/directus-labs/extensions/tree/main/packages/field-comments-module) | Module | N&#x2F;A |  |
 | [Flow Trigger Bundle](//github.com/directus-labs/extensions/tree/main/packages/flow-trigger-bundle) | Bundle | N&#x2F;A |  |
 | [Funnel Chart Panel](//github.com/directus-labs/extensions/tree/main/packages/funnel-chart-panel) | Panel | N&#x2F;A |  |
 | [Gantt Chart Layout](//github.com/directus-labs/extensions/tree/main/packages/gantt-chart-layout) | Layout | N&#x2F;A | ⭐ |
+| [GitHub Operation](//github.com/directus-labs/extensions/tree/main/packages/github-operation) | Operation | ✅ |  |
 | [Hubspot Operation](//github.com/directus-labs/extensions/tree/main/packages/hubspot-operation) | Operation | ✅ |  |
 | [Inline Repeater Interface](//github.com/directus-labs/extensions/tree/main/packages/inline-repeater-interface) | Interface | N&#x2F;A |  |
 | [Input Rich Text HTML File Link](//github.com/directus-labs/extensions/tree/main/packages/input-rich-text-html-file-link) | Interface | N&#x2F;A |  |
@@ -46,6 +49,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Extension Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component) | Bundle | N&#x2F;A |  |
 | [Migration Bundle](//github.com/directus-labs/extensions/tree/main/packages/migration-bundle) | Bundle | N&#x2F;A |  |
 | [Multilevel Autocomplete API Interface](//github.com/directus-labs/extensions/tree/main/packages/multilevel-autocomplete-api-interface) | Interface | N&#x2F;A |  |
+| [Opensearch Operation](//github.com/directus-labs/extensions/tree/main/packages/opensearch-operation) | Operation | N&#x2F;A |  |
 | [PDF Viewer Interface](//github.com/directus-labs/extensions/tree/main/packages/pdf-viewer-interface) | Interface | N&#x2F;A |  |
 | [Plausible Analytics Bundle](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle) | Bundle | N&#x2F;A |  |
 | [Resend Operation](//github.com/directus-labs/extensions/tree/main/packages/resend-operation) | Operation | ✅ |  |
