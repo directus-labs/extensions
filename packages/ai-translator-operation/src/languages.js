@@ -1,4 +1,5 @@
 export default [
+	{ value: 'AR', text: 'Arabic' },
 	{ value: 'BG', text: 'Bulgarian' },
 	{ value: 'CS', text: 'Czech' },
 	{ value: 'DA', text: 'Danish' },
