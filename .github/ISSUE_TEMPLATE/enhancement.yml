@@ -29,17 +29,20 @@ body:
         - AI Translator Operation
         - AI Web Scraper Operation
         - AI Writer Operation
+        - Algolia Operation
         - API Metric Panel
         - Audio Player Interface
         - Calculated Fields Bundle
         - Card Select Interfaces
         - Choropleth Map Panel
         - Command Palette Module
+        - Elasticsearch Operation
         - Experimental M2A Interface
         - Field Comments
         - Flow Trigger Bundle
         - Funnel Chart Panel
         - Gantt Chart Layout
+        - GitHub Operation
         - Hubspot Operation
         - Inline Repeater Interface
         - Input Rich Text HTML File Link
@@ -47,6 +50,7 @@ body:
         - Extension Meter Component
         - Migration Bundle
         - Multilevel Autocomplete API Interface
+        - Opensearch Operation
         - PDF Viewer Interface
         - Plausible Analytics Bundle
         - Resend Operation
