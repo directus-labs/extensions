@@ -49,7 +49,7 @@ export function useDocumentSync(
 			const diff = diffObjects(oldValues, newValues);
 
 			for (const { field, newValue } of diff) {
-				// Only sync non-empty changes to prevent discard issues
+				// @TODO: This shit ain't working. Only sync non-empty changes to prevent discard issues
 				if (newValue !== undefined && newValue !== null) {
 					formValues.set(field, cloneDeep(newValue));
 				}

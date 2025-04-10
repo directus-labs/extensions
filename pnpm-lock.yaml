@@ -39,7 +39,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.1.2
-        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@rollup/plugin-url':
         specifier: ^8.0.2
         version: 8.0.2(rollup@3.29.4)
@@ -124,7 +124,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.0
-        version: 13.0.0(@types/node@22.10.7)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+        version: 13.0.0(@types/node@22.10.7)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.83.4)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
       '@directus/types':
         specifier: ^12.2.2
         version: 12.2.2(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
@@ -206,10 +206,10 @@ importers:
     devDependencies:
       '@directus/extensions':
         specifier: ^2.0.2
-        version: 2.0.2(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))
+        version: 2.0.2(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))
       '@directus/extensions-sdk':
         specifier: ^13.0.0
-        version: 13.0.0(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 13.0.0(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       '@types/node':
         specifier: ^22.7.7
         version: 22.7.7
@@ -231,7 +231,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.2
-        version: 12.0.2(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.84.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 12.0.2(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.84.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       '@directus/types':
         specifier: ^12.1.0
         version: 12.1.0(knex@3.1.0)(vue@3.5.12(typescript@5.6.3))
@@ -259,7 +259,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^11.0.9
-        version: 11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       typescript:
         specifier: ^5.4.5
         version: 5.6.3
@@ -274,7 +274,7 @@ importers:
     dependencies:
       '@directus/extensions':
         specifier: ^1.0.9
-        version: 1.0.9(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))(vue@3.4.34(typescript@5.5.4))
+        version: 1.0.9(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(pino@9.6.0)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))(vue@3.4.34(typescript@5.5.4))
       '@directus/sdk':
         specifier: ^16.1.1
         version: 16.1.1
@@ -290,7 +290,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.9
-        version: 11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(sass@1.77.8)(terser@5.39.0)(typescript@5.5.4)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))
+        version: 11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(pino@9.6.0)(sass@1.77.8)(terser@5.39.0)(typescript@5.5.4)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))
       '@directus/types':
         specifier: 11.1.1
         version: 11.1.1(knex@3.1.0)(vue@3.4.34(typescript@5.5.4))
@@ -324,7 +324,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.1
-        version: 12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.1)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       sass:
         specifier: ^1.83.0
         version: 1.83.1
@@ -343,7 +343,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.1.2
-        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@types/d3':
         specifier: ^7.4.3
         version: 7.4.3
@@ -362,6 +362,9 @@ importers:
       '@directus/constants':
         specifier: ^13.0.0
         version: 13.0.0
+      '@directus/errors':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@directus/sdk':
         specifier: ^19.0.1
         version: 19.0.1
@@ -425,12 +428,18 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
+      knex:
+        specifier: ^3.1.0
+        version: 3.1.0
       lib0:
         specifier: ^0.2.94
         version: 0.2.100
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
+      pino:
+        specifier: ^9.6.0
+        version: 9.6.0
       vue-router:
         specifier: '4'
         version: 4.5.0(vue@3.5.13(typescript@5.8.2))
@@ -449,7 +458,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.3
-        version: 13.0.3(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(sass@1.86.0)(terser@5.39.0)(typescript@5.8.2)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
+        version: 13.0.3(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.8.2)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
       '@types/node':
         specifier: ^22.13.13
         version: 22.13.13
@@ -498,7 +507,7 @@ importers:
         version: 12.0.0
       '@directus/extensions-sdk':
         specifier: 12.0.1
-        version: 12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))
+        version: 12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.77.8)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))
       '@directus/types':
         specifier: ^12.0.0
         version: 12.1.0(knex@3.1.0)(vue@3.5.12(typescript@5.6.3))
@@ -550,7 +559,7 @@ importers:
         version: 13.0.0
       '@directus/extensions-sdk':
         specifier: ^13.0.0
-        version: 13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+        version: 13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
       '@directus/types':
         specifier: ^13.0.0
         version: 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
@@ -587,7 +596,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.1
-        version: 12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       typescript:
         specifier: ^5.5.4
         version: 5.6.3
@@ -599,7 +608,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.0
-        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@directus/format-title':
         specifier: ^11.0.0
         version: 11.0.0
@@ -627,7 +636,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.0
-        version: 12.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 12.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.77.8)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       typescript:
         specifier: ^5.5.4
         version: 5.6.3
@@ -639,7 +648,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.2
-        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       typescript:
         specifier: ^5.6.2
         version: 5.6.3
@@ -676,7 +685,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.0
-        version: 13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.1)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@directus/types':
         specifier: ^13.0.0
         version: 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.6.3))
@@ -692,7 +701,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.1
-        version: 13.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.84.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+        version: 13.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.84.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
       '@directus/types':
         specifier: ^13.0.0
         version: 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
@@ -723,7 +732,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.1
-        version: 13.0.1(@types/node@22.13.1)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+        version: 13.0.1(@types/node@22.13.1)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
       '@types/node':
         specifier: ^22.13.1
         version: 22.13.1
@@ -772,7 +781,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.1
-        version: 13.0.1(@types/node@22.13.4)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+        version: 13.0.1(@types/node@22.13.4)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
       '@directus/types':
         specifier: ^13.0.0
         version: 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
@@ -860,7 +869,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.1
-        version: 12.0.1(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 12.0.1(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       '@directus/types':
         specifier: ^12.0.0
         version: 12.1.0(knex@3.1.0)(vue@3.5.12(typescript@5.6.3))
@@ -897,7 +906,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.0
-        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@directus/format-title':
         specifier: ^11.0.0
         version: 11.0.0
@@ -946,7 +955,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.1
-        version: 13.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.84.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+        version: 13.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.84.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
       sass:
         specifier: ^1.84.0
         version: 1.84.0
@@ -968,7 +977,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 11.0.9
-        version: 11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       typescript:
         specifier: ^5.5.4
         version: 5.6.3
@@ -1038,7 +1047,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.0
-        version: 13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       typescript:
         specifier: ^5.5.4
         version: 5.6.3
@@ -1050,7 +1059,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.0.1
-        version: 12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.1)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       sass:
         specifier: ^1.83.1
         version: 1.83.1
@@ -1065,7 +1074,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^11.0.9
-        version: 11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
+        version: 11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -1083,7 +1092,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.0
-        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@directus/format-title':
         specifier: ^11.0.0
         version: 11.0.0
@@ -1111,7 +1120,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 12.1.0
-        version: 12.1.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
@@ -1126,7 +1135,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.2
-        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))
       '@directus/utils':
         specifier: ^12.0.4
         version: 12.0.5(vue@3.5.13(typescript@5.6.3))
@@ -1171,7 +1180,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: ^12.1.2
-        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+        version: 12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@directus/format-title':
         specifier: ^11.0.0
         version: 11.0.0
@@ -1268,7 +1277,7 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.0
-        version: 13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+        version: 13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.83.4)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -4287,6 +4296,10 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
+  atomic-sleep@1.0.0:
+    resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
+    engines: {node: '>=8.0.0'}
+
   axios@1.6.7:
     resolution: {integrity: sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==}
 
@@ -5276,6 +5289,10 @@ packages:
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
+
+  fast-redact@3.5.0:
+    resolution: {integrity: sha512-dwsoQlS7h9hMeYUq1W++23NDcBLV4KqONnITDV9DjfS3q1SgDGVrBdvvTLUotWtPSD7asWDV9/CmsZPy8Hf70A==}
+    engines: {node: '>=6'}
 
   fast-xml-parser@4.4.0:
     resolution: {integrity: sha512-kLY3jFlwIYwBNDojclKsNAC12sfD6NwW74QB2CoNGPvtVxjliYehVunB3HYyNi+n4Tt1dAcgwYvmKF/Z18flqg==}
@@ -6318,6 +6335,10 @@ packages:
   ohash@1.1.4:
     resolution: {integrity: sha512-FlDryZAahJmEF3VR3w1KogSEdWX3WhA5GPakFx4J81kEAiHyLMpdLLElS8n8dfNadMgAne/MywcvmogzscVt4g==}
 
+  on-exit-leak-free@2.1.2:
+    resolution: {integrity: sha512-0eJJY6hXLGf1udHwfNftBqH+g73EU4B504nZeKpz1sYRKafAghwxEJunB2O7rDZkL4PGfsMVnTXZ2EjibbqcsA==}
+    engines: {node: '>=14.0.0'}
+
   on-finished@2.4.1:
     resolution: {integrity: sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==}
     engines: {node: '>= 0.8'}
@@ -6480,6 +6501,16 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  pino-abstract-transport@2.0.0:
+    resolution: {integrity: sha512-F63x5tizV6WCh4R6RHyi2Ml+M70DNRXt/+HANowMflpgGFMAym/VKm6G7ZOQRjqN7XbGxK1Lg9t6ZrtzOaivMw==}
+
+  pino-std-serializers@7.0.0:
+    resolution: {integrity: sha512-e906FRY0+tV27iq4juKzSYPbUj2do2X2JX4EzSca1631EB2QJQUqGbDuERal7LCtOpxl6x3+nvo9NPZcmjkiFA==}
+
+  pino@9.6.0:
+    resolution: {integrity: sha512-i85pKRCt4qMjZ1+L7sy2Ag4t1atFcdbEt76+7iRJn1g2BvsnRMGu9p8pivl9fs63M2kF/A0OacFZhTub+m/qMg==}
+    hasBin: true
 
   pkg-types@1.3.1:
     resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
@@ -6716,6 +6747,9 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
+  process-warning@4.0.1:
+    resolution: {integrity: sha512-3c2LzQ3rY9d0hc1emcsHhfT9Jwz0cChib/QN89oME2R451w5fy3f0afAhERFZAwrbDU43wk12d0ORBpDVME50Q==}
+
   prosemirror-changeset@2.2.1:
     resolution: {integrity: sha512-J7msc6wbxB4ekDFj+n9gTW/jav/p53kdlivvuppHsrZXCaQdVgRghoZbSS3kwrRyAstRVQ4/+u5k7YfLgkkQvQ==}
 
@@ -6806,6 +6840,9 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
+  quick-format-unescaped@4.0.4:
+    resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
+
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
 
@@ -6843,6 +6880,10 @@ packages:
   readdirp@4.1.2:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
+
+  real-require@0.2.0:
+    resolution: {integrity: sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==}
+    engines: {node: '>= 12.13.0'}
 
   rechoir@0.8.0:
     resolution: {integrity: sha512-/vxpCXddiX8NGfGO/mTafwjq4aFa/71pvamip0++IQk3zG8cbCj0fifNPrjjF1XMXUne91jL9OoxmdykoEtifQ==}
@@ -6971,6 +7012,10 @@ packages:
 
   safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
+
+  safe-stable-stringify@2.5.0:
+    resolution: {integrity: sha512-b3rppTKm9T+PsVCBEOUR46GWI7fdOs00VKZ1+9c1EWDaDMvjQc6tUwuFyIprgGgTcWoVHSKrU8H31ZHA2e0RHA==}
+    engines: {node: '>=10'}
 
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
@@ -7108,6 +7153,9 @@ packages:
   smob@1.5.0:
     resolution: {integrity: sha512-g6T+p7QO8npa+/hNx9ohv1E5pVCmWrVCUzUXJyLdMmftX6ER0oiWY/w9knEonLpnOp6b6FenKnMfR8gqwWdwig==}
 
+  sonic-boom@4.2.0:
+    resolution: {integrity: sha512-INb7TM37/mAcsGmc9hyyI6+QR3rR1zVRu36B0NeGXKnOOLiZOfER5SA+N7X7k3yUYRzLWafduTDvJAfDswwEww==}
+
   sortablejs@1.14.0:
     resolution: {integrity: sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==}
 
@@ -7152,6 +7200,10 @@ packages:
   split-on-first@1.1.0:
     resolution: {integrity: sha512-43ZssAJaMusuKWL8sKUBQXHWOpq8d6CfN/u1p4gUzfJkM05C8rxTmYrkIPTXapZpORA6LkkzcUulJ8FqA7Uudw==}
     engines: {node: '>=6'}
+
+  split2@4.2.0:
+    resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
+    engines: {node: '>= 10.x'}
 
   stable-hash@0.0.4:
     resolution: {integrity: sha512-LjdcbuBeLcdETCrPn9i8AYAZ1eCtu4ECAWtP7UleOiZ9LzVxRzzUZEoZ8zB24nhkQnDWyET0I+3sWokSDS3E7g==}
@@ -7287,6 +7339,9 @@ packages:
     resolution: {integrity: sha512-LBAhFyLho16harJoWMg/nZsQYgTrg5jXOn2nCYjRUcZZEdE3qa2zb8QEDRUGVZBW4rlazf2fxkg8tztybTaqWw==}
     engines: {node: '>=10'}
     hasBin: true
+
+  thread-stream@3.1.0:
+    resolution: {integrity: sha512-OqyPZ9u96VohAyMfJykzmivOrY2wfMSf3C5TtFJVgN+Hm6aj+voFhlK+kZEIv2FBh1X6Xp3DlnCOfEQ3B2J86A==}
 
   tildify@2.0.0:
     resolution: {integrity: sha512-Cc+OraorugtXNfs50hU9KS369rFXCfgGLpfCfvlc+Ud5u6VWmUQsOAa9HbTvheQdYnrdJqqv1e5oIqXppMYnSw==}
@@ -8724,11 +8779,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(sass@1.77.8)(terser@5.39.0)(typescript@5.5.4)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))':
+  '@directus/extensions-sdk@11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(pino@9.6.0)(sass@1.77.8)(terser@5.39.0)(typescript@5.5.4)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))':
     dependencies:
       '@directus/composables': 10.1.15(vue@3.4.27(typescript@5.5.4))
       '@directus/constants': 11.0.4
-      '@directus/extensions': 1.0.9(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))(vue@3.4.27(typescript@5.5.4))
+      '@directus/extensions': 1.0.9(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(pino@9.6.0)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))(vue@3.4.27(typescript@5.5.4))
       '@directus/themes': 0.3.10(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(vue@3.4.27(typescript@5.5.4))
       '@directus/types': 11.2.0(knex@3.1.0)(vue@3.4.27(typescript@5.5.4))
       '@directus/utils': 11.0.10(vue@3.4.27(typescript@5.5.4))
@@ -8775,11 +8830,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@11.0.9(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 10.1.15(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 11.0.4
-      '@directus/extensions': 1.0.9(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/extensions': 1.0.9(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/themes': 0.3.10(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/types': 11.2.0(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
       '@directus/utils': 11.0.10(vue@3.4.27(typescript@5.6.3))
@@ -8826,11 +8881,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.77.8)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.0.0(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/extensions': 2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/themes': 1.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/types': 12.0.0(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
       '@directus/utils': 12.0.0(vue@3.4.27(typescript@5.6.3))
@@ -8877,11 +8932,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.77.8)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.77.8)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.0(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/extensions': 2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/themes': 1.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/types': 12.0.0(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
       '@directus/utils': 12.0.0(vue@3.4.27(typescript@5.6.3))
@@ -8928,11 +8983,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.0(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/extensions': 2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/themes': 1.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/types': 12.0.0(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
       '@directus/utils': 12.0.0(vue@3.4.27(typescript@5.6.3))
@@ -8979,11 +9034,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.1)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.0(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/extensions': 2.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/themes': 1.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/types': 12.0.0(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
       '@directus/utils': 12.0.0(vue@3.4.27(typescript@5.6.3))
@@ -9030,11 +9085,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.0.1(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.0.1(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.0(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/extensions': 2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/themes': 1.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/types': 12.0.0(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
       '@directus/utils': 12.0.0(vue@3.4.27(typescript@5.6.3))
@@ -9081,11 +9136,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.0.2(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.84.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.0.2(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.84.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.0(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.1(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/extensions': 2.0.1(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/themes': 1.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/types': 12.0.1(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
       '@directus/utils': 12.0.0(vue@3.4.27(typescript@5.6.3))
@@ -9132,11 +9187,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.1.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.1.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.1(vue@3.4.27(typescript@5.6.3))
       '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.2(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
+      '@directus/extensions': 2.0.2(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/themes': 1.0.1(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
       '@directus/types': 12.1.0(knex@3.1.0)(vue@3.4.27(typescript@5.6.3))
       '@directus/utils': 12.0.1(vue@3.4.27(typescript@5.6.3))
@@ -9183,11 +9238,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.3(vue@3.5.11(typescript@5.6.3))
       '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.4(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
+      '@directus/extensions': 2.0.4(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
       '@directus/themes': 1.0.3(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
       '@directus/types': 12.2.1(knex@3.1.0)(vue@3.5.11(typescript@5.6.3))
       '@directus/utils': 12.0.3(vue@3.5.11(typescript@5.6.3))
@@ -9234,11 +9289,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.3(vue@3.5.11(typescript@5.6.3))
       '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.4(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
+      '@directus/extensions': 2.0.4(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
       '@directus/themes': 1.0.3(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
       '@directus/types': 12.2.1(knex@3.1.0)(vue@3.5.11(typescript@5.6.3))
       '@directus/utils': 12.0.3(vue@3.5.11(typescript@5.6.3))
@@ -9285,11 +9340,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@12.1.2(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.3(vue@3.5.11(typescript@5.6.3))
       '@directus/constants': 12.0.0
-      '@directus/extensions': 2.0.4(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
+      '@directus/extensions': 2.0.4(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
       '@directus/themes': 1.0.3(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
       '@directus/types': 12.2.1(knex@3.1.0)(vue@3.5.11(typescript@5.6.3))
       '@directus/utils': 12.0.3(vue@3.5.11(typescript@5.6.3))
@@ -9336,11 +9391,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@13.0.0(@types/node@22.10.7)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
+  '@directus/extensions-sdk@13.0.0(@types/node@22.10.7)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.83.4)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
     dependencies:
       '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.7.3))
       '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
+      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/themes': 1.0.6(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
       '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.7.3))
@@ -9388,11 +9443,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.6.3))
       '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
+      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
       '@directus/themes': 1.0.6(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
       '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.6.3))
       '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.6.3))
@@ -9440,11 +9495,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.1)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
+  '@directus/extensions-sdk@13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(sass@1.83.1)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.6.3))
       '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
+      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
       '@directus/themes': 1.0.6(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
       '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.6.3))
       '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.6.3))
@@ -9492,11 +9547,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.83.4)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
+  '@directus/extensions-sdk@13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.83.4)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
     dependencies:
       '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.7.3))
       '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
+      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/themes': 1.0.6(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
       '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.7.3))
@@ -9544,11 +9599,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
+  '@directus/extensions-sdk@13.0.0(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
     dependencies:
       '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.7.3))
       '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
+      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/themes': 1.0.6(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
       '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.7.3))
@@ -9596,11 +9651,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@13.0.0(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
+  '@directus/extensions-sdk@13.0.0(@types/node@22.7.7)(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.6.3))
       '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
+      '@directus/extensions': 3.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
       '@directus/themes': 1.0.6(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
       '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.6.3))
       '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.6.3))
@@ -9648,11 +9703,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@13.0.1(@types/node@22.13.1)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
+  '@directus/extensions-sdk@13.0.1(@types/node@22.13.1)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
     dependencies:
       '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.7.3))
       '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.1(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
+      '@directus/extensions': 3.0.1(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/themes': 1.0.7(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
       '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.7.3))
@@ -9700,11 +9755,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@13.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.84.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
+  '@directus/extensions-sdk@13.0.1(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.84.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
     dependencies:
       '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.7.3))
       '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.1(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
+      '@directus/extensions': 3.0.1(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/themes': 1.0.7(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
       '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.7.3))
@@ -9752,11 +9807,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@13.0.1(@types/node@22.13.4)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
+  '@directus/extensions-sdk@13.0.1(@types/node@22.13.4)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))':
     dependencies:
       '@directus/composables': 11.1.6(vue@3.5.13(typescript@5.7.3))
       '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.1(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
+      '@directus/extensions': 3.0.1(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/themes': 1.0.7(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.7.3))
       '@directus/utils': 13.0.0(vue@3.5.13(typescript@5.7.3))
@@ -9804,11 +9859,11 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@13.0.3(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(sass@1.86.0)(terser@5.39.0)(typescript@5.8.2)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))':
+  '@directus/extensions-sdk@13.0.3(@types/node@22.13.13)(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(pino@9.6.0)(sass@1.86.0)(terser@5.39.0)(typescript@5.8.2)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))':
     dependencies:
       '@directus/composables': 11.1.8(vue@3.5.13(typescript@5.8.2))
       '@directus/constants': 13.0.0
-      '@directus/extensions': 3.0.3(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
+      '@directus/extensions': 3.0.3(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
       '@directus/themes': 1.0.9(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.8.2)))(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
       '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.8.2))
       '@directus/utils': 13.0.2(vue@3.5.13(typescript@5.8.2))
@@ -10090,7 +10145,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@1.0.9(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))(vue@3.4.27(typescript@5.5.4))':
+  '@directus/extensions@1.0.9(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(pino@9.6.0)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))(vue@3.4.27(typescript@5.5.4))':
     dependencies:
       '@directus/constants': 11.0.4
       '@directus/themes': 0.3.10(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(vue@3.4.27(typescript@5.5.4))
@@ -10102,6 +10157,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.4.27(typescript@5.5.4)
       vue-router: 4.5.0(vue@3.4.34(typescript@5.5.4))
     transitivePeerDependencies:
@@ -10116,7 +10172,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@1.0.9(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))(vue@3.4.34(typescript@5.5.4))':
+  '@directus/extensions@1.0.9(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(knex@3.1.0)(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(pino@9.6.0)(vue-router@4.5.0(vue@3.4.34(typescript@5.5.4)))(vue@3.4.34(typescript@5.5.4))':
     dependencies:
       '@directus/constants': 11.0.4
       '@directus/themes': 0.3.10(@unhead/vue@2.0.0(vue@3.4.34(typescript@5.5.4)))(pinia@3.0.1(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4)))(vue@3.4.34(typescript@5.5.4))
@@ -10128,6 +10184,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.4.34(typescript@5.5.4)
       vue-router: 4.5.0(vue@3.4.34(typescript@5.5.4))
     transitivePeerDependencies:
@@ -10142,7 +10199,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@1.0.9(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
+  '@directus/extensions@1.0.9(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 11.0.4
       '@directus/themes': 0.3.10(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
@@ -10154,6 +10211,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.4.27(typescript@5.6.3)
       vue-router: 4.5.0(vue@3.5.12(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10168,7 +10226,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
+  '@directus/extensions@2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 12.0.0
       '@directus/themes': 1.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
@@ -10180,6 +10238,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.4.27(typescript@5.6.3)
       vue-router: 4.4.5(vue@3.5.12(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10194,7 +10253,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
+  '@directus/extensions@2.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 12.0.0
       '@directus/themes': 1.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
@@ -10206,6 +10265,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.4.27(typescript@5.6.3)
       vue-router: 4.5.0(vue@3.5.12(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10220,7 +10280,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@2.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
+  '@directus/extensions@2.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 12.0.0
       '@directus/themes': 1.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
@@ -10232,6 +10292,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.4.27(typescript@5.6.3)
       vue-router: 4.5.0(vue@3.5.13(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10246,7 +10307,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@2.0.1(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
+  '@directus/extensions@2.0.1(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 12.0.0
       '@directus/themes': 1.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
@@ -10258,6 +10319,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.4.27(typescript@5.6.3)
       vue-router: 4.5.0(vue@3.5.12(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10272,7 +10334,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@2.0.2(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))':
+  '@directus/extensions@2.0.2(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 12.0.0
       '@directus/themes': 1.0.1(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))
@@ -10284,6 +10346,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.5.12(typescript@5.6.3)
       vue-router: 4.5.0(vue@3.5.12(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10298,7 +10361,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@2.0.2(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
+  '@directus/extensions@2.0.2(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 12.0.0
       '@directus/themes': 1.0.1(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.4.27(typescript@5.6.3))
@@ -10310,6 +10373,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.4.27(typescript@5.6.3)
       vue-router: 4.5.0(vue@3.5.13(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10324,7 +10388,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@2.0.4(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))':
+  '@directus/extensions@2.0.4(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.4.5(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 12.0.0
       '@directus/themes': 1.0.3(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
@@ -10336,6 +10400,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.5.11(typescript@5.6.3)
       vue-router: 4.4.5(vue@3.5.13(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10350,7 +10415,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@2.0.4(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))':
+  '@directus/extensions@2.0.4(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 12.0.0
       '@directus/themes': 1.0.3(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.11(typescript@5.6.3))
@@ -10362,6 +10427,7 @@ snapshots:
       zod: 3.23.8
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.5.11(typescript@5.6.3)
       vue-router: 4.5.0(vue@3.5.13(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10376,7 +10442,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@3.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))':
+  '@directus/extensions@3.0.0(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.12(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 13.0.0
       '@directus/themes': 1.0.6(@unhead/vue@2.0.0(vue@3.5.12(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
@@ -10388,6 +10454,7 @@ snapshots:
       zod: 3.24.1
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.5.13(typescript@5.6.3)
       vue-router: 4.5.0(vue@3.5.12(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10402,7 +10469,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))':
+  '@directus/extensions@3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))':
     dependencies:
       '@directus/constants': 13.0.0
       '@directus/themes': 1.0.6(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.6.3)))(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(vue@3.5.13(typescript@5.6.3))
@@ -10414,6 +10481,7 @@ snapshots:
       zod: 3.24.1
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.5.13(typescript@5.6.3)
       vue-router: 4.5.0(vue@3.5.13(typescript@5.6.3))
     transitivePeerDependencies:
@@ -10428,7 +10496,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))':
+  '@directus/extensions@3.0.0(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))':
     dependencies:
       '@directus/constants': 13.0.0
       '@directus/themes': 1.0.6(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
@@ -10440,6 +10508,7 @@ snapshots:
       zod: 3.24.1
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.5.13(typescript@5.7.3)
       vue-router: 4.5.0(vue@3.5.13(typescript@5.7.3))
     transitivePeerDependencies:
@@ -10454,7 +10523,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@3.0.1(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))':
+  '@directus/extensions@3.0.1(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))':
     dependencies:
       '@directus/constants': 13.0.0
       '@directus/themes': 1.0.7(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.7.3)))(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
@@ -10466,6 +10535,7 @@ snapshots:
       zod: 3.24.1
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.5.13(typescript@5.7.3)
       vue-router: 4.5.0(vue@3.5.13(typescript@5.7.3))
     transitivePeerDependencies:
@@ -10480,7 +10550,7 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@3.0.3(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))':
+  '@directus/extensions@3.0.3(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(pino@9.6.0)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))':
     dependencies:
       '@directus/constants': 13.0.0
       '@directus/themes': 1.0.9(@unhead/vue@2.0.0(vue@3.5.13(typescript@5.8.2)))(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
@@ -10492,6 +10562,7 @@ snapshots:
       zod: 3.24.1
     optionalDependencies:
       knex: 3.1.0
+      pino: 9.6.0
       vue: 3.5.13(typescript@5.8.2)
       vue-router: 4.5.0(vue@3.5.13(typescript@5.8.2))
     transitivePeerDependencies:
@@ -14662,6 +14733,8 @@ snapshots:
 
   asynckit@0.4.0: {}
 
+  atomic-sleep@1.0.0: {}
+
   axios@1.6.7:
     dependencies:
       follow-redirects: 1.15.9
@@ -15884,6 +15957,8 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
+
+  fast-redact@3.5.0: {}
 
   fast-xml-parser@4.4.0:
     dependencies:
@@ -17189,6 +17264,8 @@ snapshots:
 
   ohash@1.1.4: {}
 
+  on-exit-leak-free@2.1.2: {}
+
   on-finished@2.4.1:
     dependencies:
       ee-first: 1.1.1
@@ -17398,6 +17475,26 @@ snapshots:
       vue: 3.5.13(typescript@5.8.2)
     optionalDependencies:
       typescript: 5.8.2
+
+  pino-abstract-transport@2.0.0:
+    dependencies:
+      split2: 4.2.0
+
+  pino-std-serializers@7.0.0: {}
+
+  pino@9.6.0:
+    dependencies:
+      atomic-sleep: 1.0.0
+      fast-redact: 3.5.0
+      on-exit-leak-free: 2.1.2
+      pino-abstract-transport: 2.0.0
+      pino-std-serializers: 7.0.0
+      process-warning: 4.0.1
+      quick-format-unescaped: 4.0.4
+      real-require: 0.2.0
+      safe-stable-stringify: 2.5.0
+      sonic-boom: 4.2.0
+      thread-stream: 3.1.0
 
   pkg-types@1.3.1:
     dependencies:
@@ -17629,6 +17726,8 @@ snapshots:
   prettier@3.5.3:
     optional: true
 
+  process-warning@4.0.1: {}
+
   prosemirror-changeset@2.2.1:
     dependencies:
       prosemirror-transform: 1.10.3
@@ -17762,6 +17861,8 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
+  quick-format-unescaped@4.0.4: {}
+
   randombytes@2.1.0:
     dependencies:
       safe-buffer: 5.2.1
@@ -17805,6 +17906,8 @@ snapshots:
 
   readdirp@4.1.2:
     optional: true
+
+  real-require@0.2.0: {}
 
   rechoir@0.8.0:
     dependencies:
@@ -18017,6 +18120,8 @@ snapshots:
 
   safe-buffer@5.2.1: {}
 
+  safe-stable-stringify@2.5.0: {}
+
   safer-buffer@2.1.2: {}
 
   sass@1.77.1:
@@ -18194,6 +18299,10 @@ snapshots:
 
   smob@1.5.0: {}
 
+  sonic-boom@4.2.0:
+    dependencies:
+      atomic-sleep: 1.0.0
+
   sortablejs@1.14.0: {}
 
   source-map-generator@0.8.0: {}
@@ -18231,6 +18340,8 @@ snapshots:
   speakingurl@14.0.1: {}
 
   split-on-first@1.1.0: {}
+
+  split2@4.2.0: {}
 
   stable-hash@0.0.4: {}
 
@@ -18365,6 +18476,10 @@ snapshots:
       acorn: 8.14.1
       commander: 2.20.3
       source-map-support: 0.5.21
+
+  thread-stream@3.1.0:
+    dependencies:
+      real-require: 0.2.0
 
   tildify@2.0.0: {}
 

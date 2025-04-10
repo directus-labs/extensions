@@ -20,7 +20,7 @@ const room = computed(() => `${route.params.collection}:${route.params.primaryKe
 // Initialize collaborative editing
 const { provider } = useCollaborativeEditing({
 	room: room.value,
-	url: 'http://localhost:8055/collaboration/1',
+	url: `/collaboration/${room.value}`,
 	onFieldValueChange: (field, value) => {
 		emit('setFieldValue', { field, value });
 	},

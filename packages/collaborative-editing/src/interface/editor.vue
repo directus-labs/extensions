@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// NOTE: This is not being used, but it's still here for reference at the moment. This is a simple TipTap collaborative editor.
 import { HocuspocusProvider } from '@hocuspocus/provider';
 import CollaborationExtension from '@tiptap/extension-collaboration';
 import CollaborationCursorExtension from '@tiptap/extension-collaboration-cursor';
