@@ -278,7 +278,7 @@ useEventListener(gridRef, 'focus', (event: FocusEvent) => {
 					@keydown.space.prevent="triggerClick(index)"
 				>
 					<v-icon :name="button.icon" />
-					<v-text-overflow :text="button.label" />
+					<v-text-overflow :text="button.label" size="small" />
 				</v-button>
 			</div>
 		</div>
@@ -324,7 +324,6 @@ useEventListener(gridRef, 'focus', (event: FocusEvent) => {
 .v-button :deep(.content) {
 	--v-icon-color: var(--theme--foreground-subdued);
 	gap: 6px;
-
 	flex-direction: column;
 }
 
@@ -343,18 +342,4 @@ useEventListener(gridRef, 'focus', (event: FocusEvent) => {
 .search-input {
 	margin-bottom: 12px;
 }
-
-/* .grid > .v-button[tabindex='0'] {
-	outline: var(--theme--border-width) solid var(--theme--form--field--input--border-color-focus);
-	outline-offset: 2px;
-}
-.grid:focus {
-	outline: none;
-}
-.grid > .v-button:focus {
-	outline: none;
-}
-.grid > .v-button[tabindex='0'] button:focus-visible {
-	outline: none;
-} */
 </style>
