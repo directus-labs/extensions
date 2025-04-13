@@ -201,7 +201,7 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 </template>
 
 <style scoped>
-    :global(.m2a-builder:has(.btn-matrix) .actions) {
+:global(.m2a-builder:has(.btn-matrix) .actions) {
 	margin-top: 0px;
 }
 
@@ -211,6 +211,7 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 
 .btn-matrix {
 	margin-top: 8px;
+	container-type: inline-size;
 }
 
 .label {
@@ -219,8 +220,20 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 
 .grid {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: repeat(3, 1fr);
 	gap: 8px;
+}
+
+@container (width > 425px) {
+	.grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+@container (width > 600px) {
+	.grid {
+		grid-template-columns: repeat(5, 1fr);
+	}
 }
 
 .v-button :deep(.content) {
