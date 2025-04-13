@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import type { Ref } from 'vue';
+import type { ComponentPublicInstance, Ref } from 'vue';
+import {
+	onKeyStroke,
+	useCycleList,
+	useEventListener,
+	useTemplateRefsList,
+} from '@vueuse/core';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
-    type MaybeHTML = HTMLElement | null | undefined;
-    type MaybeHTMLRef = Ref<MaybeHTML>;
+type MaybeHTML = HTMLElement | null | undefined;
+type MaybeHTMLRef = Ref<MaybeHTML>;
 interface MatrixButton {
 	label: string;
 	icon: string;
@@ -154,6 +160,76 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 }
+
+// --- Keyboard Navigation with VueUse ---
+
+const gridRef = ref<HTMLElement | null>(null);
+
+const buttonRefs = useTemplateRefsList<ComponentPublicInstance>();
+
+const buttonIndices = computed(() => filteredButtonMatrix.value.map((_, i) => i));
+
+const { state: activeButtonIndex, next: cycleNext, prev: cyclePrev, goTo: goToIndex } = useCycleList(
+	buttonIndices,
+	{ initialValue: 0 },
+);
+
+function focusButton(index: number) {
+	nextTick(() => {
+		const targetComponent = buttonRefs.value[index];
+
+		if (targetComponent?.$el) {
+			const targetButtonWrapper = targetComponent.$el as HTMLElement;
+			const innerButton = targetButtonWrapper?.querySelector('button');
+			innerButton?.focus();
+		}
+	});
+}
+
+const keyStrokeOptions = { target: gridRef, passive: false };
+
+onKeyStroke(['ArrowDown', 'ArrowRight'], (e) => {
+	e.preventDefault();
+	cycleNext();
+	focusButton(activeButtonIndex.value);
+}, keyStrokeOptions);
+
+onKeyStroke(['ArrowUp', 'ArrowLeft'], (e) => {
+	e.preventDefault();
+	cyclePrev();
+	focusButton(activeButtonIndex.value);
+}, keyStrokeOptions);
+
+onKeyStroke('Home', (e) => {
+	e.preventDefault();
+	goToIndex(0);
+	focusButton(activeButtonIndex.value);
+}, keyStrokeOptions);
+
+onKeyStroke('End', (e) => {
+	e.preventDefault();
+	const lastIndex = buttonIndices.value.length - 1;
+
+	if (lastIndex >= 0) {
+		goToIndex(lastIndex);
+		focusButton(activeButtonIndex.value);
+	}
+}, keyStrokeOptions);
+
+watch(buttonIndices, (newIndices) => {
+	if (!newIndices.includes(activeButtonIndex.value) && newIndices.length > 0) {
+		goToIndex(0);
+	}
+	else if (newIndices.length === 0) {
+		goToIndex(0);
+	}
+}, { flush: 'post' });
+
+useEventListener(gridRef, 'focus', (event: FocusEvent) => {
+	if (!gridRef.value?.contains(event.relatedTarget as Node) && buttonIndices.value.length > 0) {
+		focusButton(activeButtonIndex.value);
+	}
+});
 </script>
 
 <template>
@@ -184,13 +260,22 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 				</template>
 			</v-input>
 
-			<div class="grid">
+			<div
+				ref="gridRef"
+				class="grid"
+				tabindex="0"
+			>
 				<!-- eslint-disable-next-line vue/valid-v-for -->
 				<v-button
 					v-for="(button, index) in filteredButtonMatrix"
+					:key="button.label"
+					:ref="buttonRefs.set"
+					:tabindex="index === activeButtonIndex ? 0 : -1"
 					secondary
 					full-width
 					@click="triggerClick(index)"
+					@keydown.enter.prevent="triggerClick(index)"
+					@keydown.space.prevent="triggerClick(index)"
 				>
 					<v-icon :name="button.icon" />
 					<v-text-overflow :text="button.label" />
@@ -258,4 +343,18 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 .search-input {
 	margin-bottom: 12px;
 }
+
+/* .grid > .v-button[tabindex='0'] {
+	outline: var(--theme--border-width) solid var(--theme--form--field--input--border-color-focus);
+	outline-offset: 2px;
+}
+.grid:focus {
+	outline: none;
+}
+.grid > .v-button:focus {
+	outline: none;
+}
+.grid > .v-button[tabindex='0'] button:focus-visible {
+	outline: none;
+} */
 </style>
