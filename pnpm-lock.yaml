@@ -685,6 +685,22 @@ importers:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.7.3)
 
+  packages/meilisearch-operation:
+    dependencies:
+      meilisearch:
+        specifier: ^0.49.0
+        version: 0.49.0
+    devDependencies:
+      '@directus/extensions-sdk':
+        specifier: 13.0.3
+        version: 13.0.3(@types/node@22.13.10)(@unhead/vue@2.0.0-alpha.19(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(sass@1.85.1)(terser@5.39.0)(typescript@5.8.2)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
+      '@types/node':
+        specifier: ^22.13.10
+        version: 22.13.10
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.8.2)
+
   packages/meter-component:
     devDependencies:
       '@directus/extensions-sdk':
@@ -805,7 +821,7 @@ importers:
         version: 9.13.1(vue@3.4.31(typescript@5.5.3))
       vue-pdf-embed:
         specifier: ^2.0.4
-        version: 2.0.4(encoding@0.1.13)(vue@3.4.31(typescript@5.5.3))
+        version: 2.0.4(vue@3.4.31(typescript@5.5.3))
 
   packages/plausible-analytics-bundle:
     dependencies:
@@ -5512,6 +5528,9 @@ packages:
 
   mdn-data@2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
+
+  meilisearch@0.49.0:
+    resolution: {integrity: sha512-oMJ/e6Or6cz2+owcEKeB11p2OWiWW9NmssqOZC/KIwQB0sBGKLJ7RCpYzf+GhUIZIZ9FRYZ419ox3RGebVQX5g==}
 
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -15593,6 +15612,8 @@ snapshots:
 
   mdn-data@2.0.14: {}
 
+  meilisearch@0.49.0: {}
+
   merge-stream@2.0.0: {}
 
   merge2@1.4.1: {}
@@ -16053,7 +16074,7 @@ snapshots:
 
   pathe@2.0.3: {}
 
-  pdfjs-dist@4.4.168(encoding@0.1.13):
+  pdfjs-dist@4.4.168:
     optionalDependencies:
       canvas: 2.11.2(encoding@0.1.13)
       path2d: 0.2.1
@@ -17312,9 +17333,9 @@ snapshots:
       '@vue/devtools-api': 6.6.3
       vue: 3.5.13(typescript@5.7.3)
 
-  vue-pdf-embed@2.0.4(encoding@0.1.13)(vue@3.4.31(typescript@5.5.3)):
+  vue-pdf-embed@2.0.4(vue@3.4.31(typescript@5.5.3)):
     dependencies:
-      pdfjs-dist: 4.4.168(encoding@0.1.13)
+      pdfjs-dist: 4.4.168
       vue: 3.4.31(typescript@5.5.3)
     transitivePeerDependencies:
       - encoding
