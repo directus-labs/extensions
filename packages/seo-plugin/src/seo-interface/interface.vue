@@ -4,10 +4,12 @@ import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 // @ts-expect-error - types missing
 import { formatTitle } from '@directus/format-title';
 // @ts-expect-error - types missing
-import { set } from 'lodash-es';
-import { computed, defineEmits, defineProps, toRefs } from 'vue';
+import { get, set } from 'lodash-es';
+import { computed, defineEmits, defineProps, ref, toRefs, watch } from 'vue';
 
 import SearchPreview from '../shared/components/SearchPreview.vue';
+import FocusKeyphrase from './components/FocusKeyphrase.vue';
+
 import MetaDescriptionField from './components/MetaDescriptionField.vue';
 import OgImage from './components/OgImage.vue';
 import TitleField from './components/TitleField.vue';
@@ -18,6 +20,7 @@ interface Props extends SeoInterfaceOptions {
 	field: string;
 	value: SeoValue | null;
 	disabled?: boolean;
+	values: Record<string, unknown>;
 }
 
 const props = defineProps<Props>();
@@ -62,7 +65,7 @@ const internalValue = computed({
 	},
 });
 
-function updateField(field: string, value: any) {
+function updateField(field: string, value: unknown) {
 	if (!props.value) {
 		const newValue = set({}, field, value);
 		emit('input', newValue as SeoValue);
@@ -101,6 +104,7 @@ const additionalFields = computed(() => {
 
 <template>
 	<div class="form-grid">
+		<!-- <pre>{{ props }}</pre> -->
 		<!-- Title -->
 		<TitleField
 			:model-value="internalValue.title"
@@ -127,13 +131,17 @@ const additionalFields = computed(() => {
 		<v-divider class="field" />
 
 		<!-- Focus Keyphrase -->
-		<div class="field">
-			<interface-tags
-				:model-value="internalValue.focus_keyphrase"
-				:disabled="props.disabled"
-				@update:model-value="updateField('focus_keyphrase', $event)"
-			/>
-		</div>
+		<FocusKeyphrase
+			v-if="showFocusKeyphrase"
+			:model-value="internalValue.focus_keyphrase"
+			:title="internalValue.title"
+			:description="internalValue.meta_description"
+			:slug-field="slugField"
+			:content-fields="contentFields"
+			:disabled="props.disabled"
+			@update:model-value="updateField('focus_keyphrase', $event)"
+		/>
+
 		<!-- OG Image Field -->
 		<OgImage
 			v-if="props.showOgImage"

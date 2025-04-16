@@ -57,8 +57,8 @@ export default defineInterface({
 			},
 		},
 		{
-			name: 'Enable Focus Keyphrase',
 			field: 'showFocusKeyphrase',
+			name: 'Enable Focus Keyphrase',
 			type: 'boolean',
 			meta: {
 				note: 'Adds a focus keyphrase field for SEO optimization',
