@@ -35,6 +35,7 @@ const internalValue = computed({
 			return {
 				title: '',
 				meta_description: '',
+				focus_keyphrase: '',
 				og_image: '',
 				sitemap: {
 					priority: props.defaultPriority || '0.5',
@@ -125,6 +126,14 @@ const additionalFields = computed(() => {
 
 		<v-divider class="field" />
 
+		<!-- Focus Keyphrase -->
+		<div class="field">
+			<interface-tags
+				:model-value="internalValue.focus_keyphrase"
+				:disabled="props.disabled"
+				@update:model-value="updateField('focus_keyphrase', $event)"
+			/>
+		</div>
 		<!-- OG Image Field -->
 		<OgImage
 			v-if="props.showOgImage"
