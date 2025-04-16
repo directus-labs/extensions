@@ -132,7 +132,7 @@ export default defineComponent({
 		</template>
 		<div class="migration-container">
 			<div class="migration-main">
-				<p>To get started, enter the destination URL and admin token below, then click <strong>Check</strong>. This will compare both Directus platform and see if they are compadible. Please make sure the destination instance is on the same version and the same database engine as this instance.</p>
+				<p>To get started, enter the destination URL and admin token below, then click <strong>Check</strong>. This will compare both Directus platform and see if they are compatible. Please make sure the destination instance is on the same version and the same database engine as this instance.</p>
 				<div class="migration-input-container">
 					<div class="migration-input">
 						<v-input v-model="baseURL" label="Destination URL" placeholder="https://" :disabled="isValidating || lockInterface" />
