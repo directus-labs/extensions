@@ -26,14 +26,15 @@ const emit = defineEmits<{
 			:class="{ active: isExpanded }"
 			@click="emit('toggle-section', sectionId)"
 		>
-			<v-icon
-				:name="isExpanded ? 'expand_more' : 'chevron_right'"
-				class="section-icon"
-			/>
 			<div class="section-title" :class="sectionId">
 				<v-icon :name="icon" :class="iconClass" />
 				{{ title }} ({{ results.length }})
 			</div>
+
+			<v-icon
+				:name="isExpanded ? 'expand_more' : 'chevron_right'"
+				class="section-icon"
+			/>
 		</div>
 
 		<div v-if="isExpanded" class="section-content">
@@ -54,6 +55,7 @@ const emit = defineEmits<{
 .section-header {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	padding: 8px;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);

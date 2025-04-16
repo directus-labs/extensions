@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AnalysisResult } from '../../types';
-import { computed, ref } from 'vue';
+import { computed, inject, ref, toRefs } from 'vue';
 import {
 	analyzeContent,
 	analyzeDescription,
@@ -107,14 +107,9 @@ const canExpandAll = computed(() => !expandedSections.value.problems || !expande
 </script>
 
 <template>
-	<div class="seo-analysis-container">
-		<label class="label field-label type-label">SEO Analysis</label>
-
-		<div v-if="!focusKeyphrase" class="empty-state">
-			Enter a focus keyphrase to analyze your content.
-		</div>
-
-		<template v-else>
+	<div class="seo-analysis-container field">
+		<div class="header">
+			<label class="label field-label type-label">SEO Analysis</label>
 			<!-- Action bar for expand/collapse controls -->
 			<div class="action-bar">
 				<v-button
@@ -141,7 +136,13 @@ const canExpandAll = computed(() => !expandedSections.value.problems || !expande
 					<v-icon name="unfold_more" />
 				</v-button>
 			</div>
+		</div>
 
+		<div v-if="!focusKeyphrase" class="empty-state">
+			Enter a focus keyphrase to analyze your content.
+		</div>
+
+		<template v-else>
 			<!-- Render Analysis Sections -->
 			<AnalysisSection
 				v-for="section in sections"
@@ -167,18 +168,16 @@ const canExpandAll = computed(() => !expandedSections.value.problems || !expande
 </template>
 
 <style scoped>
-.seo-analysis-container {
-	margin-top: 1.5rem;
-	padding-top: 1.5rem;
-	border-top: 1px solid var(--theme--border-color-subtle);
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .label {
 	margin-bottom: 0.5rem;
 }
-.field-label {}
 .type-label {
-	color: var(--theme--foreground-subdued);
 	margin-bottom: 1rem;
 }
 

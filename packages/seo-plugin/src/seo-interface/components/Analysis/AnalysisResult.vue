@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import type { AnalysisResult, AnalysisResultDetails, AnalysisStatus } from '../types';
-import { computed } from 'vue';
+import type { Ref } from 'vue';
+import type { AnalysisResult, AnalysisResultDetails, AnalysisStatus } from '../../../types';
+import { get } from 'lodash-es';
+import { computed, inject } from 'vue';
 
 const props = defineProps<{
 	result: AnalysisResult;
+	slugField?: string;
+	contentFields?: string[] | string | null;
 }>();
 
 // Get icon for status
@@ -86,6 +90,39 @@ const densityMeterWidth = computed(() => {
 	if (detailComponent.value?.type !== 'content' || typeof detailComponent.value.data.density !== 'number') return 0;
 	return Math.min(100, detailComponent.value.data.density * 50); // Density target is 0.5-2%, so 1% = 50 width
 });
+
+const values = inject('values') as Ref<Record<string, any>>;
+
+const slugValue = computed(() => {
+	if (!props.slugField || !values.value) return null;
+	const rawSlug = get(values.value, props.slugField);
+	return typeof rawSlug === 'string' ? rawSlug : null;
+});
+
+const contentFieldValues = computed(() => {
+	if (!props.contentFields || !values.value) return {};
+
+	const fieldsArray = Array.isArray(props.contentFields)
+		? props.contentFields
+		: props.contentFields?.split(',').map((f) => f.trim()) || [];
+
+	const result: Record<string, unknown> = {};
+
+	for (const field of fieldsArray) {
+		if (field && values.value[field] !== undefined) {
+			result[field] = values.value[field];
+		}
+	}
+
+	return result;
+});
+
+const contentFieldNames = computed(() => {
+	if (!props.contentFields) return [];
+	return Array.isArray(props.contentFields)
+		? props.contentFields
+		: props.contentFields?.split(',').map((f) => f.trim()) || [];
+});
 </script>
 
 <template>
@@ -93,11 +130,12 @@ const densityMeterWidth = computed(() => {
 		class="analysis-result"
 		:class="result.status"
 	>
-		<v-icon
+		<!-- <v-icon
 			small
 			:name="getStatusIcon(result.status)"
 			:style="{ color: getStatusColor(result.status) }"
-		/>
+		/> -->
+		<div :style="{ backgroundColor: getStatusColor(result.status) }" class="analysis-dot" />
 		<div class="analysis-text">
 			<p class="analysis-title">
 				<span class="analysis-title-text">
@@ -170,8 +208,15 @@ const densityMeterWidth = computed(() => {
 	display: flex;
 	align-items: start;
 	gap: 12px;
-	padding: 12px 0;
+	padding: 8px;
 	border-bottom: 1px dashed var(--theme--border-color);
+
+	.analysis-dot {
+		margin-top: 0.5rem;
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+	}
 
 	.v-icon {
 		margin-top: 0.25rem;

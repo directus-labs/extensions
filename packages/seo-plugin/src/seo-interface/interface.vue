@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
-
 // @ts-expect-error - types missing
 import { formatTitle } from '@directus/format-title';
+
 // @ts-expect-error - types missing
 import { get, set } from 'lodash-es';
 import { computed, defineEmits, defineProps, ref, toRefs, watch } from 'vue';
-
 import SearchPreview from '../shared/components/SearchPreview.vue';
+
+import SeoAnalysis from './components/Analysis/SeoAnalysis.vue';
 import FocusKeyphrase from './components/FocusKeyphrase.vue';
 
 import MetaDescriptionField from './components/MetaDescriptionField.vue';
@@ -226,6 +227,16 @@ const additionalFields = computed(() => {
 				@update:model-value="updateField('additional_fields', $event)"
 			/>
 		</div>
+
+		<SeoAnalysis
+			v-if="value"
+			:focus-keyphrase="value.focus_keyphrase"
+			:title="value.title"
+			:description="value.meta_description"
+			:slug="slugField"
+			:content-data="contentFields"
+			:content-field-names="contentFields"
+		/>
 	</div>
 </template>
 

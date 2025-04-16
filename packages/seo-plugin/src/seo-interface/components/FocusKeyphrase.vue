@@ -4,8 +4,6 @@ import { onClickOutside, onKeyStroke } from '@vueuse/core';
 import { get } from 'lodash-es';
 import { computed, inject, ref } from 'vue';
 
-import SeoAnalysis from './Analysis/SeoAnalysis.vue';
-
 const props = defineProps<{
 	modelValue: string;
 	slugField?: string;
@@ -49,39 +47,6 @@ onKeyStroke('Enter', (e) => {
 		disableEdit();
 	}
 });
-
-const values = inject('values') as Ref<Record<string, any>>;
-
-const slugValue = computed(() => {
-	if (!props.slugField || !values.value) return null;
-	const rawSlug = get(values.value, props.slugField);
-	return typeof rawSlug === 'string' ? rawSlug : null;
-});
-
-const contentFieldValues = computed(() => {
-	if (!props.contentFields || !values.value) return {};
-
-	const fieldsArray = Array.isArray(props.contentFields)
-		? props.contentFields
-		: props.contentFields?.split(',').map((f) => f.trim()) || [];
-
-	const result: Record<string, unknown> = {};
-
-	for (const field of fieldsArray) {
-		if (field && values.value[field] !== undefined) {
-			result[field] = values.value[field];
-		}
-	}
-
-	return result;
-});
-
-const contentFieldNames = computed(() => {
-	if (!props.contentFields) return [];
-	return Array.isArray(props.contentFields)
-		? props.contentFields
-		: props.contentFields?.split(',').map((f) => f.trim()) || [];
-});
 </script>
 
 <template>
@@ -111,16 +76,6 @@ const contentFieldNames = computed(() => {
 				The main phrase you want this content to rank for in search engines.
 			</div>
 		</div>
-
-		<SeoAnalysis
-			v-if="value"
-			:focus-keyphrase="value"
-			:title="title"
-			:description="description"
-			:slug="slugValue"
-			:content-data="contentFieldValues"
-			:content-field-names="contentFieldNames"
-		/>
 	</div>
 </template>
 
