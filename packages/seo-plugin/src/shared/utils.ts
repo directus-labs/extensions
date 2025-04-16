@@ -91,3 +91,69 @@ export function calculateDensity(text: string, keyword: string): number {
 	const keywordCount = countOccurrences(text, keyword);
 	return (keywordCount / wordCount) * 100;
 }
+
+/**
+ * Extracts all alt text attributes from HTML img tags
+ */
+export function extractImageAltText(html: string): string[] {
+	if (!html) return [];
+
+	const altTexts: string[] = [];
+	const imgRegex = /<img[^>]*alt=["']([^"']*)["'][^>]*>/gi;
+	let match: RegExpExecArray | null;
+
+	while ((match = imgRegex.exec(html)) !== null) {
+		const altText = match[1];
+
+		if (altText && altText.trim()) {
+			altTexts.push(altText.trim());
+		}
+	}
+
+	// Also extract from Markdown images
+	const mdImgRegex = /!\[([^\]]+)\]\([^)]+\)/g;
+
+	while ((match = mdImgRegex.exec(html)) !== null) {
+		const altText = match[1];
+
+		if (altText && altText.trim()) {
+			altTexts.push(altText.trim());
+		}
+	}
+
+	return altTexts;
+}
+
+/**
+ * Extracts subheadings from HTML and Markdown content
+ */
+export function extractSubheadings(content: string): string[] {
+	if (!content) return [];
+
+	const subheadings: string[] = [];
+
+	// Extract HTML headings h2-h6
+	const htmlHeadingRegex = /<h([2-6])[^>]*>(.*?)<\/h\1>/gi;
+	let match: RegExpExecArray | null;
+
+	while ((match = htmlHeadingRegex.exec(content)) !== null) {
+		const headingText = stripHtml(match[2] || '');
+
+		if (headingText) {
+			subheadings.push(headingText);
+		}
+	}
+
+	// Extract Markdown headings (## to ######)
+	const mdHeadingRegex = /^#{2,6}\s+(.+)$/gm;
+
+	while ((match = mdHeadingRegex.exec(content)) !== null) {
+		const headingText = match[1];
+
+		if (headingText && headingText.trim()) {
+			subheadings.push(headingText.trim());
+		}
+	}
+
+	return subheadings;
+}
