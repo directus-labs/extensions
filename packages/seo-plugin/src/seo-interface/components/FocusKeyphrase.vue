@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import type { Ref } from 'vue';
 import { onClickOutside, onKeyStroke } from '@vueuse/core';
-import { get } from 'lodash-es';
-import { computed, inject, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
 	modelValue: string;
-	slugField?: string;
-	contentFields?: string[] | string | null;
-	title: string;
-	description: string;
-	slug: string | null | undefined;
 	disabled?: boolean;
 }>();
 
@@ -62,12 +55,14 @@ onKeyStroke('Enter', (e) => {
 					@blur="disableEdit"
 				/>
 			</template>
-			<div v-else v-tooltip="disabled ? null : 'Click to edit'" class="keyphrase-display" :class="{ disabled }">
-				<span class="keyphrase-text" :class="{ 'not-clickable': disabled }" @click="enableEdit">
-					<span v-if="value">{{ value }}</span>
+			<div v-else :class="{ disabled }" class="keyphrase-display">
+				<div v-tooltip="disabled ? null : 'Click to edit'" class="keyphrase-text" :class="{ 'not-clickable': disabled }" @click="enableEdit">
+					<v-chip v-if="value">
+						{{ value }}
+					</v-chip>
 					<span v-else class="keyphrase-placeholder">Enter the main keyword or phrase</span>
-				</span>
-				<v-button v-if="!disabled" v-tooltip="'Edit'" x-small secondary icon @click.stop="enableEdit">
+				</div>
+				<v-button v-if="!disabled" v-tooltip="'Edit'" small secondary icon @click.stop="enableEdit">
 					<v-icon name="edit" />
 				</v-button>
 				<v-icon v-else v-tooltip="'Input disabled'" name="lock" small class="lock-icon" />
@@ -106,13 +101,11 @@ onKeyStroke('Enter', (e) => {
 
 .keyphrase-display {
 	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	min-height: var(--theme--form--field--input--height);
-	padding: 0 var(--theme--form--field--input--padding);
-	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: var(--theme--border-radius);
-	background-color: var(--theme--form--field--input--background);
+	flex-grow: 1;
+	width: 100%;
+	align-items: start;
+	gap: 8px;
+
 	cursor: pointer;
 	transition: border-color var(--theme--transitions-fast) ease-in-out;
 }
@@ -127,9 +120,9 @@ onKeyStroke('Enter', (e) => {
 }
 
 .keyphrase-text {
-	flex-grow: 1;
+	/* flex-grow: 1; */
 	padding-right: 8px;
-	color: var(--theme--form--field--input--foreground);
+	color: var(--theme----theme--form--field--input--foreground);
 }
 .keyphrase-text.not-clickable {
 	cursor: not-allowed;

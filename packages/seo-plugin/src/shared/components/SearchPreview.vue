@@ -89,6 +89,7 @@ function truncate(text: string, maxLength: number): string {
 	border: 2px solid var(--theme--border-color);
 	border-radius: var(--theme--border-radius);
 	padding: 1.5rem;
+	background-color: var(--theme--background);
 }
 .search-preview {
 	padding: 0;

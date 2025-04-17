@@ -19,9 +19,29 @@ const props = defineProps<{
 	title: string;
 	description: string;
 	slug: string | null | undefined;
-	contentData: Record<string, unknown>;
+	// contentData: Record<string, unknown>;
 	contentFieldNames: string[];
 }>();
+
+const values = inject('values');
+
+const contentData = computed(() => {
+	const data: Record<string, unknown> = {};
+
+	if (!props.contentFieldNames || !values) {
+		return {};
+	}
+
+	const fields = Array.isArray(props.contentFieldNames) ? props.contentFieldNames : [props.contentFieldNames];
+
+	for (const field of fields) {
+		if (field in values.value) {
+			data[field] = values.value[field];
+		}
+	}
+
+	return data;
+});
 
 // --- State for Expanded Sections ---
 const expandedSections = ref<Record<SectionId, boolean>>({
@@ -56,7 +76,7 @@ const analysisInput = computed(() => ({
 	title: props.title,
 	description: props.description,
 	slug: props.slug,
-	contentData: props.contentData,
+	contentData: contentData.value,
 	contentFieldNames: props.contentFieldNames,
 }));
 
@@ -109,7 +129,7 @@ const canExpandAll = computed(() => !expandedSections.value.problems || !expande
 <template>
 	<div class="seo-analysis-container field">
 		<div class="header">
-			<label class="label field-label type-label">SEO Analysis</label>
+			<label class="label field-label type-label">Analysis</label>
 			<!-- Action bar for expand/collapse controls -->
 			<div class="action-bar">
 				<v-button

@@ -184,7 +184,7 @@ const contentFieldNames = computed(() => {
 					Found {{ detailComponent.data.imageCount }} images{{ result.status === 'good' ? ' with proper alt text' : '' }}
 					<ul v-if="detailComponent.data.altTexts && detailComponent.data.altTexts.length > 0">
 						<li v-for="(alt, index) in detailComponent.data.altTexts" :key="index">
-							"{{ alt }}" {{ alt.toLowerCase().includes(result.message) ? '✅' : '❌' }} <!-- Simple check, enhance if needed -->
+							"{{ alt }}"<!-- Simple check, enhance if needed -->
 						</li>
 					</ul>
 				</div>
@@ -194,7 +194,7 @@ const contentFieldNames = computed(() => {
 					Found {{ detailComponent.data.subheadingCount }} subheadings
 					<ul v-if="detailComponent.data.subheadings && detailComponent.data.subheadings.length > 0">
 						<li v-for="(heading, index) in detailComponent.data.subheadings" :key="index">
-							"{{ heading }}" {{ heading.toLowerCase().includes(result.message) ? '✅' : '❌' }} <!-- Simple check -->
+							"{{ heading }}"
 						</li>
 					</ul>
 				</div>
