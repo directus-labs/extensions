@@ -8,7 +8,6 @@ defineProps<{
 }>();
 
 function getFavicon(): string {
-	// Check for favicon in different possible locations in current document
 	const favicon =
 		// Check apple-touch-icon first (usually higher quality)
 		window.document.querySelector('link[rel=\'apple-touch-icon\']')?.getAttribute('href')
@@ -31,7 +30,7 @@ onMounted(() => {
 });
 
 function getProjectName(): string {
-	return window.document.title.split('·')[1].trim();
+	return window?.document?.title?.split('·')[1]?.trim() || '';
 }
 
 function truncate(text: string, maxLength: number): string {
@@ -53,7 +52,7 @@ function truncate(text: string, maxLength: number): string {
 						width="20"
 						height="20"
 						alt="favicon"
-						@error="$event.target.innerHTML = '🌐'"
+						@error="($event.target as HTMLImageElement).src = '🌐'"
 					>
 					<div class="preview-url-text">
 						<p class="truncate">
@@ -82,78 +81,86 @@ function truncate(text: string, maxLength: number): string {
 	display: flex;
 	flex-direction: column;
 }
+
 .label {
 	margin-bottom: 0.5rem;
 }
+
 .search-container {
+	background-color: var(--theme--background);
 	border: 2px solid var(--theme--border-color);
 	border-radius: var(--theme--border-radius);
 	padding: 1.5rem;
-	background-color: var(--theme--background);
 }
+
 .search-preview {
-	padding: 0;
-	border: 1px solid var(--theme--border--color);
 	border-radius: var(--theme--border-radius);
 	font-family: arial, sans-serif;
 	max-width: 600px;
+	padding: 0;
 }
 
-.preview-url-text {
-	width: 100%;
-	flex: 1;
-	min-width: 0;
-	color: color-mix(in srgb, var(--theme--foreground), #fff 20%);
-	font-size: 12px;
-}
 .preview-url {
-	display: flex;
 	align-items: center;
-	gap: 8px;
-	margin-bottom: 4px;
+	color: var(--theme--foreground);
+	display: flex;
 	font-size: 12px;
-	color: #202124;
+	gap: 8px;
 	line-height: 1.3;
+	margin-bottom: 4px;
+
+	.preview-url-favicon {
+		margin-right: 4px;
+	}
+
+	.preview-url-text {
+		color: color-mix(in srgb, var(--theme--foreground), #fff 20%);
+		flex: 1;
+		font-size: 12px;
+		min-width: 0;
+		width: 100%;
+
+		p {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+
+	.url-path-container {
+		align-items: center;
+		display: flex;
+
+		.preview-url-arrow {
+			flex-shrink: 0;
+			margin: 0 4px;
+		}
+
+		.preview-url-path {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
 }
-.preview-url-favicon {
-	margin-right: 4px;
-}
-.preview-url-arrow {
-	flex-shrink: 0;
-	margin: 0 4px;
-}
+
 .preview-title {
 	color: var(--theme--primary);
+	cursor: pointer;
 	font-size: 20px;
+	font-weight: 400;
 	line-height: 1.3;
 	margin-bottom: 3px;
-	font-weight: 400;
-	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
 }
-.preview-title:hover {
-	text-decoration: underline;
-}
+
 .preview-description {
-	color: #4d5156;
+	color: var(--theme--foreground-subdued);
 	font-size: 14px;
 	line-height: 1.58;
 	word-wrap: break-word;
-}
-
-.preview-url-text p {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.url-path-container {
-	display: flex;
-	align-items: center;
-}
-
-.preview-url-path {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 </style>
