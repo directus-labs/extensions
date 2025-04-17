@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { getRootPath } from '@directus-labs/utils';
 import { useApi } from '@directus/extensions-sdk';
 import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
-import { getRootPath } from '../utils/get-root-path';
+import { useI18n } from 'vue-i18n';
 
 interface Image {
 	id: string;
