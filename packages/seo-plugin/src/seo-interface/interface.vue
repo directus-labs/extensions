@@ -9,7 +9,7 @@ import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from 'rek
 import { computed, defineEmits, defineProps, ref, toRefs, watch } from 'vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
 
-import SeoAnalysis from './components/Analysis/SeoAnalysis.vue';
+import Analysis from './components/Analysis/Analysis.vue';
 import FocusKeyphrase from './components/FocusKeyphrase.vue';
 
 import MetaDescriptionField from './components/MetaDescriptionField.vue';
@@ -262,7 +262,7 @@ const additionalFields = computed(() => {
 			/>
 
 			<!-- Analysis -->
-			<SeoAnalysis
+			<Analysis
 				:focus-keyphrase="value.focus_keyphrase || ''"
 				:title="value.title"
 				:description="value.meta_description"
@@ -299,7 +299,7 @@ const additionalFields = computed(() => {
 	will-change: width, transform;
 
 	.indicator-bar {
-		background-color: var(--theme--primary, #2ecda7);
+		background-color: var(--theme--primary);
 		width: 100%;
 		height: 100%;
 		border-radius: 9999px;
@@ -323,26 +323,24 @@ const additionalFields = computed(() => {
 	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
 
 	&:hover {
-		color: var(--theme--primary, #2ecda7);
-		background-color: var(--theme--background-subdued, #f0f4f8);
+		color: var(--theme--primary);
+		background-color: var(--theme--background-subdued);
 	}
 
 	&[data-state='active'] {
-		color: var(--theme--primary, #2ecda7);
+		color: var(--theme--primary);
 	}
 
 	&:focus-visible {
 		position: relative;
-		box-shadow: 0 0 0 var(--theme--border-width) var(--theme--primary, #2ecda7);
+		box-shadow: 0 0 0 var(--theme--border-width) var(--theme--primary);
 	}
 }
 
 .tab-content {
 	flex-grow: 1;
-	/* border: var(--theme--border-width) solid var(--theme--border-color);
-	padding: var(--theme--form--field--input--padding); */
 	outline: none;
-	border-radius: var(--theme--border-radius, 4px);
+
 	&[data-state='inactive'] {
 		display: none;
 	}
