@@ -1,5 +1,4 @@
-import type { AnalysisResult, AnalysisStatus } from '../types'; // Assuming types are defined here or moved
-// packages/seo-plugin/src/seo-interface/utils/analysisUtils.ts
+import type { AnalysisResult, AnalysisStatus } from './types';
 import { seoRules } from '../../shared/rulesets';
 import {
 	calculateDensity,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
-import type { AnalysisResult, AnalysisResultDetails, AnalysisStatus } from '../../../types';
+import type { AnalysisResult, AnalysisResultDetails, AnalysisStatus } from '../types';
 import { get } from 'lodash-es';
 import { computed, inject } from 'vue';
 
@@ -10,21 +10,6 @@ const props = defineProps<{
 	contentFields?: string[] | string | null;
 }>();
 
-// Get icon for status
-function getStatusIcon(status: AnalysisStatus): string {
-	switch (status) {
-		case 'good':
-			return 'check_circle';
-		case 'warning':
-			return 'warning';
-		case 'error':
-			return 'error';
-		default:
-			return 'info';
-	}
-}
-
-// Get color for status
 function getStatusColor(status: AnalysisStatus): string {
 	switch (status) {
 		case 'good':
@@ -130,11 +115,6 @@ const contentFieldNames = computed(() => {
 		class="analysis-result"
 		:class="result.status"
 	>
-		<!-- <v-icon
-			small
-			:name="getStatusIcon(result.status)"
-			:style="{ color: getStatusColor(result.status) }"
-		/> -->
 		<div :style="{ backgroundColor: getStatusColor(result.status) }" class="analysis-dot" />
 		<div class="analysis-text">
 			<p class="analysis-title">
@@ -184,7 +164,7 @@ const contentFieldNames = computed(() => {
 					Found {{ detailComponent.data.imageCount }} images{{ result.status === 'good' ? ' with proper alt text' : '' }}
 					<ul v-if="detailComponent.data.altTexts && detailComponent.data.altTexts.length > 0">
 						<li v-for="(alt, index) in detailComponent.data.altTexts" :key="index">
-							"{{ alt }}"<!-- Simple check, enhance if needed -->
+							"{{ alt }}"
 						</li>
 					</ul>
 				</div>

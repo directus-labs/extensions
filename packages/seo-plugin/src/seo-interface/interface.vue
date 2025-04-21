@@ -6,11 +6,11 @@ import { formatTitle } from '@directus/format-title';
 // @ts-expect-error - types missing
 import { get, set } from 'lodash-es';
 import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from 'reka-ui';
-import { computed, defineEmits, defineProps, ref, toRefs, watch } from 'vue';
+import { computed, defineEmits, defineProps, toRefs } from 'vue';
 import OgImagePreview from '../shared/components/OgImagePreview.vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
 
-import Analysis from './components/Analysis/Analysis.vue';
+import Analysis from './analysis/components/Analysis.vue';
 import FocusKeyphrase from './components/FocusKeyphrase.vue';
 
 import MetaDescriptionField from './components/MetaDescriptionField.vue';
