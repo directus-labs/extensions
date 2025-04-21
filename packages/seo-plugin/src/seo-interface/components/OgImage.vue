@@ -14,16 +14,18 @@ interface Image {
 	filename_download: string;
 	title?: string;
 	modified_on?: string;
+	[key: string]: string | number | undefined;
 }
 
 interface ImageInterfaceProps {
-	value?: string | Record<string, any> | null;
+	value?: string | Record<string, unknown> | null;
 	disabled?: boolean;
 	folder?: string;
 	fileKeyToGet?: string;
 	crop?: boolean;
 	letterbox?: boolean;
 	width?: string;
+	inOgPreview?: boolean;
 }
 
 const props = withDefaults(defineProps<ImageInterfaceProps>(), {
@@ -34,10 +36,11 @@ const props = withDefaults(defineProps<ImageInterfaceProps>(), {
 	crop: false,
 	letterbox: false,
 	width: 'auto',
+	inOgPreview: false,
 });
 
 const emit = defineEmits<{
-	(e: 'input', value: string | null): void;
+	input: [value: string | null];
 }>();
 
 const loading = ref(false);
@@ -60,11 +63,12 @@ function addQueryToPath(path: string, query: Record<string, string>): string {
 	return path.includes('?') ? `${path}&${queryParams.join('&')}` : `${path}?${queryParams.join('&')}`;
 }
 
-function getToken(api: any): string | null {
-	return api.defaults.headers.common.Authorization?.split(' ')[1] || null;
+function getToken(api: ReturnType<typeof useApi>): string | null {
+	const auth = api.defaults.headers.common.Authorization;
+	return typeof auth === 'string' ? auth.split(' ')[1] || null : null;
 }
 
-function addTokenToURL(api: any, url: string, token?: string): string {
+function addTokenToURL(api: ReturnType<typeof useApi>, url: string, token?: string): string {
 	const accessToken = token || getToken(api);
 	if (!accessToken)
 		return url;
@@ -115,21 +119,24 @@ async function fetchImage() {
 	loading.value = true;
 
 	try {
-		let id = typeof props.value === 'string' ? props.value : props.value?.id;
-		id = id.split('.').slice(0, -1).join('.');
+		let id = typeof props.value === 'string' ? props.value : props.value?.id as string;
 
-		const response = await api.get(`/files/${id}`, {
-			params: {
-				fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
-			},
-		});
+		if (id) {
+			id = id.split('.').slice(0, -1).join('.');
 
-		image.value = props.value !== null && typeof props.value === 'object'
-			? {
-					...response.data.data,
-					...props.value,
-				}
-			: response.data.data;
+			const response = await api.get(`/files/${id}`, {
+				params: {
+					fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
+				},
+			});
+
+			image.value = props.value !== null && typeof props.value === 'object'
+				? {
+						...response.data.data,
+						...props.value as Record<string, unknown>,
+					}
+				: response.data.data;
+		}
 	}
 	finally {
 		loading.value = false;
@@ -144,10 +151,12 @@ async function imageErrorHandler() {
 	try {
 		await api.get(src.value);
 	}
-	catch (error: any) {
-		imageError.value = error.response?.data?.errors[0]?.extensions?.code;
+	catch (error: unknown) {
+		const err = error as { response?: { data?: { errors?: Array<{ extensions?: { code?: string } }> } } };
+		const errorCode = err.response?.data?.errors?.[0]?.extensions?.code;
+		imageError.value = errorCode || 'UNKNOWN';
 
-		if (!imageError.value || !te(`errors.${imageError.value}`)) {
+		if (!te(`errors.${imageError.value}`)) {
 			imageError.value = 'UNKNOWN';
 		}
 	}
@@ -155,7 +164,8 @@ async function imageErrorHandler() {
 
 function setImage(data: Image) {
 	image.value = data;
-	emit('input', data[props.fileKeyToGet]);
+	const value = data[props.fileKeyToGet];
+	emit('input', typeof value === 'string' ? value : null);
 }
 
 function deselect() {
@@ -169,7 +179,8 @@ function deselect() {
 function stageEdits() {
 	if (!image.value)
 		return;
-	emit('input', image.value[props.fileKeyToGet]);
+	const value = image.value[props.fileKeyToGet];
+	emit('input', typeof value === 'string' ? value : null);
 }
 
 watch(
@@ -191,72 +202,69 @@ watch(
 </script>
 
 <template>
-	<div>
-		<label class="label field-label type-label">Social Image</label>
-		<div class="image" :class="[width, { crop }]">
-			<v-skeleton-loader v-if="loading" type="input-tall" />
-			<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="hide_image">
-				{{ t('no_image_selected') }}
-			</v-notice>
-			<div v-else-if="image" class="image-preview">
-				<div v-if="imageError || !src" class="image-error">
-					<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
-					<span class="message">
-						{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
-					</span>
-				</div>
-				<img
-					v-else-if="isImage"
-					:src="src"
-					:class="{ 'is-letterbox': letterbox }"
-					:alt="image.title || ''"
-					role="presentation"
-					@error="imageErrorHandler"
-				>
-				<div v-else class="fallback">
-					<v-icon name="description" />
-				</div>
-				<div class="shadow" />
-				<div v-if="!disabled" class="actions">
-					<!-- <v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
+	<div class="image" :class="[width, { crop, 'og-preview-mode': inOgPreview }]">
+		<v-skeleton-loader v-if="loading" type="input-tall" />
+		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="hide_image">
+			{{ t('no_image_selected') }}
+		</v-notice>
+		<div v-else-if="image" class="image-preview">
+			<div v-if="imageError || !src" class="image-error">
+				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
+				<span class="message">
+					{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
+				</span>
+			</div>
+			<img
+				v-else-if="isImage"
+				:src="src"
+				:class="{ 'is-letterbox': letterbox }"
+				:alt="image.title || ''"
+				role="presentation"
+				@error="imageErrorHandler"
+			>
+			<div v-else class="fallback">
+				<v-icon name="description" />
+			</div>
+			<div class="shadow" />
+			<div v-if="!disabled" class="actions">
+				<!-- <v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 						<v-icon name="zoom_in" />
 					</v-button> -->
-					<v-button v-tooltip="t('download')" icon rounded :href="src" :download="image.filename_download">
-						<v-icon name="download" />
-					</v-button>
-					<v-button v-tooltip="t('edit_item')" icon rounded @click="editDrawerActive = true">
-						<v-icon name="open_in_new" />
-					</v-button>
-					<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
-						<v-icon name="close" />
-					</v-button>
+				<v-button v-tooltip="t('download')" icon rounded :href="src" :download="image.filename_download">
+					<v-icon name="download" />
+				</v-button>
+				<v-button v-tooltip="t('edit_item')" icon rounded @click="editDrawerActive = true">
+					<v-icon name="open_in_new" />
+				</v-button>
+				<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
+					<v-icon name="close" />
+				</v-button>
+			</div>
+			<div class="info">
+				<div class="title">
+					{{ image.title }}
 				</div>
-				<div class="info">
-					<div class="title">
-						{{ image.title }}
-					</div>
-					<div class="meta">
-						{{ meta }}
-					</div>
+				<div class="meta">
+					{{ meta }}
 				</div>
-				<drawer-item
-					v-if="!disabled && image"
-					v-model:active="editDrawerActive"
-					collection="directus_files"
-					:primary-key="image.id"
-					:edits="edits"
-					@input="stageEdits"
-				/>
-				<!-- TODO: Add lightbox functionality -->
-				<!-- <file-lightbox
+			</div>
+			<drawer-item
+				v-if="!disabled && image"
+				v-model:active="editDrawerActive"
+				collection="directus_files"
+				:primary-key="image.id"
+				:edits="edits"
+				@input="stageEdits"
+			/>
+			<!-- TODO: Add lightbox functionality -->
+			<!-- <file-lightbox
 					v-if="image"
 					v-model="lightboxActive"
 					:id="image.id"
 					:title="image.title"
 				/> -->
-			</div>
-			<v-upload v-else from-library from-url :folder="folder" @input="setImage" />
 		</div>
+		<v-upload v-else from-library from-url :folder="folder" @input="setImage" />
 	</div>
 </template>
 
@@ -269,7 +277,7 @@ watch(
 	width: 100%;
 	height: var(--input-height-tall);
 	overflow: hidden;
-	background-color: var(--theme--background-normal);
+	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 
 	img {
@@ -299,10 +307,72 @@ watch(
 			object-fit: cover;
 		}
 	}
+
+	/* Styles for when used within OG Preview */
+	&.og-preview-mode {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+
+		.image-preview {
+			height: 100%;
+			border-radius: 0;
+		}
+
+		.v-upload {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: var(--theme--background);
+		}
+
+		img {
+			object-fit: cover;
+		}
+
+		.actions {
+			z-index: 10;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+
+		.info {
+			z-index: 10;
+			opacity: 0;
+			transform: translateY(10px);
+			transition: opacity var(--fast) var(--transition), transform var(--fast) var(--transition);
+		}
+
+		.shadow {
+			z-index: 5;
+			opacity: 0;
+			transition: opacity var(--fast) var(--transition), height var(--fast) var(--transition);
+		}
+
+		.image-preview:hover {
+			.shadow {
+				opacity: 1;
+				height: 100%;
+				background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.5) 100%);
+			}
+
+			.info {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	}
 }
 
 .fallback {
-	background-color: var(--theme--background-normal);
+	background-color: var(--theme--background);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -390,6 +460,8 @@ watch(
 	color: rgba(255, 255, 255, 0.75);
 	transition: max-height var(--fast) var(--transition);
 }
+
+/* General hover styles */
 .image-preview:hover {
 	.shadow {
 		height: 100%;
@@ -403,6 +475,7 @@ watch(
 		max-height: 17px;
 	}
 }
+
 .disabled-placeholder {
 	height: var(--theme--input-height-tall);
 }

@@ -7,6 +7,7 @@ import { formatTitle } from '@directus/format-title';
 import { get, set } from 'lodash-es';
 import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from 'reka-ui';
 import { computed, defineEmits, defineProps, ref, toRefs, watch } from 'vue';
+import OgImagePreview from '../shared/components/OgImagePreview.vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
 
 import Analysis from './components/Analysis/Analysis.vue';
@@ -23,13 +24,12 @@ interface Props extends SeoInterfaceOptions {
 	value: SeoValue | null;
 	disabled?: boolean;
 	values: Record<string, unknown>;
+	canonicalUrl?: string;
 }
 
 const props = defineProps<Props>();
 
-const emit = defineEmits<{
-	(e: 'input', value: SeoValue): void;
-}>();
+const emit = defineEmits<(event: 'input', value: SeoValue) => void>();
 
 const { value } = toRefs(props);
 
@@ -104,6 +104,23 @@ const additionalFields = computed(() => {
 });
 
 /* Computed property to extract content data for analysis */
+const contentDataForAnalysis = computed(() => {
+	if (!props.contentFields || !props.values) return {};
+
+	const fieldsToExtract = Array.isArray(props.contentFields)
+		? props.contentFields
+		: [props.contentFields];
+
+	return fieldsToExtract.reduce((acc, fieldName) => {
+		const content = get(props.values, fieldName);
+
+		if (content !== undefined && content !== null) {
+			acc[fieldName] = content;
+		}
+
+		return acc;
+	}, {} as Record<string, unknown>);
+});
 </script>
 
 <template>
@@ -161,13 +178,25 @@ const additionalFields = computed(() => {
 			<v-divider class="field" />
 
 			<!-- OG Image Field -->
-			<OgImage
+
+			<!-- OG Image Preview -->
+			<OgImagePreview
 				v-if="props.showOgImage"
-				:value="internalValue.og_image"
-				:disabled="props.disabled"
+				:title="internalValue.title"
+				:description="internalValue.meta_description"
+				:og-image="internalValue.og_image"
+				:url="props.canonicalUrl"
 				class="field"
-				@input="updateField('og_image', $event)"
-			/>
+			>
+				<OgImage
+					v-if="props.showOgImage"
+					:value="internalValue.og_image"
+					:disabled="props.disabled"
+					in-og-preview
+					crop
+					@input="updateField('og_image', $event)"
+				/>
+			</OgImagePreview>
 		</TabsContent>
 
 		<TabsContent value="advanced-settings" class="tab-content form-grid">
