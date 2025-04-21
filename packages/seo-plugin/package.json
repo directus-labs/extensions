@@ -41,9 +41,7 @@
 		"validate": "directus-extension validate"
 	},
 	"dependencies": {
-		"@directus/composables": "^11.1.5",
 		"@directus/format-title": "^12.0.0",
-		"@directus/utils": "12.0.0",
 		"@vueuse/core": "^12.5.0",
 		"lodash-es": "^4.17.21",
 		"micromustache": "^8.0.3",

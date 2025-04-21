@@ -889,15 +889,9 @@ importers:
 
   packages/seo-plugin:
     dependencies:
-      '@directus/composables':
-        specifier: ^11.1.5
-        version: 11.1.6(vue@3.5.13(typescript@5.7.3))
       '@directus/format-title':
         specifier: ^12.0.0
         version: 12.0.0
-      '@directus/utils':
-        specifier: 12.0.0
-        version: 12.0.0(vue@3.5.13(typescript@5.7.3))
       '@vueuse/core':
         specifier: ^12.5.0
         version: 12.5.0(typescript@5.7.3)
@@ -10795,19 +10789,6 @@ snapshots:
       micromustache: 8.0.3
     optionalDependencies:
       vue: 3.4.27(typescript@5.6.3)
-
-  '@directus/utils@12.0.0(vue@3.5.13(typescript@5.7.3))':
-    dependencies:
-      '@directus/constants': 12.0.0
-      '@directus/system-data': 2.0.0
-      date-fns: 3.6.0
-      fs-extra: 11.2.0
-      joi: 17.13.3
-      js-yaml: 4.1.0
-      lodash-es: 4.17.21
-      micromustache: 8.0.3
-    optionalDependencies:
-      vue: 3.5.13(typescript@5.7.3)
 
   '@directus/utils@12.0.1(vue@3.4.27(typescript@5.6.3))':
     dependencies:
