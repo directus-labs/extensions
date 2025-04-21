@@ -43,6 +43,18 @@ export default defineInterface({
 			},
 		},
 		{
+			field: 'showOgImage',
+			name: 'Social Media Image',
+			type: 'boolean',
+			meta: {
+				note: 'Adds an Open Graph image field for social media sharing',
+				width: 'full',
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
 			name: 'Additional SEO Fields',
 			field: 'divider-meta',
 			type: 'alias',
@@ -58,7 +70,7 @@ export default defineInterface({
 		},
 		{
 			field: 'showFocusKeyphrase',
-			name: 'Enable Focus Keyphrase',
+			name: 'Focus Keyphrase',
 			type: 'boolean',
 			meta: {
 				note: 'Adds a focus keyphrase field for SEO optimization',
@@ -68,21 +80,10 @@ export default defineInterface({
 				default_value: false,
 			},
 		},
-		{
-			field: 'showOgImage',
-			name: 'Enable Social Media Image',
-			type: 'boolean',
-			meta: {
-				note: 'Adds an Open Graph image field for social media sharing',
-				width: 'half',
-			},
-			schema: {
-				default_value: false,
-			},
-		},
+
 		{
 			field: 'showSearchControls',
-			name: 'Enable Search Engine Controls',
+			name: 'Search Engine Controls',
 			type: 'boolean',
 			meta: {
 				note: 'Adds controls for no-index and no-follow tags',
@@ -94,7 +95,7 @@ export default defineInterface({
 		},
 		{
 			field: 'showSitemap',
-			name: 'Enable Sitemap Controls',
+			name: 'Sitemap Controls',
 			type: 'boolean',
 			meta: {
 				note: 'Adds fields for sitemap configuration',
@@ -133,10 +134,19 @@ export default defineInterface({
 			meta: {
 				width: 'half',
 				note: 'What field contains the slug for this collection?',
+				hidden: true,
 				interface: 'system-field',
 				options: {
 					collectionName: collection,
 				},
+				conditions: [
+					{
+						hidden: false,
+						rule: {
+							_and: [{ showFocusKeyphrase: { _eq: true } }],
+						},
+					},
+				],
 			},
 		},
 		{
