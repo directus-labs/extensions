@@ -124,17 +124,15 @@ const contentDataForAnalysis = computed(() => {
 </script>
 
 <template>
-	<TabsRoot class="fseo-tabs" default-value="metadata">
+	<TabsRoot class="fseo-tabs" default-value="metadata" :unmount-on-hide="false">
 		<TabsList class="tabs-list" aria-label="SEO Configuration">
 			<TabsIndicator class="tabs-indicator">
 				<div class="indicator-bar" />
 			</TabsIndicator>
 			<TabsTrigger class="tab-trigger" value="metadata">
-				<!-- <v-icon small name="settings" /> -->
 				<span>Basic</span>
 			</TabsTrigger>
 			<TabsTrigger class="tab-trigger" value="advanced-settings">
-				<!-- <v-icon small name="settings" /> -->
 				<span>Advanced</span>
 			</TabsTrigger>
 			<TabsTrigger
@@ -142,11 +140,9 @@ const contentDataForAnalysis = computed(() => {
 				class="tab-trigger"
 				value="custom-fields"
 			>
-				<!-- <v-icon small name="settings" /> -->
 				<span>Custom Fields</span>
 			</TabsTrigger>
-			<TabsTrigger v-if="value" class="tab-trigger" value="analysis">
-				<!-- <v-icon small name="settings" /> -->
+			<TabsTrigger v-if="value && showFocusKeyphrase" class="tab-trigger" value="analysis">
 				<span>Keyphrase</span>
 			</TabsTrigger>
 		</TabsList>
@@ -177,9 +173,7 @@ const contentDataForAnalysis = computed(() => {
 
 			<v-divider class="field" />
 
-			<!-- OG Image Field -->
-
-			<!-- OG Image Preview -->
+			<!-- OG Image -->
 			<OgImagePreview
 				v-if="props.showOgImage"
 				:title="internalValue.title"
@@ -276,7 +270,7 @@ const contentDataForAnalysis = computed(() => {
 			</div>
 		</TabsContent>
 
-		<TabsContent v-if="value" value="analysis" class="tab-content">
+		<TabsContent v-if="value && showFocusKeyphrase" value="analysis" class="tab-content">
 			<!-- Focus Keyphrase -->
 			<FocusKeyphrase
 				v-if="showFocusKeyphrase"
@@ -305,8 +299,6 @@ const contentDataForAnalysis = computed(() => {
 
 <style lang="scss" scoped>
 @use '../shared/styles/shared.scss' as *;
-
-.seo-tabs {}
 
 .tabs-list {
 	position: relative;
