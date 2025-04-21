@@ -1,4 +1,4 @@
-import type { AnalysisResult, AnalysisStatus } from './types';
+import type { AnalysisResult } from './types';
 import { seoRules } from '../../shared/rulesets';
 import {
 	calculateDensity,

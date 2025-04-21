@@ -145,7 +145,7 @@ export function extractSubheadings(content: string): string[] {
 	}
 
 	// Extract Markdown headings (## to ######)
-	const mdHeadingRegex = /^#{2,6}\s+(.+)$/gm;
+	const mdHeadingRegex = /^#{2,6}\s+(\S.*)$/gm;
 
 	while ((match = mdHeadingRegex.exec(content)) !== null) {
 		const headingText = match[1];
