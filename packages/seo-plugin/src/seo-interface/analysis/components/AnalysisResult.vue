@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import type { Ref } from 'vue';
 import type { AnalysisResult, AnalysisResultDetails, AnalysisStatus } from '../types';
-import { get } from 'lodash-es';
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
 	result: AnalysisResult;
-	slugField?: string;
-	contentFields?: string[] | string | null;
 }>();
 
 function getStatusColor(status: AnalysisStatus): string {
@@ -76,38 +72,11 @@ const densityMeterWidth = computed(() => {
 	return Math.min(100, detailComponent.value.data.density * 50); // Density target is 0.5-2%, so 1% = 50 width
 });
 
-const values = inject('values') as Ref<Record<string, any>>;
-
-const slugValue = computed(() => {
-	if (!props.slugField || !values.value) return null;
-	const rawSlug = get(values.value, props.slugField);
-	return typeof rawSlug === 'string' ? rawSlug : null;
-});
-
-const contentFieldValues = computed(() => {
-	if (!props.contentFields || !values.value) return {};
-
-	const fieldsArray = Array.isArray(props.contentFields)
-		? props.contentFields
-		: props.contentFields?.split(',').map((f) => f.trim()) || [];
-
-	const result: Record<string, unknown> = {};
-
-	for (const field of fieldsArray) {
-		if (field && values.value[field] !== undefined) {
-			result[field] = values.value[field];
-		}
-	}
-
-	return result;
-});
-
-const contentFieldNames = computed(() => {
-	if (!props.contentFields) return [];
-	return Array.isArray(props.contentFields)
-		? props.contentFields
-		: props.contentFields?.split(',').map((f) => f.trim()) || [];
-});
+// Removed inject('values') and related unused computed properties:
+// const values = inject('values') as Ref<Record<string, any>>;
+// const slugValue = computed(...)
+// const contentFieldValues = computed(...)
+// const contentFieldNames = computed(...)
 </script>
 
 <template>
@@ -200,7 +169,7 @@ const contentFieldNames = computed(() => {
 
 	.v-icon {
 		margin-top: 0.25rem;
-		flex-shrink: 0; /* Prevent icon shrinking */
+		flex-shrink: 0;
 	}
 }
 
@@ -212,15 +181,15 @@ const contentFieldNames = computed(() => {
 .analysis-text {
 	flex: 1;
 	flex-direction: column;
-	min-width: 0; /* Allow text to wrap */
+	min-width: 0;
 }
 
 .analysis-title {
 	margin: 0 0 4px 0;
 	display: flex;
-	flex-wrap: wrap; /* Allow subtext to wrap */
-	align-items: baseline; /* Align text nicely */
-	gap: 0.5rem; /* Space between title and subtext */
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.5rem;
 }
 
 .analysis-title-text {
@@ -228,8 +197,8 @@ const contentFieldNames = computed(() => {
 	font-size: 1rem;
 	font-weight: bold;
 	color: var(--theme--foreground);
-	flex-shrink: 0; /* Prevent title from shrinking */
-	white-space: nowrap; /* Keep title on one line if possible */
+	flex-shrink: 0;
+	white-space: nowrap;
 }
 
 .analysis-title-subtext {
@@ -237,7 +206,6 @@ const contentFieldNames = computed(() => {
 	font-size: 0.9rem;
 	font-weight: 400;
 	color: var(--theme--foreground-subdued);
-	/* Removed white-space: nowrap to allow wrapping */
 }
 
 .analysis-details {
@@ -263,7 +231,7 @@ const contentFieldNames = computed(() => {
 	border-radius: 2px;
 	margin-left: 8px;
 	overflow: hidden;
-	vertical-align: middle; /* Align meter nicely with text */
+	vertical-align: middle;
 }
 
 .meter {

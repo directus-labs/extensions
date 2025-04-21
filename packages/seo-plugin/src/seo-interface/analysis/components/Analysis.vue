@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AnalysisResult } from '../../analysis/types';
+import { useDebounceFn } from '@vueuse/core';
 import {
 	AccordionContent,
 	AccordionHeader,
@@ -7,7 +8,7 @@ import {
 	AccordionRoot,
 	AccordionTrigger,
 } from 'reka-ui';
-import { computed, inject, ref } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 import {
 	analyzeContent,
 	analyzeDescription,
@@ -29,6 +30,8 @@ const props = defineProps<{
 }>();
 
 const values = inject('values');
+
+const analysisResults = ref<AnalysisResult[]>([]);
 
 const contentData = computed(() => {
 	const data: Record<string, unknown> = {};
@@ -69,9 +72,13 @@ const analysisInput = computed(() => ({
 	contentFieldNames: props.contentFieldNames,
 }));
 
-const allAnalyses = computed((): AnalysisResult[] => {
-	if (!props.focusKeyphrase) return [];
-	return [
+const runAnalysis = useDebounceFn(() => {
+	if (!props.focusKeyphrase) {
+		analysisResults.value = [];
+		return;
+	}
+
+	analysisResults.value = [
 		analyzeTitle(analysisInput.value),
 		analyzeDescription(analysisInput.value),
 		analyzeSlug(analysisInput.value),
@@ -79,7 +86,23 @@ const allAnalyses = computed((): AnalysisResult[] => {
 		analyzeImageAltText(analysisInput.value),
 		analyzeSubheadings(analysisInput.value),
 	];
-});
+}, 500);
+
+watch(
+	[
+		() => props.focusKeyphrase,
+		() => props.title,
+		() => props.description,
+		() => props.slug,
+		() => contentData.value,
+	],
+	() => {
+		runAnalysis();
+	},
+	{ deep: true, immediate: true },
+);
+
+const allAnalyses = computed(() => analysisResults.value);
 
 const problemResults = computed(() => allAnalyses.value.filter((item) => item.status === 'error'));
 const improvementResults = computed(() => allAnalyses.value.filter((item) => item.status === 'warning'));
@@ -158,6 +181,7 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 				type="multiple"
 				collapsible
 				class="analysis-accordion"
+				:unmount-on-hide="false"
 			>
 				<template v-for="section in sections" :key="section.id">
 					<AccordionItem
@@ -315,14 +339,19 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 
 		.accordion-content {
 			overflow: hidden;
-			padding: 8px 8px 16px 8px;
 			background-color: var(--theme--background);
 
 			&[data-state='open'] {
+				padding: 8px 8px 16px 8px;
 				animation: slideDown 150ms ease-out;
+				height: auto;
 			}
 			&[data-state='closed'] {
-				animation: slideUp 150ms ease-out;
+				padding-top: 0;
+				padding-bottom: 0;
+				padding-left: 8px;
+				padding-right: 8px;
+				animation: slideUp 150ms ease-out forwards;
 			}
 		}
 	}
