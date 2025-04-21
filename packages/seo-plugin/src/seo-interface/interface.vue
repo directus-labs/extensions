@@ -4,7 +4,7 @@ import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 import { formatTitle } from '@directus/format-title';
 
 // @ts-expect-error - types missing
-import { get, set } from 'lodash-es';
+import { set } from 'lodash-es';
 import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from 'reka-ui';
 import { computed, defineEmits, defineProps, toRefs } from 'vue';
 import OgImagePreview from '../shared/components/OgImagePreview.vue';
@@ -103,46 +103,32 @@ const additionalFields = computed(() => {
 	);
 });
 
-/* Computed property to extract content data for analysis */
-const contentDataForAnalysis = computed(() => {
-	if (!props.contentFields || !props.values) return {};
+const showAdvancedTab = computed(() => props.showSitemap || props.showSearchControls);
+const showCustomFieldsTab = computed(() => additionalFields.value?.length > 0);
+const showAnalysisTab = computed(() => value.value && props.showFocusKeyphrase);
 
-	const fieldsToExtract = Array.isArray(props.contentFields)
-		? props.contentFields
-		: [props.contentFields];
-
-	return fieldsToExtract.reduce((acc, fieldName) => {
-		const content = get(props.values, fieldName);
-
-		if (content !== undefined && content !== null) {
-			acc[fieldName] = content;
-		}
-
-		return acc;
-	}, {} as Record<string, unknown>);
+const showTabsUi = computed(() => {
+	// Show tabs UI if any of the optional tabs are rendered
+	return showAdvancedTab.value || showCustomFieldsTab.value || showAnalysisTab.value;
 });
 </script>
 
 <template>
-	<TabsRoot class="fseo-tabs" default-value="metadata" :unmount-on-hide="false">
-		<TabsList class="tabs-list" aria-label="SEO Configuration">
+	<TabsRoot class="seo-tabs" default-value="metadata" :unmount-on-hide="false">
+		<TabsList v-if="showTabsUi" class="tabs-list" aria-label="SEO Configuration">
 			<TabsIndicator class="tabs-indicator">
 				<div class="indicator-bar" />
 			</TabsIndicator>
 			<TabsTrigger class="tab-trigger" value="metadata">
 				<span>Basic</span>
 			</TabsTrigger>
-			<TabsTrigger class="tab-trigger" value="advanced-settings">
+			<TabsTrigger v-if="showAdvancedTab" class="tab-trigger" value="advanced-settings">
 				<span>Advanced</span>
 			</TabsTrigger>
-			<TabsTrigger
-				v-if="additionalFields?.length"
-				class="tab-trigger"
-				value="custom-fields"
-			>
+			<TabsTrigger v-if="showCustomFieldsTab" class="tab-trigger" value="custom-fields">
 				<span>Custom Fields</span>
 			</TabsTrigger>
-			<TabsTrigger v-if="value && showFocusKeyphrase" class="tab-trigger" value="analysis">
+			<TabsTrigger v-if="showAnalysisTab" class="tab-trigger" value="analysis">
 				<span>Keyphrase</span>
 			</TabsTrigger>
 		</TabsList>
@@ -193,7 +179,8 @@ const contentDataForAnalysis = computed(() => {
 			</OgImagePreview>
 		</TabsContent>
 
-		<TabsContent value="advanced-settings" class="tab-content form-grid">
+		<!-- Use new computed prop for condition -->
+		<TabsContent v-if="showAdvancedTab" value="advanced-settings" class="tab-content form-grid">
 			<!-- Sitemap Fields -->
 			<div v-if="props.showSitemap" class="field">
 				<label class="label field-label type-label">
@@ -259,7 +246,7 @@ const contentDataForAnalysis = computed(() => {
 				</div>
 			</div>
 		</TabsContent>
-		<TabsContent v-if="additionalFields?.length" value="custom-fields" class="tab-content form-grid">
+		<TabsContent v-if="showCustomFieldsTab" value="custom-fields" class="tab-content form-grid">
 			<!-- Custom Fields -->
 			<div class="field">
 				<v-form
@@ -270,7 +257,7 @@ const contentDataForAnalysis = computed(() => {
 			</div>
 		</TabsContent>
 
-		<TabsContent v-if="value && showFocusKeyphrase" value="analysis" class="tab-content">
+		<TabsContent v-if="showAnalysisTab" value="analysis" class="tab-content">
 			<!-- Focus Keyphrase -->
 			<FocusKeyphrase
 				v-if="showFocusKeyphrase"
