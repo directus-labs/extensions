@@ -75,8 +75,6 @@ onKeyStroke('Enter', (e) => {
 </template>
 
 <style scoped>
-.focus-keyphrase-container {}
-
 .field {
 	display: flex;
 	flex-direction: column;

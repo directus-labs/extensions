@@ -275,23 +275,17 @@ const contentDataForAnalysis = computed(() => {
 			<FocusKeyphrase
 				v-if="showFocusKeyphrase"
 				:model-value="internalValue.focus_keyphrase || ''"
-				:title="internalValue.title"
-				:description="internalValue.meta_description"
-				:slug="slugField || ''"
-				:slug-field="slugField"
-				:content-fields="contentFields"
 				:disabled="props.disabled"
 				@update:model-value="updateField('focus_keyphrase', $event)"
 			/>
 
 			<!-- Analysis -->
 			<Analysis
-				:focus-keyphrase="value.focus_keyphrase || ''"
-				:title="value.title"
-				:description="value.meta_description"
-				:slug="slugField || ''"
-				:content-data="contentDataForAnalysis"
-				:content-field-names="Array.isArray(contentFields) ? contentFields : (contentFields ? [contentFields] : [])"
+				:focus-keyphrase="internalValue.focus_keyphrase || ''"
+				:title="internalValue.title || ''"
+				:description="internalValue.meta_description || ''"
+				:slug-field="slugField"
+				:content-fields="contentFields"
 			/>
 		</TabsContent>
 	</TabsRoot>

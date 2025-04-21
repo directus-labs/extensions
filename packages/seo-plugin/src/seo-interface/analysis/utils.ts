@@ -15,8 +15,7 @@ interface AnalysisInput {
 	title?: string;
 	description?: string;
 	slug?: string | null;
-	contentData?: Record<string, unknown>;
-	contentFieldNames?: string[];
+	combinedContent?: string;
 }
 
 export function analyzeTitle(input: AnalysisInput): AnalysisResult {
@@ -202,31 +201,6 @@ export function analyzeSlug(input: AnalysisInput): AnalysisResult {
 	};
 }
 
-function getCombinedContent(contentData?: Record<string, unknown>, contentFieldNames?: string[]): string {
-	let combinedContent = '';
-	if (!contentFieldNames || !contentData) return combinedContent;
-
-	for (const fieldName of contentFieldNames) {
-		if (contentData[fieldName]) {
-			// Basic check for string, might need refinement based on actual data types
-			if (typeof contentData[fieldName] === 'string') {
-				combinedContent += ` ${contentData[fieldName]}`;
-			}
-			else {
-				// Attempt to stringify non-string content, could log a warning
-				try {
-					combinedContent += ` ${JSON.stringify(contentData[fieldName])}`;
-				}
-				catch {
-					console.warn(`Could not stringify content for field: ${fieldName}`);
-				}
-			}
-		}
-	}
-
-	return combinedContent.trim();
-}
-
 export function analyzeContent(input: AnalysisInput): AnalysisResult {
 	if (!input.focusKeyphrase) {
 		return {
@@ -237,27 +211,16 @@ export function analyzeContent(input: AnalysisInput): AnalysisResult {
 		};
 	}
 
-	if (!input.contentFieldNames || input.contentFieldNames.length === 0 || !input.contentData) {
+	if (!input.combinedContent) {
 		return {
 			id: 'content',
 			title: 'Content',
-			status: 'error',
-			message: 'No content fields are configured for analysis',
+			status: 'neutral',
+			message: 'No content provided for analysis',
 		};
 	}
 
-	const combinedContent = getCombinedContent(input.contentData, input.contentFieldNames);
-
-	if (!combinedContent) {
-		return {
-			id: 'content',
-			title: 'Content',
-			status: 'error',
-			message: 'Add some content to analyze',
-		};
-	}
-
-	const cleanContent = normalizeContent(combinedContent);
+	const cleanContent = normalizeContent(input.combinedContent);
 	const wordCount = countWords(cleanContent);
 
 	if (wordCount < 50) {
@@ -316,9 +279,7 @@ export function analyzeImageAltText(input: AnalysisInput): AnalysisResult {
 		};
 	}
 
-	const combinedContent = getCombinedContent(input.contentData, input.contentFieldNames);
-
-	if (!combinedContent) {
+	if (!input.combinedContent) {
 		return {
 			id: 'image_alt',
 			title: 'Image Alt Text',
@@ -327,7 +288,7 @@ export function analyzeImageAltText(input: AnalysisInput): AnalysisResult {
 		};
 	}
 
-	const altTexts = extractImageAltText(combinedContent);
+	const altTexts = extractImageAltText(input.combinedContent);
 
 	if (altTexts.length === 0) {
 		return {
@@ -372,9 +333,7 @@ export function analyzeSubheadings(input: AnalysisInput): AnalysisResult {
 		};
 	}
 
-	const combinedContent = getCombinedContent(input.contentData, input.contentFieldNames);
-
-	if (!combinedContent) {
+	if (!input.combinedContent) {
 		return {
 			id: 'subheadings',
 			title: 'Subheadings',
@@ -383,7 +342,7 @@ export function analyzeSubheadings(input: AnalysisInput): AnalysisResult {
 		};
 	}
 
-	const subheadings = extractSubheadings(combinedContent);
+	const subheadings = extractSubheadings(input.combinedContent);
 
 	if (subheadings.length === 0) {
 		return {

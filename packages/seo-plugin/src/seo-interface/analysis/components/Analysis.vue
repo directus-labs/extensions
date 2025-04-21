@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import type { Ref } from 'vue';
 import type { AnalysisResult } from '../../analysis/types';
 import { useDebounceFn } from '@vueuse/core';
+// @ts-expect-error - types missing
+import { get } from 'lodash-es';
 import {
 	AccordionContent,
 	AccordionHeader,
@@ -25,51 +28,67 @@ const props = defineProps<{
 	focusKeyphrase: string;
 	title: string;
 	description: string;
-	slug: string | null | undefined;
-	contentFieldNames: string[];
+	slugField: string | null | undefined;
+	contentFields: string[] | string | undefined;
 }>();
 
-const values = inject('values');
+const values = inject('values') as Ref<Record<string, any>>;
 
 const analysisResults = ref<AnalysisResult[]>([]);
 
 const contentData = computed(() => {
-	const data: Record<string, unknown> = {};
-
-	if (!props.contentFieldNames || !values) {
+	if (!props.contentFields || !values) {
 		return {};
 	}
 
-	const fields = Array.isArray(props.contentFieldNames) ? props.contentFieldNames : [props.contentFieldNames];
+	const fieldsToExtract = Array.isArray(props.contentFields) ? props.contentFields : [props.contentFields];
 
-	for (const field of fields) {
-		if (field in values.value) {
-			data[field] = values.value[field];
+	return fieldsToExtract.reduce((acc, fieldName) => {
+		const content = get(values.value, fieldName);
+
+		if (content !== undefined && content !== null) {
+			acc[fieldName] = content;
+		}
+
+		return acc;
+	}, {} as Record<string, unknown>);
+});
+
+const contentString = computed(() => {
+	let combined = '';
+	if (!props.contentFields || !contentData.value) return combined;
+
+	const fieldsToProcess = Array.isArray(props.contentFields) ? props.contentFields : [props.contentFields];
+
+	for (const fieldName of fieldsToProcess) {
+		const content = contentData.value[fieldName];
+
+		if (content) {
+			if (typeof content === 'string') {
+				combined += ` ${content}`;
+			}
+			else {
+				try {
+					combined += ` ${JSON.stringify(content)}`;
+				}
+				catch {
+					console.warn(`[SEO Plugin] Could not stringify content for field: ${fieldName}`);
+				}
+			}
 		}
 	}
 
-	return data;
+	return combined.trim();
 });
 
-const openSectionIds = ref<SectionId[]>(['problems', 'improvements']);
-
-const availableSectionIds = computed(() => sections.value.filter((s) => s.results.length > 0).map((s) => s.id));
-
-function expandAllSections() {
-	openSectionIds.value = availableSectionIds.value;
-}
-
-function collapseAllSections() {
-	openSectionIds.value = [];
-}
+const slugValue = computed(() => values.value[props.slugField as keyof typeof values.value] || '');
 
 const analysisInput = computed(() => ({
 	focusKeyphrase: props.focusKeyphrase,
 	title: props.title,
 	description: props.description,
-	slug: props.slug,
-	contentData: contentData.value,
-	contentFieldNames: props.contentFieldNames,
+	slug: slugValue.value,
+	combinedContent: contentString.value,
 }));
 
 const runAnalysis = useDebounceFn(() => {
@@ -78,13 +97,19 @@ const runAnalysis = useDebounceFn(() => {
 		return;
 	}
 
+	const hasContentFields = props.contentFields && (Array.isArray(props.contentFields) ? props.contentFields.length > 0 : !!props.contentFields);
+
 	analysisResults.value = [
 		analyzeTitle(analysisInput.value),
 		analyzeDescription(analysisInput.value),
 		analyzeSlug(analysisInput.value),
-		analyzeContent(analysisInput.value),
-		analyzeImageAltText(analysisInput.value),
-		analyzeSubheadings(analysisInput.value),
+		...(hasContentFields
+			? [
+					analyzeContent(analysisInput.value),
+					analyzeImageAltText(analysisInput.value),
+					analyzeSubheadings(analysisInput.value),
+				]
+			: []),
 	];
 }, 500);
 
@@ -93,7 +118,7 @@ watch(
 		() => props.focusKeyphrase,
 		() => props.title,
 		() => props.description,
-		() => props.slug,
+		() => slugValue.value,
 		() => contentData.value,
 	],
 	() => {
@@ -107,6 +132,8 @@ const allAnalyses = computed(() => analysisResults.value);
 const problemResults = computed(() => allAnalyses.value.filter((item) => item.status === 'error'));
 const improvementResults = computed(() => allAnalyses.value.filter((item) => item.status === 'warning'));
 const goodResults = computed(() => allAnalyses.value.filter((item) => item.status === 'good'));
+
+const openSectionIds = ref<SectionId[]>(['problems', 'improvements']);
 
 const sections = computed(() => [
 	{
@@ -131,6 +158,16 @@ const sections = computed(() => [
 		results: goodResults.value,
 	},
 ]);
+
+const availableSectionIds = computed(() => sections.value.filter((s) => s.results.length > 0).map((s) => s.id));
+
+function expandAllSections() {
+	openSectionIds.value = availableSectionIds.value;
+}
+
+function collapseAllSections() {
+	openSectionIds.value = [];
+}
 
 const hasOnlyNeutralResults = computed(() => {
 	return allAnalyses.value.length > 0 && availableSectionIds.value.length === 0;

@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { SeoFieldStatus } from '../../../shared/types/seo';
 import type { AnalysisResult, AnalysisResultDetails, AnalysisStatus } from '../types';
 import { computed } from 'vue';
+import ProgressBar from '../../../shared/components/ProgressBar.vue';
 
 const props = defineProps<{
 	result: AnalysisResult;
@@ -50,33 +52,29 @@ const detailComponent = computed((): DetailComponent | null => {
 	return null;
 });
 
-const isLengthMeterWarning = computed(() => {
-	if (detailComponent.value?.type !== 'length' || detailComponent.value.data.length === 0 || !detailComponent.value.data.minLength || !detailComponent.value.data.maxLength) return false;
-	const { length, minLength, maxLength } = detailComponent.value.data;
-	return length < minLength || length > maxLength;
-});
-
-const lengthMeterWidth = computed(() => {
+const lengthMeterProgress = computed(() => {
 	if (detailComponent.value?.type !== 'length' || detailComponent.value.data.length === 0 || !detailComponent.value.data.maxLength) return 0;
 	const { length, maxLength } = detailComponent.value.data;
 	return Math.min(100, (length / maxLength) * 100);
 });
 
-const isDensityMeterWarning = computed(() => {
-	if (detailComponent.value?.type !== 'content') return false;
-	return !detailComponent.value.data.optimal;
+const lengthMeterStatus = computed((): SeoFieldStatus => {
+	if (detailComponent.value?.type !== 'length' || detailComponent.value.data.length === 0 || !detailComponent.value.data.minLength || !detailComponent.value.data.maxLength) return 'missing';
+	const { length, minLength, maxLength } = detailComponent.value.data;
+	if (length < minLength) return 'too-short';
+	if (length > maxLength) return 'too-long';
+	return 'ideal';
 });
 
-const densityMeterWidth = computed(() => {
+const densityMeterProgress = computed(() => {
 	if (detailComponent.value?.type !== 'content' || typeof detailComponent.value.data.density !== 'number') return 0;
-	return Math.min(100, detailComponent.value.data.density * 50); // Density target is 0.5-2%, so 1% = 50 width
+	return Math.min(100, detailComponent.value.data.density * 50);
 });
 
-// Removed inject('values') and related unused computed properties:
-// const values = inject('values') as Ref<Record<string, any>>;
-// const slugValue = computed(...)
-// const contentFieldValues = computed(...)
-// const contentFieldNames = computed(...)
+const densityMeterStatus = computed((): SeoFieldStatus => {
+	if (detailComponent.value?.type !== 'content') return 'missing';
+	return detailComponent.value.data.optimal ? 'ideal' : 'too-short';
+});
 </script>
 
 <template>
@@ -99,15 +97,11 @@ const densityMeterWidth = computed(() => {
 				<!-- Title & Description details -->
 				<div v-if="detailComponent.type === 'length'">
 					Length: {{ detailComponent.data.length }} characters
-					<span class="meter-wrapper">
-						<span
-							class="meter"
-							:style="{
-								width: `${lengthMeterWidth}%`,
-								backgroundColor: isLengthMeterWarning ? 'var(--theme--warning)' : 'var(--theme--success)',
-							}"
-						/>
-					</span>
+					<ProgressBar
+						:progress="lengthMeterProgress"
+						:status="lengthMeterStatus"
+						class="analysis-meter"
+					/>
 				</div>
 
 				<!-- Content details -->
@@ -116,15 +110,11 @@ const densityMeterWidth = computed(() => {
 					<template v-if="detailComponent.data.occurrences && detailComponent.data.occurrences > 0 && typeof detailComponent.data.density === 'number'">
 						<br>Occurrences: {{ detailComponent.data.occurrences }} times
 						<br>Density: {{ detailComponent.data.density.toFixed(1) }}%
-						<span class="meter-wrapper">
-							<span
-								class="meter"
-								:style="{
-									width: `${densityMeterWidth}%`,
-									backgroundColor: isDensityMeterWarning ? 'var(--theme--warning)' : 'var(--theme--success)',
-								}"
-							/>
-						</span>
+						<ProgressBar
+							:progress="densityMeterProgress"
+							:status="densityMeterStatus"
+							class="analysis-meter"
+						/>
 					</template>
 				</div>
 
@@ -152,7 +142,7 @@ const densityMeterWidth = computed(() => {
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .analysis-result {
 	display: flex;
 	align-items: start;
@@ -212,31 +202,21 @@ const densityMeterWidth = computed(() => {
 	font-size: 0.85em;
 	color: var(--theme--foreground-subdued);
 	margin-top: 4px;
-}
 
-.analysis-details ul {
-	margin: 4px 0 0 1rem;
-	padding: 0;
-	list-style: disc;
-}
-.analysis-details li {
-	margin-bottom: 2px;
-}
+	ul {
+		margin: 4px 0 0 1rem;
+		padding: 0;
+		list-style: disc;
+	}
+	li {
+		margin-bottom: 2px;
+	}
 
-.meter-wrapper {
-	display: inline-block;
-	width: 100px;
-	height: 4px;
-	background-color: var(--theme--background);
-	border-radius: 2px;
-	margin-left: 8px;
-	overflow: hidden;
-	vertical-align: middle;
-}
-
-.meter {
-	display: block;
-	height: 100%;
-	border-radius: 2px;
+	.analysis-meter {
+		display: inline-block;
+		width: 100px;
+		margin: 4px 0 0 8px;
+		vertical-align: middle;
+	}
 }
 </style>
