@@ -2,13 +2,14 @@ import type { Ref } from 'vue';
 import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import { cloneDeep, isEqual } from 'lodash-es';
 import { inject, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { diffObjects } from '../utils/diff-objects';
 
 export interface UseDocumentSyncOptions {
 	/**
 	 * Callback called when field values change
 	 */
-	onFieldValueChange: (field: string, value: unknown) => void;
+	onFieldValueChange: (field: string, value: unknown, collection: string) => void;
 }
 
 export function useDocumentSync(
@@ -18,6 +19,8 @@ export function useDocumentSync(
 	const values = inject<Ref<Record<string, unknown>>>('values');
 	const updatingFromYJS = ref(false);
 	const formValues = provider.doc.getMap('values');
+
+	const route = useRoute();
 
 	// Handle updates from YJS
 	formValues.observe((event) => {
@@ -30,7 +33,7 @@ export function useDocumentSync(
 			const change = event.changes.keys.get(key);
 
 			if (change && (change.action === 'add' || change.action === 'update')) {
-				options.onFieldValueChange(key, formValues.get(key));
+				options.onFieldValueChange(key, formValues.get(key), route.params.collection as string);
 			}
 		}
 
@@ -58,8 +61,8 @@ export function useDocumentSync(
 	}
 
 	return {
-		setActiveField: (field: string | null) => {
-			provider.awareness.setLocalField('activeField', field ? { field } : null);
+		setActiveField: (field: string | null, collection: string) => {
+			provider.awareness.setLocalField('activeField', field ? { field: `${collection}:${field}` } : null);
 		},
 		updatingFromYJS,
 	};

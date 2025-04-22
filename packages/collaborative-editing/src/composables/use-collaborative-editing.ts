@@ -20,7 +20,7 @@ export interface UseCollaborativeEditingOptions {
 	/**
 	 * Callback called when a field value changes
 	 */
-	onFieldValueChange: (field: string, value: unknown) => void;
+	onFieldValueChange: (field: string, value: unknown, collection: string) => void;
 }
 
 export function useCollaborativeEditing(options: UseCollaborativeEditingOptions) {
@@ -30,13 +30,16 @@ export function useCollaborativeEditing(options: UseCollaborativeEditingOptions)
 		name: options.room,
 	});
 
+	const collection = options.room.split(':')[0] || '';
+	const itemId = options.room.split(':')[1] || '';
+
 	const activeField = useActiveField(provider);
 
-	const fieldBorders = useFieldBorders(provider);
+	const fieldBorders = useFieldBorders(provider, collection);
 
 	const avatarStacks = useAvatarStacks(provider);
 
-	const fieldLocking = useFieldLocking(provider);
+	const fieldLocking = useFieldLocking(provider, collection);
 
 	const documentSync = useDocumentSync(provider, {
 		onFieldValueChange: options.onFieldValueChange,
@@ -53,9 +56,10 @@ export function useCollaborativeEditing(options: UseCollaborativeEditingOptions)
 		avatarStacks,
 		documentSync,
 		fieldLocking,
-
+		collection,
+		itemId,
 		setActiveField: activeField.setActiveField,
-		updateFieldValue: documentSync.updateFieldValue,
+		// updateFieldValue: documentSync.updateFieldValue,
 		isFieldLocked: fieldLocking.isFieldLocked,
 	};
 }

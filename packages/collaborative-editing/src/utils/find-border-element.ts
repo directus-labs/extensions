@@ -1,8 +1,9 @@
 // find-border-element.ts
-export function findBorderElement(fieldName: string) {
-	if (!fieldName) return null;
+export function findBorderElement(fieldName: string, collection: string) {
+	console.warn('findBorderElement', fieldName, collection);
+	if (!fieldName || !collection) return null;
 
-	const fieldEl = document.querySelector(`[field="${fieldName}"]`);
+	const fieldEl = document.querySelector(`[data-field="${fieldName}"][data-collection="${collection}"]`);
 
 	if (!fieldEl) return null;
 

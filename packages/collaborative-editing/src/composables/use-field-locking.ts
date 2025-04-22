@@ -1,7 +1,8 @@
 import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import { onMounted, watch } from 'vue';
 
-export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvider>) {
+// const relatedSelectors = ['.many-to-many', '.many-to-one', '.one-to-many', '.one-to-one'];
+export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvider>, collectionName: string) {
 	const lockedFields = new Set<string>();
 
 	// Watch for changes in awareness states
@@ -44,12 +45,23 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 				lockedFields.add(field);
 			}
 		}
+		// Lock related fields
+		/* for (const selector of relatedSelectors) {
+			const relatedElements = document.querySelectorAll(selector);
+
+			for (const relatedEl of relatedElements) {
+				relatedEl.classList.add('field-locked-by-others');
+				relatedEl.style.opacity = '0.7';
+				relatedEl.style.cursor = 'not-allowed';
+				relatedEl.style.pointerEvents = 'none';
+			}
+		} */
 	}
 
-	function findFieldElements(fieldName: string): HTMLElement[] {
+	function findFieldElements(fieldName: string, collectionName: string): HTMLElement[] {
 		// Find elements by data attribute, name attribute, etc.
 		const selectors = [
-			`[field="${fieldName}"]`,
+			`[data-field="${fieldName}"][data-collection="${collectionName}"]`,
 		].filter(Boolean);
 
 		const elements: HTMLElement[] = [];
@@ -66,7 +78,7 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 	}
 
 	function lockField(fieldName: string) {
-		const elements = findFieldElements(fieldName);
+		const elements = findFieldElements(fieldName, collectionName);
 
 		for (const el of elements) {
 			// Find the actual input elements inside the container
@@ -98,7 +110,7 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 	}
 
 	function unlockField(fieldName: string) {
-		const elements = findFieldElements(fieldName);
+		const elements = findFieldElements(fieldName, collectionName);
 
 		for (const el of elements) {
 			// Restore inputs

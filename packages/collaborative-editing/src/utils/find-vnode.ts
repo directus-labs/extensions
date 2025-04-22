@@ -2,7 +2,7 @@
 // License: MIT https://github.com/vuejs/test-utils/blob/7ad5bc6ed94194a81909e479b6fcaf40936da025/LICENSE
 
 import type {
-	ComponentPublicInstance,
+	ComponentInternalInstance,
 	ConcreteComponent,
 	VNode,
 	VNodeArrayChildren,
@@ -95,7 +95,8 @@ function findAllVNodes(
 export function find(
 	root: VNode,
 	selector: string,
-): ComponentPublicInstance[] {
+): ComponentInternalInstance[] {
+	console.warn('find', root, selector);
 	let matchingVNodes = findAllVNodes(root, selector);
 
 	// When searching by CSS selector we want only one (topmost) vnode for each el`

@@ -4,9 +4,8 @@ import { defineHook } from '@directus/extensions-sdk';
 import { createHocuspocusServer } from './hocuspocus';
 import { createDirectusWebSocket } from './websocket';
 
-export default defineHook(({ init }, { logger, services, getSchema, env, database }: DirectusContext) => {
+export default defineHook(({ init }, { logger, services, getSchema, env, database, emitter }: DirectusContext) => {
 	let collaborativeEditingInitialized = false;
-
 	// Configure hocuspocus server
 	const hocuspocus = createHocuspocusServer({
 		database,
@@ -14,6 +13,7 @@ export default defineHook(({ init }, { logger, services, getSchema, env, databas
 		env,
 		getSchema,
 		services,
+		emitter,
 	});
 
 	// Initialize the WebSocket server on first request
@@ -42,6 +42,7 @@ export default defineHook(({ init }, { logger, services, getSchema, env, databas
 					services,
 					hocuspocus,
 					database,
+					emitter,
 				});
 
 				// Inject the WebSocket handler into the server

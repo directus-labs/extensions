@@ -2,6 +2,7 @@ import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import { useActiveElement, useEventListener } from '@vueuse/core';
 import { watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { getDataFromActiveFieldName } from '../utils';
 
 export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider>) {
 	const activeElement = useActiveElement();
@@ -23,11 +24,12 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 	useEventListener('mouseup', () => {
 		const activeInputEl = document.querySelector('.input.active, .v-input.active, [role="combobox"].active');
 
-		if (activeInputEl) {
+		if (activeInputEl && activeElement.value?.getAttribute('data-field')) {
 			const field = getFieldNameFromElement(activeInputEl as HTMLElement);
-			// console.warn('Mouseup on active input, field:', field);
 
 			if (field) {
+				const { collection, field: fieldName } = getDataFromActiveFieldName(field);
+				console.warn('Mouseup on active input, field:', field, collection, fieldName);
 				provider.awareness.setActiveField(field);
 			}
 		}
@@ -39,6 +41,17 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 			provider.provider.awareness.destroy();
 		}
 	});
+	/*
+	const drawerEmitter = new EventEmitter();
+
+	drawerEmitter.on('drawer-opened', () => {
+		provider.awareness.setLocalField('drawerStatus', true);
+	});
+
+	drawerEmitter.on('drawer-closed', () => {
+		provider.awareness.setLocalField('drawerStatus', false);
+	});
+*/
 
 	// Clean up awareness state when changing routes
 	const router = useRouter();
@@ -57,14 +70,26 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 	};
 }
 
+/**
+ * Get the field name used for Yjs field sync
+ * @param el - The element to get the field name from
+ * @returns The field name
+ * @example
+ * <div data-field="name" data-collection="users">
+ *   <input type="text" />
+ * </div>
+ * getFieldNameFromElement(el) // "users:name"
+ */
 function getFieldNameFromElement(el: HTMLElement) {
 	// Check if the element itself has a field attribute
-	const fieldAttr = el.getAttribute('field');
-	if (fieldAttr) return fieldAttr;
+	const fieldName = el.dataset.field;
+	const collectionName = el.dataset.collection;
+	if (fieldName && collectionName) return `${collectionName}:${fieldName}`;
 
-	// Or if any parent has a field attribute
-	const parentWithField = el.closest('[field]');
-	if (parentWithField) return parentWithField.getAttribute('field');
+	// Or if any parent has a collection and field attribute
+	const parentWithField = el.closest('[data-field], [data-collection]') as HTMLElement | null;
+
+	if (parentWithField) return `${parentWithField.dataset.collection}:${parentWithField.dataset.field}`;
 
 	return null;
 }

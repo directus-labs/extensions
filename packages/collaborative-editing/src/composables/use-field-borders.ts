@@ -2,8 +2,9 @@ import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import Color from 'colorjs.io';
 import { watch } from 'vue';
 import { findBorderElement } from '../utils/find-border-element';
+import { getDataFromActiveFieldName } from '../utils';
 
-export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvider>) {
+export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvider>, collection: string) {
 	const allFields = new Set<string>();
 	const elementsWithBorders = new Set<HTMLElement>();
 
@@ -24,7 +25,9 @@ export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvide
 
 		// Clear all field borders first
 		for (const field of allFields) {
-			const el = findBorderElement(field) as HTMLElement | null;
+			console.info('updateBorders', field, collection);
+			const { collection: fieldCollection, field: fieldName } = getDataFromActiveFieldName(field);
+			const el = findBorderElement(fieldName, fieldCollection) as HTMLElement | null;
 
 			if (el?.style) {
 				el.style.removeProperty('box-shadow');
@@ -35,7 +38,9 @@ export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvide
 		for (const state of states) {
 			if (!state.activeField?.field || state.activeField.field === localField) continue;
 
-			const el = findBorderElement(state.activeField.field) as HTMLElement | null;
+			const { collection: fieldCollection, field: fieldName } = getDataFromActiveFieldName(state.activeField.field);
+
+			const el = findBorderElement(fieldName, fieldCollection) as HTMLElement | null;
 
 			if (!el?.style || !self) continue;
 

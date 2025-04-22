@@ -6,12 +6,12 @@ import CollaborationCursorExtension from '@tiptap/extension-collaboration-cursor
 import { StarterKit } from '@tiptap/starter-kit';
 import { EditorContent, useEditor } from '@tiptap/vue-3';
 import { defineProps, onMounted, onUnmounted } from 'vue';
-import * as Y from 'yjs';
 import { useCurrentUser } from '../composables/use-current-user';
 
 const props = defineProps<{
 	url?: string;
 	fieldName?: string;
+	collection?: string;
 }>();
 
 const currentUser = useCurrentUser();
@@ -27,6 +27,7 @@ const provider = new HocuspocusProvider({
 		if (props.fieldName) {
 			provider.setAwarenessField('activeField', {
 				field: props.fieldName,
+				collection: props.collection,
 			});
 		}
 	},
@@ -58,10 +59,11 @@ const editor = useEditor({
 });
 
 onMounted(() => {
-	if (props.fieldName) {
+	if (props.fieldName && props.collection) {
 		const updateAwareness = () => {
 			provider.setAwarenessField('activeField', {
 				field: props.fieldName,
+				collection: props.collection,
 			});
 		};
 
