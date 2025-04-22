@@ -18,7 +18,7 @@ export default defineHook(({ init }, { logger, services, getSchema, env, databas
 
 	// Initialize the WebSocket server on first request
 	init('middlewares.after', ({ app }) => {
-		app.use((req: any, res: any, next: () => void) => {
+		app.use((req: any, _res: any, next: () => void) => {
 			if (collaborativeEditingInitialized || !req.socket) {
 				next();
 				return;

@@ -1,8 +1,9 @@
 import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import { onMounted, watch } from 'vue';
+import { getDataFromActiveFieldName } from '../utils';
 
 // const relatedSelectors = ['.many-to-many', '.many-to-one', '.one-to-many', '.one-to-one'];
-export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvider>, collectionName: string) {
+export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvider>) {
 	const lockedFields = new Set<string>();
 
 	// Watch for changes in awareness states
@@ -77,8 +78,9 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 		return elements;
 	}
 
-	function lockField(fieldName: string) {
-		const elements = findFieldElements(fieldName, collectionName);
+	function lockField(activeFieldName: string) {
+		const { collection: fieldCollection, field: fieldName } = getDataFromActiveFieldName(activeFieldName);
+		const elements = findFieldElements(fieldName, fieldCollection);
 
 		for (const el of elements) {
 			// Find the actual input elements inside the container
@@ -109,8 +111,9 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 		}
 	}
 
-	function unlockField(fieldName: string) {
-		const elements = findFieldElements(fieldName, collectionName);
+	function unlockField(activeFieldName: string) {
+		const { collection: fieldCollection, field: fieldName } = getDataFromActiveFieldName(activeFieldName);
+		const elements = findFieldElements(fieldName, fieldCollection);
 
 		for (const el of elements) {
 			// Restore inputs

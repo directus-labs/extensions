@@ -9,6 +9,8 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 
 	// Watch for element focus changes
 	watch(activeElement, (el) => {
+		console.log('activeElement', el);
+
 		if (!el) {
 			// console.warn('No active element, clearing active field');
 			provider.awareness.setActiveField(null);

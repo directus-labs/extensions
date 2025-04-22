@@ -39,7 +39,7 @@ export function useCollaborativeEditing(options: UseCollaborativeEditingOptions)
 
 	const avatarStacks = useAvatarStacks(provider);
 
-	const fieldLocking = useFieldLocking(provider, collection);
+	const fieldLocking = useFieldLocking(provider);
 
 	const documentSync = useDocumentSync(provider, {
 		onFieldValueChange: options.onFieldValueChange,

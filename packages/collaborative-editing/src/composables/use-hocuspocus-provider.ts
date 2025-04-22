@@ -1,4 +1,4 @@
-import { useSdk, useStores } from '@directus/extensions-sdk';
+// import { useSdk } from '@directus/extensions-sdk';
 import { HocuspocusProvider } from '@hocuspocus/provider';
 import { computed, onUnmounted, ref } from 'vue';
 import * as Y from 'yjs';
@@ -34,16 +34,14 @@ export function useHocuspocusProvider(options: UseHocuspocusProviderOptions) {
 	const awarenessStates = ref<AwarenessState[]>([]);
 
 	// Check if the local user has full read permissions for the users collection. If so, we don't have to worry about filtering the users.
-	const { usePermissionsStore } = useStores();
-	const sdk = useSdk();
-	const permissionsStore = usePermissionsStore();
-	const localUserPermissions = permissionsStore.getPermission('directus_users', 'read');
+	// const { usePermissionsStore } = useStores();
+	// const sdk = useSdk();
+	// const permissionsStore = usePermissionsStore();
+	// const localUserPermissions = permissionsStore.getPermission('directus_users', 'read');
 
-	console.log('localUserPermissions', localUserPermissions);
-
-	const token = sdk.getToken().then((token) => {
+	/* const token = sdk.getToken().then((token) => {
 		console.log('token', token);
-	});
+	}); */
 
 	// Initialize HocuspocusProvider
 	const provider = new HocuspocusProvider({
@@ -52,7 +50,7 @@ export function useHocuspocusProvider(options: UseHocuspocusProviderOptions) {
 		document: doc,
 		token: '123', // @TODO: Need to pass a token here
 		onStatus: ({ status }) => {
-			console.warn('Collaboration status:', status);
+			console.info('Collaboration status:', status);
 		},
 		onAwarenessChange: (data) => {
 			if (!provider.awareness) return;
