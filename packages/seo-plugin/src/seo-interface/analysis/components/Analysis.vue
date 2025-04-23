@@ -247,7 +247,7 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 			</AccordionRoot>
 
 			<div v-if="hasOnlyNeutralResults" class="all-neutral-state">
-				All analysis checks are neutral. This might happen if content is missing or too short.
+				We found nothing to report! This might happen if content is missing or too short.
 			</div>
 			<div v-else-if="allAnalyses.length === 0 && focusKeyphrase" class="no-results-state">
 				Could not generate analysis results. Check configuration and content fields.
