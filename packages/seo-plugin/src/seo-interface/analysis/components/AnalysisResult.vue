@@ -73,7 +73,7 @@ const densityMeterStatus = computed((): SeoFieldStatus => {
 		class="analysis-result"
 		:class="result.status"
 	>
-		<div :class="['analysis-dot', result.status]" />
+		<div class="analysis-dot" :class="result.status" />
 		<div class="analysis-text">
 			<p class="analysis-title">
 				<span class="analysis-title-text">
