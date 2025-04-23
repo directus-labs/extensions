@@ -10,7 +10,6 @@ const props = defineProps<{
 	ogImage?: string | null;
 }>();
 
-
 type Platform = 'facebook' | 'linkedin' | 'x';
 const selectedPlatform = ref<Platform>('linkedin');
 

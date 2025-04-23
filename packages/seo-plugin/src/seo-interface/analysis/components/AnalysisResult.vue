@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SeoFieldStatus } from '../../../shared/types/seo';
-import type { AnalysisResult, AnalysisResultDetails, AnalysisStatus } from '../types';
+import type { AnalysisResult, AnalysisResultDetails } from '../types';
 import { computed } from 'vue';
 import ProgressBar from '../../../shared/components/ProgressBar.vue';
 
@@ -41,17 +41,17 @@ const detailComponent = computed((): DetailComponent | null => {
 
 const lengthMeterProgress = computed(() => {
 	const value = detailComponent.value;
-	if (!value || value.type !== 'length' || value.data.length === 0 || !value.data.maxLength || !value.data.length) return 0;
+	if (!value || value.type !== 'length' || value.data.length === 0 || !value.data.maxLength) return 0;
 	const { length, maxLength } = value.data;
-	return Math.min(100, (length / maxLength) * 100);
+	return Math.min(100, (length ?? 0 / maxLength) * 100);
 });
 
 const lengthMeterStatus = computed((): SeoFieldStatus => {
 	const value = detailComponent.value;
-	if (!value || value.type !== 'length' || value.data.length === 0 || !value.data.minLength || !value.data.maxLength || !value.data.length) return 'missing';
+	if (!value || value.type !== 'length' || value.data.length === 0 || !value.data.minLength || !value.data.maxLength) return 'missing';
 	const { length, minLength, maxLength } = value.data;
-	if (length < minLength) return 'too-short';
-	if (length > maxLength) return 'too-long';
+	if (length && length < minLength) return 'too-short';
+	if (length && length > maxLength) return 'too-long';
 	return 'ideal';
 });
 

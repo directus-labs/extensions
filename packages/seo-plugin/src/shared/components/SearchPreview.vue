@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps, onMounted, ref } from 'vue';
 import { truncate } from '../utils';
+
 defineProps<{
 	title: string;
 	metaDescription: string;
