@@ -58,15 +58,7 @@ export function countOccurrences(text: string, sub: string): number {
 	// Return 0 if the substring is empty
 	if (normalizedSub.length === 0) return 0;
 
-	let count = 0;
-	let position = normalizedText.indexOf(normalizedSub);
-
-	while (position !== -1) {
-		count++;
-		position = normalizedText.indexOf(normalizedSub, position + 1);
-	}
-
-	return count;
+	return normalizedText.split(normalizedSub).length - 1;
 }
 
 /**
@@ -156,4 +148,12 @@ export function extractSubheadings(content: string): string[] {
 	}
 
 	return subheadings;
+}
+
+/**
+ * Truncates a string to a maximum length
+ */
+export function truncate(text: string | undefined | null, maxLength: number): string {
+	if (!text) return '';
+	return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 }

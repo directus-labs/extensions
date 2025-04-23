@@ -8,19 +8,6 @@ const props = defineProps<{
 	result: AnalysisResult;
 }>();
 
-function getStatusColor(status: AnalysisStatus): string {
-	switch (status) {
-		case 'good':
-			return 'var(--theme--success)';
-		case 'warning':
-			return 'var(--theme--warning)';
-		case 'error':
-			return 'var(--theme--danger)';
-		default:
-			return 'var(--theme--foreground-subdued)';
-	}
-}
-
 type DetailComponentType = 'length' | 'content' | 'image' | 'subheadings';
 
 interface DetailComponent {
@@ -53,27 +40,31 @@ const detailComponent = computed((): DetailComponent | null => {
 });
 
 const lengthMeterProgress = computed(() => {
-	if (detailComponent.value?.type !== 'length' || detailComponent.value.data.length === 0 || !detailComponent.value.data.maxLength) return 0;
-	const { length, maxLength } = detailComponent.value.data;
+	const value = detailComponent.value;
+	if (!value || value.type !== 'length' || value.data.length === 0 || !value.data.maxLength || !value.data.length) return 0;
+	const { length, maxLength } = value.data;
 	return Math.min(100, (length / maxLength) * 100);
 });
 
 const lengthMeterStatus = computed((): SeoFieldStatus => {
-	if (detailComponent.value?.type !== 'length' || detailComponent.value.data.length === 0 || !detailComponent.value.data.minLength || !detailComponent.value.data.maxLength) return 'missing';
-	const { length, minLength, maxLength } = detailComponent.value.data;
+	const value = detailComponent.value;
+	if (!value || value.type !== 'length' || value.data.length === 0 || !value.data.minLength || !value.data.maxLength || !value.data.length) return 'missing';
+	const { length, minLength, maxLength } = value.data;
 	if (length < minLength) return 'too-short';
 	if (length > maxLength) return 'too-long';
 	return 'ideal';
 });
 
 const densityMeterProgress = computed(() => {
-	if (detailComponent.value?.type !== 'content' || typeof detailComponent.value.data.density !== 'number') return 0;
-	return Math.min(100, detailComponent.value.data.density * 50);
+	const value = detailComponent.value;
+	if (!value || value.type !== 'content' || typeof value.data.density !== 'number') return 0;
+	return Math.min(100, value.data.density * 50);
 });
 
 const densityMeterStatus = computed((): SeoFieldStatus => {
-	if (detailComponent.value?.type !== 'content') return 'missing';
-	return detailComponent.value.data.optimal ? 'ideal' : 'too-short';
+	const value = detailComponent.value;
+	if (!value || value.type !== 'content' || typeof value.data.density !== 'number') return 'missing';
+	return value.data.optimal ? 'ideal' : 'too-short';
 });
 </script>
 
@@ -82,7 +73,7 @@ const densityMeterStatus = computed((): SeoFieldStatus => {
 		class="analysis-result"
 		:class="result.status"
 	>
-		<div :style="{ backgroundColor: getStatusColor(result.status) }" class="analysis-dot" />
+		<div :class="['analysis-dot', result.status]" />
 		<div class="analysis-text">
 			<p class="analysis-title">
 				<span class="analysis-title-text">
@@ -155,6 +146,17 @@ const densityMeterStatus = computed((): SeoFieldStatus => {
 		width: 8px;
 		height: 8px;
 		border-radius: 50%;
+		background-color: var(--theme--foreground-subdued);
+
+		&.good {
+			background-color: var(--theme--success);
+		}
+		&.warning {
+			background-color: var(--theme--warning);
+		}
+		&.error {
+			background-color: var(--theme--danger);
+		}
 	}
 
 	.v-icon {

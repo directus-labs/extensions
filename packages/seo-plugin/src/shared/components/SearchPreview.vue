@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps, onMounted, ref } from 'vue';
-
+import { truncate } from '../utils';
 defineProps<{
 	title: string;
 	metaDescription: string;
@@ -31,12 +31,6 @@ onMounted(() => {
 
 function getProjectName(): string {
 	return window?.document?.title?.split('·')[1]?.trim() || '';
-}
-
-function truncate(text: string, maxLength: number): string {
-	if (!text)
-		return '';
-	return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 }
 </script>
 

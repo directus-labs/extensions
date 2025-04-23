@@ -911,6 +911,9 @@ importers:
       '@directus/extensions-sdk':
         specifier: 13.0.1
         version: 13.0.1(@types/node@22.13.10)(@unhead/vue@2.0.0-alpha.19(vue@3.5.13(typescript@5.7.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(sass@1.84.0)(terser@5.39.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
       sass:
         specifier: ^1.84.0
         version: 1.84.0
@@ -12523,7 +12526,7 @@ snapshots:
 
   '@types/lodash-es@4.17.12':
     dependencies:
-      '@types/lodash': 4.17.5
+      '@types/lodash': 4.17.14
 
   '@types/lodash@4.17.14': {}
 

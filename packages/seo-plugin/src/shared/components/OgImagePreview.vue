@@ -2,21 +2,20 @@
 import { getRootPath } from '@directus-labs/utils';
 import { RadioGroupIndicator, RadioGroupItem, RadioGroupRoot } from 'reka-ui';
 import { computed, defineProps, ref } from 'vue';
+import { truncate } from '../utils';
 
 const props = defineProps<{
 	title: string;
 	description: string;
-	ogImage?: string | null; // OG Image URL or ID
+	ogImage?: string | null;
 }>();
 
-// Placeholder image if ogImageUrl is not provided
-const placeholderImage = 'https://via.placeholder.com/1200x630/F0F0F0/999999?text=Preview+Image';
 
 type Platform = 'facebook' | 'linkedin' | 'x';
 const selectedPlatform = ref<Platform>('linkedin');
 
 const imageUrlToDisplay = computed(() => {
-	if (!props.ogImage) return placeholderImage;
+	if (!props.ogImage) return null;
 
 	const url = `${getRootPath()}assets/${props.ogImage}?width=1200&height=630`;
 
@@ -31,11 +30,6 @@ const domain = computed(() => {
 
 	return '';
 });
-
-function truncate(text: string | undefined | null, maxLength: number): string {
-	if (!text) return '';
-	return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
-}
 </script>
 
 <template>
@@ -53,7 +47,6 @@ function truncate(text: string | undefined | null, maxLength: number): string {
 								:src="imageUrlToDisplay"
 								class="preview-image"
 								alt="OG Image Preview"
-								@error="($event.target as HTMLImageElement).src = placeholderImage"
 							>
 						</slot>
 						<div v-if="selectedPlatform === 'x'" class="preview-domain-badge">
@@ -128,7 +121,7 @@ function truncate(text: string | undefined | null, maxLength: number): string {
 
 .seo-image-preview {
 	width: 100%;
-	container-type: inline-size; /* Set up containment context */
+	container-type: inline-size;
 }
 
 .preview-container {
@@ -212,23 +205,22 @@ function truncate(text: string | undefined | null, maxLength: number): string {
 
 .preview-image-container {
 	width: 100%;
-	padding-top: 52.36%; /* 1200 / 630 = 1.9047, so 630 / 1200 = 0.5236 */
+	padding-top: 52.5%;
 	position: relative;
 	background-color: var(--theme--background-subdued);
 	border-bottom: 1px solid var(--theme--border-color);
-	overflow: hidden; /* Add overflow hidden */
+	overflow: hidden;
 
-	/* Style direct children (slotted content or fallback img) */
 	::v-deep(> *) {
 		position: absolute;
 		top: 0;
 		left: 0;
 		width: 100%;
 		height: 100%;
-		object-fit: cover; /* Ensure images cover the area */
-		display: flex; /* Help center upload component if needed */
-		justify-content: center; /* Help center upload component if needed */
-		align-items: center; /* Help center upload component if needed */
+		object-fit: cover;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 }
 
@@ -290,13 +282,13 @@ function truncate(text: string | undefined | null, maxLength: number): string {
 
 .platform-switcher {
 	display: flex;
-	flex-direction: column; /* Vertical by default for larger screens */
+	flex-direction: column;
 	position: relative;
 	border-left: var(--theme--border-width) solid var(--theme--border-color);
 	border-bottom: none;
 
 	@container (max-width: 768px) {
-		flex-direction: row; /* Horizontal on smaller screens */
+		flex-direction: row;
 		border-bottom: var(--theme--border-width) solid var(--theme--border-color);
 		border-left: none;
 	}
@@ -383,7 +375,7 @@ function truncate(text: string | undefined | null, maxLength: number): string {
 	}
 	.preview-description {
 		font-size: 12px;
-		display: none; /* Hide description for LinkedIn */
+		display: none;
 		order: 3;
 	}
 	.preview-domain {

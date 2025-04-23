@@ -3,7 +3,6 @@ import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 // @ts-expect-error - types missing
 import { formatTitle } from '@directus/format-title';
 
-// @ts-expect-error - types missing
 import { set } from 'lodash-es';
 import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from 'reka-ui';
 import { computed, defineEmits, defineProps, toRefs } from 'vue';

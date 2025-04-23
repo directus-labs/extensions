@@ -2,7 +2,7 @@
 import type { Ref } from 'vue';
 import type { AnalysisResult } from '../../analysis/types';
 import { useDebounceFn } from '@vueuse/core';
-// @ts-expect-error - types missing
+
 import { get } from 'lodash-es';
 import {
 	AccordionContent,
