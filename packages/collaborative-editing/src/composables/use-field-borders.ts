@@ -1,10 +1,9 @@
 import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import Color from 'colorjs.io';
 import { watch } from 'vue';
-import { findBorderElement } from '../utils/find-border-element';
-import { getDataFromActiveFieldName } from '../utils';
+import { findBorderElement, getDataFromActiveFieldName } from '../utils';
 
-export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvider>, collection: string) {
+export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvider>) {
 	const allFields = new Set<string>();
 	const elementsWithBorders = new Set<HTMLElement>();
 
@@ -24,22 +23,29 @@ export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvide
 		}
 
 		// Clear all field borders first
-		for (const field of allFields) {
-			console.info('updateBorders', field, collection);
-			const { collection: fieldCollection, field: fieldName } = getDataFromActiveFieldName(field);
-			const el = findBorderElement(fieldName, fieldCollection) as HTMLElement | null;
-
-			if (el?.style) {
-				el.style.removeProperty('box-shadow');
+		for (const element of elementsWithBorders) {
+			if (element?.style) {
+				element.style.removeProperty('box-shadow');
 			}
 		}
+		elementsWithBorders.clear();
 
 		// Set box-shadow rings for active fields
 		for (const state of states) {
 			if (!state.activeField?.field || state.activeField.field === localField) continue;
 
-			const { collection: fieldCollection, field: fieldName } = getDataFromActiveFieldName(state.activeField.field);
+			const fieldData = getDataFromActiveFieldName(state.activeField.field);
+			if (!fieldData) continue;
 
+			const { collection: fieldCollection, field: fieldName } = fieldData;
+
+			// Find the actual field element
+			const selector = `[data-field="${fieldName}"][data-collection="${fieldCollection}"]`;
+			const fieldElement = document.querySelector(selector) as HTMLElement | null;
+
+			if (!fieldElement) continue;
+
+			// Find the proper element to add the border to
 			const el = findBorderElement(fieldName, fieldCollection) as HTMLElement | null;
 
 			if (!el?.style || !self) continue;

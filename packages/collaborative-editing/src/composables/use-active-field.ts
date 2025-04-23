@@ -9,15 +9,11 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 
 	// Watch for element focus changes
 	watch(activeElement, (el) => {
-		console.log('activeElement', el);
-
 		if (!el) {
-			// console.warn('No active element, clearing active field');
 			provider.awareness.setActiveField(null);
 		}
 		else {
 			const field = getFieldNameFromElement(el as HTMLElement);
-			// console.warn('Active element changed, field:', field, el);
 			provider.awareness.setActiveField(field);
 		}
 	});
@@ -30,9 +26,13 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 			const field = getFieldNameFromElement(activeInputEl as HTMLElement);
 
 			if (field) {
-				const { collection, field: fieldName } = getDataFromActiveFieldName(field);
-				console.warn('Mouseup on active input, field:', field, collection, fieldName);
-				provider.awareness.setActiveField(field);
+				const fieldData = getDataFromActiveFieldName(field);
+
+				if (fieldData) {
+					const { collection, field: fieldName } = fieldData;
+					console.warn('Mouseup on active input, field:', field, collection, fieldName);
+					provider.awareness.setActiveField(field);
+				}
 			}
 		}
 	});
@@ -43,17 +43,6 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 			provider.provider.awareness.destroy();
 		}
 	});
-	/*
-	const drawerEmitter = new EventEmitter();
-
-	drawerEmitter.on('drawer-opened', () => {
-		provider.awareness.setLocalField('drawerStatus', true);
-	});
-
-	drawerEmitter.on('drawer-closed', () => {
-		provider.awareness.setLocalField('drawerStatus', false);
-	});
-*/
 
 	// Clean up awareness state when changing routes
 	const router = useRouter();
@@ -66,7 +55,6 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 
 	return {
 		setActiveField: (field: string | null) => {
-			// console.warn('Manually setting active field:', field);
 			provider.awareness.setActiveField(field);
 		},
 	};

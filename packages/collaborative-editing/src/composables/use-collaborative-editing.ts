@@ -35,7 +35,7 @@ export function useCollaborativeEditing(options: UseCollaborativeEditingOptions)
 
 	const activeField = useActiveField(provider);
 
-	const fieldBorders = useFieldBorders(provider, collection);
+	const fieldBorders = useFieldBorders(provider);
 
 	const avatarStacks = useAvatarStacks(provider);
 

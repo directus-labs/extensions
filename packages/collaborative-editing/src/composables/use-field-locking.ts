@@ -79,7 +79,10 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 	}
 
 	function lockField(activeFieldName: string) {
-		const { collection: fieldCollection, field: fieldName } = getDataFromActiveFieldName(activeFieldName);
+		const fieldData = getDataFromActiveFieldName(activeFieldName);
+		if (!fieldData) return;
+
+		const { collection: fieldCollection, field: fieldName } = fieldData;
 		const elements = findFieldElements(fieldName, fieldCollection);
 
 		for (const el of elements) {
@@ -112,7 +115,10 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 	}
 
 	function unlockField(activeFieldName: string) {
-		const { collection: fieldCollection, field: fieldName } = getDataFromActiveFieldName(activeFieldName);
+		const fieldData = getDataFromActiveFieldName(activeFieldName);
+		if (!fieldData) return;
+
+		const { collection: fieldCollection, field: fieldName } = fieldData;
 		const elements = findFieldElements(fieldName, fieldCollection);
 
 		for (const el of elements) {

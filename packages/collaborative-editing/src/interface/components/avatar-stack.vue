@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { MaybeRef } from 'vue';
-import { computed, Ref, unref, watch } from 'vue';
+import { unref } from 'vue';
 import UserAvatar from './user-avatar.vue';
 
 const { users } = defineProps<{
@@ -11,16 +11,30 @@ const { users } = defineProps<{
 </script>
 
 <template>
-	<div class="avatar-stack" :class="{ right }">
-		<UserAvatar v-for="user in [...unref(users)].reverse() ?? []" :key="user.id" :user="user" class="avatar" :small="small" />
+	<div class="avatar-stack" :class="{ right, small }">
+		<UserAvatar v-for="user in [...unref(users)].reverse() ?? []" :key="user.id" :user="{ ...user, avatar: { id: user.id } }" class="avatar" :small="small" />
 	</div>
 </template>
 
+<style>
+.avatar-stack-container {
+	position: relative;
+	display: inline-block;
+	margin-left: 10px;
+}
+</style>
+
 <style scoped>
 .avatar-stack {
-	margin-left: 12px;
 	display: flex;
 	flex-direction: row-reverse;
+	z-index: 10;
+	position: relative;
+}
+
+.avatar-stack.small {
+	margin-left: 4px;
+	display: inline-flex;
 }
 
 .avatar {

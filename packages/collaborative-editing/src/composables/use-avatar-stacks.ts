@@ -2,6 +2,7 @@ import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import { groupBy, uniqBy } from 'lodash-es';
 import { onUnmounted, ref, watch } from 'vue';
 import AvatarStack from '../interface/components/avatar-stack.vue';
+import { getDataFromActiveFieldName, getFieldFromDOM } from '../utils';
 import { createAppWithDirectus } from '../utils/create-app-with-directus';
 import { useCurrentUser } from './use-current-user';
 
@@ -14,8 +15,7 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 	const currentUser = useCurrentUser();
 
 	watch(() => provider.awareness.all.value, (states) => {
-		// console.warn('Awareness states changed:', states);
-
+		// Clean up existing avatar stacks
 		for (const app of apps.value) {
 			app.unmount();
 		}
@@ -26,22 +26,49 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 		const presenceByField = groupBy(states, 'activeField.field');
 
 		for (const field in presenceByField) {
-			if (!field) continue;
+			if (!field || typeof field !== 'string' || field === 'undefined') continue;
 
-			const fieldEl = document.querySelector(`[field="${field}"]`);
+			// Use data-field and data-collection attributes to find fields
+			const fieldData = getDataFromActiveFieldName(field);
+			if (!fieldData) continue;
+
+			const { collection, field: fieldName } = fieldData;
+
+			const fieldEl = getFieldFromDOM(fieldName, collection);
 
 			if (!fieldEl) {
-				// console.warn(`Element not found for field: ${field}`);
 				continue;
 			}
 
-			let container = fieldEl.querySelector('.field-label .avatar-stack') as HTMLElement;
+			// Find the field container
+			const fieldContainer = fieldEl.closest('.field') || fieldEl;
+
+			// Find label if it exists
+			const fieldLabel = fieldContainer.querySelector('.field-label');
+
+			// Look for existing avatar stack
+			let container = fieldContainer.querySelector('.avatar-stack-container') as HTMLElement;
 
 			if (!container) {
 				container = document.createElement('div');
-				container.classList.add('avatar-stack');
-				container.style.marginLeft = 'auto';
-				fieldEl.closest('.field')?.querySelector('.field-label')?.append(container);
+				container.classList.add('avatar-stack-container');
+
+				// If field label exists, append to it, otherwise add after the field
+				if (fieldLabel) {
+					// Insert after the field label text
+					const fieldName = fieldLabel.querySelector('.field-name');
+
+					if (fieldName) {
+						fieldName.append(container);
+					}
+					else {
+						fieldLabel.append(container);
+					}
+				}
+				else {
+					// Insert after the field element
+					fieldEl.parentElement?.insertBefore(container, fieldEl.nextSibling);
+				}
 			}
 
 			const users = presenceByField[field]?.map((state) => state.user) ?? [];
@@ -49,9 +76,13 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 			// Filter out current user from field avatar stack
 			const filteredUsers = users.filter((user) => user.id !== currentUser.value?.id);
 
+			if (filteredUsers.length === 0) {
+				continue;
+			}
+
 			const app = createAppWithDirectus(AvatarStack, {
 				users: uniqBy(filteredUsers, 'id'),
-				right: true,
+				small: true, // Use small avatars to fit better in the field label
 			});
 
 			apps.value.push(app);
@@ -63,13 +94,22 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 	const headerApp = ref<AppInstance | null>(null);
 
 	function createHeaderAvatarStack() {
-		const titleContainer = document.querySelector('.title-container');
-		if (!titleContainer) return;
+		// Try to find the title container using different selectors in Directus v10+
+		const titleContainer = document.querySelector('.title-container')
+			|| document.querySelector('.module-bar-title')
+			|| document.querySelector('.module-header')
+			|| document.querySelector('header');
+
+		if (!titleContainer) {
+			return;
+		}
 
 		const existingStack = titleContainer.querySelector('.avatar-stack');
 		if (existingStack) return;
 
 		const container = document.createElement('div');
+		container.classList.add('avatar-stack-container');
+
 		titleContainer.append(container);
 
 		const app = createAppWithDirectus(AvatarStack, {
@@ -80,7 +120,6 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 		app.mount(container);
 	}
 
-	// Clean up on unmount
 	onUnmounted(() => {
 		// Clean up field avatar stacks
 		for (const app of apps.value) {
