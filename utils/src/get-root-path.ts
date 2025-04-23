@@ -1,4 +1,11 @@
 /**
+ * Get the API root location from the current window path
+ */
+export function getRootPath(): string {
+	return extract(window.location.pathname);
+}
+
+/**
  * Get the full API root URL from the current page href
  * @returns - Root URL of the Directus instance
  */

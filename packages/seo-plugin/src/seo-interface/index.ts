@@ -43,6 +43,18 @@ export default defineInterface({
 			},
 		},
 		{
+			field: 'showOgImage',
+			name: 'Social Media Image',
+			type: 'boolean',
+			meta: {
+				note: 'Adds an Open Graph image field for social media sharing',
+				width: 'full',
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
 			name: 'Additional SEO Fields',
 			field: 'divider-meta',
 			type: 'alias',
@@ -57,20 +69,21 @@ export default defineInterface({
 			},
 		},
 		{
-			field: 'showOgImage',
-			name: 'Enable Social Media Image',
+			field: 'showFocusKeyphrase',
+			name: 'Focus Keyphrase',
 			type: 'boolean',
 			meta: {
-				note: 'Adds an Open Graph image field for social media sharing',
+				note: 'Adds a focus keyphrase field for SEO optimization',
 				width: 'half',
 			},
 			schema: {
 				default_value: false,
 			},
 		},
+
 		{
 			field: 'showSearchControls',
-			name: 'Enable Search Engine Controls',
+			name: 'Search Engine Controls',
 			type: 'boolean',
 			meta: {
 				note: 'Adds controls for no-index and no-follow tags',
@@ -82,7 +95,7 @@ export default defineInterface({
 		},
 		{
 			field: 'showSitemap',
-			name: 'Enable Sitemap Controls',
+			name: 'Sitemap Controls',
 			type: 'boolean',
 			meta: {
 				note: 'Adds fields for sitemap configuration',
@@ -90,6 +103,74 @@ export default defineInterface({
 			},
 			schema: {
 				default_value: false,
+			},
+		},
+		{
+			field: 'divider-focus-keyphrase',
+			type: 'alias',
+			meta: {
+				interface: 'presentation-divider',
+				width: 'full',
+				options: {
+					title: 'Focus Keyphrase',
+					inlineTitle: true,
+				},
+				hidden: true,
+				conditions: [
+					{
+						hidden: false,
+						rule: {
+							_and: [{ showFocusKeyphrase: { _eq: true } }],
+						},
+					},
+				],
+			},
+
+		},
+		{
+			field: 'slugField',
+			name: 'Slug Field',
+			type: 'string',
+			meta: {
+				width: 'half',
+				note: 'What field contains the slug for this collection?',
+				hidden: true,
+				interface: 'system-field',
+				options: {
+					collectionName: collection,
+				},
+				conditions: [
+					{
+						hidden: false,
+						rule: {
+							_and: [{ showFocusKeyphrase: { _eq: true } }],
+						},
+					},
+				],
+			},
+		},
+		{
+			field: 'contentFields',
+			name: 'Content Fields',
+			type: 'csv',
+			meta: {
+				width: 'half',
+				interface: 'system-fields',
+				hidden: true,
+				note: 'What fields contain the content that you want to analyze for the focus keyphrase?',
+				options: {
+					collectionName: collection,
+
+				},
+
+				conditions: [
+					{
+						hidden: false,
+						rule: {
+							_and: [{ showFocusKeyphrase: { _eq: true } }],
+						},
+					},
+				],
 			},
 		},
 		{

@@ -15,6 +15,7 @@ export interface SeoFieldState {
 export interface SeoValue {
 	title: string;
 	meta_description: string;
+	focus_keyphrase?: string;
 	// translations?: {
 	// 	language: string;
 	// 	title: string;
@@ -38,5 +39,8 @@ export interface SeoInterfaceOptions {
 	showSitemap?: boolean;
 	defaultChangeFrequency?: string;
 	defaultPriority?: string;
-	additionalFields?: any[];
+	additionalFields?: Array<Record<string, unknown>>;
+	showFocusKeyphrase?: boolean;
+	contentFields?: string | string[];
+	slugField?: string;
 }
