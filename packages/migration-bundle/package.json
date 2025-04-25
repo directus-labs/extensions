@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/migration-bundle",
 	"type": "module",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Migrate from the current source Directus instance to another target Directus instance.",
 	"license": "MIT",
 	"keywords": [
