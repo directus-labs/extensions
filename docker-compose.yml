@@ -31,7 +31,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-p05tgr35}
       POSTGRES_DB: ${DB_DATABASE:-directus-extensions-db}
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${DB_USER:-postgres}", "-d", "${DB_DATABASE:-directus-extensions-db}", "-p", "5432", "-h", "database"]
+      test: [CMD, pg_isready, -U, '${DB_USER:-postgres}', -d, '${DB_DATABASE:-directus-extensions-db}', -p, '5432', -h, database]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -61,9 +61,9 @@ services:
 
       REDIS_HOST: cache
 
-      DB_CLIENT: "pg"
-      DB_HOST: "database"
-      DB_PORT: "5432"
+      DB_CLIENT: pg
+      DB_HOST: database
+      DB_PORT: '5432'
       DB_DATABASE: ${DB_DATABASE:-directus-extensions-db}
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-p05tgr35}
