@@ -1,5 +1,6 @@
 <script lang="ts">
-import type { computed, onBeforeUnmount, onMounted, Ref,	ref, toRefs, useSlots } from 'vue';
+import type { Ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, toRefs, useSlots } from 'vue';
 import { createContext } from '../utils/create-context';
 import { injectCommandRootContext } from './command.vue';
 
