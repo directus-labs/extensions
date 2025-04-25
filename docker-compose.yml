@@ -21,10 +21,28 @@ services:
     restart: unless-stopped
     networks:
       - sandbox
+  database:
+    image: postgis/postgis:13-master
+    platform: linux/amd64
+    volumes:
+      - ./.local/database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-p05tgr35}
+      POSTGRES_DB: ${DB_DATABASE:-directus-extensions-db}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER:-postgres}", "-d", "${DB_DATABASE:-directus-extensions-db}", "-p", "5432", "-h", "database"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
+    networks:
+      - sandbox
 
   directus:
     container_name: directus
-    image: directus/directus:10.11.1
+    image: directus/directus:latest
     restart: unless-stopped
     volumes:
       - ./.local/uploads:/directus/uploads
@@ -43,8 +61,12 @@ services:
 
       REDIS_HOST: cache
 
-      DB_CLIENT: sqlite3
-      DB_FILENAME: /directus/database/data.db
+      DB_CLIENT: "pg"
+      DB_HOST: "database"
+      DB_PORT: "5432"
+      DB_DATABASE: ${DB_DATABASE:-directus-extensions-db}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-p05tgr35}
 
       # Video Player Interface
       CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC: 'https://www.youtube-nocookie.com,https://player.vimeo.com'
@@ -53,6 +75,7 @@ services:
       CONTENT_SECURITY_POLICY_DIRECTIVES__MEDIA_SRC: "array:'self', cdn.plyr.io"
 
     depends_on:
+      - database
       - cache
     labels:
       caddy: extensions.directus.labs
