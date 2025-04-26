@@ -33,3 +33,48 @@ When opening the project settings for the first time, the module will automatica
 ## Permissions
 
 This extension uses the current user's policy/role permissions and will only show the permitted data. Please refer to your Access Policies to ensure your users have required access.
+
+## API Reference
+
+This bundle contains an endpoint extension. The data can be queried using the following endpoint:
+
+```
+GET /related-items/<collection>/<item_id>
+```
+
+The response will be an array of related collections and for each one, a secondary array of any related items from that collection. For example:
+
+```
+{
+  "collection": "directus_files",
+  "fields": [
+    "directus_files_id.id",
+    "directus_files_id.title",
+    "directus_files_id.type"
+  ],
+  "relation": "m2m",
+  "translations": null,
+  "field": "article_id",
+  "junction_field": "directus_files_id",
+  "primary_key": "id",
+  "template": "{{ title }}",
+  "items": [
+    {
+      "directus_files_id": {
+        "id": "x0x1234x-5xx6-7890-x123-xxx4xx56789x",
+        "title": "Annual Leave Policy",
+        "type": "image/jpeg"
+      }
+    },
+    {
+      "directus_files_id": {
+        "id": "x9x8765x-5xx6-7890-x123-xxx4xx56789x",
+        "title": "Brand Guidelines",
+        "type": "image/png"
+      }
+    }
+  ]
+}
+```
+
+_Note: The fields and primary key can be used as context when processing the items or rendering an output._
