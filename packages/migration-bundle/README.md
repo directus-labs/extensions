@@ -8,7 +8,7 @@ Migrate the current Directus instance to another location with ease, using this 
 
 Once installed you can enable the navigation menu item in your Project Settings or go straight to the module page at `/admin/migration`.
 
-To get started, enter the destination URL and admin token into the fields provided, then click <strong>Check</strong>. This will compare both Directus platform and see if they are compadible.
+To get started, enter the destination URL and admin token into the fields provided, then click <strong>Check</strong>. This will compare both Directus platform and see if they are compatible.
 
 _Please make sure the destination instance is on the same version and the same database platform as the source instance._
 
