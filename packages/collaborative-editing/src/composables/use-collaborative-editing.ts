@@ -1,5 +1,6 @@
 // src/composables/use-collaborative-editing.ts
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { useCollaborationStore } from '../stores/collaboration';
 import { useActiveField } from './use-active-field';
 import { useAvatarStacks } from './use-avatar-stacks';
@@ -26,16 +27,35 @@ export interface UseCollaborativeEditingOptions {
 export function useCollaborativeEditing(options: UseCollaborativeEditingOptions) {
 	// Get current user
 	const currentUser = useCurrentUser();
+	const route = useRoute();
 
 	// Use the Hocuspocus store instead of the provider composable
 	const collaborationStore = useCollaborationStore();
 
 	// Initialize the provider through the store
-	collaborationStore.initializeProvider({
-		url: options.url || 'ws://localhost:8055/collaboration/1',
-		name: options.room,
-		currentUser: currentUser.value,
-	});
+	function initializeProvider() {
+		collaborationStore.initializeProvider({
+			url: options.url || 'ws://localhost:8055/collaboration/1',
+			name: options.room,
+			currentUser: currentUser.value,
+		});
+	}
+
+	// Initialize on mount
+	onMounted(initializeProvider);
+
+	// Watch for route changes
+	watch(
+		() => route.fullPath,
+		(newPath, oldPath) => {
+			if (newPath !== oldPath) {
+				// Destroy existing provider
+				collaborationStore.destroyProvider();
+				// Reinitialize with new room
+				initializeProvider();
+			}
+		},
+	);
 
 	// Extract collection and itemId from room name
 	const collection = options.room.split(':')[0] || '';
@@ -54,8 +74,6 @@ export function useCollaborativeEditing(options: UseCollaborativeEditingOptions)
 		avatarStacks.createHeaderAvatarStack();
 	});
 
-	// Clean up when component is unmounted (this is now handled by the store)
-
 	return {
 		activeField,
 		fieldBorders,
@@ -65,7 +83,6 @@ export function useCollaborativeEditing(options: UseCollaborativeEditingOptions)
 		collection,
 		itemId,
 		setActiveField: activeField.setActiveField,
-		// updateFieldValue: documentSync.updateFieldValue,
 		isFieldLocked: fieldLocking.isFieldLocked,
 	};
 }

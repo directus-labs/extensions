@@ -122,15 +122,12 @@ export function useAvatarStacks() {
 			users: headerUsers,
 		});
 
-		console.warn('Creating header avatar stack with users:', collaborationStore.documentActiveUsers);
-
 		headerApp.value = app;
 		app.mount(container);
 	}
 
 	// Watch for changes to documentActiveUsers and update the header stack
 	watch(() => collaborationStore.documentActiveUsers, (newUsers) => {
-		console.warn('documentActiveUsers changed:', newUsers);
 		headerUsers.value = newUsers;
 	}, { deep: true });
 

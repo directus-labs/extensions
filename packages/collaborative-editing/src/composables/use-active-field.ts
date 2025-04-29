@@ -30,8 +30,6 @@ export function useActiveField() {
 				const fieldData = getDataFromActiveFieldName(field);
 
 				if (fieldData) {
-					const { collection, field: fieldName } = fieldData;
-					console.warn('Mouseup on active input, field:', field, collection, fieldName);
 					collaborationStore.documentAwareness?.setLocalField('activeField', field ? { field } : null);
 				}
 			}

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCollaborativeEditing } from '../composables/use-collaborative-editing';
 import { useCollaborationStore } from '../stores/collaboration';
@@ -14,7 +14,6 @@ interface FieldValue {
 }
 
 const route = useRoute();
-const connectionStatus = ref<string>('initializing');
 
 const room = computed(() => `${route.params.collection}:${route.params.primaryKey}`);
 
@@ -27,19 +26,21 @@ useCollaborativeEditing({
 	},
 });
 
-// Track connection status for debugging
-if (collaborationStore.provider) {
-	collaborationStore.provider.on('status', ({ status }: { status: string }) => {
-		connectionStatus.value = status;
-		console.warn(`Collaboration status changed to: ${status}`);
-	});
-}
+onMounted(() => {
+	console.warn('onMounted');
+});
+
+// destroy provider when component is unmounted
+onBeforeUnmount(() => {
+	console.warn('onBeforeUnmount');
+	collaborationStore.destroyProvider();
+});
 </script>
 
 <template>
 	<div class="collaborative-interface">
-		<div v-if="connectionStatus !== 'connected'" class="connection-status">
-			Collaboration status: {{ connectionStatus }}
+		<div v-if="collaborationStore.connectionStatus !== 'connected'" class="connection-status">
+			Collaboration status: {{ collaborationStore.connectionStatus }}
 		</div>
 		<slot />
 	</div>

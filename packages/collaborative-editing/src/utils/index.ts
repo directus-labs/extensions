@@ -2,7 +2,7 @@
  * Extract collection and field name from the active field name
  * @param activeFieldName - The field name in format "collection:fieldName"
  */
-export function getDataFromActiveFieldName(activeFieldName: string | null): { collection: string; field: string, id: string } | null {
+export function getDataFromActiveFieldName(activeFieldName: string | null): { collection: string; field: string; id: string } | null {
 	if (!activeFieldName || typeof activeFieldName !== 'string') {
 		return null;
 	}
@@ -10,7 +10,6 @@ export function getDataFromActiveFieldName(activeFieldName: string | null): { co
 	const parts = activeFieldName.split(':');
 
 	if (parts.length !== 3 || !parts[0] || !parts[1] || !parts[2]) {
-		console.warn(`Invalid active field name: ${activeFieldName}`);
 		return null;
 	}
 

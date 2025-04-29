@@ -96,7 +96,6 @@ export function find(
 	root: VNode,
 	selector: string,
 ): ComponentInternalInstance[] {
-	console.warn('find', root, selector);
 	let matchingVNodes = findAllVNodes(root, selector);
 
 	// When searching by CSS selector we want only one (topmost) vnode for each el`

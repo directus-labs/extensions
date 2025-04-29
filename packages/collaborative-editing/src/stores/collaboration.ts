@@ -1,74 +1,38 @@
-import type { ComputedRef } from 'vue';
+import type { ActiveFieldItem, Awareness, AwarenessState, HocuspocusProviderOptions, User } from '../types';
 import { HocuspocusProvider } from '@hocuspocus/provider';
-// src/stores/useHocuspocusStore.ts
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import * as Y from 'yjs';
 
-// Types
-export interface User {
-	id: string;
-	color: string;
-	first_name: string;
-	last_name: string;
-	avatar?: {
-		id: string;
-	};
-}
-
-export interface AwarenessState {
-	user: User;
-	activeField?: {
-		field: string;
-	};
-}
-
-type AwarenessType = 'local-awareness' | 'global-awareness';
-
-export interface Awareness {
-	type: AwarenessType;
-	sourceDocument: string;
-	states: AwarenessState[];
-}
-
-export interface ActiveFieldItem {
-	key: string;
-	field: string;
-	collection: string;
-	id: string;
-	user: User;
-}
-
-export interface HocuspocusProviderOptions {
-	url: string;
-	name: string;
-	onAwarenessUpdate?: () => void;
-}
+/*
+ref()s become state properties
+computed()s become getters
+function()s become actions
+*/
 
 export const useCollaborationStore = defineStore('collaboration', () => {
 	// State
+
 	const doc = ref<Y.Doc | null>(null);
-	const values = ref<Y.Map<any> | null>(null);
+	const docValues = ref<Y.Map<any> | null>(null);
 	const provider = ref<HocuspocusProvider | null>(null);
+	const connectionStatus = ref<string>('initializing');
 	const documentAwarenessStates = ref<AwarenessState[]>([]);
 	const globalAwarenessRef = ref<Awareness | null>(null);
 	const documentAwarenessRef = ref<Awareness | null>(null);
-	const currentUserRef = ref<User | null>(null);
-
-	// Computed current user
-	const currentUser = computed(() => currentUserRef.value);
+	const currentUser = ref<User | null>(null);
 
 	// Initialize provider
 	function initializeProvider(options: HocuspocusProviderOptions & { currentUser?: User | null }): void {
 		// Set the current user if provided
 		if (options.currentUser) {
-			currentUserRef.value = options.currentUser;
+			currentUser.value = options.currentUser;
 		}
 
 		// Initialize a new YJS doc
 		const newDoc = new Y.Doc();
 		doc.value = newDoc;
-		values.value = newDoc.getMap('values');
+		docValues.value = newDoc.getMap('values');
 
 		// Initialize HocuspocusProvider
 		const newProvider = new HocuspocusProvider({
@@ -77,28 +41,22 @@ export const useCollaborationStore = defineStore('collaboration', () => {
 			document: newDoc,
 			token: '123', // @TODO: Need to pass a token here
 			onStatus: ({ status }) => {
-				console.warn('Collaboration status:', status);
+				connectionStatus.value = status;
 			},
 			onAwarenessChange: () => {
 				if (!newProvider.awareness) return;
 
 				const states = Array.from(newProvider.awareness.getStates().values()) as AwarenessState[];
-				documentAwarenessStates.value = states;
-
-				const newStates = states.map((state: AwarenessState) => {
-					const existingState = documentAwarenessRef.value?.states.find((s) => s.user.id === state.user.id);
-					return existingState ? { ...existingState, ...state } : state;
-				});
+				const uniqueStates = removeAllButLastUserState(states);
+				documentAwarenessStates.value = uniqueStates;
 
 				const newAwarenessState: Awareness = {
 					type: 'local-awareness',
 					sourceDocument: options.name,
-					states: newStates,
+					states: uniqueStates,
 				};
 
 				documentAwarenessRef.value = newAwarenessState;
-
-				console.warn('Document awareness states:', documentAwarenessRef.value);
 
 				// Call the update callback if provided
 				if (options.onAwarenessUpdate) {
@@ -156,12 +114,10 @@ export const useCollaborationStore = defineStore('collaboration', () => {
 			provider.value.destroy();
 			provider.value = null;
 			doc.value = null;
-			values.value = null;
 		}
 	}
 
-	// Document Awareness Getters
-	const documentAwareness = {
+	const documentAwarenessGetters = {
 		local: computed(() => {
 			const state = provider.value?.awareness?.getLocalState() as AwarenessState | null;
 			return {
@@ -185,35 +141,40 @@ export const useCollaborationStore = defineStore('collaboration', () => {
 			if (!provider.value?.awareness) return;
 			provider.value.awareness.setLocalStateField('activeField', field ? { field } : null);
 		},
-	} as const;
+	};
 
-	// Global Awareness Getters
-	const globalAwareness: {
-		all: ComputedRef<AwarenessState[]>;
-		others: ComputedRef<AwarenessState[]>;
-	} = {
+	const globalAwarenessGetters = {
 		all: computed(() => {
-			const globalStates = globalAwarenessRef.value?.states || [];
-			return globalStates;
+			return globalAwarenessRef.value?.states || [];
 		}),
 		others: computed(() => {
-			return globalAwareness.all.value.filter((state: AwarenessState) =>
+			return (globalAwarenessRef.value?.states || []).filter((state: AwarenessState) =>
 				state.user.id !== currentUser.value?.id,
 			);
 		}),
 	};
 
 	// Active Users
-	const activeUsers = computed(() => {
+	const allActiveUsers = computed(() => {
 		const awarenessArray = [];
-		if (globalAwarenessRef.value) awarenessArray.push(globalAwarenessRef.value);
 		if (documentAwarenessRef.value) awarenessArray.push(documentAwarenessRef.value);
+		if (globalAwarenessRef.value) awarenessArray.push(globalAwarenessRef.value);
+		const users: Map<string, User> = new Map();
 
-		return getAllActiveUsers(awarenessArray);
+		awarenessArray.forEach((item) => {
+			item.states.forEach((state) => {
+				// Only add this user if they haven't been added already
+				if (!users.has(state.user.id)) {
+					users.set(state.user.id, state.user);
+				}
+			});
+		});
+
+		return Array.from(users.values());
 	});
 
 	const documentActiveUsers = computed(() => {
-		return documentAwareness.all.value.map((state) => state.user);
+		return documentAwarenessRef.value?.states.map((state) => state.user) || [];
 	});
 
 	const globalActiveUsers = computed(() => {
@@ -223,8 +184,8 @@ export const useCollaborationStore = defineStore('collaboration', () => {
 	// Grouped active fields
 	const groupedByActiveField = computed(() => {
 		// Combine local and global awareness states
-		const documentStates = documentAwareness.all.value;
-		const globalStates = globalAwareness.all.value;
+		const documentStates = documentAwarenessRef.value?.states || [];
+		const globalStates = globalAwarenessRef.value?.states || [];
 		const allStates = [...documentStates, ...globalStates];
 
 		// Create a map to store unique active fields by their key
@@ -278,23 +239,6 @@ export const useCollaborationStore = defineStore('collaboration', () => {
 		return Array.from(users.values());
 	}
 
-	function getAllActiveUsers(
-		awarenessArray: Awareness[],
-	): User[] {
-		const users: Map<string, User> = new Map();
-
-		awarenessArray.forEach((item) => {
-			item.states.forEach((state) => {
-				// Only add this user if they haven't been added already
-				if (!users.has(state.user.id)) {
-					users.set(state.user.id, state.user);
-				}
-			});
-		});
-
-		return Array.from(users.values());
-	}
-
 	function getUsersByActiveField(
 		awarenessArray: Awareness[],
 		fieldValue: string,
@@ -316,19 +260,24 @@ export const useCollaborationStore = defineStore('collaboration', () => {
 	return {
 		// State
 		doc,
-		values,
+		docValues,
 		provider,
+		documentAwarenessRef,
+		globalAwarenessRef,
+		connectionStatus,
 
 		// Initialization
 		initializeProvider,
 		destroyProvider,
 
 		// Awareness state and methods
-		documentAwareness,
-		globalAwareness,
+		documentAwareness: documentAwarenessGetters,
+		globalAwareness: globalAwarenessGetters,
 
 		// Users
-		activeUsers,
+		currentUser,
+		allActiveUsers,
+		documentActiveUsers,
 		globalActiveUsers,
 
 		// Grouped fields
@@ -337,7 +286,27 @@ export const useCollaborationStore = defineStore('collaboration', () => {
 		// Utility functions
 		getUsersBySourceDocument,
 		getUsersByActiveField,
-		getAllActiveUsers,
-		documentActiveUsers,
 	};
 });
+
+function removeAllButLastUserState(states: AwarenessState[]): AwarenessState[] {
+	// Create a map to keep track of the last occurrence index for each user ID
+	const lastIndices = new Map();
+
+	// Find the last occurrence of each user ID
+	for (const [i, state] of states.entries()) {
+		if (state.user && state.user.id) {
+			lastIndices.set(state.user.id, i);
+		}
+	}
+
+	// Filter the array to keep only the last occurrence of each user ID
+	return states.filter((state, index) => {
+		if (state.user && state.user.id) {
+			return lastIndices.get(state.user.id) === index;
+		}
+
+		// Keep items without a user ID
+		return true;
+	});
+}
