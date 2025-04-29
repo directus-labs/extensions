@@ -34,7 +34,7 @@
 	},
 	"scripts": {
 		"build": "directus-extension build",
-		"dev": "directus-extension build -w --no-minify",
+		"dev": "directus-extension build -w --no-minify --sourcemap",
 		"link": "directus-extension link",
 		"add": "directus-extension add"
 	},

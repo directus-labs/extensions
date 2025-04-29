@@ -8,4 +8,5 @@ export default {
 		}),
 	],
 	external: ['node:crypto', 'crypto'],
+	sourcemap: true,
 };

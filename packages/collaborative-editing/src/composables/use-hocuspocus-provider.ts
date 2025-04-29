@@ -1,4 +1,4 @@
-import type { ComputedRef, watch } from 'vue';
+import type { ComputedRef } from 'vue';
 import { HocuspocusProvider } from '@hocuspocus/provider';
 import { computed, onUnmounted, ref } from 'vue';
 import * as Y from 'yjs';
@@ -106,8 +106,6 @@ export function useHocuspocusProvider(options: UseHocuspocusProviderOptions) {
 		awarenessArray: Awareness[],
 		sourceDocument: string,
 	): User[] {
-		// Filter the array to only include items with the matching sourceDocument
-		// Then map to extract just the users, eliminating duplicates by user ID
 		const users: Map<string, User> = new Map();
 
 		awarenessArray
@@ -229,7 +227,7 @@ export function useHocuspocusProvider(options: UseHocuspocusProviderOptions) {
 	};
 
 	/*
-	  @param {AwarenessState[]} awarenessArray
+		@param {AwarenessState[]} awarenessArray
 		@return[
 			{
 				key: 'directus_users:title:1',
