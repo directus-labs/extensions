@@ -15,14 +15,21 @@
 		"noImplicitAny": true,
 		"noImplicitReturns": true,
 		"noImplicitThis": true,
-		"esModuleInterop": true,
 		"noUncheckedIndexedAccess": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"isolatedModules": true,
 		"skipLibCheck": true
 	},
-	"include": ["./src/**/*.ts"]
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.d.ts",
+		"src/**/*.tsx",
+		"src/**/*.vue",
+		"src/**/*.test.ts",
+		"src/**/*.spec.ts"
+	]
 }
