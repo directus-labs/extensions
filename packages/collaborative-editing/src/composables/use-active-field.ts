@@ -1,20 +1,21 @@
-import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import { useActiveElement, useEventListener } from '@vueuse/core';
 import { watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useCollaborationStore } from '../stores/collaboration';
 import { getDataFromActiveFieldName } from '../utils';
 
-export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider>) {
+export function useActiveField() {
 	const activeElement = useActiveElement();
+	const collaborationStore = useCollaborationStore();
 
 	// Watch for element focus changes
 	watch(activeElement, (el) => {
 		if (!el) {
-			provider.awareness.setActiveField(null);
+			collaborationStore.documentAwareness?.setLocalField('activeField', null);
 		}
 		else {
 			const field = getFieldNameFromElement(el as HTMLElement);
-			provider.awareness.setActiveField(field);
+			collaborationStore.documentAwareness?.setLocalField('activeField', field ? { field } : null);
 		}
 	});
 
@@ -31,7 +32,7 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 				if (fieldData) {
 					const { collection, field: fieldName } = fieldData;
 					console.warn('Mouseup on active input, field:', field, collection, fieldName);
-					provider.awareness.setActiveField(field);
+					collaborationStore.documentAwareness?.setLocalField('activeField', field ? { field } : null);
 				}
 			}
 		}
@@ -39,8 +40,8 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 
 	// Clean up awareness state before leaving the page
 	useEventListener('beforeunload', () => {
-		if (provider.provider.awareness) {
-			provider.provider.awareness.destroy();
+		if (collaborationStore.provider?.awareness) {
+			collaborationStore.provider.awareness.destroy();
 		}
 	});
 
@@ -48,14 +49,14 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
 	const router = useRouter();
 
 	router.afterEach((to, from) => {
-		if (to.fullPath !== from.fullPath && provider.provider.awareness) {
-			provider.provider.awareness.setLocalState(null);
+		if (to.fullPath !== from.fullPath && collaborationStore.provider?.awareness) {
+			collaborationStore.provider.awareness.setLocalState(null);
 		}
 	});
 
 	return {
 		setActiveField: (field: string | null) => {
-			provider.awareness.setActiveField(field);
+			collaborationStore.documentAwareness?.setLocalField('activeField', field ? { field } : null);
 		},
 	};
 }

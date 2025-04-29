@@ -1,22 +1,20 @@
-import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import { onMounted, watch } from 'vue';
+import { useCollaborationStore } from '../stores/collaboration';
 import { getDataFromActiveFieldName } from '../utils';
 
-// const relatedSelectors = ['.many-to-many', '.many-to-one', '.one-to-many', '.one-to-one'];
-export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvider>) {
+export function useFieldLocking() {
+	const collaborationStore = useCollaborationStore();
 	const lockedFields = new Set<string>();
 
 	// Watch for changes in awareness states
-	watch(() => {
-		return provider.groupedByActiveField.value;
-	}, updateFieldLocking, { deep: true });
+	watch(() => collaborationStore.groupedByActiveField, updateFieldLocking, { deep: true });
 
 	// Initialize on mount
 	onMounted(updateFieldLocking);
 
 	function updateFieldLocking() {
-		const states = provider.groupedByActiveField.value;
-		const self = provider.awareness.local.value;
+		const states = collaborationStore.groupedByActiveField;
+		const self = collaborationStore.documentAwareness?.local;
 		const currentUserId = self?.user?.id;
 
 		// First determine which fields should be locked

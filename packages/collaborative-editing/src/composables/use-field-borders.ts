@@ -1,18 +1,19 @@
-import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import Color from 'colorjs.io';
 import { watch } from 'vue';
+import { useCollaborationStore } from '../stores/collaboration';
 import { findBorderElement, getDataFromActiveFieldName } from '../utils';
 
-export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvider>) {
+export function useFieldBorders() {
 	const allFields = new Set<string>();
 	const elementsWithBorders = new Set<HTMLElement>();
+	const collaborationStore = useCollaborationStore();
 
 	// Function to update field borders with a given alpha value
 	function updateBorders() {
-		const states = provider.groupedByActiveField.value;
+		const states = collaborationStore.groupedByActiveField;
 
 		// Get current user and active field
-		const self = provider.awareness.local.value;
+		const self = collaborationStore.documentAwareness.local;
 		const localField = self?.activeField?.field;
 
 		// Track all fields
@@ -60,7 +61,7 @@ export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvide
 		}
 	}
 
-	watch(() => provider.awareness.all.value, () => {
+	watch(() => [collaborationStore.documentAwareness.all, collaborationStore.globalAwareness.all], () => {
 		updateBorders();
 	}, { deep: true, immediate: true });
 

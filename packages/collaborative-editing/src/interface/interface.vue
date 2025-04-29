@@ -2,11 +2,12 @@
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCollaborativeEditing } from '../composables/use-collaborative-editing';
+import { useCollaborationStore } from '../stores/collaboration';
 
 const emit = defineEmits<{
 	setFieldValue: [FieldValue];
 }>();
-
+const collaborationStore = useCollaborationStore();
 interface FieldValue {
 	field: string;
 	value: unknown;
@@ -18,7 +19,7 @@ const connectionStatus = ref<string>('initializing');
 const room = computed(() => `${route.params.collection}:${route.params.primaryKey}`);
 
 // Initialize collaborative editing
-const { provider } = useCollaborativeEditing({
+useCollaborativeEditing({
 	room: room.value,
 	url: `/collaboration/${room.value}`,
 	onFieldValueChange: (field, value) => {
@@ -27,13 +28,12 @@ const { provider } = useCollaborativeEditing({
 });
 
 // Track connection status for debugging
-if (provider?.provider) {
-	provider.provider.on('status', ({ status }: { status: string }) => {
+if (collaborationStore.provider) {
+	collaborationStore.provider.on('status', ({ status }: { status: string }) => {
 		connectionStatus.value = status;
 		console.warn(`Collaboration status changed to: ${status}`);
 	});
 }
-
 </script>
 
 <template>

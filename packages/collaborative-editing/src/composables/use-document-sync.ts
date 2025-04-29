@@ -1,8 +1,8 @@
 import type { Ref } from 'vue';
-import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import { cloneDeep, isEqual } from 'lodash-es';
 import { inject, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useCollaborationStore } from '../stores/collaboration';
 import { diffObjects } from '../utils/diff-objects';
 
 export interface UseDocumentSyncOptions {
@@ -12,18 +12,16 @@ export interface UseDocumentSyncOptions {
 	onFieldValueChange: (field: string, value: unknown, collection: string) => void;
 }
 
-export function useDocumentSync(
-	provider: ReturnType<typeof useHocuspocusProvider>,
-	options: UseDocumentSyncOptions,
-) {
+export function useDocumentSync(options: UseDocumentSyncOptions) {
+	const collaborationStore = useCollaborationStore();
 	const values = inject<Ref<Record<string, unknown>>>('values');
 	const updatingFromYJS = ref(false);
-	const formValues = provider.doc.getMap('values');
+	const formValues = collaborationStore.doc?.getMap('values');
 
 	const route = useRoute();
 
 	// Handle updates from YJS
-	formValues.observe((event) => {
+	formValues?.observe((event) => {
 		if (updatingFromYJS.value) return;
 
 		updatingFromYJS.value = true;
@@ -33,7 +31,7 @@ export function useDocumentSync(
 			const change = event.changes.keys.get(key);
 
 			if (change && (change.action === 'add' || change.action === 'update')) {
-				options.onFieldValueChange(key, formValues.get(key), route.params.collection as string);
+				options.onFieldValueChange(key, formValues?.get(key), route.params.collection as string);
 			}
 		}
 
@@ -54,7 +52,7 @@ export function useDocumentSync(
 			for (const { field, newValue } of diff) {
 				// @TODO: This shit ain't working. Only sync non-empty changes to prevent discard issues
 				if (newValue !== undefined && newValue !== null) {
-					formValues.set(field, cloneDeep(newValue));
+					formValues?.set(field, cloneDeep(newValue));
 				}
 			}
 		}, { deep: true });
@@ -62,7 +60,7 @@ export function useDocumentSync(
 
 	return {
 		setActiveField: (collection: string, field: string, id: string) => {
-			provider.awareness.setLocalField('activeField', field ? { field: `${collection}:${field}:${id}` } : null);
+			collaborationStore.documentAwareness?.setLocalField('activeField', field ? { field: `${collection}:${field}:${id}` } : null);
 		},
 		updatingFromYJS,
 	};

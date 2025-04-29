@@ -8,6 +8,10 @@ const { users } = defineProps<{
 	small?: boolean;
 	right?: boolean;
 }>();
+
+console.warn('avatar stack props', users);
+console.warn('unref users', unref(users));
+console.warn('reversed users', [...unref(users)].reverse());
 </script>
 
 <template>

@@ -1,7 +1,7 @@
-import type { useHocuspocusProvider } from './use-hocuspocus-provider';
 import { groupBy, uniqBy } from 'lodash-es';
 import { onUnmounted, ref, watch } from 'vue';
 import AvatarStack from '../interface/components/avatar-stack.vue';
+import { useCollaborationStore } from '../stores/collaboration';
 import { getDataFromActiveFieldName, getFieldFromDOM } from '../utils';
 import { createAppWithDirectus } from '../utils/create-app-with-directus';
 import { useCurrentUser } from './use-current-user';
@@ -10,13 +10,12 @@ interface AppInstance {
 	unmount: () => void;
 }
 
-export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvider>) {
+export function useAvatarStacks() {
 	const apps = ref<AppInstance[]>([]);
 	const currentUser = useCurrentUser();
+	const collaborationStore = useCollaborationStore();
 
-	const groupedByActiveField = provider.groupedByActiveField;
-
-	watch(() => groupedByActiveField.value, (activeFields) => {
+	watch(() => collaborationStore.groupedByActiveField, (activeFields) => {
 		// Clean up existing avatar stacks
 		for (const app of apps.value) {
 			app.unmount();
@@ -94,9 +93,10 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 
 	// Create header avatar stack
 	const headerApp = ref<AppInstance | null>(null);
+	const headerContainer = ref<HTMLElement | null>(null);
+	const headerUsers = ref(collaborationStore.documentActiveUsers);
 
 	function createHeaderAvatarStack() {
-		// Try to find the title container using different selectors in Directus v10+
 		const titleContainer = document.querySelector('.title-container')
 			|| document.querySelector('.module-bar-title')
 			|| document.querySelector('.module-header')
@@ -106,21 +106,33 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 			return;
 		}
 
-		const existingStack = titleContainer.querySelector('.avatar-stack');
-		if (existingStack) return;
+		// Clean up existing container if it exists
+		if (headerContainer.value) {
+			headerContainer.value.remove();
+			headerContainer.value = null;
+		}
 
 		const container = document.createElement('div');
 		container.classList.add('avatar-stack-container');
+		headerContainer.value = container;
 
 		titleContainer.append(container);
 
 		const app = createAppWithDirectus(AvatarStack, {
-			users: provider.activeUsers,
+			users: headerUsers,
 		});
+
+		console.warn('Creating header avatar stack with users:', collaborationStore.documentActiveUsers);
 
 		headerApp.value = app;
 		app.mount(container);
 	}
+
+	// Watch for changes to documentActiveUsers and update the header stack
+	watch(() => collaborationStore.documentActiveUsers, (newUsers) => {
+		console.warn('documentActiveUsers changed:', newUsers);
+		headerUsers.value = newUsers;
+	}, { deep: true });
 
 	onUnmounted(() => {
 		// Clean up field avatar stacks
@@ -134,6 +146,11 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 		if (headerApp.value) {
 			headerApp.value.unmount();
 			headerApp.value = null;
+		}
+
+		if (headerContainer.value) {
+			headerContainer.value.remove();
+			headerContainer.value = null;
 		}
 	});
 
