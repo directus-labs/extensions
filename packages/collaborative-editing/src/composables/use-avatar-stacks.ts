@@ -14,7 +14,9 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 	const apps = ref<AppInstance[]>([]);
 	const currentUser = useCurrentUser();
 
-	watch(() => provider.awareness.all.value, (states) => {
+	const groupedByActiveField = provider.groupedByActiveField;
+
+	watch(() => groupedByActiveField.value, (activeFields) => {
 		// Clean up existing avatar stacks
 		for (const app of apps.value) {
 			app.unmount();
@@ -23,7 +25,7 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 		apps.value = [];
 
 		// Create new avatar stacks for fields with users
-		const presenceByField = groupBy(states, 'activeField.field');
+		const presenceByField = groupBy(activeFields, 'key');
 
 		for (const field in presenceByField) {
 			if (!field || typeof field !== 'string' || field === 'undefined') continue;
@@ -32,16 +34,16 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 			const fieldData = getDataFromActiveFieldName(field);
 			if (!fieldData) continue;
 
-			const { collection, field: fieldName } = fieldData;
+			const { collection, field: fieldName, id } = fieldData;
 
-			const fieldEl = getFieldFromDOM(fieldName, collection);
+			const fieldElement = getFieldFromDOM(collection, fieldName, id);
 
-			if (!fieldEl) {
+			if (!fieldElement) {
 				continue;
 			}
 
 			// Find the field container
-			const fieldContainer = fieldEl.closest('.field') || fieldEl;
+			const fieldContainer = fieldElement.closest('.field') || fieldElement;
 
 			// Find label if it exists
 			const fieldLabel = fieldContainer.querySelector('.field-label');
@@ -67,7 +69,7 @@ export function useAvatarStacks(provider: ReturnType<typeof useHocuspocusProvide
 				}
 				else {
 					// Insert after the field element
-					fieldEl.parentElement?.insertBefore(container, fieldEl.nextSibling);
+					fieldElement.parentElement?.insertBefore(container, fieldElement.nextSibling);
 				}
 			}
 

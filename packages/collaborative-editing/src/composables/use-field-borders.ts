@@ -9,7 +9,7 @@ export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvide
 
 	// Function to update field borders with a given alpha value
 	function updateBorders() {
-		const states = provider.awareness.all.value;
+		const states = provider.groupedByActiveField.value;
 
 		// Get current user and active field
 		const self = provider.awareness.local.value;
@@ -17,8 +17,8 @@ export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvide
 
 		// Track all fields
 		for (const state of states) {
-			if (state.activeField?.field) {
-				allFields.add(state.activeField.field);
+			if (state.key) {
+				allFields.add(state.key);
 			}
 		}
 
@@ -28,25 +28,26 @@ export function useFieldBorders(provider: ReturnType<typeof useHocuspocusProvide
 				element.style.removeProperty('box-shadow');
 			}
 		}
+
 		elementsWithBorders.clear();
 
 		// Set box-shadow rings for active fields
 		for (const state of states) {
-			if (!state.activeField?.field || state.activeField.field === localField) continue;
+			if (!state.key || state.key === localField) continue;
 
-			const fieldData = getDataFromActiveFieldName(state.activeField.field);
+			const fieldData = getDataFromActiveFieldName(state.key);
 			if (!fieldData) continue;
 
-			const { collection: fieldCollection, field: fieldName } = fieldData;
+			const { collection: fieldCollection, field: fieldName, id } = fieldData;
 
 			// Find the actual field element
-			const selector = `[data-field="${fieldName}"][data-collection="${fieldCollection}"]`;
+			const selector = `[data-field="${fieldName}"][data-collection="${fieldCollection}"][data-id="${id}"]`;
 			const fieldElement = document.querySelector(selector) as HTMLElement | null;
 
 			if (!fieldElement) continue;
 
 			// Find the proper element to add the border to
-			const el = findBorderElement(fieldName, fieldCollection) as HTMLElement | null;
+			const el = findBorderElement(fieldCollection, fieldName, id) as HTMLElement | null;
 
 			if (!el?.style || !self) continue;
 

@@ -2,14 +2,14 @@
  * Extract collection and field name from the active field name
  * @param activeFieldName - The field name in format "collection:fieldName"
  */
-export function getDataFromActiveFieldName(activeFieldName: string | null): { collection: string; field: string } | null {
+export function getDataFromActiveFieldName(activeFieldName: string | null): { collection: string; field: string, id: string } | null {
 	if (!activeFieldName || typeof activeFieldName !== 'string') {
 		return null;
 	}
 
 	const parts = activeFieldName.split(':');
 
-	if (parts.length !== 2 || !parts[0] || !parts[1]) {
+	if (parts.length !== 3 || !parts[0] || !parts[1] || !parts[2]) {
 		console.warn(`Invalid active field name: ${activeFieldName}`);
 		return null;
 	}
@@ -17,6 +17,7 @@ export function getDataFromActiveFieldName(activeFieldName: string | null): { co
 	return {
 		collection: parts[0],
 		field: parts[1],
+		id: parts[2],
 	};
 }
 
@@ -31,18 +32,19 @@ export function getDataFromActiveFieldName(activeFieldName: string | null): { co
  * getActiveFieldNameFromElement(el) // "users:name"
  */
 export function getActiveFieldNameFromElement(el: HTMLElement) {
-	const fieldName = el.dataset.field;
 	const collectionName = el.dataset.collection;
+	const fieldName = el.dataset.field;
+	const id = el.dataset.id;
 
-	return fieldName && collectionName ? `${collectionName}:${fieldName}` : null;
+	return fieldName && collectionName ? `${collectionName}:${fieldName}:${id}` : null;
 }
 
 /**
  * Find the element to add a border to
  */
-export function findBorderElement(fieldName: string, collectionName: string): HTMLElement | null {
+export function findBorderElement(collectionName: string, fieldName: string, id: string): HTMLElement | null {
 	// First try to find the direct field element
-	const fieldEl = document.querySelector(`[data-field="${fieldName}"][data-collection="${collectionName}"]`);
+	const fieldEl = document.querySelector(`[data-collection="${collectionName}"][data-field="${fieldName}"][data-id="${id}"]`);
 
 	if (!fieldEl) return null;
 
@@ -73,8 +75,8 @@ export function findBorderElement(fieldName: string, collectionName: string): HT
 /**
  * Get field from DOM
  */
-export function getFieldFromDOM(fieldName: string, collectionName: string): HTMLElement | null {
-	const fieldEl = document.querySelector(`[data-field="${fieldName}"][data-collection="${collectionName}"]`);
+export function getFieldFromDOM(collectionName: string, fieldName: string, id: string): HTMLElement | null {
+	const fieldEl = document.querySelector(`[data-field="${fieldName}"][data-collection="${collectionName}"][data-id="${id}"]`);
 
 	if (!fieldEl) return null;
 
@@ -85,7 +87,7 @@ export function getFieldFromDOM(fieldName: string, collectionName: string): HTML
  * Get all fields from DOM
  */
 export function getAllFieldsFromDOM() {
-	const renderedFields = document.querySelectorAll('[data-field], [data-collection]');
+	const renderedFields = document.querySelectorAll('[data-field], [data-collection], [data-id]');
 
 	if (!renderedFields) return [];
 

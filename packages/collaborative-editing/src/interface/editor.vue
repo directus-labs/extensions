@@ -17,7 +17,7 @@ const props = defineProps<{
 const currentUser = useCurrentUser();
 
 // Use provided URL or default
-const url = props.url || 'http://localhost:8055/collaboration/1';
+const url = props.url || 'http://localhost:8080/collaboration/1';
 
 const provider = new HocuspocusProvider({
 	url,

@@ -61,8 +61,8 @@ export function useDocumentSync(
 	}
 
 	return {
-		setActiveField: (field: string | null, collection: string) => {
-			provider.awareness.setLocalField('activeField', field ? { field: `${collection}:${field}` } : null);
+		setActiveField: (collection: string, field: string, id: string) => {
+			provider.awareness.setLocalField('activeField', field ? { field: `${collection}:${field}:${id}` } : null);
 		},
 		updatingFromYJS,
 	};

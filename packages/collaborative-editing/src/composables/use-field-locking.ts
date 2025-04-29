@@ -7,13 +7,15 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 	const lockedFields = new Set<string>();
 
 	// Watch for changes in awareness states
-	watch(() => provider.awareness.all.value, updateFieldLocking, { deep: true });
+	watch(() => {
+		return provider.groupedByActiveField.value;
+	}, updateFieldLocking, { deep: true });
 
 	// Initialize on mount
 	onMounted(updateFieldLocking);
 
 	function updateFieldLocking() {
-		const states = provider.awareness.all.value;
+		const states = provider.groupedByActiveField.value;
 		const self = provider.awareness.local.value;
 		const currentUserId = self?.user?.id;
 
@@ -25,10 +27,10 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 			if (state.user?.id === currentUserId) continue;
 
 			// Skip if no active field
-			if (!state.activeField?.field) continue;
+			if (!state.key) continue;
 
 			// Add to fields that should be locked
-			fieldsToLock.add(state.activeField.field);
+			fieldsToLock.add(state.key);
 		}
 
 		// Unlock fields no longer being edited by others
@@ -46,23 +48,12 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 				lockedFields.add(field);
 			}
 		}
-		// Lock related fields
-		/* for (const selector of relatedSelectors) {
-			const relatedElements = document.querySelectorAll(selector);
-
-			for (const relatedEl of relatedElements) {
-				relatedEl.classList.add('field-locked-by-others');
-				relatedEl.style.opacity = '0.7';
-				relatedEl.style.cursor = 'not-allowed';
-				relatedEl.style.pointerEvents = 'none';
-			}
-		} */
 	}
 
-	function findFieldElements(fieldName: string, collectionName: string): HTMLElement[] {
+	function findFieldElements(collectionName: string, fieldName: string, id: string): HTMLElement[] {
 		// Find elements by data attribute, name attribute, etc.
 		const selectors = [
-			`[data-field="${fieldName}"][data-collection="${collectionName}"]`,
+			`[data-collection="${collectionName}"][data-field="${fieldName}"][data-id="${id}"]`,
 		].filter(Boolean);
 
 		const elements: HTMLElement[] = [];
@@ -78,12 +69,30 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 		return elements;
 	}
 
+	/**
+	 * Check if a field is a related field
+	 */
+	/* function fieldIsRelatedField(
+		field: Field,
+		collection: string,
+		allowedTypes: Array<'m2o' | 'o2m' | 'm2a' | null> = ['m2o', 'o2m', 'm2a'],
+	) {
+		const { fieldsStore, relationsStore } = useStores();
+		const field = fieldsStore.fields.find((field) => field.field === fieldName);
+		const relation = relationsStore.relations.find((relation) =>
+			allowedTypes.includes(getRelationType({ relation, collection: collection.value, field: field.field })),
+		);
+
+		return !!relation;
+	} */
+
 	function lockField(activeFieldName: string) {
 		const fieldData = getDataFromActiveFieldName(activeFieldName);
 		if (!fieldData) return;
 
-		const { collection: fieldCollection, field: fieldName } = fieldData;
-		const elements = findFieldElements(fieldName, fieldCollection);
+		const { collection: fieldCollection, field: fieldName, id } = fieldData;
+		// const isRelatedField = fieldIsRelatedField({ name: fieldName }, fieldCollection, ['m2o', 'o2m', 'm2a']);
+		const elements = findFieldElements(fieldCollection, fieldName, id);
 
 		for (const el of elements) {
 			// Find the actual input elements inside the container
@@ -118,8 +127,8 @@ export function useFieldLocking(provider: ReturnType<typeof useHocuspocusProvide
 		const fieldData = getDataFromActiveFieldName(activeFieldName);
 		if (!fieldData) return;
 
-		const { collection: fieldCollection, field: fieldName } = fieldData;
-		const elements = findFieldElements(fieldName, fieldCollection);
+		const { collection: fieldCollection, field: fieldName, id } = fieldData;
+		const elements = findFieldElements(fieldCollection, fieldName, id);
 
 		for (const el of elements) {
 			// Restore inputs

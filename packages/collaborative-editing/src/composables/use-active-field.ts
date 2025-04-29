@@ -72,14 +72,14 @@ export function useActiveField(provider: ReturnType<typeof useHocuspocusProvider
  */
 function getFieldNameFromElement(el: HTMLElement) {
 	// Check if the element itself has a field attribute
-	const fieldName = el.dataset.field;
+	/* const fieldName = el.dataset.field;
 	const collectionName = el.dataset.collection;
-	if (fieldName && collectionName) return `${collectionName}:${fieldName}`;
+	if (fieldName && collectionName) return `${collectionName}:${fieldName}`; */
 
 	// Or if any parent has a collection and field attribute
-	const parentWithField = el.closest('[data-field], [data-collection]') as HTMLElement | null;
+	const parentWithField = el.closest('[data-field], [data-collection], [data-id]') as HTMLElement | null;
 
-	if (parentWithField) return `${parentWithField.dataset.collection}:${parentWithField.dataset.field}`;
+	if (parentWithField) return `${parentWithField.dataset.collection}:${parentWithField.dataset.field}:${parentWithField.dataset.id}`;
 
 	return null;
 }
