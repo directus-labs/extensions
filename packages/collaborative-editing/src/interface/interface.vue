@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted } from 'vue';
+import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCollaborativeEditing } from '../composables/use-collaborative-editing';
+import { useCurrentUser } from '../composables/use-current-user';
 import { useCollaborationStore } from '../stores/collaboration';
 
 const emit = defineEmits<{
@@ -16,19 +17,39 @@ interface FieldValue {
 const route = useRoute();
 
 const room = computed(() => `${route.params.collection}:${route.params.primaryKey}`);
+const currentUser = useCurrentUser();
 
+function initializeProvider() {
 // Initialize collaborative editing
-useCollaborativeEditing({
-	room: room.value,
-	url: `/collaboration/${room.value}`,
-	onFieldValueChange: (field, value) => {
-		emit('setFieldValue', { field, value });
-	},
-});
+	useCollaborativeEditing({
+		room: room.value,
+		url: `/collaboration/${room.value}`,
+		currentUser: currentUser.value,
+		onFieldValueChange: (field, value) => {
+			emit('setFieldValue', { field, value });
+		},
+	});
+}
+
+initializeProvider();
 
 onMounted(() => {
 	console.warn('onMounted');
+	initializeProvider();
 });
+
+// Watch for route changes
+watch(
+	() => route.fullPath,
+	(newPath, oldPath) => {
+		if (newPath !== oldPath) {
+			// Destroy existing provider
+			collaborationStore.destroyProvider();
+			// Reinitialize with new room
+			initializeProvider();
+		}
+	},
+);
 
 // destroy provider when component is unmounted
 onBeforeUnmount(() => {

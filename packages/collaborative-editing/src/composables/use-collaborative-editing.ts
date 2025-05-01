@@ -1,10 +1,9 @@
 // src/composables/use-collaborative-editing.ts
+import type { User } from '../types';
 import { onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
 import { useCollaborationStore } from '../stores/collaboration';
 import { useActiveField } from './use-active-field';
 import { useAvatarStacks } from './use-avatar-stacks';
-import { useCurrentUser } from './use-current-user';
 import { useDocumentSync } from './use-document-sync';
 import { useFieldBorders } from './use-field-borders';
 import { useFieldLocking } from './use-field-locking';
@@ -17,7 +16,11 @@ export interface UseCollaborativeEditingOptions {
 	/**
 	 * The WebSocket URL for the collaboration server
 	 */
-	url?: string;
+	url: string;
+	/**
+	 * The current user for collaboration
+	 */
+	currentUser?: User;
 	/**
 	 * Callback called when a field value changes
 	 */
@@ -25,10 +28,6 @@ export interface UseCollaborativeEditingOptions {
 }
 
 export function useCollaborativeEditing(options: UseCollaborativeEditingOptions) {
-	// Get current user
-	const currentUser = useCurrentUser();
-	const route = useRoute();
-
 	// Use the Hocuspocus store instead of the provider composable
 	const collaborationStore = useCollaborationStore();
 
@@ -37,25 +36,12 @@ export function useCollaborativeEditing(options: UseCollaborativeEditingOptions)
 		collaborationStore.initializeProvider({
 			url: options.url || 'ws://localhost:8055/collaboration/1',
 			name: options.room,
-			currentUser: currentUser.value,
+			currentUser: options.currentUser,
 		});
 	}
 
 	// Initialize on mount
 	onMounted(initializeProvider);
-
-	// Watch for route changes
-	watch(
-		() => route.fullPath,
-		(newPath, oldPath) => {
-			if (newPath !== oldPath) {
-				// Destroy existing provider
-				collaborationStore.destroyProvider();
-				// Reinitialize with new room
-				initializeProvider();
-			}
-		},
-	);
 
 	// Extract collection and itemId from room name
 	const collection = options.room.split(':')[0] || '';

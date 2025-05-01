@@ -4,15 +4,8 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import * as Y from 'yjs';
 
-/*
-ref()s become state properties
-computed()s become getters
-function()s become actions
-*/
-
 export const useCollaborationStore = defineStore('collaboration', () => {
 	// State
-
 	const doc = ref<Y.Doc | null>(null);
 	const docValues = ref<Y.Map<any> | null>(null);
 	const provider = ref<HocuspocusProvider | null>(null);
@@ -21,9 +14,15 @@ export const useCollaborationStore = defineStore('collaboration', () => {
 	const globalAwarenessRef = ref<Awareness | null>(null);
 	const documentAwarenessRef = ref<Awareness | null>(null);
 	const currentUser = ref<User | null>(null);
+	const providerIndex = ref<number>(0);
 
 	// Initialize provider
 	function initializeProvider(options: HocuspocusProviderOptions & { currentUser?: User | null }): void {
+		if (providerIndex.value > 0) {
+			console.warn('provider already exists - destroying existing provider and creating new one');
+			destroyProvider();
+		}
+
 		// Set the current user if provided
 		if (options.currentUser) {
 			currentUser.value = options.currentUser;
@@ -95,6 +94,7 @@ export const useCollaborationStore = defineStore('collaboration', () => {
 		});
 
 		provider.value = newProvider;
+		providerIndex.value++;
 
 		// Set initial awareness state
 		if (newProvider.awareness && currentUser.value) {
