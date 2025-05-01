@@ -64,21 +64,24 @@ export function useActiveField() {
  * @param el - The element to get the field name from
  * @returns The field name
  * @example
- * <div data-field="name" data-collection="users">
+ * <div data-collection="users" data-field="name" data-id="1">
  *   <input type="text" />
  * </div>
- * getFieldNameFromElement(el) // "users:name"
+ * getFieldNameFromElement(el) // "users:name:1"
  */
 function getFieldNameFromElement(el: HTMLElement) {
-	// Check if the element itself has a field attribute
-	/* const fieldName = el.dataset.field;
-	const collectionName = el.dataset.collection;
-	if (fieldName && collectionName) return `${collectionName}:${fieldName}`; */
+	// Look for elements with ALL required attributes
+	const parentWithField = el.closest('[data-collection][data-field][data-id]') as HTMLElement | null;
 
-	// Or if any parent has a collection and field attribute
-	const parentWithField = el.closest('[data-field], [data-collection], [data-id]') as HTMLElement | null;
+	if (parentWithField) {
+		const collection = parentWithField.dataset.collection;
+		const field = parentWithField.dataset.field;
+		const id = parentWithField.dataset.id;
 
-	if (parentWithField) return `${parentWithField.dataset.collection}:${parentWithField.dataset.field}:${parentWithField.dataset.id}`;
+		if (collection && field && id) {
+			return `${collection}:${field}:${id}`;
+		}
+	}
 
 	return null;
 }
