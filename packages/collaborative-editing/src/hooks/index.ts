@@ -103,13 +103,30 @@ export default defineHook(async ({ action }, { services, database, getSchema }) 
 			for (const socket of clientSet) {
 				if (client.uid === socket.uid || socket.room !== client.room) continue;
 
+				const { field, collection, primaryKey } = message;
+
+				// permission check
+				if (field && collection && primaryKey) {
+					try {
+						await new services.ItemsService(collection, {
+							knex: database,
+							accountability: socket.accountability,
+							schema,
+						}).readOne(primaryKey, { field: [field] });
+					} catch (e) {
+						console.error(e);
+						// error = no permission
+						continue;
+					}
+				}
+
 				try {
 					socket.send(
 						JSON.stringify({
 							type: 'awareness-field-activated',
 							field: {
-								name: message.field,
-								collection: message.collection,
+								field,
+								collection,
 							},
 						}),
 					);
@@ -121,13 +138,30 @@ export default defineHook(async ({ action }, { services, database, getSchema }) 
 			for (const socket of clientSet) {
 				if (client.uid === socket.uid || socket.room !== client.room) continue;
 
+				const { field, collection, primaryKey } = message;
+
+				// permission check
+				if (field && collection && primaryKey) {
+					try {
+						await new services.ItemsService(collection, {
+							knex: database,
+							accountability: socket.accountability,
+							schema,
+						}).readOne(primaryKey, { field: [field] });
+					} catch (e) {
+						console.error(e);
+						// error = no permission
+						continue;
+					}
+				}
+
 				try {
 					socket.send(
 						JSON.stringify({
 							type: 'awareness-field-deactivated',
 							field: {
-								name: message.field,
-								collection: message.collection,
+								field,
+								collection,
 							},
 						}),
 					);
