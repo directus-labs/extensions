@@ -1,7 +1,5 @@
 import { defineHook } from '@directus/extensions-sdk';
 import { Accountability } from '@directus/types';
-import * as _l from 'lodash-es';
-import * as Y from 'yjs';
 
 export type DirectusWebsocketBase = {
 	uid: string;
@@ -27,9 +25,6 @@ export default defineHook(async ({ action }, { services, database, getSchema }) 
 		if (!client.accountability) return;
 
 		console.log('uid', client.uid);
-		console.log('event', message.type);
-		console.log('client-room', client.room);
-		console.log('room', message.room);
 
 		if (message.type === 'yjs-connect') {
 			// add room directly on client
@@ -72,33 +67,29 @@ export default defineHook(async ({ action }, { services, database, getSchema }) 
 				}
 			}
 		} else if (message.type === 'yjs-update') {
-			const rawUpdate = Y.decodeUpdate(Buffer.from(message.update, 'base64'));
-
-			const field = _l.get(rawUpdate, ['structs', '0', 'parentSub'], null);
 			const collection = message.collection;
 			const primaryKey = message.primaryKey;
+			const fields = message.fields;
 
-			console.dir({ field, collection, primaryKey, rawUpdate }, { depth: null });
-
-			// if (!field || !collection || !primaryKey) {
-			// 	return;
-			// }
+			console.dir({ fields, collection, primaryKey }, { depth: null });
 
 			for (const socket of clientSet) {
 				if (client.uid === socket.uid || socket.room !== client.room) continue;
 
-				console.log('sockets', socket.uid);
-				// try {
-				// 	await new services.ItemsService(collection, {
-				// 		knex: database,
-				// 		accountability: socket.accountability,
-				// 		schema,
-				// 	}).readOne(primaryKey, { field: [field] });
-				// } catch (e) {
-				// 	console.error(e);
-				// 	// error = no permission
-				// 	continue;
-				// }
+				// permission check
+				if (fields.length > 0 && collection && primaryKey) {
+					try {
+						await new services.ItemsService(collection, {
+							knex: database,
+							accountability: socket.accountability,
+							schema,
+						}).readOne(primaryKey, { field: fields });
+					} catch (e) {
+						console.error(e);
+						// error = no permission
+						continue;
+					}
+				}
 
 				console.log('===== sending ====');
 

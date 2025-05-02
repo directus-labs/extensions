@@ -1,6 +1,6 @@
 import { buffer } from 'lib0';
 import { ObservableV2 } from 'lib0/observable';
-import { cloneDeep, entries, isEqual } from 'lodash-es';
+import * as l from 'lodash-es';
 import { computed, inject, unref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import * as Y from 'yjs';
@@ -34,18 +34,18 @@ export function useYJS(opts?: UseYJSOptions) {
 			(changedV, currentV) => {
 				provider.emit('debug', ['formValues:raw', [changedV, currentV]]);
 				if (!currentV || !changedV) return;
-				if (isEqual(changedV, currentV)) return;
+				if (l.isEqual(changedV, currentV)) return;
 
-				for (const [key, current] of entries(currentV)) {
+				for (const [key, current] of l.entries(currentV)) {
 					const changeV = changedV[key];
 
-					if (isEqual(current, changedV)) {
+					if (l.isEqual(current, changedV)) {
 						continue;
 					}
 
 					if (changeV !== undefined && changeV !== null && key) {
 						provider.emit('debug', ['docMap:set', [key, changeV]]);
-						docMap.set(cloneDeep(key), cloneDeep(changeV));
+						docMap.set(l.cloneDeep(key), l.cloneDeep(changeV));
 					}
 				}
 			},
@@ -97,7 +97,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 	private registerHandlers() {
 		// connect
 		this.ws.addEventListener('open', () => {
-			this.emit('debug', ['connect']);
+			this.emit('debug', ['connect', this.room]);
 
 			// indicate this connection is for yjs
 			this.ws.send(
@@ -117,20 +117,29 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		this.doc.on('update', this.handleDocumentUpdate.bind(this));
 	}
 
-	private handleDocumentUpdate(update: Uint8Array, origin: unknown) {
-		if (origin === this) {
+	private handleDocumentUpdate(update: Uint8Array, origin: unknown, _doc: Y.Doc, transaction: Y.Transaction) {
+		if (origin === this.doc.clientID) {
 			return;
 		}
 
 		const [collection, primaryKey] = this.room?.split(':') ?? [];
 
-		this.emit('debug', ['doc:update', Y.decodeUpdate(update)]);
-		console.log('doc:update', Y.decodeUpdate(update));
+		this.emit('debug', ['doc:update', Y.decodeUpdate(update), transaction]);
+
+		const fields: string[] = [];
+
+		transaction.changed.forEach((c) => {
+			c.forEach((f) => {
+				if (!f) return;
+				fields.push(f);
+			});
+		});
 
 		const data = {
 			type: 'yjs-update',
 			collection: collection ?? null,
 			primaryKey: primaryKey ?? null,
+			fields: fields,
 			update: buffer.toBase64(update),
 		};
 
@@ -162,7 +171,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		} else if (data.type === 'awareness-field-deactivate') {
 			console.log('awareness-user-deactivate', data);
 		} else if (data.type === 'update') {
-			Y.applyUpdate(this.doc, buffer.fromBase64(data.update as string), this);
+			Y.applyUpdate(this.doc, buffer.fromBase64(data.update as string), this.doc.clientID);
 		}
 	}
 
