@@ -83,7 +83,7 @@ export default defineHook(async ({ action }, { services, database, getSchema }) 
 							knex: database,
 							accountability: socket.accountability,
 							schema,
-						}).readOne(primaryKey, { field: fields });
+						}).readOne(primaryKey, { fields });
 					} catch (e) {
 						console.error(e);
 						// error = no permission
@@ -112,7 +112,7 @@ export default defineHook(async ({ action }, { services, database, getSchema }) 
 							knex: database,
 							accountability: socket.accountability,
 							schema,
-						}).readOne(primaryKey, { field: [field] });
+						}).readOne(primaryKey, { fields: [field] });
 					} catch (e) {
 						console.error(e);
 						// error = no permission
@@ -147,7 +147,7 @@ export default defineHook(async ({ action }, { services, database, getSchema }) 
 							knex: database,
 							accountability: socket.accountability,
 							schema,
-						}).readOne(primaryKey, { field: [field] });
+						}).readOne(primaryKey, { fields: [field] });
 					} catch (e) {
 						console.error(e);
 						// error = no permission
