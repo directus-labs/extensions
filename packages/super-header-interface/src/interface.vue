@@ -7,8 +7,6 @@ import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 
 import { useI18n } from 'vue-i18n';
-import FlowAction from './components/FlowAction.vue';
-import LinkAction from './components/LinkAction.vue';
 import VText from './components/Text.vue';
 import { useFlows } from './composables/useFlows';
 
@@ -21,7 +19,15 @@ const { t } = useI18n();
 const { useFieldsStore } = useStores();
 const fieldsStore = useFieldsStore();
 
-const { fetchFlows, showForm, submitFlow, currentFlow, runFlow } = useFlows(props.collection, props.primaryKey);
+const {
+	fetchFlows,
+	runFlow,
+	runningFlows,
+	confirmRunFlow,
+	resetConfirm,
+	executeConfirmedFlow,
+	flowsCache,
+} = useFlows(props.collection, props.primaryKey ?? null);
 
 const expanded = ref(false);
 const flowFormData = ref<Record<string, any>>({});
@@ -36,15 +42,31 @@ function toggleHelp() {
 	expanded.value = !expanded.value;
 }
 
+function isInternalLink(url: string) {
+	const isInternal = url.startsWith('/') || url.startsWith('admin');
+
+	let processedUrl = url;
+
+	if (isInternal) {
+		const adminPrefixes = ['/admin/', '/admin', 'admin/', 'admin'];
+
+		for (const prefix of adminPrefixes) {
+			if (processedUrl.startsWith(prefix)) {
+				processedUrl = processedUrl.slice(prefix.length);
+				break;
+			}
+		}
+
+		processedUrl = processedUrl.startsWith('/') ? processedUrl : `/${processedUrl}`;
+	}
+
+	return { isInternal, processedUrl };
+}
+
 const combinedItemData = computed(() => {
-	// Create a new object that prioritizes API structure for nested objects
-	// while still allowing direct values from `values` to override simple fields
 	const result = { ...values.value };
 
-	// For each key in the API response
 	Object.entries(fetchedTemplateData.value).forEach(([key, value]) => {
-		// If the value is an object (not null) and we have a simple value in result,
-		// prefer the complex object from the API
 		if (value !== null
 			&& typeof value === 'object'
 			&& (!result[key] || typeof result[key] !== 'object' || result[key] === null)) {
@@ -63,7 +85,6 @@ const actionList = computed(() => {
 		if (action.actionType === 'link') {
 			return {
 				...action,
-				// Render the URL with combined item values
 				url: render(action.url ?? '', combinedItemData.value),
 			};
 		}
@@ -76,7 +97,13 @@ const actionList = computed(() => {
 
 async function handleActionClick(action: Action) {
 	if (action.actionType === 'flow' && action.flow) {
-		runFlow(action.flow, props.values);
+		const effectiveValues = { ...combinedItemData.value };
+
+		if (!effectiveValues.id && primaryKey.value && primaryKey.value !== '+') {
+			effectiveValues.id = primaryKey.value;
+		}
+
+		runFlow(action.flow, effectiveValues, false);
 	}
 }
 
@@ -109,21 +136,30 @@ const fields = computed(() => {
 	return fieldsStore.getFieldsForCollection(props.collection);
 });
 
-/**
- * Get all required template fields from title, subtitle, and link actions.
- * This includes both regular and relational fields (e.g. "field" and "related.field").
- * @returns Array of field names needed for template rendering
- */
+const confirmDetails = computed(() => {
+	if (!confirmRunFlow.value) return null;
+
+	const flow = flowsCache.value[confirmRunFlow.value];
+	if (!flow) return null;
+
+	if (!flow.options?.requireConfirmation) return null;
+
+	return {
+		description: flow.options.confirmationDescription || t('run_flow_confirm'),
+		fields: flow.options.fields || [],
+	};
+});
+
+const displayConfirmDialog = computed(() => !!confirmRunFlow.value && confirmDetails.value);
+
 function getAllRequiredTemplateFields(): string[] {
 	const fieldsFromTitle = props.title ? getFieldsFromTemplate(props.title) : [];
 	const fieldsFromSubtitle = props.subtitle ? getFieldsFromTemplate(props.subtitle) : [];
 
-	// Get fields from link action URLs
 	const fieldsFromLinks = props.actions
 		?.filter((action) => action.actionType === 'link' && action.url)
 		.flatMap((action) => getFieldsFromTemplate(action.url || '')) || [];
 
-	// Combine all fields and deduplicate
 	const allFields = [...fieldsFromTitle, ...fieldsFromSubtitle, ...fieldsFromLinks];
 	return [...new Set(allFields)];
 }
@@ -154,6 +190,10 @@ watch(
 	},
 	{ immediate: true },
 );
+
+const resetFlowForm = () => {
+	flowFormData.value = {};
+};
 </script>
 
 <template>
@@ -178,28 +218,45 @@ watch(
 							{{ t('help') }}
 							<v-icon :name="expanded ? 'expand_less' : 'expand_more'" right />
 						</v-button>
-						<!-- We show the icon only on smaller containers -->
 						<v-button secondary small class="icon-button" icon @click="toggleHelp">
 							<v-icon name="help_outline" />
 						</v-button>
 					</template>
 					<template v-if="!hasMultipleActions && primaryAction">
-						<LinkAction
-							v-if="primaryAction.actionType === 'link'"
-							:label="primaryAction.label"
-							:url="primaryAction.url || ''"
-							:icon="primaryAction.icon"
-							:kind="primaryAction.type"
-						/>
-						<FlowAction
+						<template v-if="primaryAction.actionType === 'link'">
+							<v-button
+								v-if="isInternalLink(primaryAction.url || '').isInternal"
+								:to="isInternalLink(primaryAction.url || '').processedUrl"
+								small
+								:kind="primaryAction.type"
+							>
+								{{ primaryAction.label }}
+								<v-icon v-if="primaryAction.icon" :name="primaryAction.icon" right />
+							</v-button>
+							<v-button
+								v-else
+								tag="a"
+								:href="primaryAction.url || ''"
+								target="_blank"
+								rel="noopener noreferrer"
+								small
+								:kind="primaryAction.type"
+							>
+								{{ primaryAction.label }}
+								<v-icon v-if="primaryAction.icon" :name="primaryAction.icon" right />
+							</v-button>
+						</template>
+
+						<v-button
 							v-else-if="primaryAction.actionType === 'flow' && primaryAction.flow"
-							:label="primaryAction.label"
-							:collection="collection"
-							:flow="primaryAction.flow"
-							:icon="primaryAction.icon"
 							:kind="primaryAction.type"
-							:values="combinedItemData"
-						/>
+							small
+							:loading="runningFlows.includes(primaryAction.flow.key)"
+							@click="handleActionClick(primaryAction)"
+						>
+							{{ primaryAction.label }}
+							<v-icon v-if="primaryAction.icon" :name="primaryAction.icon" right />
+						</v-button>
 					</template>
 
 					<v-menu v-else-if="hasMultipleActions" placement="bottom-end">
@@ -209,7 +266,6 @@ watch(
 									{{ t('actions') }}
 									<v-icon name="expand_more" right />
 								</v-button>
-								<!-- We show the icon only on smaller containers -->
 								<v-button v-tooltip="t('actions')" small class="icon-button" icon @click="toggle">
 									<v-icon name="expand_more" />
 								</v-button>
@@ -221,7 +277,7 @@ watch(
 								v-for="(action, index) in actionList"
 								:key="index"
 								clickable
-								@click="action.actionType === 'link' ? null : handleActionClick(action)"
+								@click="action.actionType === 'flow' ? handleActionClick(action) : null"
 							>
 								<v-list-item-icon v-if="action.icon">
 									<v-icon :name="action.icon" />
@@ -229,7 +285,16 @@ watch(
 								<v-list-item-content>
 									<v-list-item-title>
 										<template v-if="action.actionType === 'link'">
-											<a :href="action.url" target="_blank">{{ t(action.label) }}</a>
+											<template v-if="isInternalLink(action.url || '').isInternal">
+												<router-link :to="isInternalLink(action.url || '').processedUrl">
+													{{ t(action.label) }}
+												</router-link>
+											</template>
+											<template v-else>
+												<a :href="action.url" target="_blank" rel="noopener noreferrer">
+													{{ t(action.label) }}
+												</a>
+											</template>
 										</template>
 										<template v-else>
 											{{ t(action.label) }}
@@ -242,7 +307,6 @@ watch(
 				</div>
 			</div>
 		</div>
-		<!-- Expanded Help -->
 		<transition-expand>
 			<div v-if="expanded && help" class="help-text">
 				<VText :content="help" />
@@ -255,25 +319,22 @@ watch(
 			</div>
 		</transition-expand>
 
-		<!-- Flow Form Modal -->
-		<v-dialog v-model="showForm">
+		<v-dialog v-model="displayConfirmDialog" @esc="resetConfirm">
 			<v-card>
-				<v-card-title>{{ currentFlow?.name || 'Run Flow' }}</v-card-title>
+				<v-card-title>{{ confirmDetails?.description }}</v-card-title>
 				<v-card-text>
-					<v-form v-if="currentFlow?.options?.fields" v-model="flowFormData" :fields="currentFlow.options.fields" />
+					<v-form
+						v-if="confirmDetails?.fields && confirmDetails.fields.length > 0"
+						v-model="flowFormData"
+						:fields="confirmDetails.fields"
+					/>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="showForm = false">
+					<v-button secondary @click="() => resetConfirm(resetFlowForm)">
 						{{ t('cancel') }}
 					</v-button>
 					<v-button
-						@click="
-							submitFlow({
-								collection: currentFlow.collection,
-								key: currentFlow.key,
-								...flowFormData,
-							})
-						"
+						@click="() => executeConfirmedFlow(confirmRunFlow || '', flowFormData, resetFlowForm)"
 					>
 						{{ t('run_flow') }}
 					</v-button>

@@ -21,5 +21,5 @@ export interface SuperHeaderProps {
 	values: Record<string, any>;
 	color?: string;
 	collection: string;
-	primaryKey: string;
+	primaryKey?: string | number | null;
 }
