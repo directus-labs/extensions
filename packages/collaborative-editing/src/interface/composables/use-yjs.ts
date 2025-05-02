@@ -4,6 +4,7 @@ import * as l from 'lodash-es';
 import { computed, inject, unref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import * as Y from 'yjs';
+import { UseUserStackUser } from './use-avatar-stack';
 import { useWSUrl } from './use-ws-url';
 
 export interface UseYJSOptions {
@@ -68,6 +69,7 @@ interface DirectusProviderOptions {
 
 interface DirectusProviderEvents {
 	connected: () => void;
+	'user:connect': (user: UseUserStackUser) => void;
 	debug: (...args: unknown[]) => void;
 }
 
@@ -164,12 +166,13 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 			this.ws.send(JSON.stringify({ type: 'pong' }));
 		} else if (data.type === 'awareness-user-connect') {
 			console.log('awareness-user-connect', data);
+			this.emit('user:connect', [data as unknown as UseUserStackUser]);
 		} else if (data.type === 'awareness-user-disconnect') {
 			console.log('awareness-user-disconnect', data);
 		} else if (data.type === 'awareness-field-activate') {
 			console.log('awareness-field-active', data);
-		} else if (data.type === 'awareness-field-deactivate') {
-			console.log('awareness-user-deactivate', data);
+		} else if (data.type === 'awareness-field-disconnect') {
+			console.log('awareness-user-disconnect', data);
 		} else if (data.type === 'update') {
 			Y.applyUpdate(this.doc, buffer.fromBase64(data.update as string), this.doc.clientID);
 		}

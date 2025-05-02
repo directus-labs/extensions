@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
+import { useAvatarStack } from './composables/use-avatar-stack';
 import { type DirectusProvider, useYJS } from './composables/use-yjs';
-
-let provider: DirectusProvider;
-
-const emit = defineEmits<{
-	setFieldValue: [FieldValue];
-}>();
 
 interface FieldValue {
 	field: string;
 	value: unknown;
 }
+
+const emit = defineEmits<{
+	setFieldValue: [FieldValue];
+}>();
+
+let provider: DirectusProvider;
+const { add } = useAvatarStack();
 
 onMounted(() => {
 	provider = useYJS({
@@ -26,6 +28,10 @@ onMounted(() => {
 
 	provider.on('debug', (...data) => {
 		console.dir(data, { depth: null });
+	});
+
+	provider.on('user:connect', (user) => {
+		add(user);
 	});
 });
 
