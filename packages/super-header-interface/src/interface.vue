@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import type { Action, FlowIdentifier, SuperHeaderProps } from './types';
+import type { Action, SuperHeaderProps } from './types';
 import { useApi, useStores } from '@directus/extensions-sdk';
+// @ts-expect-error - types not found
+import formatTitle from '@directus/format-title';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
 
-import { computed, inject, ref, toRefs, watch } from 'vue';
-
+import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import VText from './components/Text.vue';
+import { useDrawerDialog } from './composables/useDrawerDialog';
 import { useFlows } from './composables/useFlows';
 
 const props = withDefaults(defineProps<SuperHeaderProps>(), {
@@ -18,16 +21,24 @@ const props = withDefaults(defineProps<SuperHeaderProps>(), {
 const { t } = useI18n();
 const { useFieldsStore } = useStores();
 const fieldsStore = useFieldsStore();
+const router = useRouter();
+
+const showReloadDialog = ref(false);
+
+const confirmReload = () => {
+	showReloadDialog.value = true;
+};
+
+const primaryKey = computed(() => props.primaryKey ?? null);
 
 const {
-	fetchFlows,
 	runFlow,
 	runningFlows,
 	confirmRunFlow,
 	resetConfirm,
 	executeConfirmedFlow,
-	flowsCache,
-} = useFlows(props.collection, props.primaryKey ?? null);
+	getFlow,
+} = useFlows(props.collection, primaryKey, confirmReload);
 
 const expanded = ref(false);
 const flowFormData = ref<Record<string, any>>({});
@@ -36,10 +47,47 @@ const api = useApi();
 const values = inject('values', ref<Record<string, any>>({}));
 const fetchedTemplateData = ref<Record<string, any>>({});
 const isLoading = ref(false);
-const { primaryKey } = toRefs(props);
+
+const componentRoot = ref<HTMLElement | null>(null);
+
+const confirmDetails = computed(() => {
+	if (!confirmRunFlow.value) return null;
+
+	const flow = getFlow(confirmRunFlow.value);
+	if (!flow) return null;
+
+	if (!flow.options?.requireConfirmation) return null;
+
+	const formattedFields = (flow.options.fields ?? []).map((field: Record<string, any>) => ({
+		...field,
+		name: field.name || (field.field ? formatTitle(field.field) : ''),
+	}));
+
+	return {
+		description: flow.options.confirmationDescription || t('run_flow_confirm'),
+		fields: formattedFields,
+	};
+});
+
+const displayConfirmDialog = computed(() => !!confirmRunFlow.value && !!confirmDetails.value);
+
+const isDialogActive = () => !!displayConfirmDialog.value;
+const { dialogKeepBehind, initializeDrawerDetection } = useDrawerDialog(isDialogActive);
+
+onMounted(() => {
+	const cleanup = initializeDrawerDetection(componentRoot.value);
+
+	if (cleanup) {
+		onUnmounted(cleanup);
+	}
+});
 
 function toggleHelp() {
 	expanded.value = !expanded.value;
+}
+
+function reloadPage() {
+	router.go(0);
 }
 
 function isInternalLink(url: string) {
@@ -107,19 +155,6 @@ async function handleActionClick(action: Action) {
 	}
 }
 
-function flowIdentifiers() {
-	if (!actionList.value || !actionList.value?.length)
-		return [];
-
-	return actionList.value
-		.filter((action) => action.actionType === 'flow' && action.flow)
-		.map((action) => action.flow as FlowIdentifier);
-}
-
-if (flowIdentifiers().length > 0) {
-	fetchFlows(flowIdentifiers());
-}
-
 const hasMultipleActions = computed(() => {
 	if (!actionList.value || !actionList.value?.length)
 		return false;
@@ -136,22 +171,6 @@ const fields = computed(() => {
 	return fieldsStore.getFieldsForCollection(props.collection);
 });
 
-const confirmDetails = computed(() => {
-	if (!confirmRunFlow.value) return null;
-
-	const flow = flowsCache.value[confirmRunFlow.value];
-	if (!flow) return null;
-
-	if (!flow.options?.requireConfirmation) return null;
-
-	return {
-		description: flow.options.confirmationDescription || t('run_flow_confirm'),
-		fields: flow.options.fields || [],
-	};
-});
-
-const displayConfirmDialog = computed(() => !!confirmRunFlow.value && confirmDetails.value);
-
 function getAllRequiredTemplateFields(): string[] {
 	const fieldsFromTitle = props.title ? getFieldsFromTemplate(props.title) : [];
 	const fieldsFromSubtitle = props.subtitle ? getFieldsFromTemplate(props.subtitle) : [];
@@ -167,7 +186,10 @@ function getAllRequiredTemplateFields(): string[] {
 watch(
 	[primaryKey, () => getAllRequiredTemplateFields()],
 	async ([value, fields]) => {
-		if (!value || value === '+' || fields.length === 0) return;
+		if (!value || value === '+' || fields.length === 0) {
+			fetchedTemplateData.value = {};
+			return;
+		}
 
 		isLoading.value = true;
 
@@ -197,7 +219,7 @@ const resetFlowForm = () => {
 </script>
 
 <template>
-	<div class="page-header">
+	<div ref="componentRoot" class="page-header">
 		<div class="header-content" :style="{ '--header-color': color }">
 			<div class="text-container">
 				<v-icon v-if="icon" :name="icon" />
@@ -283,23 +305,27 @@ const resetFlowForm = () => {
 									<v-icon :name="action.icon" />
 								</v-list-item-icon>
 								<v-list-item-content>
-									<v-list-item-title>
-										<template v-if="action.actionType === 'link'">
-											<template v-if="isInternalLink(action.url || '').isInternal">
-												<router-link :to="isInternalLink(action.url || '').processedUrl">
+									<template v-if="action.actionType === 'link'">
+										<template v-if="isInternalLink(action.url || '').isInternal">
+											<router-link :to="isInternalLink(action.url || '').processedUrl">
+												<v-list-item-title>
 													{{ t(action.label) }}
-												</router-link>
-											</template>
-											<template v-else>
-												<a :href="action.url" target="_blank" rel="noopener noreferrer">
-													{{ t(action.label) }}
-												</a>
-											</template>
+												</v-list-item-title>
+											</router-link>
 										</template>
 										<template v-else>
-											{{ t(action.label) }}
+											<a :href="action.url" target="_blank" rel="noopener noreferrer">
+												<v-list-item-title>
+													{{ t(action.label) }}
+												</v-list-item-title>
+											</a>
 										</template>
-									</v-list-item-title>
+									</template>
+									<template v-else>
+										<v-list-item-title>
+											{{ t(action.label) }}
+										</v-list-item-title>
+									</template>
 								</v-list-item-content>
 							</v-list-item>
 						</v-list>
@@ -319,7 +345,11 @@ const resetFlowForm = () => {
 			</div>
 		</transition-expand>
 
-		<v-dialog v-model="displayConfirmDialog" @esc="resetConfirm">
+		<v-dialog
+			v-model="displayConfirmDialog"
+			:keep-behind="dialogKeepBehind"
+			@esc="resetConfirm"
+		>
 			<v-card>
 				<v-card-title>{{ confirmDetails?.description }}</v-card-title>
 				<v-card-text>
@@ -327,16 +357,50 @@ const resetFlowForm = () => {
 						v-if="confirmDetails?.fields && confirmDetails.fields.length > 0"
 						v-model="flowFormData"
 						:fields="confirmDetails.fields"
+						primary-key="+"
+						autofocus
 					/>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="() => resetConfirm(resetFlowForm)">
+					<v-button
+						secondary @click="() => {
+							resetConfirm(); resetFlowForm();
+						}"
+					>
 						{{ t('cancel') }}
 					</v-button>
 					<v-button
-						@click="() => executeConfirmedFlow(confirmRunFlow || '', flowFormData, resetFlowForm)"
+						@click="() => {
+							executeConfirmedFlow(confirmRunFlow || '', flowFormData); resetFlowForm();
+						}"
 					>
 						{{ t('run_flow') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog
+			v-model="showReloadDialog"
+			:keep-behind="dialogKeepBehind"
+		>
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>
+					{{ 'The item has been updated. Would you like to reload to see the latest changes? Any unsaved changes will be lost.' }}
+				</v-card-text>
+				<v-card-actions>
+					<v-button
+						secondary
+						@click="showReloadDialog = false"
+					>
+						{{ t('dismiss') || 'Dismiss' }}
+					</v-button>
+					<v-button
+						warning
+						@click="reloadPage"
+					>
+						{{ t('reload_page') || 'Reload Page' }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

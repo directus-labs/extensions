@@ -987,9 +987,18 @@ importers:
 
   packages/super-header-interface:
     dependencies:
+      '@directus/extensions-sdk':
+        specifier: 13.0.0
+        version: 13.0.0(@types/node@22.13.10)(@unhead/vue@2.0.0-alpha.19(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+      '@directus/format-title':
+        specifier: ^12.0.1
+        version: 12.0.1
       '@directus/utils':
         specifier: ^11.0.10
         version: 11.0.10(vue@3.5.13(typescript@5.6.3))
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       micromustache:
         specifier: ^8.0.3
         version: 8.0.3
@@ -1003,9 +1012,9 @@ importers:
         specifier: ^4.5.0
         version: 4.5.0(vue@3.5.13(typescript@5.6.3))
     devDependencies:
-      '@directus/extensions-sdk':
-        specifier: 13.0.0
-        version: 13.0.0(@types/node@22.13.10)(@unhead/vue@2.0.0-alpha.19(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
+      '@types/lodash':
+        specifier: ^4.17.16
+        version: 4.17.16
       typescript:
         specifier: ^5.5.4
         version: 5.6.3
@@ -1760,6 +1769,9 @@ packages:
 
   '@directus/format-title@12.0.0':
     resolution: {integrity: sha512-8hCMRjaMRRZU7DJci2ep/yNYV7wrpgJFXEeMouHnyLxEev7Tb4UO4lZv4C+p2a0E81nyemhXEwPB0UjFrlV8VA==}
+
+  '@directus/format-title@12.0.1':
+    resolution: {integrity: sha512-Sx0yMpVnTQWLppevNdwgyKUsrfPCZ503bshzGfsnUuZDLu7yZe4lwatvu2RSzb7tAfJLYC5VdoZg/LXNBfFTRw==}
 
   '@directus/schema@11.0.1':
     resolution: {integrity: sha512-I8YaZcFdzY1Livv3fW2L0GTBan+MGIYancj9GM/AoZpfeI5PjCecqASna/ijD/WVwDlUUvx6b7aJcQ1OLXBDug==}
@@ -3370,6 +3382,9 @@ packages:
 
   '@types/lodash@4.17.14':
     resolution: {integrity: sha512-jsxagdikDiDBeIRaPYtArcT8my4tN1og7MtMRquFT3XNA6axxyHDRUemqDz/taRDdOUn0GnGHRCuff4q48sW9A==}
+
+  '@types/lodash@4.17.16':
+    resolution: {integrity: sha512-HX7Em5NYQAXKW+1T+FiuG27NGwzJfCX3s1GjOa7ujxZa52kjJLOr4FUxT+giF6Tgxv1e+/czV/iTtBw27WTU9g==}
 
   '@types/lodash@4.17.5':
     resolution: {integrity: sha512-MBIOHVZqVqgfro1euRDWX7OO0fBVUUMrN6Pwm8LQsz8cWhEpihlvR70ENj3f40j58TNxZaWv2ndSkInykNBBJw==}
@@ -9858,6 +9873,8 @@ snapshots:
 
   '@directus/format-title@12.0.0': {}
 
+  '@directus/format-title@12.0.1': {}
+
   '@directus/schema@11.0.1':
     dependencies:
       knex: 3.1.0
@@ -12529,6 +12546,8 @@ snapshots:
       '@types/lodash': 4.17.14
 
   '@types/lodash@4.17.14': {}
+
+  '@types/lodash@4.17.16': {}
 
   '@types/lodash@4.17.5': {}
 
