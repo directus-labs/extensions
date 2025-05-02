@@ -7,7 +7,7 @@ export default defineOperationApi<MeiliSearchOptions>({
 	id: 'meilisearch-operation',
 	handler: async ({ host, api_key, action, search_index, document_id, document }) => {
 		try {
-			if (!['create', 'read', 'update', 'delete'].includes(action)) throw new Error(`Unsupported action: ${action} for OpenSearch`);
+			if (!['create', 'read', 'update', 'delete'].includes(action)) throw new Error(`Unsupported action: ${action} for Meilisearch`);
 			if (!host || !isValidUrl(host)) throw new Error(`Host is invalid. Must be your cloud instance URL or your localhost address. Receieved ${host}`);
 			if (!api_key) throw new Error('API Key is empty. Please ensure to provide an API Key.');
 			if (!search_index) throw new Error(`Search index is required. Receieved ${search_index}`);
