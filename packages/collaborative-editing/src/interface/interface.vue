@@ -36,7 +36,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	provider.destroy();
+	provider.disconnect();
 });
 
 const connectionStatus = ref<string>('initializing');
