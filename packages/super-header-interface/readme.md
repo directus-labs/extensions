@@ -54,6 +54,7 @@ The Super Header interface is designed to be used as a presentation field in you
 - **Icon** - Select an icon to display next to the title
 - **Subtitle** - Secondary text below the title. Supports field value templates. Only supports root-level fields.
 - **Help** - Optional help content that supports HTML formatting
+- **Help Display Mode** - How would you like to display help content. Defaults to inline but you can show help content in a modal.
 
 ### Actions
 
