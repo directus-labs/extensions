@@ -370,7 +370,7 @@ const resetFlowForm = () => {
 		<!-- Help Modal -->
 		<v-dialog v-model="showHelpModal" :keep-behind="dialogKeepBehind">
 			<v-card class="help-modal">
-				<v-button icon class="close-button" secondary @click="showHelpModal = false">
+				<v-button icon class="close-button" secondary small @click="showHelpModal = false">
 					<v-icon name="close" />
 				</v-button>
 				<v-card-title>{{ t('help') }}</v-card-title>
@@ -470,12 +470,12 @@ const resetFlowForm = () => {
 .text-container {
 	flex: 1;
 	display: flex;
-	align-items: center;
 	gap: 8px;
 	min-width: 0;
 
 	.v-icon {
 		--v-icon-color: var(--header-color);
+		margin-top: 2px;
 		flex-shrink: 0;
 	}
 
