@@ -16,6 +16,7 @@ import { useFlows } from './composables/useFlows';
 const props = withDefaults(defineProps<SuperHeaderProps>(), {
 	actions: () => [],
 	help: '',
+	helpDisplayMode: 'inline',
 });
 
 const { t } = useI18n();
@@ -42,6 +43,7 @@ const {
 
 const expanded = ref(false);
 const flowFormData = ref<Record<string, any>>({});
+const showHelpModal = ref(false);
 
 const api = useApi();
 const values = inject('values', ref<Record<string, any>>({}));
@@ -83,7 +85,12 @@ onMounted(() => {
 });
 
 function toggleHelp() {
-	expanded.value = !expanded.value;
+	if (props.helpDisplayMode === 'modal') {
+		showHelpModal.value = true;
+	}
+	else {
+		expanded.value = !expanded.value;
+	}
 }
 
 function reloadPage() {
@@ -238,7 +245,7 @@ const resetFlowForm = () => {
 						<v-button secondary small class="full-button" @click="toggleHelp">
 							<v-icon name="help_outline" left />
 							{{ t('help') }}
-							<v-icon :name="expanded ? 'expand_less' : 'expand_more'" right />
+							<v-icon v-if="helpDisplayMode !== 'modal'" :name="expanded ? 'expand_less' : 'expand_more'" right />
 						</v-button>
 						<v-button secondary small class="icon-button" icon @click="toggleHelp">
 							<v-icon name="help_outline" />
@@ -334,7 +341,7 @@ const resetFlowForm = () => {
 			</div>
 		</div>
 		<transition-expand>
-			<div v-if="expanded && help" class="help-text">
+			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="help-text">
 				<VText :content="help" />
 				<div class="collapse-button-container">
 					<v-button class="collapse-button" small secondary @click="toggleHelp">
@@ -344,6 +351,21 @@ const resetFlowForm = () => {
 				</div>
 			</div>
 		</transition-expand>
+
+		<!-- Help Modal -->
+		<v-dialog v-model="showHelpModal" :keep-behind="dialogKeepBehind">
+			<v-card class="help-modal">
+				<v-card-title>{{ t('help') }}</v-card-title>
+				<v-card-text>
+					<VText :content="help" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button @click="showHelpModal = false">
+						{{ t('close') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 
 		<v-dialog
 			v-model="displayConfirmDialog"
@@ -506,6 +528,13 @@ const resetFlowForm = () => {
 .help-text {
 	padding-block: 16px;
 	border-bottom: var(--theme--border-width) solid var(--theme--border-color);
+
+	:deep(.helper-text) {
+		padding: var(--v-card-padding, 16px);
+		padding-top: 0;
+		max-width: 100%;
+		overflow-x: auto;
+	}
 }
 
 .collapse-button-container {
@@ -522,5 +551,9 @@ const resetFlowForm = () => {
 	:deep(.type-label) {
 		font-size: 1rem;
 	}
+}
+
+.help-modal {
+	--theme--form--row-gap: 16px;
 }
 </style>

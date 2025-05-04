@@ -18,6 +18,7 @@ export interface SuperHeaderProps {
 	subtitle?: string;
 	actions?: Action[];
 	help?: string;
+	helpDisplayMode?: 'inline' | 'modal';
 	values: Record<string, any>;
 	color?: string;
 	collection: string;

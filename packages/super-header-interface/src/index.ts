@@ -67,6 +67,25 @@ export default defineInterface({
 			},
 		},
 		{
+			field: 'helpDisplayMode',
+			name: 'Help Display Mode',
+			type: 'string',
+			schema: {
+				default_value: 'inline',
+			},
+			meta: {
+				width: 'full',
+				interface: 'select-dropdown',
+				note: 'Select the display mode for the help information. Defaults to showing inline with the title. You can also show the help information in a modal.',
+				options: {
+					choices: [
+						{ text: 'Inline', value: 'inline' },
+						{ text: 'Modal', value: 'modal' },
+					],
+				},
+			},
+		},
+		{
 			field: 'actions',
 			name: 'Actions',
 			type: 'json',
