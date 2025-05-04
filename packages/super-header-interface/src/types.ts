@@ -19,6 +19,8 @@ export interface SuperHeaderProps {
 	actions?: Action[];
 	help?: string;
 	helpDisplayMode?: 'inline' | 'modal';
+	enableHelpTranslations?: boolean;
+	helpTranslationsString?: string;
 	values: Record<string, any>;
 	color?: string;
 	collection: string;

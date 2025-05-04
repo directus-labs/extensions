@@ -5,18 +5,21 @@ import { useApi, useStores } from '@directus/extensions-sdk';
 import formatTitle from '@directus/format-title';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
-
 import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue';
+
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import VText from './components/Text.vue';
 import { useDrawerDialog } from './composables/useDrawerDialog';
 import { useFlows } from './composables/useFlows';
+import { translate } from './utils/translate-literal';
 
 const props = withDefaults(defineProps<SuperHeaderProps>(), {
 	actions: () => [],
 	help: '',
 	helpDisplayMode: 'inline',
+	enableHelpTranslations: false,
+	helpTranslationsString: undefined,
 });
 
 const { t } = useI18n();
@@ -82,6 +85,18 @@ onMounted(() => {
 	if (cleanup) {
 		onUnmounted(cleanup);
 	}
+});
+
+const helpText = computed(() => {
+	if (props.enableHelpTranslations && props.helpTranslationsString) {
+		const translated = translate(props.helpTranslationsString);
+
+		if (translated) {
+			return translated;
+		}
+	}
+
+	return props.help;
 });
 
 function toggleHelp() {
@@ -342,7 +357,7 @@ const resetFlowForm = () => {
 		</div>
 		<transition-expand>
 			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="help-text">
-				<VText :content="help" />
+				<VText :content="helpText" />
 				<div class="collapse-button-container">
 					<v-button class="collapse-button" small secondary @click="toggleHelp">
 						{{ `${t('collapse')} ${t('help')}` }}
@@ -355,9 +370,12 @@ const resetFlowForm = () => {
 		<!-- Help Modal -->
 		<v-dialog v-model="showHelpModal" :keep-behind="dialogKeepBehind">
 			<v-card class="help-modal">
+				<v-button icon class="close-button" secondary @click="showHelpModal = false">
+					<v-icon name="close" />
+				</v-button>
 				<v-card-title>{{ t('help') }}</v-card-title>
 				<v-card-text>
-					<VText :content="help" />
+					<VText :content="helpText" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showHelpModal = false">
@@ -554,6 +572,13 @@ const resetFlowForm = () => {
 }
 
 .help-modal {
+	position: relative;
 	--theme--form--row-gap: 16px;
+
+	.close-button {
+		position: absolute;
+		top: 16px;
+		right: 16px;
+	}
 }
 </style>
