@@ -379,7 +379,7 @@ const resetFlowForm = () => {
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showHelpModal = false">
-						{{ t('close') }}
+						{{ t('dismiss') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

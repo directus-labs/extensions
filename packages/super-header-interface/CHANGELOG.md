@@ -8,6 +8,7 @@
 - Added automatic item change detection after flow execution
 - Added reload confirmation dialog when item data is changed by a flow
 - Support for showing help content in a modal vs inline
+- Added comprehensive translation support for interface elements and help content
 
 
 ### Fixes

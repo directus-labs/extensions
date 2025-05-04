@@ -13,6 +13,7 @@ A super powerful header interface for Directus that allows you to create rich pa
 - Configurable action buttons for navigation and DirectusFlow execution
 - Support for multiple actions with dropdown menu
 - Dynamic URL templates with field value interpolation
+- Comprehensive translation support for interface elements and help content
 
 ## Overview Video
 
@@ -55,6 +56,8 @@ The Super Header interface is designed to be used as a presentation field in you
 - **Subtitle** - Secondary text below the title. Supports field value templates. Only supports root-level fields.
 - **Help** - Optional help content that supports HTML formatting
 - **Help Display Mode** - How would you like to display help content. Defaults to inline but you can show help content in a modal.
+- **Enable Help Translations** - Toggle to enable help content translations
+- **Help Translations String** - Define translation keys for help content for multi-language support
 
 ### Actions
 
@@ -74,7 +77,7 @@ Each action can be configured with:
 - **Action Type** - Choose between:
   - Link - Navigate to a URL (supports field value templates)
   - Flow - Execute a Directus Flow
-- **URL** - For link actions, specify the destination URL. Can include field values (e.g., `https://example.com/items/{{ id }}`)
+- **URL** - For link actions, specify the destination URL. Can be internal to Directus projects for navigation to pages like the Visual Editor - /visual/http://yoursite.com or can be fully external URLs - https://directus.io. You can include field values (e.g., `https://example.com/items/{{ id }}`) by using mustache syntax.
 - **Flow** - For flow actions, select the Flow to execute
 
 ## Field Types
@@ -83,8 +86,68 @@ Each action can be configured with:
 - **Local Types**: `presentation`
 - **Group**: `presentation`
 
-## Notes
+## Translation Support
 
-- Field value templates only support root-level fields and do not support relational fields
+The Super Header Interface supports comprehensive translations:
+
+- **Interface Elements** - All UI elements (buttons, labels, dialogs) support translation via Directus's translation system
+- **Action Labels** - Action button labels can be translated using the system-input-translated-string interface
+- **Help Content** - Help text can be translated by enabling "Enable Help Translations" and using the "Help Translations String" field to define translation keys.
+
+### Key Translation Strings
+
+Key translation strings used in the interface that are not part of the Directus core translations:
+- help
+- actions
+- reload_page
+
+You'll want to add these strings to your Translation settings for full support.
+
+### Setting Up Help Content Translations
+
+To provide multilingual help content in your Super Header interface, follow these steps:
+
+1. **Enable Translation Support**:
+   - In the interface settings, toggle on "Enable Help Translations"
+   - This will reveal the "Help Translations String" field
+   - Note: When this is enabled, the regular "Help" field will be ignored
+
+2. **Set Up Translation Keys**:
+   - In the "Help Translations String" field, provide a translation key like `super_header_help_content`
+   - This key will be used to fetch the appropriate translated content
+
+3. **Create HTML Content for Each Language**:
+   - Navigate to **Settings → Translations** in your Directus project
+   - Create a new translation entry with the key you specified (e.g., `super_header_help_content`)
+   - For each language you support, create an HTML content block with your help information
+
+4. **Example Translation Setup**:
+   ```
+   Key: super_header_help_content
+
+   English:
+   <h3>Getting Started</h3>
+   <p>This section allows you to manage your content. Here are some tips:</p>
+   <ul>
+     <li>Use the <strong>action buttons</strong> to perform common tasks</li>
+     <li>Click on items to edit their details</li>
+   </ul>
+
+   Spanish:
+   <h3>Cómo Empezar</h3>
+   <p>Esta sección le permite gestionar su contenido. Aquí hay algunos consejos:</p>
+   <ul>
+     <li>Utilice los <strong>botones de acción</strong> para realizar tareas comunes</li>
+     <li>Haga clic en los elementos para editar sus detalles</li>
+   </ul>
+   ```
+
+5. **Testing Your Translations**:
+   - Switch your Directus interface language to verify that the correct translated help content appears
+   - The Super Header interface will automatically display the appropriate language based on the user's current Directus language setting
+
+When properly configured, the help content will seamlessly adapt to each user's language preference, providing a truly multilingual experience for your interface.
+
+## Notes
 - Actions with type "Flow" require appropriate permissions to execute the selected Flow
-- URLs in link actions support dynamic values using mustache-style syntax (`{{ field_name }}`) and only support root-level fields.
+- URLs in link actions support dynamic values using mustache-style syntax (`{{ field_name }}`). Relational fields are now supported.
