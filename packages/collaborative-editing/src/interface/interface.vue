@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useAvatarStack } from './composables/use-avatar-stack';
-import { type DirectusProvider, useYJS } from './composables/use-yjs';
+import { useYJS, type DirectusProvider } from './composables/use-yjs';
 
 interface FieldValue {
 	field: string;

@@ -164,15 +164,6 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		if (data.type === 'ping') {
 			// heartbeat keepalive
 			this.ws.send(JSON.stringify({ type: 'pong' }));
-		} else if (data.type === 'awareness-user-connect') {
-			console.log('awareness-user-connect', data);
-			this.emit('user:connect', [data as unknown as UseUserStackUser]);
-		} else if (data.type === 'awareness-user-disconnect') {
-			console.log('awareness-user-disconnect', data);
-		} else if (data.type === 'awareness-field-activate') {
-			console.log('awareness-field-active', data);
-		} else if (data.type === 'awareness-field-disconnect') {
-			console.log('awareness-user-disconnect', data);
 		} else if (data.type === 'update') {
 			Y.applyUpdate(this.doc, buffer.fromBase64(data.update as string), this.doc.clientID);
 		}
