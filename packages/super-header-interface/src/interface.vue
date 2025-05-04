@@ -351,8 +351,7 @@ const resetFlowForm = () => {
 			@esc="resetConfirm"
 		>
 			<v-card>
-				<v-card-title>{{ confirmDetails?.description }}</v-card-title>
-				<v-card-text>
+				<v-card-title>{{ confirmDetails!.description ?? t('run_flow_confirm') }}</v-card-title>				<v-card-text class="confirm-form">
 					<v-form
 						v-if="confirmDetails?.fields && confirmDetails.fields.length > 0"
 						v-model="flowFormData"
@@ -512,5 +511,16 @@ const resetFlowForm = () => {
 .collapse-button-container {
 	display: flex;
 	justify-content: flex-end;
+}
+
+.confirm-form {
+	--theme--form--column-gap: 24px;
+	--theme--form--row-gap: 24px;
+
+	margin-top: var(--v-card-padding, 16px);
+
+	:deep(.type-label) {
+		font-size: 1rem;
+	}
 }
 </style>
