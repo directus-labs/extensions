@@ -1,7 +1,26 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { useStores } from '@directus/extensions-sdk';
+import type { Settings } from '@directus/types';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useSettings } from '../module/utils/use-settings';
 import { useAvatarStack } from './composables/use-avatar-stack';
-import { useYJS, type DirectusProvider } from './composables/use-yjs';
+import { type DirectusProvider, useYJS } from './composables/use-yjs';
+
+const { useSettingsStore } = useStores();
+const settingsStore = useSettingsStore();
+const settings = useSettings();
+
+const collaborativeEditingEnabled = computed(() => {
+	const moduleEnabled = (settingsStore.settings as Settings).module_bar.find(
+		(module) => module.type === 'module' && module.id === 'collab-module',
+	)?.enabled;
+	const enabled = settings.settings.value?.collaborativeEditingEnabled;
+	return moduleEnabled && enabled;
+});
+
+watch(collaborativeEditingEnabled, (value) => {
+	console.log('collaborativeEditingEnabled', value);
+});
 
 interface FieldValue {
 	field: string;
@@ -16,6 +35,9 @@ let provider: DirectusProvider;
 const { add } = useAvatarStack();
 
 onMounted(() => {
+	if (!collaborativeEditingEnabled.value) {
+		return;
+	}
 	provider = useYJS({
 		onFieldChange(field, value) {
 			emit('setFieldValue', { field, value });
@@ -43,7 +65,7 @@ const connectionStatus = ref<string>('initializing');
 </script>
 
 <template>
-	<div class="collaborative-interface">
+	<div v-if="collaborativeEditingEnabled" class="collaborative-interface">
 		<div v-if="connectionStatus !== 'connected'" class="connection-status">
 			Collaboration status: {{ connectionStatus }}
 		</div>

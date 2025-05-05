@@ -25,6 +25,11 @@
 				"source": "src/interface/index.ts"
 			},
 			{
+				"type": "module",
+				"name": "module",
+				"source": "src/module/index.ts"
+			},
+			{
 				"type": "hook",
 				"name": "hooks",
 				"source": "src/hooks/index.ts"
@@ -62,8 +67,10 @@
 		"@directus/types": "^13.1.1"
 	},
 	"dependencies": {
+		"@vueuse/core": "^13.1.0",
 		"lib0": "^0.2.105",
 		"lodash-es": "^4.17.21",
-		"yjs": "^13.6.26"
+		"yjs": "^13.6.26",
+		"zod": "^3.24.3"
 	}
 }
