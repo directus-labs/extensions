@@ -1,5 +1,5 @@
 import { defineHook } from '@directus/extensions-sdk';
-import { handleConnect, handleJoin, handleLeave, handleUpdate } from './handlers';
+import { handleConnect, handleJoin, handleLeave, handleSync, handleUpdate } from './handlers';
 import { YJSEvent } from './types';
 import { useSockets } from './utils/use-sockets';
 
@@ -15,6 +15,9 @@ export default defineHook(async ({ action }, ctx) => {
 		switch (message.type as YJSEvent) {
 			case 'yjs-connect':
 				handleConnect(client);
+				break;
+			case 'sync':
+				handleSync(client, message, ctx);
 				break;
 			case 'update':
 				handleUpdate(client, message, ctx);

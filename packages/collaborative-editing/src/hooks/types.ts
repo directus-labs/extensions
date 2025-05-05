@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Accountability } from '@directus/types';
 
-export type YJSEvent = 'yjs-connect' | 'update' | 'join' | 'leave';
+export type YJSEvent = 'yjs-connect' | 'update' | 'join' | 'leave' | 'sync';
 
 export type WebsocketMessage = {
 	type: YJSEvent;
