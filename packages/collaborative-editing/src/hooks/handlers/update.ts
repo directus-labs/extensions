@@ -21,7 +21,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: UpdateMes
 
 	// apply update to room doc
 	const doc = room.doc;
-	console.log(`applying update to room ${room} doc id ${doc.clientID}`);
+	console.log(`applying update to room ${roomName} doc id ${doc.clientID}`);
 	Y.applyUpdate(doc, Buffer.from(message.update, 'base64'));
 
 	for (const [, socket] of sockets) {
@@ -45,7 +45,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: UpdateMes
 			}
 		}
 
-		console.log(`sending update payload to ${client.uid}`);
+		console.log(`sending update payload to ${socket.uid} for user ${socket.accountability?.user}`);
 
 		try {
 			socket.send(JSON.stringify(payload));
