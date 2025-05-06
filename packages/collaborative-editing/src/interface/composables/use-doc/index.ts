@@ -9,7 +9,7 @@ export interface UseYJSOptions {
 
 export { DirectusProvider } from './provider';
 
-export function useDoc(opts: UseYJSOptions) {
+export function useDoc(opts: UseYJSOptions = {}) {
 	const doc = new Y.Doc();
 
 	const formValues = inject<Record<string, unknown>>('values')!;

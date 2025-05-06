@@ -1,11 +1,11 @@
 import { useActiveElement } from '@vueuse/core';
 import { watch } from 'vue';
-import { useYJS } from './use-yjs';
 import { ACTIVE_FIELD_SELECTOR } from '../constants';
+import { useDoc } from './use-doc';
 
 export function useActiveField() {
 	const activeElement = useActiveElement();
-	const provider = useYJS();
+	const provider = useDoc();
 	// Watch for element focus changes
 	watch(activeElement, (el) => {
 		if (!el) {
@@ -13,7 +13,7 @@ export function useActiveField() {
 		} else {
 			const fieldParams = getFieldParamsFromElement(el as HTMLElement);
 			if (fieldParams) {
-				provider.activateField(fieldParams);
+				provider.activateField(fieldParams.field);
 			}
 		}
 	});

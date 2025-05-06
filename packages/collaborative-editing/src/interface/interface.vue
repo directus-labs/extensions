@@ -4,7 +4,6 @@ import type { Settings } from '@directus/types';
 import { computed, onUnmounted, watch } from 'vue';
 import { useSettings } from '../module/utils/use-settings';
 import { useActiveField } from './composables/use-active-field';
-import { useAvatarStack } from './composables/use-avatar-stack';
 import { useCurrentUser } from './composables/use-current-user';
 import { useDoc } from './composables/use-doc';
 import { useAwarenessStore } from './stores/awarenessStore';
@@ -41,8 +40,6 @@ interface FieldValue {
 const emit = defineEmits<{
 	setFieldValue: [FieldValue];
 }>();
-
-const { add } = useAvatarStack();
 
 const isNew = computed(() => props.primaryKey === '+');
 const room = computed(() => props.collection + ':' + props.primaryKey);
