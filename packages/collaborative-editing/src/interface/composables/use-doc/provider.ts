@@ -55,18 +55,20 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 	}
 
 	private registerHandlers() {
-		// connect
-		this.ws.client.onWebSocket('open', () => {
-			this.emit('debug', ['connect', this.room]);
+		if (!this.connected.value) {
+			// connect
+			this.ws.client.onWebSocket('open', () => {
+				this.emit('debug', ['connect', this.room]);
 
-			// indicate this connection is for yjs
-			this.send({ type: 'yjs-connect', color: useColor().value });
+				// indicate this connection is for yjs
+				this.send({ type: 'yjs-connect', color: useColor().value });
 
-			this.emit('connected', []);
-		});
+				this.emit('connected', []);
+			});
 
-		// receive broadcasts
-		this.ws.client.onWebSocket('message', this.handleMessage.bind(this));
+			// receive broadcasts
+			this.ws.client.onWebSocket('message', this.handleMessage.bind(this));
+		}
 
 		// yjs local doc updates
 		this.doc.on('update', this.handleDocumentUpdate.bind(this));
