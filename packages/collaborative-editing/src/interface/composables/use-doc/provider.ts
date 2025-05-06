@@ -105,15 +105,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		this.send(data);
 	}
 
-	private handleMessage(message: MessageEvent<string>) {
-		let payload: WebsocketMessagePayload;
-		try {
-			payload = JSON.parse(message.data);
-		} catch {
-			// don't process invalid payload
-			return;
-		}
-
+	private handleMessage(payload: WebsocketMessagePayload) {
 		this.emit('debug', ['message:payload', payload]);
 
 		if (payload.event === 'ping') {
@@ -122,7 +114,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		} else if (payload.event === 'connected') {
 			this.emit('connected', []);
 		} else if (payload.event === 'update') {
-			Y.applyUpdate(this.doc, buffer.fromBase64(payload.update as string), this.doc.clientID);
+			Y.applyUpdate(this.doc, buffer.fromBase64(payload.update), this.doc.clientID);
 		} else if (payload.event === 'awareness') {
 			// Handle user awareness
 			if (payload.type === 'user') {
