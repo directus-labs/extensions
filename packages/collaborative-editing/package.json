@@ -67,9 +67,11 @@
 		"@directus/types": "^13.1.1"
 	},
 	"dependencies": {
+		"@directus/sdk": "^19.1.0",
 		"@vueuse/core": "^13.1.0",
 		"lib0": "^0.2.105",
 		"lodash-es": "^4.17.21",
+		"pinia": "^3.0.2",
 		"yjs": "^13.6.26",
 		"zod": "^3.24.3"
 	}

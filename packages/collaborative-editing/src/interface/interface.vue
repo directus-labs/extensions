@@ -1,14 +1,25 @@
 <script setup lang="ts">
 import { useStores } from '@directus/extensions-sdk';
 import type { Settings } from '@directus/types';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onUnmounted, watch } from 'vue';
 import { useSettings } from '../module/utils/use-settings';
+import { useActiveField } from './composables/use-active-field';
 import { useAvatarStack } from './composables/use-avatar-stack';
-import { type DirectusProvider, useYJS } from './composables/use-yjs';
-
+import { useCurrentUser } from './composables/use-current-user';
+import { useDoc } from './composables/use-doc';
+import { useAwarenessStore } from './stores/awarenessStore';
+import type { ActiveField, AwarenessUser } from './types';
 const { useSettingsStore } = useStores();
 const settingsStore = useSettingsStore();
 const settings = useSettings();
+const awarenessStore = useAwarenessStore();
+const currentUser = useCurrentUser();
+useActiveField();
+
+const props = defineProps<{
+	collection: string;
+	primaryKey: string;
+}>();
 
 const collaborativeEditingEnabled = computed(() => {
 	const moduleEnabled = (settingsStore.settings as Settings).module_bar.find(
@@ -31,44 +42,63 @@ const emit = defineEmits<{
 	setFieldValue: [FieldValue];
 }>();
 
-let provider: DirectusProvider;
 const { add } = useAvatarStack();
 
-onMounted(() => {
-	if (!collaborativeEditingEnabled.value) {
-		return;
+const isNew = computed(() => props.primaryKey === '+');
+const room = computed(() => props.collection + ':' + props.primaryKey);
+
+const provider = useDoc({
+	onFieldChange(field, value) {
+		emit('setFieldValue', { field, value });
+	},
+});
+
+if (collaborativeEditingEnabled.value && !provider.connected.value) {
+	provider.connect();
+}
+
+if (!isNew.value && provider.connected) {
+	provider.join(room.value);
+}
+
+watch([isNew, provider.connected], ([isNew, connected]) => {
+	if (!isNew && connected) {
+		provider.join(room.value);
 	}
-	provider = useYJS({
-		onFieldChange(field, value) {
-			emit('setFieldValue', { field, value });
-		},
-	});
+});
 
-	provider.on('connected', () => {
-		connectionStatus.value = 'connected';
-	});
+provider.on('debug', (...data) => {
+	console.dir(data, { depth: null });
+});
 
-	provider.on('debug', (...data) => {
-		console.dir(data, { depth: null });
-	});
+provider.on('user:add', (user: AwarenessUser) => {
+	console.log('user:add', user);
+	awarenessStore.setActiveUser(user.uid, user);
+});
 
-	provider.on('user:connect', (user) => {
-		add(user);
-	});
+provider.on('user:remove', (uid: string) => {
+	console.log('user:remove', uid);
+	awarenessStore.removeActiveUser(uid);
+});
+
+provider.on('field:activate', (uid: string, payload: { field: ActiveField }) => {
+	console.log('field:activate', payload.field);
+	awarenessStore.setActiveField(uid, payload.field);
+});
+
+provider.on('field:deactivate', (uid: string) => {
+	console.log('field:deactivate', uid);
+	awarenessStore.removeActiveField(uid);
 });
 
 onUnmounted(() => {
-	provider.disconnect();
+	provider.leave();
 });
-
-const connectionStatus = ref<string>('initializing');
 </script>
 
 <template>
 	<div v-if="collaborativeEditingEnabled" class="collaborative-interface">
-		<div v-if="connectionStatus !== 'connected'" class="connection-status">
-			Collaboration status: {{ connectionStatus }}
-		</div>
+		<div v-if="!provider.connected.value" class="connection-status">Collaboration status: connecting</div>
 		<slot />
 	</div>
 </template>

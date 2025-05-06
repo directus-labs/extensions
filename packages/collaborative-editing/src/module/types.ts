@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const ModuleSettings = z.object({
 	collaborativeEditingEnabled: z.boolean().optional().default(true),

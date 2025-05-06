@@ -12,5 +12,5 @@ export const fields: DeepPartial<Field>[] = [
 		schema: {
 			default_value: true,
 		},
-	}
+	},
 ];

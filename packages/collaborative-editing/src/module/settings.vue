@@ -19,20 +19,13 @@ const settingsStore = useSettingsStore();
 
 const isAdmin = useIsAdmin();
 
-const collaborativeEditingSettings = computed(
-	() => settingsStore.settings.collaborative_editing_settings,
-);
+const collaborativeEditingSettings = computed(() => settingsStore.settings.collaborative_editing_settings);
 
-const collaborativeEditingSettingsField = fieldsStore.getField(
-	'directus_settings',
-	'collaborative_editing_settings',
-);
+const collaborativeEditingSettingsField = fieldsStore.getField('directus_settings', 'collaborative_editing_settings');
 
 console.log('collaborativeEditingSettings', collaborativeEditingSettings);
 
-const initialValues = ref(
-	clone(settingsStore.settings.collaborative_editing_settings),
-);
+const initialValues = ref(clone(settingsStore.settings.collaborative_editing_settings));
 
 const edits: Ref<Partial<CollaborativeEditingConfigType> | null> = ref(null);
 
@@ -44,8 +37,7 @@ const saving = ref(false);
 const validationErrors = ref<ValidationError[]>([]);
 
 async function updateCollaborativeEditingSettings(value: CollaborativeEditingConfigType) {
-	if (!value)
-		return;
+	if (!value) return;
 	validationErrors.value = [];
 	saving.value = true;
 
@@ -60,11 +52,8 @@ async function updateCollaborativeEditingSettings(value: CollaborativeEditingCon
 		edits.value = null;
 		saving.value = false;
 
-		initialValues.value = clone(
-			settingsStore.settings.collaborative_editing_settings,
-		);
-	}
-	catch (error) {
+		initialValues.value = clone(settingsStore.settings.collaborative_editing_settings);
+	} catch (error) {
 		if (error instanceof ZodError) {
 			validationErrors.value = zodErrorToValidationErrors(error, 'collaborative_editing_settings');
 		}
@@ -74,8 +63,7 @@ async function updateCollaborativeEditingSettings(value: CollaborativeEditingCon
 }
 
 async function createCollaborativeEditingSettings() {
-	if (collaborativeEditingSettingsField)
-		return;
+	if (collaborativeEditingSettingsField) return;
 
 	try {
 		await fieldsStore.createField('directus_settings', {
@@ -94,16 +82,12 @@ async function createCollaborativeEditingSettings() {
 		await updateCollaborativeEditingSettings(defaultSettings);
 		await settingsStore.hydrate();
 
-		initialValues.value = clone(
-			settingsStore.settings.collaborative_editing_settings,
-		);
-	}
-	catch (error) {
+		initialValues.value = clone(settingsStore.settings.collaborative_editing_settings);
+	} catch (error) {
 		console.error(error);
 		// @TODO: Handle error
 	}
 }
-
 </script>
 
 <template>
@@ -134,8 +118,8 @@ async function createCollaborativeEditingSettings() {
 			<template v-if="collaborativeEditingSettings">
 				<section v-if="!isAdmin">
 					<v-info icon="block" title="Unauthorized Access" type="danger" center>
-						You do not have permission to access this page. Please contact an
-						admin to configure collaborative editing settings.
+						You do not have permission to access this page. Please contact an admin to configure collaborative editing
+						settings.
 					</v-info>
 				</section>
 				<section v-if="isAdmin">
@@ -150,35 +134,17 @@ async function createCollaborativeEditingSettings() {
 
 			<section v-else-if="collaborativeEditingSettingsField">
 				<v-info icon="block" title="Settings Field Error" type="danger" center>
-					<p>
-						There's an error with the structure of the collaborative editing settings.
-					</p>
-					<v-button
-						style="margin-top: 12px"
-						secondary
-						@click="updateCollaborativeEditingSettings(defaultSettings)"
-					>
+					<p>There's an error with the structure of the collaborative editing settings.</p>
+					<v-button style="margin-top: 12px" secondary @click="updateCollaborativeEditingSettings(defaultSettings)">
 						Reset Collaborative Editing Settings
 					</v-button>
 				</v-info>
 			</section>
 
 			<section v-else-if="!collaborativeEditingSettingsField">
-				<v-info
-					icon="block"
-					title="Settings Field Missing"
-					type="danger"
-					center
-				>
-					<p>
-						The collaborative editing settings field is missing from Directus project
-						settings.
-					</p>
-					<v-button
-						kind="primary"
-						style="margin-top: 12px"
-						@click="createCollaborativeEditingSettings"
-					>
+				<v-info icon="block" title="Settings Field Missing" type="danger" center>
+					<p>The collaborative editing settings field is missing from Directus project settings.</p>
+					<v-button kind="primary" style="margin-top: 12px" @click="createCollaborativeEditingSettings">
 						Create Collaborative Editing Settings
 					</v-button>
 				</v-info>
@@ -189,9 +155,7 @@ async function createCollaborativeEditingSettings() {
 		<template #sidebar>
 			<sidebar-detail icon="info" title="Information" close>
 				<div
-					v-md="
-						`**Collaborative Editing** -- \n Enable collaborative editing for Directus.`
-					"
+					v-md="`**Collaborative Editing** -- \n Enable collaborative editing for Directus.`"
 					class="page-description"
 				/>
 			</sidebar-detail>
