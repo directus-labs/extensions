@@ -32,6 +32,10 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		super();
 
 		this.ws = useWS();
+
+		this.ws.onOpen(this.handleConnection.bind(this));
+		this.ws.onMessage(this.handleMessage.bind(this));
+
 		this.doc = opts.doc;
 		this.room = null;
 		this.connected = this.ws.connected;
@@ -55,21 +59,6 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 	}
 
 	private registerHandlers() {
-		if (!this.connected.value) {
-			// connect
-			this.ws.client.onWebSocket('open', () => {
-				this.emit('debug', ['connect', this.room]);
-
-				// indicate this connection is for yjs
-				this.send({ type: 'yjs-connect', color: useColor().value });
-
-				this.emit('connected', []);
-			});
-
-			// receive broadcasts
-			this.ws.client.onWebSocket('message', this.handleMessage.bind(this));
-		}
-
 		// yjs local doc updates
 		this.doc.on('update', this.handleDocumentUpdate.bind(this));
 	}
@@ -155,6 +144,15 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		} else if (payload.event === 'sync') {
 			//
 		}
+	}
+
+	private handleConnection() {
+		this.emit('debug', ['connect', this.room]);
+
+		// indicate this connection is for yjs
+		this.send({ type: 'yjs-connect', color: useColor().value });
+
+		this.emit('connected', []);
 	}
 
 	activateField(field: string) {
