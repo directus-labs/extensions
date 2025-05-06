@@ -1,21 +1,18 @@
 import type { AwarenessUserRemovePayload, LeaveMessage } from '../../types/events';
 import type { DirectusWebsocket } from '../types';
-import { useDocs } from '../utils/use-docs';
+import { useRooms } from '../utils/use-rooms';
 import { useSockets } from '../utils/use-sockets';
 
 export async function handleLeave(client: DirectusWebsocket, message: LeaveMessage) {
-	const docs = useDocs();
+	const rooms = useRooms();
 	const sockets = useSockets();
 
 	console.log(`removed room: ${message.room}`);
 	client.rooms.delete(message.room);
 
-	// delete doc if they are last client in the room
-	if (isRoomEmpty(message.room)) {
-		docs.remove(message.room);
-	}
+	rooms.addUser(message.room, client.uid, client.color);
 
-	for (const socket of sockets) {
+	for (const [, socket] of sockets) {
 		if (client.uid === socket.uid || socket.rooms.has(message.room) === false) continue;
 
 		const payload: AwarenessUserRemovePayload = { event: 'awareness', type: 'user', action: 'remove', uid: client.uid };
@@ -26,12 +23,17 @@ export async function handleLeave(client: DirectusWebsocket, message: LeaveMessa
 			console.log(error);
 		}
 	}
+
+	// delete doc if they are last client in the room
+	if (isRoomEmpty(message.room)) {
+		rooms.remove(message.room);
+	}
 }
 
 function isRoomEmpty(room: string) {
 	const sockets = useSockets();
 
-	for (const socket of sockets) {
+	for (const [, socket] of sockets) {
 		if (socket.rooms.has(room)) {
 			return false;
 		}

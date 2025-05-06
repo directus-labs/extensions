@@ -64,6 +64,9 @@ export interface ConnectPayload extends WebsocketBaseMessagePayload {
 
 export interface SyncPayload extends WebsocketBaseMessagePayload {
 	event: 'sync';
+	state: string;
+	users: Omit<AwarenessUserAddPayload, 'event' | 'type' | 'action'>[];
+	fields: Omit<AwarenessFieldActivatePayload, 'event' | 'type' | 'action'>[];
 }
 
 export interface UpdatePayload extends WebsocketBaseMessagePayload {

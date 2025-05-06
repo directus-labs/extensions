@@ -11,7 +11,7 @@ export function handleConnect(client: DirectusWebsocket, message: ConnectMessage
 
 	client.color = message.color;
 
-	sockets.add(client);
+	sockets.set(client.uid, client);
 
 	const payload: ConnectPayload = { event: 'connected' };
 
