@@ -10,12 +10,12 @@ export async function handleLeave(client: DirectusWebsocket, message: LeaveMessa
 	console.log(`removed room: ${message.room}`);
 	client.rooms.delete(message.room);
 
-	rooms.addUser(message.room, client.uid, client.color);
+	rooms.addUser(message.room, client.id, client.color);
 
 	for (const [, socket] of sockets) {
-		if (client.uid === socket.uid || socket.rooms.has(message.room) === false) continue;
+		if (client.id === socket.id || socket.rooms.has(message.room) === false) continue;
 
-		const payload: AwarenessUserRemovePayload = { event: 'awareness', type: 'user', action: 'remove', uid: client.uid };
+		const payload: AwarenessUserRemovePayload = { event: 'awareness', type: 'user', action: 'remove', uid: client.id };
 
 		try {
 			socket.send(JSON.stringify(payload));

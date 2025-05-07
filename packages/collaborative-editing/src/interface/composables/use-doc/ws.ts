@@ -6,21 +6,15 @@ const _state: { ws: ReturnType<typeof createWS> | undefined } = {
 	ws: undefined,
 };
 
-export interface UseWSOptions {
-	onOpen?(): void;
-	onClose?(): void;
-	onError?(): void;
-	onMessage?(message: unknown): void;
-}
-
 export interface WSHandler {
 	open?: () => void;
 	error?: () => void;
 	close?: () => void;
-	message: Array<(message: unknown) => void>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	message: Array<(message: any) => void>;
 }
 
-function createWS(opts: UseWSOptions) {
+function createWS() {
 	const ws = useSdk().with(
 		realtime({
 			authMode: 'strict',
@@ -50,7 +44,7 @@ function createWS(opts: UseWSOptions) {
 		}
 	}
 
-	function onMessage(cb: (message: unknown) => void) {
+	function onMessage<T = unknown>(cb: (message: T) => void) {
 		handlers['message'].push(cb);
 	}
 
@@ -88,10 +82,10 @@ function createWS(opts: UseWSOptions) {
 	};
 }
 
-export function useWS(opts: UseWSOptions = {}) {
+export function useWS() {
 	if (_state.ws) return _state.ws;
 
-	_state.ws = createWS(opts);
+	_state.ws = createWS();
 
 	return _state.ws;
 }

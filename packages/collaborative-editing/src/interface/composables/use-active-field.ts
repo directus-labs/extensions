@@ -1,11 +1,10 @@
 import { useActiveElement } from '@vueuse/core';
 import { watch } from 'vue';
 import { ACTIVE_FIELD_SELECTOR } from '../constants';
-import { useDoc } from './use-doc';
+import { DirectusProvider } from './use-doc';
 
-export function useActiveField() {
+export function useActiveField(provider: DirectusProvider) {
 	const activeElement = useActiveElement();
-	const provider = useDoc();
 	// Watch for element focus changes
 	watch(activeElement, (el) => {
 		if (!el) {
@@ -13,7 +12,9 @@ export function useActiveField() {
 		} else {
 			const fieldParams = getFieldParamsFromElement(el as HTMLElement);
 			if (fieldParams) {
-				provider.activateField(fieldParams.field);
+				provider.activateField(fieldParams);
+			} else {
+				provider.deactivateField();
 			}
 		}
 	});

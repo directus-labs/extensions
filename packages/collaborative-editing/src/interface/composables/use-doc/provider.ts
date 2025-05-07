@@ -2,8 +2,14 @@ import { buffer } from 'lib0';
 import { ObservableV2 } from 'lib0/observable';
 import { Ref } from 'vue';
 import * as Y from 'yjs';
-import { UpdateMessage, WebsocketMessage, WebsocketMessagePayload } from '../../../types/events';
-import { ActiveField, AwarenessUser } from '../../types';
+import {
+	ActivateMessage,
+	AwarenessUserAddPayload,
+	UpdateMessage,
+	WebsocketMessage,
+	WebsocketMessagePayload,
+} from '../../../types/events';
+import { ActiveField } from '../../types';
 import { useColor } from '../use-color';
 import { useWS } from './ws';
 
@@ -16,7 +22,7 @@ interface DirectusProviderEvents {
 	disconnect: () => void;
 	'field:activate': (uid: string, field: { field: ActiveField }) => void;
 	'field:deactivate': (uid: string, field: { field: null }) => void;
-	'user:add': (user: AwarenessUser) => void;
+	'user:add': (user: Omit<AwarenessUserAddPayload, 'event' | 'type' | 'action'>) => void;
 	'user:remove': (uid: string) => void;
 	'doc:update': (field: string, value: unknown) => void;
 	'doc:set': (field: string, value: unknown) => void;
@@ -34,7 +40,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		this.ws = useWS();
 
 		this.ws.onOpen(this.handleConnection.bind(this));
-		this.ws.onMessage(this.handleMessage.bind(this));
+		this.ws.onMessage<WebsocketMessagePayload>(this.handleMessage.bind(this));
 
 		this.doc = opts.doc;
 		this.room = null;
@@ -113,8 +119,9 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 					this.emit('user:add', [
 						{
 							uid: payload.uid,
-							firstName: payload.first_name,
-							lastName: payload.last_name,
+							id: payload.id,
+							first_name: payload.first_name,
+							last_name: payload.last_name,
 							avatar: payload.avatar,
 							color: payload.color,
 						},
@@ -124,16 +131,14 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 				}
 			} else if (payload.type === 'field') {
 				if (payload.action === 'add') {
-					const [collection, primaryKey] = this.room ?? [];
-
 					this.emit('field:activate', [
 						payload.uid,
 						{
 							field: {
 								uid: payload.uid,
 								field: payload.field,
-								collection,
-								primaryKey,
+								collection: payload.collection,
+								primaryKey: payload.primaryKey,
 							},
 						},
 					]);
@@ -142,7 +147,39 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 				}
 			}
 		} else if (payload.event === 'sync') {
-			//
+			// Apply initial state
+			if (payload.state) {
+				Y.applyUpdate(this.doc, buffer.fromBase64(payload.state), this.doc.clientID);
+			}
+
+			// Add all existing users
+			for (const user of payload.users) {
+				this.emit('user:add', [
+					{
+						uid: user.uid,
+						id: user.id,
+						first_name: user.first_name,
+						last_name: user.last_name,
+						avatar: user.avatar,
+						color: user.color,
+					},
+				]);
+			}
+
+			// Set all active fields
+			for (const field of payload.fields) {
+				this.emit('field:activate', [
+					field.uid,
+					{
+						field: {
+							uid: field.uid,
+							field: field.field,
+							collection: field.collection,
+							primaryKey: field.primaryKey,
+						},
+					},
+				]);
+			}
 		}
 	}
 
@@ -155,11 +192,11 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		this.emit('connected', []);
 	}
 
-	activateField(field: string) {
+	activateField(field: Omit<ActivateMessage, 'type' | 'room'>) {
 		if (!this.room) return;
 		this.send({
 			type: 'activate',
-			field,
+			...field,
 			room: this.room,
 		});
 	}

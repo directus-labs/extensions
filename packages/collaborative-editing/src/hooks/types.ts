@@ -5,12 +5,13 @@ export type ServerEvent = 'yjs-connect' | 'update' | 'join' | 'leave' | 'activat
 
 export type DirectusWebsocketBase = {
 	uid: string;
-	accountability: Accountability | null;
+	accountability: Accountability;
 	expires_at: number | null;
 	refresh_token?: string;
 };
 
 export interface DirectusCollaborativeWebsocket extends DirectusWebsocketBase {
+	id: string;
 	rooms: Set<string>;
 	color: string;
 }

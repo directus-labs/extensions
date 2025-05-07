@@ -9,20 +9,20 @@ export async function handleDeactivate(client: DirectusWebsocket, message: Deact
 
 	const { room } = message;
 
-	console.log(`${client.uid} removed awareness field awareness in ${room}`);
+	console.log(`${client.uid} removed awareness field in ${room}`);
 
 	if (!room) return;
 
-	rooms.removeField(room, client.uid);
+	rooms.removeField(room, client.id);
 
 	for (const [, socket] of sockets) {
-		if (client.uid === socket.uid || socket.rooms.has(room) === false) continue;
+		if (socket.rooms.has(room) === false) continue;
 
 		const payload: AwarenessFieldDeactivatePayload = {
 			event: 'awareness',
 			type: 'field',
 			action: 'remove',
-			uid: client.uid,
+			uid: client.id,
 		};
 
 		try {

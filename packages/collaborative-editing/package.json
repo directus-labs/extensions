@@ -39,7 +39,7 @@
 	},
 	"scripts": {
 		"build": "directus-extension build",
-		"dev": "directus-extension build -w --no-minify",
+		"dev": "directus-extension build -w --no-minify --sourcemap",
 		"link": "directus-extension link",
 		"validate": "directus-extension validate",
 		"add": "directus-extension add",
@@ -49,7 +49,10 @@
 		"lint:check": "NODE_OPTIONS='--experimental-strip-types' eslint --flag unstable_native_nodejs_ts_config ."
 	},
 	"devDependencies": {
+		"@directus/constants": "^13.0.1",
 		"@directus/extensions-sdk": "13.1.0",
+		"@directus/sdk": "^19.1.0",
+		"@directus/utils": "^13.0.5",
 		"@eslint/js": "^9.25.1",
 		"@eslint/json": "^0.12.0",
 		"@types/lodash-es": "^4.17.12",
@@ -73,6 +76,7 @@
 		"lodash-es": "^4.17.21",
 		"pinia": "^3.0.2",
 		"yjs": "^13.6.26",
-		"zod": "^3.24.3"
+		"zod": "^3.24.3",
+		"colorjs.io": "^0.5.0"
 	}
 }

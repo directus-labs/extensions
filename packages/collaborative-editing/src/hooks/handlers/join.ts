@@ -20,18 +20,18 @@ export async function handleJoin(client: DirectusWebsocket, message: JoinMessage
 		room = rooms.add(message.room);
 	}
 
-	rooms.addUser(message.room, client.uid, client.color);
+	rooms.addUser(message.room, client.id, client.color);
 
 	// ====
 	// awareness
 	for (const [, socket] of sockets) {
-		if (client.uid === socket.uid || socket.rooms.has(message.room) === false) continue;
+		if (socket.rooms.has(message.room) === false) continue;
 
 		let payload: AwarenessUserAddPayload = {
 			event: 'awareness',
 			type: 'user',
 			action: 'add',
-			uid: client.uid,
+			uid: client.id,
 			color: client.color,
 		};
 
@@ -84,7 +84,7 @@ export async function handleJoin(client: DirectusWebsocket, message: JoinMessage
 				updates.set(field, value);
 			} catch {
 				// console.error(e);
-				console.log(`excluding field ${field} from sync as client ${client.uid} has no permission`);
+				console.log(`excluding field ${field} from sync as client ${client.id} has no permission`);
 				// error = no permission
 				continue;
 			}
@@ -143,6 +143,8 @@ export async function handleJoin(client: DirectusWebsocket, message: JoinMessage
 			payload.fields.push({
 				field,
 				uid,
+				collection,
+				primaryKey,
 			});
 		} catch {
 			// console.error(e);

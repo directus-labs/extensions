@@ -1,10 +1,11 @@
 export interface AwarenessUser {
 	uid: string;
 	id?: string | null;
-	firstName?: string | null;
-	lastName?: string | null;
+	first_name?: string | null;
+	last_name?: string | null;
 	avatar?: string | null;
 	color: string;
+	isCurrentUser: boolean;
 }
 
 export interface ActiveField {
@@ -19,4 +20,9 @@ export interface AwarenessByUid {
 		user: AwarenessUser;
 		activeField: ActiveField | null;
 	};
+}
+
+export interface AwarenessItem {
+	user: AwarenessUser;
+	activeField: ActiveField | null;
 }

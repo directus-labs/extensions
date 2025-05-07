@@ -8,9 +8,9 @@ export default defineHook(async ({ action }, ctx) => {
 
 	action('websocket.message', async ({ message, client }) => {
 		if (!client.accountability) return;
-		if (message.type !== 'yjs-connect' && store.has(client.uid) === false) return;
+		if (message.type !== 'yjs-connect' && client.id && store.has(client.id) === false) return;
 
-		console.log('uid', client.uid);
+		console.log('client.id', client.id);
 
 		switch (message.type as ServerEvent) {
 			case 'yjs-connect':

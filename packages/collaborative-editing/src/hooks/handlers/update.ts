@@ -11,7 +11,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: UpdateMes
 
 	const { room: roomName, field } = message;
 
-	console.log(`${client.uid} updated ${field} in room ${roomName}`);
+	console.log(`${client.id} updated ${field} in room ${roomName}`);
 
 	const [collection, primaryKey] = roomName.split(':');
 
@@ -25,7 +25,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: UpdateMes
 	Y.applyUpdate(doc, Buffer.from(message.update, 'base64'));
 
 	for (const [, socket] of sockets) {
-		if (client.uid === socket.uid || socket.rooms.has(roomName) === false) continue;
+		if (client.id === socket.id || socket.rooms.has(roomName) === false) continue;
 
 		const payload: UpdatePayload = { event: 'update', update: message.update };
 
@@ -45,7 +45,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: UpdateMes
 			}
 		}
 
-		console.log(`sending update payload to ${socket.uid} for user ${socket.accountability?.user}`);
+		console.log(`sending update payload to ${socket.id} for user ${socket.accountability?.user}`);
 
 		try {
 			socket.send(JSON.stringify(payload));

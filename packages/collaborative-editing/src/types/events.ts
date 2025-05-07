@@ -33,6 +33,8 @@ export interface UpdateMessage extends WebsocketBaseMessage {
 export interface ActivateMessage extends WebsocketBaseMessage {
 	type: 'activate';
 	field: string;
+	collection: string;
+	primaryKey: string;
 	room: string;
 }
 
@@ -80,6 +82,8 @@ export interface AwarenessFieldActivatePayload extends WebsocketBaseMessagePaylo
 	action: 'add';
 	field: string;
 	uid: string;
+	collection: string;
+	primaryKey: string;
 }
 
 export interface AwarenessFieldDeactivatePayload extends WebsocketBaseMessagePayload {

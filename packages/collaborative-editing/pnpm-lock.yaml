@@ -17,6 +17,9 @@ importers:
       '@vueuse/core':
         specifier: ^13.1.0
         version: 13.1.0(vue@3.5.13(typescript@5.8.3))
+      colorjs.io:
+        specifier: ^0.5.0
+        version: 0.5.2
       lib0:
         specifier: ^0.2.105
         version: 0.2.105
@@ -33,9 +36,15 @@ importers:
         specifier: ^3.24.3
         version: 3.24.3
     devDependencies:
+      '@directus/constants':
+        specifier: ^13.0.1
+        version: 13.0.1
       '@directus/extensions-sdk':
         specifier: 13.1.0
         version: 13.1.0(@types/node@22.15.3)(@unhead/vue@1.11.20(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(terser@5.39.0)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))
+      '@directus/utils':
+        specifier: ^13.0.5
+        version: 13.0.5(vue@3.5.13(typescript@5.8.3))
       '@eslint/js':
         specifier: ^9.25.1
         version: 9.25.1
@@ -156,6 +165,14 @@ packages:
 
   '@directus/utils@13.0.4':
     resolution: {integrity: sha512-pg8LyrJ2mg+t7voMDL5KvlMCDNMMgE0GQu7kqXfzFThPYbkexyZ/nXUHkSyAcL9ppIo/A5YHuIbPyxMCz0X9xA==}
+    peerDependencies:
+      vue: ^3.4
+    peerDependenciesMeta:
+      vue:
+        optional: true
+
+  '@directus/utils@13.0.5':
+    resolution: {integrity: sha512-Vk26Te8hn25N8S9zTGFqPRsi2DIS3Zl01ZbBgPeEuAJxNAj6j1OeiFKzCDSGExhrbtVuTFDYlfinePDzTlzrmA==}
     peerDependencies:
       vue: ^3.4
     peerDependenciesMeta:
@@ -1067,6 +1084,9 @@ packages:
 
   colorette@2.0.19:
     resolution: {integrity: sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==}
+
+  colorjs.io@0.5.2:
+    resolution: {integrity: sha512-twmVoizEW7ylZSN32OgKdXRmo1qg+wT5/6C3xu5b9QsWzSFAhHLn2xd8ro0diCsKfCj1RdaTP/nrcW+vAoQPIw==}
 
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
@@ -2594,6 +2614,19 @@ snapshots:
     optionalDependencies:
       vue: 3.5.13(typescript@5.8.3)
 
+  '@directus/utils@13.0.5(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      '@directus/constants': 13.0.1
+      '@directus/system-data': 3.1.0
+      date-fns: 4.1.0
+      fs-extra: 11.3.0
+      joi: 17.13.3
+      js-yaml: 4.1.0
+      lodash-es: 4.17.21
+      micromustache: 8.0.3
+    optionalDependencies:
+      vue: 3.5.13(typescript@5.8.3)
+
   '@esbuild/aix-ppc64@0.25.0':
     optional: true
 
@@ -3416,6 +3449,8 @@ snapshots:
   colord@2.9.3: {}
 
   colorette@2.0.19: {}
+
+  colorjs.io@0.5.2: {}
 
   combined-stream@1.0.8:
     dependencies:

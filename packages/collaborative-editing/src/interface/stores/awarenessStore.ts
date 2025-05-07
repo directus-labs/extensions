@@ -1,38 +1,49 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { ActiveField, AwarenessByUid, AwarenessUser } from '../types';
 
 export const useAwarenessStore = defineStore('awareness', () => {
-	const awarenessByUid = ref<AwarenessByUid>({});
+	const byUid = ref<AwarenessByUid>({});
+	const list = computed(() => {
+		return Object.values(byUid.value);
+	});
+
 	const setActiveField = (uid: string, field: ActiveField) => {
-		if (!field) {
-			awarenessByUid.value[uid] = {
-				user: awarenessByUid.value[uid].user,
-				activeField: null,
-			};
-		} else {
-			awarenessByUid.value[uid] = {
-				...awarenessByUid.value[uid],
+		if (byUid.value[uid]) {
+			byUid.value[uid] = {
+				...byUid.value[uid],
 				activeField: field,
 			};
 		}
 	};
 
 	const setActiveUser = (uid: string, user: AwarenessUser) => {
-		awarenessByUid.value[uid] = {
+		byUid.value[uid] = {
 			user: user,
-			activeField: awarenessByUid.value[uid]?.activeField ?? null,
+			activeField: byUid.value[uid]?.activeField ?? null,
 		};
 	};
 
 	const removeActiveUser = (uid: string) => {
-		delete awarenessByUid.value[uid];
+		delete byUid.value[uid];
 	};
 
 	const removeActiveField = (uid: string) => {
-		if (awarenessByUid.value?.[uid]?.activeField) {
-			awarenessByUid.value[uid].activeField = null;
+		if (byUid.value?.[uid]?.activeField) {
+			byUid.value[uid].activeField = null;
 		}
+	};
+
+	const withActiveField = computed(() => {
+		return Object.values(byUid.value).filter((state) => state.activeField);
+	});
+
+	const getCurrentUser = () => {
+		return Object.values(byUid.value).find((state) => state.user?.isCurrentUser);
+	};
+
+	const reset = () => {
+		byUid.value = {};
 	};
 
 	return {
@@ -40,6 +51,10 @@ export const useAwarenessStore = defineStore('awareness', () => {
 		setActiveUser,
 		removeActiveUser,
 		removeActiveField,
-		awarenessByUid,
+		byUid,
+		withActiveField,
+		list,
+		reset,
+		getCurrentUser,
 	};
 });

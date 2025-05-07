@@ -4,27 +4,28 @@ import { useRooms } from '../utils/use-rooms';
 import { useSockets } from '../utils/use-sockets';
 
 export async function handleActivate(client: DirectusWebsocket, message: ActivateMessage, ctx: Context) {
+	console.log('handleActivate', message);
 	const sockets = useSockets();
 	const rooms = useRooms();
 	const schema = await ctx.getSchema();
 
-	const { room, field } = message;
+	const { room, field, collection, primaryKey } = message;
 
-	console.log(`${client.uid} awareness added for ${field} in room ${room}`);
+	console.log(`${client.id} awareness:activate field ${field}:${collection}:${primaryKey} in room ${room}`);
 
-	const [collection, primaryKey] = room.split(':');
-
-	rooms.addField(room, client.uid, field);
+	rooms.addField(room, client.id, field);
 
 	for (const [, socket] of sockets) {
-		if (client.uid === socket.uid || socket.rooms.has(room) === false) continue;
+		if (socket.rooms.has(room) === false) continue;
 
 		const payload: AwarenessFieldActivatePayload = {
 			event: 'awareness',
 			type: 'field',
 			action: 'add',
-			uid: client.uid,
+			uid: client.id,
 			field,
+			collection,
+			primaryKey,
 		};
 
 		// permission check
