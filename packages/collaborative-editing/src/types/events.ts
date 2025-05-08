@@ -26,7 +26,6 @@ export interface LeaveMessage extends WebsocketBaseMessage {
 export interface UpdateMessage extends WebsocketBaseMessage {
 	type: 'update';
 	room: string;
-	field: string;
 	update: string;
 }
 

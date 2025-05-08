@@ -69,31 +69,21 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		this.doc.on('update', this.handleDocumentUpdate.bind(this));
 	}
 
-	private handleDocumentUpdate(update: Uint8Array, origin: unknown, _doc: Y.Doc, transaction: Y.Transaction) {
+	private handleDocumentUpdate(update: Uint8Array, origin: unknown) {
 		if (origin === this.doc.clientID) {
 			return;
 		}
 
-		this.emit('debug', ['doc:update', Y.decodeUpdate(update), transaction]);
+		this.emit('debug', ['doc:update', Y.decodeUpdate(update)]);
 
 		if (this.room === null) {
 			this.emit('debug', ['message:cancel', this.room]);
 			return;
 		}
 
-		const fields: string[] = [];
-
-		transaction.changed.forEach((c) => {
-			c.forEach((f) => {
-				if (!f) return;
-				fields.push(f);
-			});
-		});
-
 		const data: UpdateMessage = {
 			type: 'update',
 			room: this.room,
-			field: fields[0],
 			update: buffer.toBase64(update),
 		};
 
