@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/experimental-m2a-interface",
 	"type": "module",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "Add a matrix button selector to the built-in M2A interface",
 	"author": "Directus Labs",
 	"contributors": [
@@ -34,11 +34,15 @@
 	"scripts": {
 		"build": "directus-extension build",
 		"dev": "directus-extension build -w --no-minify",
-		"link": "directus-extension link"
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
+	},
+	"dependencies": {
+		"@vueuse/core": "^13.1.0"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "11.0.6",
-		"typescript": "^5.4.5",
-		"vue": "^3.4.27"
+		"@directus/extensions-sdk": "13.0.4",
+		"typescript": "^5.8.3",
+		"vue": "3.5.13"
 	}
 }
