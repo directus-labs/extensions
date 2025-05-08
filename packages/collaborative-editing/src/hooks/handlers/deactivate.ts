@@ -1,7 +1,7 @@
 import { AwarenessFieldDeactivatePayload, DeactivateMessage } from '../../types/events';
+import { useRooms } from '../modules/use-rooms';
+import { useSockets } from '../modules/use-sockets';
 import { DirectusWebsocket } from '../types';
-import { useRooms } from '../utils/use-rooms';
-import { useSockets } from '../utils/use-sockets';
 
 export async function handleDeactivate(client: DirectusWebsocket, message: DeactivateMessage) {
 	const sockets = useSockets();

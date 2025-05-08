@@ -1,13 +1,8 @@
 import * as Y from 'yjs';
 
-interface UserStore {
-	color: string;
-	uid: string;
-}
-
 export interface Room {
 	fields: Map<string, string>;
-	users: Map<string, UserStore>;
+	users: Set<string>;
 	doc: Y.Doc;
 }
 
@@ -22,7 +17,7 @@ function createRooms() {
 		rooms.set(room, {
 			doc: new Y.Doc(),
 			fields: new Map(),
-			users: new Map(),
+			users: new Set(),
 		});
 
 		return rooms.get(room)!;
@@ -40,29 +35,28 @@ function createRooms() {
 		return rooms.has(room);
 	}
 
-	function addUser(room: string, user: { id: string } & UserStore) {
+	function addUser(room: string, socketUId: string) {
 		const r = rooms.get(room);
 		if (r) {
-			const { id, ...record } = user;
-			r.users.set(id, record);
+			r.users.add(socketUId);
 		}
 	}
-	function removeUser(room: string, user: string) {
+	function removeUser(room: string, socketUId: string) {
 		const r = rooms.get(room);
 		if (r) {
-			r.users.delete(user);
+			r.users.delete(socketUId);
 		}
 	}
-	function addField(room: string, user: string, field: string) {
+	function addField(room: string, sockerId: string, field: string) {
 		const r = rooms.get(room);
 		if (r) {
-			r.fields.set(user, field);
+			r.fields.set(sockerId, field);
 		}
 	}
-	function removeField(room: string, user: string) {
+	function removeField(room: string, sockerId: string) {
 		const r = rooms.get(room);
 		if (r) {
-			r.fields.delete(user);
+			r.fields.delete(sockerId);
 		}
 	}
 

@@ -1,7 +1,7 @@
 import type { AwarenessUserRemovePayload, LeaveMessage } from '../../types/events';
+import { useRooms } from '../modules/use-rooms';
+import { useSockets } from '../modules/use-sockets';
 import type { DirectusWebsocket } from '../types';
-import { useRooms } from '../utils/use-rooms';
-import { useSockets } from '../utils/use-sockets';
 import { isLastUserSocket } from '../utils/is-last-socket';
 import { isRoomEmpty } from '../utils/is-room-empty';
 

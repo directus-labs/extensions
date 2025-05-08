@@ -1,8 +1,8 @@
 import * as Y from 'yjs';
 import type { UpdateMessage, UpdatePayload } from '../../types/events';
+import { useRooms } from '../modules/use-rooms';
+import { useSockets } from '../modules/use-sockets';
 import type { Context, DirectusWebsocket } from '../types';
-import { useRooms } from '../utils/use-rooms';
-import { useSockets } from '../utils/use-sockets';
 
 export async function handleUpdate(client: DirectusWebsocket, message: UpdateMessage, ctx: Context) {
 	const rooms = useRooms();

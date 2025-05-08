@@ -1,7 +1,7 @@
 import { ConnectMessage, ConnectPayload } from '../../types/events';
+import { useId } from '../modules/use-id';
+import { useSockets } from '../modules/use-sockets';
 import { DirectusWebsocket } from '../types';
-import { useId } from '../utils/use-id';
-import { useSockets } from '../utils/use-sockets';
 
 export function handleConnect(client: DirectusWebsocket, message: ConnectMessage) {
 	const sockets = useSockets();

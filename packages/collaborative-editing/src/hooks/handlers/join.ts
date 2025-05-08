@@ -1,9 +1,9 @@
 import { entries } from 'lodash-es';
 import * as Y from 'yjs';
 import type { AwarenessUserAddPayload, JoinMessage, SyncPayload } from '../../types/events';
+import { useRooms } from '../modules/use-rooms';
+import { useSockets } from '../modules/use-sockets';
 import type { Context, DirectusWebsocket } from '../types';
-import { useRooms } from '../utils/use-rooms';
-import { useSockets } from '../utils/use-sockets';
 
 export async function handleJoin(client: DirectusWebsocket, message: JoinMessage, ctx: Context) {
 	const rooms = useRooms();

@@ -1,7 +1,7 @@
 import { defineHook } from '@directus/extensions-sdk';
 import { handleActivate, handleConnect, handleDeactivate, handleJoin, handleLeave, handleUpdate } from './handlers';
+import { useSockets } from './modules/use-sockets';
 import { ServerEvent } from './types';
-import { useSockets } from './utils/use-sockets';
 
 export default defineHook(async ({ action }, ctx) => {
 	const sockets = useSockets();
