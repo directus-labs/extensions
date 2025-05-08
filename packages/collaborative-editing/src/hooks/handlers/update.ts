@@ -82,7 +82,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: UpdateMes
 
 		// Emit the update to all current room clients if they have permission to access the field
 		for (const [, socket] of sockets) {
-			if (client.id === socket.id || socket.rooms.has(roomName) === false) continue;
+			if (client.uid === socket.uid || socket.rooms.has(roomName) === false) continue;
 
 			const payload: UpdatePayload = { event: 'update', update: message.update };
 

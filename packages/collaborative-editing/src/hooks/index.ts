@@ -4,11 +4,11 @@ import { ServerEvent } from './types';
 import { useSockets } from './utils/use-sockets';
 
 export default defineHook(async ({ action }, ctx) => {
-	const store = useSockets();
+	const sockets = useSockets();
 
 	action('websocket.message', async ({ message, client }) => {
 		if (!client.accountability) return;
-		if (message.type !== 'yjs-connect' && client.id && store.has(client.id) === false) return;
+		if (message.type !== 'yjs-connect' && sockets.has(client.uid) === false) return;
 
 		console.log('client.id', client.id);
 
@@ -35,6 +35,6 @@ export default defineHook(async ({ action }, ctx) => {
 	});
 
 	action('websocket.close', ({ client }) => {
-		store.delete(client);
+		sockets.delete(client);
 	});
 });
