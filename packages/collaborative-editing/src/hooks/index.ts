@@ -1,10 +1,12 @@
 import { defineHook } from '@directus/extensions-sdk';
 import { handleActivate, handleConnect, handleDeactivate, handleJoin, handleLeave, handleUpdate } from './handlers';
 import { ServerEvent } from './types';
+import { useRooms } from './utils/use-rooms';
 import { useSockets } from './utils/use-sockets';
 
 export default defineHook(async ({ action }, ctx) => {
 	const sockets = useSockets();
+	const rooms = useRooms();
 
 	action('websocket.message', async ({ message, client }) => {
 		if (!client.accountability) return;
@@ -35,6 +37,11 @@ export default defineHook(async ({ action }, ctx) => {
 	});
 
 	action('websocket.close', ({ client }) => {
-		sockets.delete(client);
+		// leave all rooms
+		client.rooms.forEach((room: string) => {
+			handleLeave(client, { type: 'leave', room });
+		});
+
+		sockets.delete(client.uid);
 	});
 });
