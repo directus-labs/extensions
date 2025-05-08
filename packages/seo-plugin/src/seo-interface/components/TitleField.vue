@@ -39,7 +39,7 @@ function onInput(newVal: string | null) {
 
 <template>
 	<SeoFieldWrapper
-		label="Title"
+		label="Page Title"
 		:state="state"
 		:rule="seoRules.title"
 	>
