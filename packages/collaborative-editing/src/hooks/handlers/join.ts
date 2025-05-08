@@ -20,7 +20,7 @@ export async function handleJoin(client: DirectusWebsocket, message: JoinMessage
 		room = rooms.add(message.room);
 	}
 
-	rooms.addUser(message.room, { id: client.id, color: client.color, uid: client.uid });
+	rooms.addUser(message.room, client.uid);
 
 	// ====
 	// awareness
@@ -98,16 +98,22 @@ export async function handleJoin(client: DirectusWebsocket, message: JoinMessage
 		fields: [],
 	};
 
-	for (const [id, { uid, color }] of room.users.entries()) {
-		let userPayload = {
-			uid: id,
-			color,
-		};
-
+	const users = new Map();
+	for (const uid of room.users.keys()) {
 		const socket = sockets.get(uid);
 		if (!socket) {
 			continue;
 		}
+
+		if (users.has(socket.id)) {
+			// dont reprocess user
+			continue;
+		}
+
+		let userPayload = {
+			uid: socket.id,
+			color: socket.color,
+		};
 
 		try {
 			const dbUser = await new ctx.services.UsersService({
@@ -129,10 +135,12 @@ export async function handleJoin(client: DirectusWebsocket, message: JoinMessage
 			continue;
 		}
 
-		payload.users.push(userPayload);
+		users.set(socket.id, userPayload);
 	}
 
-	for (const [uid, field] of room.fields.entries()) {
+	payload.users = Array.from(users.values());
+
+	for (const [id, field] of room.fields.entries()) {
 		try {
 			await new ctx.services.ItemsService(collection, {
 				knex: ctx.database,
@@ -142,7 +150,7 @@ export async function handleJoin(client: DirectusWebsocket, message: JoinMessage
 
 			payload.fields.push({
 				field,
-				uid,
+				uid: id,
 				collection,
 				primaryKey,
 			});
