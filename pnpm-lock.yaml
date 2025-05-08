@@ -987,9 +987,6 @@ importers:
 
   packages/super-header-interface:
     dependencies:
-      '@directus/extensions-sdk':
-        specifier: 13.0.0
-        version: 13.0.0(@types/node@22.13.10)(@unhead/vue@2.0.0-alpha.19(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@directus/format-title':
         specifier: ^12.0.1
         version: 12.0.1
@@ -1012,6 +1009,9 @@ importers:
         specifier: ^4.5.0
         version: 4.5.0(vue@3.5.13(typescript@5.6.3))
     devDependencies:
+      '@directus/extensions-sdk':
+        specifier: 13.0.0
+        version: 13.0.0(@types/node@22.13.10)(@unhead/vue@2.0.0-alpha.19(vue@3.5.13(typescript@5.6.3)))(knex@3.1.0)(pinia@3.0.1(typescript@5.6.3)(vue@3.5.13(typescript@5.6.3)))(sass@1.83.0)(terser@5.39.0)(typescript@5.6.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.6.3)))
       '@types/lodash':
         specifier: ^4.17.16
         version: 4.17.16
