@@ -20,7 +20,7 @@ export async function handleJoin(client: DirectusWebsocket, message: JoinMessage
 		room = rooms.add(message.room);
 	}
 
-	rooms.addUser(message.room, client.id, client.color);
+	rooms.addUser(message.room, { id: client.id, color: client.color, uid: client.uid });
 
 	// ====
 	// awareness
@@ -98,9 +98,9 @@ export async function handleJoin(client: DirectusWebsocket, message: JoinMessage
 		fields: [],
 	};
 
-	for (const [uid, color] of room.users.entries()) {
+	for (const [id, { uid, color }] of room.users.entries()) {
 		let userPayload = {
-			uid,
+			uid: id,
 			color,
 		};
 

@@ -1,8 +1,13 @@
 import * as Y from 'yjs';
 
+interface UserStore {
+	color: string;
+	uid: string;
+}
+
 export interface Room {
 	fields: Map<string, string>;
-	users: Map<string, string>;
+	users: Map<string, UserStore>;
 	doc: Y.Doc;
 }
 
@@ -35,10 +40,11 @@ function createRooms() {
 		return rooms.has(room);
 	}
 
-	function addUser(room: string, user: string, color: string) {
+	function addUser(room: string, user: { id: string } & UserStore) {
 		const r = rooms.get(room);
 		if (r) {
-			r.users.set(user, color);
+			const { id, ...record } = user;
+			r.users.set(id, record);
 		}
 	}
 	function removeUser(room: string, user: string) {
