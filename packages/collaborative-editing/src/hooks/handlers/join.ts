@@ -53,7 +53,6 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 			// console.error(e);
 			console.log(`Skipping awareness payload update, no permission to access ${client.accountability?.user}`);
 			// error = no permission
-			continue;
 		}
 
 		try {
@@ -133,7 +132,6 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 			// console.error(e);
 			console.log(`Skipping awareness payload update, no permission to access ${client.accountability?.user}`);
 			// error = no permission
-			continue;
 		}
 
 		users.set(socket.id, userPayload);
