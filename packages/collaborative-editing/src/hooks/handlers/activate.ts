@@ -4,7 +4,7 @@ import { useSockets } from '../modules/use-sockets';
 import { Context, DirectusWebsocket } from '../types';
 
 export async function handleActivate(client: DirectusWebsocket, message: Omit<ActivateMessage, 'type'>, ctx: Context) {
-	const { getSchema } = ctx;
+	const { getSchema, services, database: knex } = ctx;
 	const sockets = useSockets();
 	const rooms = useRooms();
 	const schema = await getSchema();
@@ -31,8 +31,8 @@ export async function handleActivate(client: DirectusWebsocket, message: Omit<Ac
 		// permission check
 		if (field && collection && primaryKey) {
 			try {
-				await new ctx.services.ItemsService(collection, {
-					knex: ctx.database,
+				await new services.ItemsService(collection, {
+					knex,
 					accountability: socket.accountability,
 					schema,
 				}).readOne(primaryKey, { fields: [field] });

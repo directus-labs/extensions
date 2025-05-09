@@ -6,9 +6,10 @@ import { useSockets } from '../modules/use-sockets';
 import type { Context, DirectusWebsocket } from '../types';
 
 export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMessage, 'type'>, ctx: Context) {
+	const { getSchema, services, database: knex } = ctx;
 	const rooms = useRooms();
 	const sockets = useSockets();
-	const schema = await ctx.getSchema();
+	const schema = await getSchema();
 
 	console.log(`added room: ${message.room}`);
 	client.rooms.add(message.room);
@@ -36,8 +37,8 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 		};
 
 		try {
-			const dbUser = await new ctx.services.UsersService({
-				knex: ctx.database,
+			const dbUser = await new services.UsersService({
+				knex,
 				accountability: socket.accountability,
 				schema,
 			}).readOne(client.accountability?.user, {

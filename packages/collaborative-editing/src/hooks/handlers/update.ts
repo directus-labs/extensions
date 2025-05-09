@@ -5,6 +5,7 @@ import { useSockets } from '../modules/use-sockets';
 import type { Context, DirectusWebsocket } from '../types';
 
 export async function handleUpdate(client: DirectusWebsocket, message: Omit<UpdateMessage, 'type'>, ctx: Context) {
+	const { services, database: knex, getSchema } = ctx;
 	const rooms = useRooms();
 
 	const { room: roomName } = message;
@@ -44,7 +45,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: Omit<Upda
 	dummyDocMap.observe(async (event) => {
 		const fields: string[] = [];
 		const sockets = useSockets();
-		const schema = await ctx.getSchema();
+		const schema = await getSchema();
 
 		// Track all fields changed in the payload
 		for (const field of event.keysChanged) {
@@ -58,8 +59,8 @@ export async function handleUpdate(client: DirectusWebsocket, message: Omit<Upda
 
 		// Ensure client is able to access the changed fields for the given record
 		try {
-			await new ctx.services.ItemsService(collection, {
-				knex: ctx.database,
+			await new services.ItemsService(collection, {
+				knex,
 				accountability: client.accountability,
 				schema,
 			}).readOne(primaryKey, { fields });
@@ -89,8 +90,8 @@ export async function handleUpdate(client: DirectusWebsocket, message: Omit<Upda
 			const payload: UpdatePayload = { event: 'update', update: message.update };
 
 			try {
-				await new ctx.services.ItemsService(collection, {
-					knex: ctx.database,
+				await new services.ItemsService(collection, {
+					knex,
 					accountability: socket.accountability,
 					schema,
 				}).readOne(primaryKey, { fields });
