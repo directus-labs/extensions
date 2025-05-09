@@ -3,7 +3,7 @@ import { useId } from '../modules/use-id';
 import { useSockets } from '../modules/use-sockets';
 import { DirectusWebsocket } from '../types';
 
-export function handleConnect(client: DirectusWebsocket, message: ConnectMessage) {
+export function handleConnect(client: DirectusWebsocket, message: Omit<ConnectMessage, 'type'>) {
 	const sockets = useSockets();
 	const { getId } = useId();
 
@@ -17,7 +17,9 @@ export function handleConnect(client: DirectusWebsocket, message: ConnectMessage
 
 	const payload: ConnectPayload = { event: 'connected' };
 
-	client.send(JSON.stringify(payload));
+	console.log(
+		`[realtime:connect] Client ${client.uid} marked as a yjs client for user ${client.accountability.user} with color ${client.color}`,
+	);
 
-	console.log(`market connection ${client.id} as yjs client`);
+	client.send(JSON.stringify(payload));
 }

@@ -3,13 +3,13 @@ import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import { DirectusWebsocket } from '../types';
 
-export async function handleDeactivate(client: DirectusWebsocket, message: DeactivateMessage) {
+export async function handleDeactivate(client: DirectusWebsocket, message: Omit<DeactivateMessage, 'type'>) {
 	const sockets = useSockets();
 	const rooms = useRooms();
 
 	const { room } = message;
 
-	console.log(`${client.uid} removed awareness field in ${room}`);
+	console.log(`[realtime:deactivate] Event received for ${client.uid} in room ${room}`);
 
 	if (!room) return;
 
@@ -24,6 +24,8 @@ export async function handleDeactivate(client: DirectusWebsocket, message: Deact
 			action: 'remove',
 			uid: client.id,
 		};
+
+		console.log(`[realtime:activate] Field awareness event sent to ${socket.uid}`);
 
 		try {
 			socket.send(JSON.stringify(payload));

@@ -5,7 +5,7 @@ import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import type { Context, DirectusWebsocket } from '../types';
 
-export async function handleJoin(client: DirectusWebsocket, message: JoinMessage, ctx: Context) {
+export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMessage, 'type'>, ctx: Context) {
 	const rooms = useRooms();
 	const sockets = useSockets();
 	const schema = await ctx.getSchema();

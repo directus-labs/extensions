@@ -4,7 +4,7 @@ import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import type { Context, DirectusWebsocket } from '../types';
 
-export async function handleUpdate(client: DirectusWebsocket, message: UpdateMessage, ctx: Context) {
+export async function handleUpdate(client: DirectusWebsocket, message: Omit<UpdateMessage, 'type'>, ctx: Context) {
 	const rooms = useRooms();
 
 	const { room: roomName } = message;
@@ -17,7 +17,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: UpdateMes
 
 	if (!room) return;
 
-	console.log('update: change in room ' + roomName);
+	console.log(`[realtime:update] Event received from client ${client.uid} in room ${roomName}`);
 
 	const update = Buffer.from(message.update, 'base64');
 
@@ -48,7 +48,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: UpdateMes
 
 		// Track all fields changed in the payload
 		for (const field of event.keysChanged) {
-			console.log(`${client.id} updated ${field} in room ${roomName}`);
+			console.log(`[realtime:update] Field ${field} was changed`);
 
 			// ignore deletes
 			if (!dummyDocMap.has(field)) continue;
@@ -64,20 +64,22 @@ export async function handleUpdate(client: DirectusWebsocket, message: UpdateMes
 				schema,
 			}).readOne(primaryKey, { fields });
 		} catch {
-			// console.error(e);
-			console.log(`Skipping update payload, no permission to access ${fields.join(',')}`);
-			// error = no permission
+			console.log(
+				`[realtime:update] Skipping update event for user ${client.accountability.user} with client uid ${client.uid}`,
+			);
+
 			return;
 		}
 
 		if (fields.length === 0) {
+			console.log('[realtime:update] Skipping update event due to no fields changed');
 			dummyDoc.destroy();
 			return;
 		}
 
 		// Apply update to room doc, this will ensure its shared globally for anyone who joins the room
 		const doc = room!.doc;
-		console.log(`applying update to room ${roomName} doc id ${doc.clientID}`);
+		console.log(`[realtime:update] Applying update to doc ${doc.clientID}`);
 		Y.applyUpdate(doc, update);
 
 		// Emit the update to all current room clients if they have permission to access the field
@@ -93,13 +95,11 @@ export async function handleUpdate(client: DirectusWebsocket, message: UpdateMes
 					schema,
 				}).readOne(primaryKey, { fields });
 			} catch {
-				// console.error(e);
-				console.log(`Skipping update payload, no permission to access ${fields.join(',')}`);
-				// error = no permission
+				console.log(`[realtime:update] Event skipped for ${socket.uid}`);
 				continue;
 			}
 
-			console.log(`sending update payload to ${socket.id} for user ${socket.accountability?.user}`);
+			console.log(`[realtime:update] Event sent to user ${socket.accountability.user} with socket uid ${socket.uid}`);
 
 			try {
 				socket.send(JSON.stringify(payload));

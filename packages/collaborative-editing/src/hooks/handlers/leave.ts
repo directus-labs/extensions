@@ -5,17 +5,19 @@ import type { DirectusWebsocket } from '../types';
 import { isLastUserSocket } from '../utils/is-last-socket';
 import { isRoomEmpty } from '../utils/is-room-empty';
 
-export async function handleLeave(client: DirectusWebsocket, message: LeaveMessage) {
+export async function handleLeave(client: DirectusWebsocket, message: Omit<LeaveMessage, 'type'>) {
 	const rooms = useRooms();
 	const sockets = useSockets();
 
-	console.log(`removed room: ${message.room}`);
+	console.log(`[realtime:leave] Event received for client ${client.uid} in room ${message.room}`);
+
 	client.rooms.delete(message.room);
 
 	rooms.removeUser(message.room, client.uid);
 
 	// Do not send awareness if a session (tab) is still open
 	if (!isLastUserSocket(client)) {
+		console.log(`[realtime:leave] User awareness event skipped due to other sessions being active`);
 		return;
 	}
 
@@ -23,6 +25,8 @@ export async function handleLeave(client: DirectusWebsocket, message: LeaveMessa
 		if (client.id === socket.id || socket.rooms.has(message.room) === false) continue;
 
 		const payload: AwarenessUserRemovePayload = { event: 'awareness', type: 'user', action: 'remove', uid: client.id };
+
+		console.log(`[realtime:leave] User awareness event sent to ${socket.uid}`);
 
 		try {
 			socket.send(JSON.stringify(payload));
@@ -33,6 +37,8 @@ export async function handleLeave(client: DirectusWebsocket, message: LeaveMessa
 
 	// delete doc if they are last client in the room
 	if (isRoomEmpty(message.room)) {
+		console.log(`[realtime:leave] Last client in the room has left, removing room instance`);
+
 		rooms.remove(message.room);
 	}
 }

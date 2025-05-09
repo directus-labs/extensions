@@ -3,15 +3,15 @@ import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import { Context, DirectusWebsocket } from '../types';
 
-export async function handleActivate(client: DirectusWebsocket, message: ActivateMessage, ctx: Context) {
-	console.log('handleActivate', message);
+export async function handleActivate(client: DirectusWebsocket, message: Omit<ActivateMessage, 'type'>, ctx: Context) {
+	const { getSchema } = ctx;
 	const sockets = useSockets();
 	const rooms = useRooms();
-	const schema = await ctx.getSchema();
+	const schema = await getSchema();
 
 	const { room, field, collection, primaryKey } = message;
 
-	console.log(`${client.id} awareness:activate field ${field}:${collection}:${primaryKey} in room ${room}`);
+	console.log(`[realtime:activate] Event received for field ${field} in room ${room}`);
 
 	rooms.addField(room, client.id, field);
 
@@ -37,12 +37,12 @@ export async function handleActivate(client: DirectusWebsocket, message: Activat
 					schema,
 				}).readOne(primaryKey, { fields: [field] });
 			} catch {
-				// console.error(e);
-				console.log(`Skipping awareness update, no permission to access ${field}`);
-				// error = no permission
+				console.log(`[realtime:activate] Field awareness event skipped for ${socket.uid}`);
 				continue;
 			}
 		}
+
+		console.log(`[realtime:activate] Field awareness event sent to ${socket.uid}`);
 
 		try {
 			socket.send(JSON.stringify(payload));

@@ -7,29 +7,31 @@ export default defineHook(async ({ action }, ctx) => {
 	const sockets = useSockets();
 
 	action('websocket.message', async ({ message, client }) => {
-		if (!client.accountability) return;
+		if (!client.accountability?.user) return;
 		if (message.type !== 'yjs-connect' && sockets.has(client.uid) === false) return;
 
-		console.log('client.id', client.id);
+		console.log(`[realtime:message] Client ${client.uid} sent message ${message.type}`);
 
-		switch (message.type as ServerEvent) {
+		const { type, payload } = message;
+
+		switch (type as ServerEvent) {
 			case 'yjs-connect':
-				handleConnect(client, message);
+				handleConnect(client, payload);
 				break;
 			case 'update':
-				handleUpdate(client, message, ctx);
+				handleUpdate(client, payload, ctx);
 				break;
 			case 'activate':
-				handleActivate(client, message, ctx);
+				handleActivate(client, payload, ctx);
 				break;
 			case 'deactivate':
-				handleDeactivate(client, message);
+				handleDeactivate(client, payload);
 				break;
 			case 'join':
-				handleJoin(client, message, ctx);
+				handleJoin(client, payload, ctx);
 				break;
 			case 'leave':
-				handleLeave(client, message);
+				handleLeave(client, payload);
 				break;
 		}
 	});
@@ -37,9 +39,11 @@ export default defineHook(async ({ action }, ctx) => {
 	action('websocket.close', ({ client }) => {
 		// leave all rooms
 		client.rooms.forEach((room: string) => {
-			handleLeave(client, { type: 'leave', room });
+			handleLeave(client, { room });
 		});
 
 		sockets.delete(client.uid);
+
+		console.log(`[realtime:close] Client ${client.uid} has closed the connection, removed from all rooms`);
 	});
 });
