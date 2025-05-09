@@ -35,6 +35,7 @@ export function useDoc(opts: UseYJSOptions = {}) {
 						continue;
 					}
 
+					// TODO: Prevent entering here for discard changes, without this gaurd it clears all values
 					if (changeV !== undefined && changeV !== null && key) {
 						provider.emit('debug', ['docMap:set', [key, changeV]]);
 						provider.emit('doc:set', [l.cloneDeep(key), l.cloneDeep(changeV)]);
