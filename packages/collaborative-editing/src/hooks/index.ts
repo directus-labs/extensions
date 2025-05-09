@@ -12,7 +12,7 @@ export default defineHook(async ({ action }, ctx) => {
 
 		console.log(`[realtime:message] Client ${client.uid} sent message ${message.type}`);
 
-		const { type, payload } = message;
+		const { type, ...payload } = message;
 
 		switch (type as ServerEvent) {
 			case 'yjs-connect':
