@@ -15,12 +15,7 @@ const { users } = defineProps<{
 		<UserAvatar
 			v-for="awareness in [...unref(users)].reverse() ?? []"
 			:key="awareness.user.uid"
-			:user="{
-				...awareness.user,
-				first_name: awareness.user.first_name ?? '',
-				last_name: awareness.user.last_name ?? '',
-				avatar: { id: awareness.user?.avatar ?? '' },
-			}"
+			:user="awareness.user"
 			class="avatar"
 			:small="small"
 		/>

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Accountability } from '@directus/types';
+import { AwarenessColor } from '../interface/types';
 
 export type ServerEvent = 'yjs-connect' | 'update' | 'join' | 'leave' | 'activate' | 'deactivate' | 'pong';
 
@@ -13,7 +14,7 @@ export type DirectusWebsocketBase = {
 export interface DirectusCollaborativeWebsocket extends DirectusWebsocketBase {
 	id: string;
 	rooms: Set<string>;
-	color: string;
+	color: AwarenessColor;
 }
 
 export type Context = {

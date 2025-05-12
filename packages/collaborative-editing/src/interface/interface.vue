@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import './styles.css';
 import { useRoute } from 'vue-router';
 import { useStores } from '@directus/extensions-sdk';
 import type { Settings } from '@directus/types';

@@ -2,8 +2,9 @@ import { useStores } from '@directus/extensions-sdk';
 import { useLocalStorage } from '@vueuse/core';
 import { pick } from 'lodash-es';
 import { computed } from 'vue';
-import { AwarenessUser } from '../types';
-const colors: AwarenessUser['color'][] = ['#6644FF', '#3399FF', '#2ECDA7', '#FFC23B', '#FFA439', '#E35169'];
+import { AwarenessColor, AwarenessUser } from '../types';
+
+const colors: AwarenessColor[] = ['purple', 'blue', 'green', 'yellow', 'orange', 'red'];
 
 export function useCurrentUser() {
 	const { useUserStore } = useStores();
@@ -17,8 +18,9 @@ export function useCurrentUser() {
 	return computed(
 		(): AwarenessUser => ({
 			...currentUser,
-			color: userColor.value,
+			color: userColor.value as AwarenessColor,
 			uid: currentUser.id,
+			isCurrentUser: true,
 		}),
 	);
 }
