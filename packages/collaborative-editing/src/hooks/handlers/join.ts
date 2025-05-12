@@ -4,9 +4,10 @@ import type { AwarenessUserAddPayload, JoinMessage, SyncPayload } from '../../ty
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import type { Context, DirectusWebsocket } from '../types';
+import { getSockerUser } from '../utils/get-socket-user';
 
 export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMessage, 'type'>, ctx: Context) {
-	const { getSchema, services, database: knex } = ctx;
+	const { getSchema, services, database } = ctx;
 	const rooms = useRooms();
 	const sockets = useSockets();
 	const schema = await getSchema();
@@ -28,32 +29,12 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 	for (const [, socket] of sockets) {
 		if (socket.rooms.has(message.room) === false) continue;
 
-		let payload: AwarenessUserAddPayload = {
+		const payload: AwarenessUserAddPayload = {
 			event: 'awareness',
 			type: 'user',
 			action: 'add',
-			uid: client.id,
-			color: client.color,
+			...(await getSockerUser(client, { accountability: socket.accountability, schema, database, services })),
 		};
-
-		try {
-			const dbUser = await new services.UsersService({
-				knex,
-				accountability: socket.accountability,
-				schema,
-			}).readOne(client.accountability?.user, {
-				fields: ['id', 'first_name', 'last_name', 'avatar'],
-			});
-
-			payload = {
-				...payload,
-				...dbUser,
-			};
-		} catch {
-			// console.error(e);
-			console.log(`Skipping awareness payload update, no permission to access ${client.accountability?.user}`);
-			// error = no permission
-		}
 
 		try {
 			socket.send(JSON.stringify(payload));
@@ -110,29 +91,12 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 			continue;
 		}
 
-		let userPayload = {
-			uid: socket.id,
-			color: socket.color,
-		};
-
-		try {
-			const dbUser = await new ctx.services.UsersService({
-				knex: ctx.database,
-				accountability: client.accountability,
-				schema,
-			}).readOne(socket.accountability?.user, {
-				fields: ['id', 'first_name', 'last_name', 'avatar'],
-			});
-
-			userPayload = {
-				...userPayload,
-				...dbUser,
-			};
-		} catch {
-			// console.error(e);
-			console.log(`Skipping awareness payload update, no permission to access ${client.accountability?.user}`);
-			// error = no permission
-		}
+		const userPayload = await getSockerUser(socket, {
+			schema,
+			database,
+			services,
+			accountability: client.accountability,
+		});
 
 		users.set(socket.id, userPayload);
 	}
