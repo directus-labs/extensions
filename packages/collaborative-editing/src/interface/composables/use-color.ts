@@ -6,9 +6,9 @@ import { AwarenessColor } from '../types';
 const colors = Object.keys(themeColors) as AwarenessColor[];
 
 export function useColor() {
-	const storedColor = useLocalStorage<string>(
+	const storedColor = useLocalStorage<AwarenessColor>(
 		'collab-user-color',
-		colors[Math.floor(Math.random() * colors.length)] as string,
+		colors[Math.floor(Math.random() * colors.length)] as AwarenessColor,
 	);
 
 	return computed(() => {
