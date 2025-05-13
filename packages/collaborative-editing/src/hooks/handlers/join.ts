@@ -1,10 +1,9 @@
-import { entries } from 'lodash-es';
-import * as Y from 'yjs';
 import type { AwarenessUserAddPayload, JoinMessage, SyncPayload } from '../../types/events';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import type { Context, DirectusWebsocket } from '../types';
 import { getSockerUser } from '../utils/get-socket-user';
+import { sanitizePayload } from '../utils/sanitize-payload';
 
 export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMessage, 'type'>, ctx: Context) {
 	const { getSchema, services, database } = ctx;
@@ -45,36 +44,17 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 
 	// ====
 	// state sync
-	const doc = room.doc;
-
-	// remove forbidden fields
-	const sync = new Y.Doc();
 	const [collection, primaryKey] = message.room.split(':');
-	const updates = sync.getMap(message.room);
-	const currentFields = doc.getMap(message.room).toJSON();
-	for (const [field, value] of entries(currentFields)) {
-		// permission check
-		if (field && collection && primaryKey) {
-			try {
-				await new ctx.services.ItemsService(collection, {
-					knex: ctx.database,
-					accountability: client.accountability,
-					schema,
-				}).readOne(primaryKey, { fields: [field] });
 
-				updates.set(field, value);
-			} catch {
-				// console.error(e);
-				console.log(`excluding field ${field} from sync as client ${client.id} has no permission`);
-				// error = no permission
-				continue;
-			}
-		}
-	}
+	const sanitizedPayload = await sanitizePayload(client, message.room, room.doc.getMap(message.room).toJSON(), {
+		database,
+		schema,
+		services,
+	});
 
 	const payload: SyncPayload = {
 		event: 'sync',
-		state: Buffer.from(Y.encodeStateAsUpdate(sync)).toString('base64'),
+		state: sanitizedPayload,
 		users: [],
 		fields: [],
 	};

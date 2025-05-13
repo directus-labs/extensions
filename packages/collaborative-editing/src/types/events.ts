@@ -27,7 +27,7 @@ export interface LeaveMessage extends WebsocketBaseMessage {
 export interface UpdateMessage extends WebsocketBaseMessage {
 	type: 'update';
 	room: string;
-	update: string;
+	update: Record<string, unknown>;
 }
 
 export interface ActivateMessage extends WebsocketBaseMessage {
@@ -66,14 +66,14 @@ export interface ConnectPayload extends WebsocketBaseMessagePayload {
 
 export interface SyncPayload extends WebsocketBaseMessagePayload {
 	event: 'sync';
-	state: string;
+	state: Record<string, unknown> | null;
 	users: Omit<AwarenessUserAddPayload, 'event' | 'type' | 'action'>[];
 	fields: Omit<AwarenessFieldActivatePayload, 'event' | 'type' | 'action'>[];
 }
 
 export interface UpdatePayload extends WebsocketBaseMessagePayload {
 	event: 'update';
-	update: string;
+	update: Record<string, unknown> | null;
 }
 
 export interface AwarenessFieldActivatePayload extends WebsocketBaseMessagePayload {

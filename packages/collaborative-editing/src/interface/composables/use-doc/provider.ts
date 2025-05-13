@@ -1,4 +1,3 @@
-import { buffer } from 'lib0';
 import { ObservableV2 } from 'lib0/observable';
 import { Ref } from 'vue';
 import * as Y from 'yjs';
@@ -25,7 +24,7 @@ interface DirectusProviderEvents {
 	'user:add': (user: Omit<AwarenessUserAddPayload, 'event' | 'type' | 'action'>) => void;
 	'user:remove': (uid: string) => void;
 	'doc:update': (field: string, value: unknown) => void;
-	'doc:set': (field: string, value: unknown) => void;
+	'doc:set': (field: string, value: unknown, origin: 'update' | 'sync' | 'form') => void;
 	debug: (event: string, ...data: unknown[]) => void;
 }
 
@@ -33,11 +32,14 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 	ws: ReturnType<typeof useWS>;
 	doc: Y.Doc;
 	room: string | null;
+	lastOrigin: 'form' | 'update' | 'sync' | null;
 	public readonly connected: Ref<boolean>;
 	constructor(opts: DirectusProviderOptions) {
 		super();
 
 		this.ws = useWS();
+
+		this.lastOrigin = null;
 
 		this.ws.onOpen(this.handleConnection.bind(this));
 		this.ws.onMessage<WebsocketMessagePayload>(this.handleMessage.bind(this));
@@ -66,30 +68,46 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 
 	private registerHandlers() {
 		// yjs local doc updates
-		this.doc.on('update', this.handleDocumentUpdate.bind(this));
+		this.on('doc:set', this.handleDocumentUpdate.bind(this));
 	}
 
-	private handleDocumentUpdate(update: Uint8Array, origin: unknown) {
-		if (origin === this.doc.clientID) {
-			return;
-		}
+	// remote -> local (update | sync): apply and emit but do not send
+	// local -> remote (form) : apply and send but do not emit
+	private handleDocumentUpdate(field: string, value: unknown, origin: 'update' | 'sync' | 'form') {
+		this.emit('debug', ['doc:update', field, value, origin]);
 
-		this.emit('debug', ['doc:update', Y.decodeUpdate(update)]);
+		const lastOrigin = this.lastOrigin;
+		this.lastOrigin = origin;
 
 		if (this.room === null) {
 			this.emit('debug', ['message:cancel', this.room]);
 			return;
 		}
 
-		const data: UpdateMessage = {
-			type: 'update',
-			room: this.room,
-			update: buffer.toBase64(update),
-		};
+		// CRDT
+		const changeDoc = new Y.Doc();
+		Y.applyUpdate(changeDoc, Y.encodeStateAsUpdate(this.doc));
+		changeDoc.getMap(this.room).set(field, value);
+		Y.applyUpdate(this.doc, Y.encodeStateAsUpdate(changeDoc));
 
-		this.emit('debug', ['doc:payload', data]);
+		if (origin !== 'form') {
+			const docMap = this.doc.getMap(this.room);
 
-		this.send(data);
+			this.emit('doc:update', [field, docMap.get(field)]);
+		}
+
+		// only send out updates from user entered data
+		if (origin === 'form' && lastOrigin !== 'sync' && lastOrigin !== 'update') {
+			const data: UpdateMessage = {
+				type: 'update',
+				room: this.room,
+				update: { [field]: value },
+			};
+
+			this.emit('debug', ['doc:payload', data]);
+
+			this.send(data);
+		}
 	}
 
 	private handleMessage(payload: WebsocketMessagePayload) {
@@ -101,7 +119,13 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		} else if (payload.event === 'connected') {
 			this.emit('connected', []);
 		} else if (payload.event === 'update') {
-			Y.applyUpdate(this.doc, buffer.fromBase64(payload.update), this.doc.clientID);
+			const update = payload.update;
+
+			for (const field in update) {
+				if (Object.prototype.hasOwnProperty.call(update, field)) {
+					this.emit('doc:set', [field, update[field], 'update']);
+				}
+			}
 		} else if (payload.event === 'awareness') {
 			// Handle user awareness
 			if (payload.type === 'user') {
@@ -139,7 +163,13 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		} else if (payload.event === 'sync') {
 			// Apply initial state
 			if (payload.state) {
-				Y.applyUpdate(this.doc, buffer.fromBase64(payload.state), this.doc.clientID);
+				const state = payload.state;
+
+				for (const field in state) {
+					if (Object.prototype.hasOwnProperty.call(state, field)) {
+						this.emit('doc:set', [field, state[field], 'sync']);
+					}
+				}
 			}
 
 			// Add all existing users
@@ -201,22 +231,6 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 
 	join(room: string) {
 		if (this.room === null) {
-			// setup doc listener
-			const docMap = this.doc.getMap(room);
-
-			// watch yjs doc changes
-			docMap.observe((event) => {
-				const keys = event.keysChanged;
-
-				for (const key of keys) {
-					this.emit('doc:update', [key, docMap.get(key)]);
-				}
-			});
-
-			this.on('doc:set', (key: string, value: unknown) => {
-				docMap.set(key, value);
-			});
-
 			this.send({
 				type: 'join',
 				room: room,
