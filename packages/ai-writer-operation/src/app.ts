@@ -46,6 +46,18 @@ export default defineOperationApp({
 
 		const openAiModels = [
 			{
+				text: 'GPT-4.1',
+				value: 'gpt-4.1',
+			},
+			{
+				text: 'GPT-4.1 mini',
+				value: 'gpt-4.1-mini',
+			},
+			{
+				text: 'GPT-4.1 nano',
+				value: 'gpt-4.1-nano',
+			},
+			{
 				text: 'GPT-4o',
 				value: 'gpt-4o',
 			},
@@ -66,12 +78,24 @@ export default defineOperationApp({
 				value: 'gpt-3.5-turbo',
 			},
 			{
+				text: 'o4-mini',
+				value: 'o4-mini',
+			},
+			{
+				text: 'o3',
+				value: 'o3',
+			},
+			{
+				text: 'o3-mini',
+				value: 'o3-mini',
+			},
+			{
 				text: 'o1',
 				value: 'o1',
 			},
 			{
-				text: 'o1-mini',
-				value: 'o1-mini',
+				text: 'o1-pro',
+				value: 'o1-pro',
 			},
 		];
 
