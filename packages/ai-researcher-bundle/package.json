@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/ai-researcher-bundle",
 	"type": "module",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "An AI agent for the purpose of content research within the Editor",
 	"author": "Directus Labs",
 	"contributors": [
