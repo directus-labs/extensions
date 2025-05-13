@@ -2,7 +2,7 @@ import { log, request } from 'directus:api';
 
 export default {
 	id: 'directus-labs-ai-image-generation',
-	handler: async ({ apiKey, prompt, quality, size }) => {
+	handler: async ({ apiKey, prompt, quality, size, model }) => {
 		try {
 			const { size: dimensions } = [
 				{ label: 'square', size: '1024x1024' },
@@ -17,7 +17,7 @@ export default {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					model: 'gpt-image-1',
+					model: model || 'gpt-image-1',
 					n: 1,
 					prompt,
 					quality,
@@ -25,8 +25,10 @@ export default {
 				}),
 			});
 
-			if (response.status !== 200)
+			if (response.status !== 200) {
 				throw new Error('An error occurred when accessing OpenAI');
+			}
+
 			return response.data.data[0].url;
 		}
 		catch (error) {
