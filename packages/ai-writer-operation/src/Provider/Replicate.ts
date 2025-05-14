@@ -10,16 +10,25 @@ export class Replicate extends Provider {
 			throw new InvalidPayloadError({ reason: 'Replicate API Key is missing' });
 		}
 
-		if (options.model === 'meta-llama-3.1-405b-instruct') {
-			super(options, 'https://api.replicate.com/v1/models/meta/meta-llama-3.1-405b-instruct/predictions', options.apiKeyReplicate);
-		}
+		switch (options.model) {
+			case 'meta-llama-3.1-405b-instruct': {
+				super(options, 'https://api.replicate.com/v1/models/meta/meta-llama-3.1-405b-instruct/predictions', options.apiKeyReplicate);
 
-		else if (options.model === 'mistral-7b-v0.1') {
-			super(options, 'https://api.replicate.com/v1/models/mistralai/mistral-7b-v0.1/predictions', options.apiKeyReplicate);
-		}
+				break;
+			}
+			case 'mistral-7b-v0.1': {
+				super(options, 'https://api.replicate.com/v1/models/mistralai/mistral-7b-v0.1/predictions', options.apiKeyReplicate);
 
-		else {
-			throw new InvalidPayloadError({ reason: `Model ${options.model} not supported` });
+				break;
+			}
+			case 'llama-3-8b-instruct': {
+				super(options, 'https://api.replicate.com/v1/models/meta/llama-3-8b-instruct/predictions', options.apiKeyReplicate);
+
+				break;
+			}
+			default: {
+				throw new InvalidPayloadError({ reason: `Model ${options.model} not supported` });
+			}
 		}
 	}
 

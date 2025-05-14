@@ -27,7 +27,7 @@ export class Anthropic extends Provider {
 			headers: {
 				'x-api-key': this.apiKey,
 				'Content-Type': 'application/json',
-				'anthropic-version': '2023-06-01',
+				'anthropic-version': '2023-10-01',
 			},
 			body: JSON.stringify(requestBody),
 		});
