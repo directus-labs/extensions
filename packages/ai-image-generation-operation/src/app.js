@@ -2,8 +2,8 @@ export default {
 	id: 'directus-labs-ai-image-generation',
 	name: 'AI Image Generation',
 	icon: 'draw',
-	description: 'Use Open AI\'s Image Generation API to create new images based on user prompts.',
-	overview: ({ prompt, quality, size }) => [
+	description: 'Use OpenAI\'s Image Generation API to create new images based on user prompts.',
+	overview: ({ prompt, quality, size, model }) => [
 		{
 			label: 'Prompt',
 			text: prompt,
@@ -15,6 +15,10 @@ export default {
 		{
 			label: 'Size',
 			text: size,
+		},
+		{
+			label: 'Model',
+			text: model || 'gpt-image-1',
 		},
 	],
 	options: [
@@ -28,6 +32,28 @@ export default {
 				interface: 'input',
 				options: {
 					masked: true,
+				},
+			},
+		},
+		{
+			field: 'model',
+			name: 'Model',
+			type: 'string',
+			required: true,
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				options: {
+					choices: [
+						{
+							text: 'GPT Image 1 (Latest)',
+							value: 'gpt-image-1',
+						},
+						{
+							text: 'DALL·E 3 (Legacy)',
+							value: 'dall-e-3',
+						},
+					],
 				},
 			},
 		},
