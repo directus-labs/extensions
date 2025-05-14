@@ -36,6 +36,28 @@ export default {
 			},
 		},
 		{
+			field: 'model',
+			name: 'Model',
+			type: 'string',
+			required: true,
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				options: {
+					choices: [
+						{
+							text: 'GPT Image 1 (Latest)',
+							value: 'gpt-image-1',
+						},
+						{
+							text: 'DALL·E 3 (Legacy)',
+							value: 'dall-e-3',
+						},
+					],
+				},
+			},
+		},
+		{
 			field: 'prompt',
 			name: 'Prompt',
 			type: 'text',
@@ -88,28 +110,6 @@ export default {
 						{
 							text: 'Landscape',
 							value: 'landscape',
-						},
-					],
-				},
-			},
-		},
-		{
-			field: 'model',
-			name: 'Model',
-			type: 'string',
-			required: true,
-			meta: {
-				width: 'half',
-				interface: 'select-dropdown',
-				options: {
-					choices: [
-						{
-							text: 'GPT Image 1 (Latest)',
-							value: 'gpt-image-1',
-						},
-						{
-							text: 'DALL·E 3 (Legacy)',
-							value: 'dall-e-3',
 						},
 					],
 				},
