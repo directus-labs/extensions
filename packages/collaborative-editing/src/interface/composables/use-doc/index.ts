@@ -2,6 +2,7 @@ import * as l from 'lodash-es';
 import { inject, watch } from 'vue';
 import * as Y from 'yjs';
 import { DirectusProvider } from './provider';
+import { useAwarenessStore } from '../../stores/awarenessStore';
 
 export interface UseYJSOptions {
 	onFieldChange?(field: string, value: unknown): void;
@@ -39,6 +40,21 @@ export function useDoc(opts: UseYJSOptions = {}) {
 					if (changeV !== undefined && changeV !== null && key) {
 						provider.emit('debug', ['docMap:set', [key, changeV]]);
 						provider.emit('doc:set', [l.cloneDeep(key), l.cloneDeep(changeV), 'form']);
+
+						// Find the field element and update the timestamp
+						const fieldEl = document.querySelector(`[data-field="${key}"]`);
+						if (fieldEl) {
+							const collection = fieldEl.getAttribute('data-collection');
+							const primaryKey = fieldEl.getAttribute('data-primary-key');
+							if (collection && primaryKey) {
+								const awarenessStore = useAwarenessStore();
+								awarenessStore.updateActiveFieldLastUpdated({
+									collection,
+									field: key,
+									primaryKey,
+								});
+							}
+						}
 					}
 				}
 			},

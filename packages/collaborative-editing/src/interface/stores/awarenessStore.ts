@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { ActiveField, AwarenessByUid, AwarenessUser } from '../types';
+import { ACTIVE_FIELD_IDLE_TIMEOUT } from '../constants';
+
+const CHECK_INTERVAL = 1000 * 10; // Check every 10 seconds
 
 export const useAwarenessStore = defineStore('awareness', () => {
 	const byUid = ref<AwarenessByUid>({});
@@ -8,16 +11,40 @@ export const useAwarenessStore = defineStore('awareness', () => {
 		return Object.values(byUid.value);
 	});
 
+	const updateActiveFieldLastUpdated = ({
+		collection,
+		field,
+		primaryKey,
+	}: Omit<ActiveField, 'lastUpdated' | 'uid'>) => {
+		Object.values(byUid.value).forEach((state) => {
+			if (
+				state.activeField &&
+				state.activeField.collection === collection &&
+				state.activeField.field === field &&
+				state.activeField.primaryKey === primaryKey
+			) {
+				state.activeField.lastUpdated = Date.now();
+			}
+		});
+	};
+
 	const setActiveField = (uid: string, field: ActiveField) => {
 		if (byUid.value[uid]) {
 			byUid.value[uid] = {
 				...byUid.value[uid],
 				activeField: field,
 			};
+			updateActiveFieldLastUpdated(field);
 		}
 	};
 
 	const setActiveUser = (uid: string, user: AwarenessUser) => {
+		// Only update if the user data has actually changed
+		const existingUser = byUid.value[uid]?.user;
+		if (existingUser && JSON.stringify(existingUser) === JSON.stringify(user)) {
+			return;
+		}
+
 		byUid.value[uid] = {
 			user: user,
 			activeField: byUid.value[uid]?.activeField ?? null,
@@ -46,6 +73,31 @@ export const useAwarenessStore = defineStore('awareness', () => {
 		byUid.value = {};
 	};
 
+	// Check for idle fields periodically
+	const checkIdleFields = () => {
+		const now = Date.now();
+		const uidsToUnlock: string[] = [];
+
+		for (const uid in byUid.value) {
+			if (now - (byUid.value?.[uid]?.activeField?.lastUpdated ?? 0) > ACTIVE_FIELD_IDLE_TIMEOUT) {
+				uidsToUnlock.push(uid);
+			}
+		}
+
+		for (const uid of uidsToUnlock) {
+			removeActiveField(uid);
+		}
+	};
+
+	// Start the periodic check
+	const intervalId = setInterval(() => {
+		checkIdleFields();
+	}, CHECK_INTERVAL);
+
+	const cleanup = () => {
+		clearInterval(intervalId);
+	};
+
 	return {
 		setActiveField,
 		setActiveUser,
@@ -54,7 +106,11 @@ export const useAwarenessStore = defineStore('awareness', () => {
 		byUid,
 		withActiveField,
 		list,
-		reset,
+		reset: () => {
+			cleanup();
+			reset();
+		},
 		getCurrentUser,
+		updateActiveFieldLastUpdated,
 	};
 });

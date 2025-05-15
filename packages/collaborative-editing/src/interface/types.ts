@@ -22,6 +22,7 @@ export interface ActiveField {
 	collection: string;
 	field: string;
 	primaryKey: string;
+	lastUpdated: number;
 }
 
 export interface AwarenessByUid {
