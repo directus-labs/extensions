@@ -1,6 +1,11 @@
 import { DirectusWebsocket } from '../types';
 
-const _state: { sockets: Map<string, DirectusWebsocket> | undefined } = {
+export interface Socket {
+	client: DirectusWebsocket;
+	rooms: Set<string>;
+}
+
+const _state: { sockets: Map<string, Socket> | undefined } = {
 	sockets: undefined,
 };
 

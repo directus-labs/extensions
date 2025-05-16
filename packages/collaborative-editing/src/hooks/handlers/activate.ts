@@ -17,7 +17,7 @@ export async function handleActivate(client: DirectusWebsocket, message: Omit<Ac
 	rooms.addField(room, client.id, field);
 
 	for (const [, socket] of sockets) {
-		if (socket.rooms.has(room) === false || !isValidSocket(socket)) continue;
+		if (!isValidSocket(socket) || socket.rooms.has(room) === false) continue;
 
 		const payload: AwarenessFieldActivatePayload = {
 			event: 'awareness',
@@ -34,19 +34,19 @@ export async function handleActivate(client: DirectusWebsocket, message: Omit<Ac
 			try {
 				await new services.ItemsService(collection, {
 					knex,
-					accountability: socket.accountability,
+					accountability: socket.client.accountability,
 					schema,
 				}).readOne(primaryKey, { fields: [field] });
 			} catch {
-				console.log(`[realtime:activate] Field awareness event skipped for ${socket.uid}`);
+				console.log(`[realtime:activate] Field awareness event skipped for ${socket.client.uid}`);
 				continue;
 			}
 		}
 
-		console.log(`[realtime:activate] Field awareness event sent to ${socket.uid}`);
+		console.log(`[realtime:activate] Field awareness event sent to ${socket.client.uid}`);
 
 		try {
-			socket.send(JSON.stringify(payload));
+			socket.client.send(JSON.stringify(payload));
 		} catch (error) {
 			console.log(error);
 		}

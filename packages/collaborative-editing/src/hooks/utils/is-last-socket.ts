@@ -6,7 +6,7 @@ export function isLastUserSocket(client: DirectusWebsocket) {
 	const sockets = useSockets();
 
 	for (const [, socket] of sockets) {
-		if (socket.id === client.id && socket.uid !== client.uid && isValidSocket(socket)) {
+		if (isValidSocket(socket) && socket.client.id === client.id && socket.client.uid !== client.uid) {
 			return false;
 		}
 	}

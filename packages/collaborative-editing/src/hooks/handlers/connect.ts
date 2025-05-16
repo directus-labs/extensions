@@ -10,7 +10,7 @@ export function handleConnect(client: DirectusWebsocket, message: Omit<ConnectMe
 	const jobs = useJobs();
 	const { getId } = useId();
 
-	client.rooms = new Set();
+	const rooms = new Set<string>();
 
 	// Add back rooms on re-connect
 	if (message.refresh) {
@@ -22,7 +22,7 @@ export function handleConnect(client: DirectusWebsocket, message: Omit<ConnectMe
 			jobs.cancel(client.id);
 
 			// rejoin rooms
-			socket.rooms.forEach((r) => client.rooms.add(r));
+			socket.rooms.forEach((r) => rooms.add(r));
 		}
 	}
 
@@ -30,7 +30,7 @@ export function handleConnect(client: DirectusWebsocket, message: Omit<ConnectMe
 
 	client.color = message.color;
 
-	sockets.set(client.uid, client);
+	sockets.set(client.uid, { client, rooms });
 
 	const payload: ConnectPayload = { event: 'connected' };
 

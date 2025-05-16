@@ -17,7 +17,7 @@ export async function handleDeactivate(client: DirectusWebsocket, message: Omit<
 	rooms.removeField(room, client.id);
 
 	for (const [, socket] of sockets) {
-		if (socket.rooms.has(room) === false || !isValidSocket(socket)) continue;
+		if (!isValidSocket(socket) || socket.rooms.has(room) === false) continue;
 
 		const payload: AwarenessFieldDeactivatePayload = {
 			event: 'awareness',
@@ -26,10 +26,10 @@ export async function handleDeactivate(client: DirectusWebsocket, message: Omit<
 			uid: client.id,
 		};
 
-		console.log(`[realtime:activate] Field awareness event sent to ${socket.uid}`);
+		console.log(`[realtime:activate] Field awareness event sent to ${socket.client.uid}`);
 
 		try {
-			socket.send(JSON.stringify(payload));
+			socket.client.send(JSON.stringify(payload));
 		} catch (error) {
 			console.log(error);
 		}

@@ -12,7 +12,11 @@ export async function handleLeave(client: DirectusWebsocket, message: Omit<Leave
 
 	console.log(`[realtime:leave] Event received for client ${client.uid} in room ${message.room}`);
 
-	client.rooms.delete(message.room);
+	const clientSocket = sockets.get(client.uid);
+	if (isValidSocket(clientSocket)) {
+		// remove rooms from the socket that left, not all clients
+		clientSocket.rooms.delete(message.room);
+	}
 
 	rooms.removeUser(message.room, client.uid);
 
@@ -23,14 +27,14 @@ export async function handleLeave(client: DirectusWebsocket, message: Omit<Leave
 	}
 
 	for (const [, socket] of sockets) {
-		if (client.id === socket.id || socket.rooms.has(message.room) === false || !isValidSocket(socket)) continue;
+		if (!isValidSocket(socket) || client.id === socket.client.id || socket.rooms.has(message.room) === false) continue;
 
 		const payload: AwarenessUserRemovePayload = { event: 'awareness', type: 'user', action: 'remove', uid: client.id };
 
-		console.log(`[realtime:leave] User awareness event sent to ${socket.uid}`);
+		console.log(`[realtime:leave] User awareness event sent to ${socket.client.uid}`);
 
 		try {
-			socket.send(JSON.stringify(payload));
+			socket.client.send(JSON.stringify(payload));
 		} catch (error) {
 			console.log(error);
 		}

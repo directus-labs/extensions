@@ -2,6 +2,7 @@ import { REFRESH_CLOSE_WINDOW_MS } from '../constants';
 import { useJobs } from '../modules/use-jobs';
 import { useSockets } from '../modules/use-sockets';
 import { DirectusWebsocket } from '../types';
+import { isValidSocket } from '../utils/is-valid-socket';
 import { handleLeave } from './leave';
 
 export function handleClose(client: DirectusWebsocket) {
@@ -13,7 +14,10 @@ export function handleClose(client: DirectusWebsocket) {
 		client.id,
 		() => {
 			// leave all rooms
-			client.rooms.forEach((room: string) => {
+			const clientSocket = sockets.get(client.uid);
+				if (!isValidSocket(clientSocket)) return;
+
+				clientSocket.rooms.forEach((room: string) => {
 				handleLeave(client, { room });
 			});
 

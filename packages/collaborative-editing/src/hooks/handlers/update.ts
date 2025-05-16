@@ -53,20 +53,31 @@ export async function handleUpdate(client: DirectusWebsocket, message: Omit<Upda
 
 	// Emit the update to all current room clients if they have permission to access the field
 	for (const [, socket] of sockets) {
-		if (client.uid === socket.uid || socket.rooms.has(roomName) === false || !isValidSocket(socket)) continue;
+		if (!isValidSocket(socket) || client.uid === socket.client.uid || socket.rooms.has(roomName) === false) {
+			continue;
+		}
 
-		const socketSanitizedPayload = await sanitizePayload(socket, roomName, updatePayload, {
+		const socketSanitizedPayload = await sanitizePayload(socket.client, roomName, updatePayload, {
 			database,
 			schema,
 			services,
 		});
 
+		if (socketSanitizedPayload === null) {
+			// Do not send empty events
+			console.log(`[realtime:update] Skipping sending event to ${socket.client.uid} as no sanitized payload`);
+
+			continue;
+		}
+
 		const payload: UpdatePayload = { event: 'update', update: socketSanitizedPayload };
 
-		console.log(`[realtime:update] Event sent to user ${socket.accountability.user} with socket uid ${socket.uid}`);
+		console.log(
+			`[realtime:update] Event sent to user ${socket.client.accountability.user} with socket uid ${socket.client.uid}`,
+		);
 
 		try {
-			socket.send(JSON.stringify(payload));
+			socket.client.send(JSON.stringify(payload));
 		} catch (error) {
 			console.log(error);
 		}

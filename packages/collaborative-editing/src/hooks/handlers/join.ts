@@ -13,7 +13,11 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 	const schema = await getSchema();
 
 	console.log(`added room: ${message.room}`);
-	client.rooms.add(message.room);
+	const clientSocket = sockets.get(client.uid);
+	if (isValidSocket(clientSocket)) {
+		// add room to this socket only
+		clientSocket.rooms.add(message.room);
+	}
 
 	let room = rooms.get(message.room);
 
@@ -27,17 +31,17 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 	// ====
 	// awareness
 	for (const [, socket] of sockets) {
-		if (socket.rooms.has(message.room) === false || !isValidSocket(socket)) continue;
+		if (!isValidSocket(socket) || socket.rooms.has(message.room) === false) continue;
 
 		const payload: AwarenessUserAddPayload = {
 			event: 'awareness',
 			type: 'user',
 			action: 'add',
-			...(await getSockerUser(client, { accountability: socket.accountability, schema, database, services })),
+			...(await getSockerUser(client, { accountability: socket.client.accountability, schema, database, services })),
 		};
 
 		try {
-			socket.send(JSON.stringify(payload));
+			socket.client.send(JSON.stringify(payload));
 		} catch (error) {
 			console.log(error);
 		}
@@ -67,19 +71,19 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 			continue;
 		}
 
-		if (users.has(socket.id)) {
+		if (users.has(socket.client.id)) {
 			// dont reprocess user
 			continue;
 		}
 
-		const userPayload = await getSockerUser(socket, {
+		const userPayload = await getSockerUser(socket.client, {
 			schema,
 			database,
 			services,
 			accountability: client.accountability,
 		});
 
-		users.set(socket.id, userPayload);
+		users.set(socket.client.id, userPayload);
 	}
 
 	payload.users = Array.from(users.values());
@@ -111,4 +115,5 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 	} catch (error) {
 		console.log(error);
 	}
+
 }
