@@ -15,7 +15,7 @@ export type DirectusWebsocketBase = {
 	refresh_token?: string;
 };
 
-export interface DirectusCollaborativeWebsocket extends DirectusWebsocketBase {
+export interface DirectusRealtimeWebsocket extends DirectusWebsocketBase {
 	id: string;
 	rooms: Set<string>;
 	color: AwarenessColor;
@@ -29,4 +29,9 @@ export type Context = {
 	getSchema: (options?: any, attempt?: number) => Promise<any>;
 };
 
-export type DirectusWebsocket = WebSocket & DirectusCollaborativeWebsocket;
+export type DirectusWebsocket = WebSocket & DirectusRealtimeWebsocket;
+
+export interface RealtimeSocket {
+	client: DirectusWebsocket;
+	rooms: Set<string>;
+}
