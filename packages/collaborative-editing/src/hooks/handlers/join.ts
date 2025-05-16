@@ -3,6 +3,7 @@ import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import type { Context, DirectusWebsocket } from '../types';
 import { getSockerUser } from '../utils/get-socket-user';
+import { isValidSocket } from '../utils/is-valid-socket';
 import { sanitizePayload } from '../utils/sanitize-payload';
 
 export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMessage, 'type'>, ctx: Context) {
@@ -26,7 +27,7 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 	// ====
 	// awareness
 	for (const [, socket] of sockets) {
-		if (socket.rooms.has(message.room) === false) continue;
+		if (socket.rooms.has(message.room) === false || !isValidSocket(socket)) continue;
 
 		const payload: AwarenessUserAddPayload = {
 			event: 'awareness',
@@ -62,7 +63,7 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 	const users = new Map();
 	for (const uid of room.users.keys()) {
 		const socket = sockets.get(uid);
-		if (!socket) {
+		if (!isValidSocket(socket)) {
 			continue;
 		}
 

@@ -113,10 +113,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 	private handleMessage(payload: WebsocketMessagePayload) {
 		this.emit('debug', ['message:payload', payload]);
 
-		if (payload.event === 'ping') {
-			// heartbeat keepalive
-			this.send({ type: 'pong' });
-		} else if (payload.event === 'connected') {
+		if (payload.event === 'connected') {
 			this.emit('connected', []);
 		} else if (payload.event === 'update') {
 			const update = payload.update;
@@ -153,6 +150,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 								field: payload.field,
 								collection: payload.collection,
 								primaryKey: payload.primaryKey,
+								lastUpdated: Date.now(),
 							},
 						},
 					]);
@@ -196,6 +194,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 							field: field.field,
 							collection: field.collection,
 							primaryKey: field.primaryKey,
+							lastUpdated: Date.now(),
 						},
 					},
 				]);
@@ -207,7 +206,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		this.emit('debug', ['connect', this.room]);
 
 		// indicate this connection is for yjs
-		this.send({ type: 'yjs-connect', color: useColor().value });
+		this.send({ type: 'yjs-connect', color: useColor().value, refresh: this.ws.instantiated.value });
 
 		this.emit('connected', []);
 	}

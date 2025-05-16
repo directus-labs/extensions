@@ -1,4 +1,5 @@
 export * from './activate';
+export * from './close';
 export * from './connect';
 export * from './deactivate';
 export * from './join';

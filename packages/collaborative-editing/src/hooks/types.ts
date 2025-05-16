@@ -2,7 +2,11 @@
 import { Accountability } from '@directus/types';
 import { AwarenessColor } from '../interface/types';
 
-export type ServerEvent = 'yjs-connect' | 'update' | 'join' | 'leave' | 'activate' | 'deactivate' | 'pong';
+export type DirectusServerEvent = 'pong';
+
+export type RealtimeServerEvent = 'yjs-connect' | 'update' | 'join' | 'leave' | 'activate' | 'deactivate' | 'refresh';
+
+export type ServerEvent = DirectusServerEvent | RealtimeServerEvent;
 
 export type DirectusWebsocketBase = {
 	uid: string;

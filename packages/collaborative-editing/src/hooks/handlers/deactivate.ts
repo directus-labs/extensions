@@ -2,6 +2,7 @@ import { AwarenessFieldDeactivatePayload, DeactivateMessage } from '../../types/
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import { DirectusWebsocket } from '../types';
+import { isValidSocket } from '../utils/is-valid-socket';
 
 export async function handleDeactivate(client: DirectusWebsocket, message: Omit<DeactivateMessage, 'type'>) {
 	const sockets = useSockets();
@@ -16,7 +17,7 @@ export async function handleDeactivate(client: DirectusWebsocket, message: Omit<
 	rooms.removeField(room, client.id);
 
 	for (const [, socket] of sockets) {
-		if (socket.rooms.has(room) === false) continue;
+		if (socket.rooms.has(room) === false || !isValidSocket(socket)) continue;
 
 		const payload: AwarenessFieldDeactivatePayload = {
 			event: 'awareness',

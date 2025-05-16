@@ -49,11 +49,12 @@ function createWS() {
 	}
 
 	const connected = ref(false);
+	const instantiated = ref(false);
 
 	ws.onWebSocket('open', () => {
 		connected.value = true;
-
 		handlers.open?.();
+		instantiated.value = true;
 	});
 
 	ws.onWebSocket('close', () => {
@@ -75,6 +76,7 @@ function createWS() {
 	return {
 		client: ws,
 		connected,
+		instantiated,
 		onOpen,
 		onClose,
 		onError,

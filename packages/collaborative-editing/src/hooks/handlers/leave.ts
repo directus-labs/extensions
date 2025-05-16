@@ -4,6 +4,7 @@ import { useSockets } from '../modules/use-sockets';
 import type { DirectusWebsocket } from '../types';
 import { isLastUserSocket } from '../utils/is-last-socket';
 import { isRoomEmpty } from '../utils/is-room-empty';
+import { isValidSocket } from '../utils/is-valid-socket';
 
 export async function handleLeave(client: DirectusWebsocket, message: Omit<LeaveMessage, 'type'>) {
 	const rooms = useRooms();
@@ -22,7 +23,7 @@ export async function handleLeave(client: DirectusWebsocket, message: Omit<Leave
 	}
 
 	for (const [, socket] of sockets) {
-		if (client.id === socket.id || socket.rooms.has(message.room) === false) continue;
+		if (client.id === socket.id || socket.rooms.has(message.room) === false || !isValidSocket(socket)) continue;
 
 		const payload: AwarenessUserRemovePayload = { event: 'awareness', type: 'user', action: 'remove', uid: client.id };
 

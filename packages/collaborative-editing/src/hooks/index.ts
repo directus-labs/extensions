@@ -1,5 +1,13 @@
 import { defineHook } from '@directus/extensions-sdk';
-import { handleActivate, handleConnect, handleDeactivate, handleJoin, handleLeave, handleUpdate } from './handlers';
+import {
+	handleActivate,
+	handleClose,
+	handleConnect,
+	handleDeactivate,
+	handleJoin,
+	handleLeave,
+	handleUpdate,
+} from './handlers';
 import { useSockets } from './modules/use-sockets';
 import { ServerEvent } from './types';
 
@@ -37,13 +45,6 @@ export default defineHook(async ({ action }, ctx) => {
 	});
 
 	action('websocket.close', ({ client }) => {
-		// leave all rooms
-		client.rooms.forEach((room: string) => {
-			handleLeave(client, { room });
-		});
-
-		sockets.delete(client.uid);
-
-		console.log(`[realtime:close] Client ${client.uid} has closed the connection, removed from all rooms`);
+		handleClose(client);
 	});
 });

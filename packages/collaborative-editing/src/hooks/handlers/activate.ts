@@ -2,6 +2,7 @@ import { ActivateMessage, AwarenessFieldActivatePayload } from '../../types/even
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import { Context, DirectusWebsocket } from '../types';
+import { isValidSocket } from '../utils/is-valid-socket';
 
 export async function handleActivate(client: DirectusWebsocket, message: Omit<ActivateMessage, 'type'>, ctx: Context) {
 	const { getSchema, services, database: knex } = ctx;
@@ -16,7 +17,7 @@ export async function handleActivate(client: DirectusWebsocket, message: Omit<Ac
 	rooms.addField(room, client.id, field);
 
 	for (const [, socket] of sockets) {
-		if (socket.rooms.has(room) === false) continue;
+		if (socket.rooms.has(room) === false || !isValidSocket(socket)) continue;
 
 		const payload: AwarenessFieldActivatePayload = {
 			event: 'awareness',

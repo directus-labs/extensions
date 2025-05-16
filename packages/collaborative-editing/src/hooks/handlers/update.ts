@@ -3,6 +3,7 @@ import type { UpdateMessage, UpdatePayload } from '../../types/events';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import type { Context, DirectusWebsocket } from '../types';
+import { isValidSocket } from '../utils/is-valid-socket';
 import { sanitizePayload } from '../utils/sanitize-payload';
 
 export async function handleUpdate(client: DirectusWebsocket, message: Omit<UpdateMessage, 'type'>, ctx: Context) {
@@ -52,7 +53,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: Omit<Upda
 
 	// Emit the update to all current room clients if they have permission to access the field
 	for (const [, socket] of sockets) {
-		if (client.uid === socket.uid || socket.rooms.has(roomName) === false) continue;
+		if (client.uid === socket.uid || socket.rooms.has(roomName) === false || !isValidSocket(socket)) continue;
 
 		const socketSanitizedPayload = await sanitizePayload(socket, roomName, updatePayload, {
 			database,

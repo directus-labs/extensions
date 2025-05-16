@@ -1,7 +1,7 @@
 import { ServerEvent } from '../hooks/types';
 import { AwarenessColor } from '../interface/types';
 
-export type ClientEvent = 'update' | 'awareness' | 'sync' | 'ping' | 'connected';
+export type ClientEvent = 'update' | 'awareness' | 'sync' | 'ping' | 'connected' | 'directus';
 
 export type WebsocketBaseMessage = {
 	type: ServerEvent;
@@ -10,10 +10,12 @@ export type WebsocketBaseMessage = {
 export interface ConnectMessage extends WebsocketBaseMessage {
 	type: 'yjs-connect';
 	color: AwarenessColor;
+	refresh: boolean;
 }
 export interface PongMessage extends WebsocketBaseMessage {
 	type: 'pong';
 }
+
 export interface JoinMessage extends WebsocketBaseMessage {
 	type: 'join';
 	room: string;
@@ -55,10 +57,6 @@ export type WebsocketMessage =
 export type WebsocketBaseMessagePayload = {
 	event: ClientEvent;
 };
-
-export interface PingPayload extends WebsocketBaseMessagePayload {
-	event: 'ping';
-}
 
 export interface ConnectPayload extends WebsocketBaseMessagePayload {
 	event: 'connected';
@@ -113,7 +111,6 @@ export interface AwarenessUserRemovePayload extends WebsocketBaseMessagePayload 
 }
 
 export type WebsocketMessagePayload =
-	| PingPayload
 	| ConnectPayload
 	| SyncPayload
 	| UpdatePayload
