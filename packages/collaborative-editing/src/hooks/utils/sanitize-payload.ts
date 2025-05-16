@@ -34,9 +34,7 @@ export async function sanitizePayload(
 		const value = payload[field];
 
 		if (relation === null) {
-			if (!isObject(value)) {
-				sanitizedPayload[field] = value;
-			}
+			sanitizedPayload[field] = value;
 		} else if (relation.type === 'm2a') {
 			// M2A Update
 			if (relation.collection && relation.payloadField) {
