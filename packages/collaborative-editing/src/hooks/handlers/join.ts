@@ -115,5 +115,4 @@ export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMe
 	} catch (error) {
 		console.log(error);
 	}
-
 }

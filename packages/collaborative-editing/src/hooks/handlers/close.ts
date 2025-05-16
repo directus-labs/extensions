@@ -15,9 +15,9 @@ export function handleClose(client: DirectusWebsocket) {
 		() => {
 			// leave all rooms
 			const clientSocket = sockets.get(client.uid);
-				if (!isValidSocket(clientSocket)) return;
+			if (!isValidSocket(clientSocket)) return;
 
-				clientSocket.rooms.forEach((room: string) => {
+			clientSocket.rooms.forEach((room: string) => {
 				handleLeave(client, { room });
 			});
 
