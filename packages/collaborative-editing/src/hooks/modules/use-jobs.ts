@@ -1,5 +1,5 @@
-const _state: { rooms: ReturnType<typeof createJobs> | undefined } = {
-	rooms: undefined,
+const _state: { jobManager: ReturnType<typeof createJobs> | undefined } = {
+	jobManager: undefined,
 };
 
 function createJobs() {
@@ -23,9 +23,9 @@ function createJobs() {
 }
 
 export function useJobs() {
-	if (_state.rooms) return _state.rooms;
+	if (_state.jobManager) return _state.jobManager;
 
-	_state.rooms = createJobs();
+	_state.jobManager = createJobs();
 
-	return _state.rooms;
+	return _state.jobManager;
 }
