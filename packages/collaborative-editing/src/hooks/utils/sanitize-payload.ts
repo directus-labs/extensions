@@ -105,10 +105,25 @@ export async function sanitizePayload(
 		} else if (relation.type === 'o2m') {
 			// Will have object syntax field: { create:[]; update:[]; delete:[] }
 
-			// Discard will send array of ids o2mPayload: [1,2,3] instead of object syntax
-			if (!isObject(value)) continue;
+			const o2mPayload = value as
+				| { create: Partial<Item>[]; update: Partial<Item>[]; delete: number[] }
+				| number[]
+				| undefined
+				| null;
 
-			const o2mPayload = value as { create: Partial<Item>[]; update: Partial<Item>[]; delete: number[] };
+			// Discard will send array of ids o2mPayload: [1,2,3] instead of object syntax
+			if (Array.isArray(o2mPayload)) continue;
+
+			// Undoing an action sends undefined
+			if (o2mPayload === undefined || o2mPayload === null) {
+				sanitizedPayload[field] = {
+					create: [],
+					update: [],
+					delete: [],
+				};
+
+				continue;
+			}
 
 			const relatedPrimaryKey = schema.collections[relation.collection!].primary;
 
