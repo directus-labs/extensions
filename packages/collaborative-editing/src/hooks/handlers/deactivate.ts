@@ -1,10 +1,10 @@
 import { AwarenessFieldDeactivatePayload, DeactivateMessage } from '../../types/events';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
-import { DirectusWebsocket } from '../types';
+import { RealtimeWebSocket } from '../types';
 import { isValidSocket } from '../utils/is-valid-socket';
 
-export async function handleDeactivate(client: DirectusWebsocket, message: Omit<DeactivateMessage, 'type'>) {
+export async function handleDeactivate(client: RealtimeWebSocket, message: Omit<DeactivateMessage, 'type'>) {
 	const sockets = useSockets();
 	const rooms = useRooms();
 
@@ -12,7 +12,7 @@ export async function handleDeactivate(client: DirectusWebsocket, message: Omit<
 
 	console.log(`[realtime:deactivate] Event received for ${client.uid} in room ${room}`);
 
-	if (!room) return;
+	if (!room || !sockets.get(client.uid)?.rooms.has(message.room)) return;
 
 	rooms.removeField(room, client.id);
 

@@ -1,22 +1,18 @@
 import type { AwarenessUserRemovePayload, LeaveMessage } from '../../types/events';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
-import type { DirectusWebsocket } from '../types';
+import type { RealtimeWebSocket } from '../types';
 import { isLastUserSocket } from '../utils/is-last-socket';
 import { isRoomEmpty } from '../utils/is-room-empty';
 import { isValidSocket } from '../utils/is-valid-socket';
 
-export async function handleLeave(client: DirectusWebsocket, message: Omit<LeaveMessage, 'type'>) {
+export async function handleLeave(client: RealtimeWebSocket, message: Omit<LeaveMessage, 'type'>) {
 	const rooms = useRooms();
 	const sockets = useSockets();
 
 	console.log(`[realtime:leave] Event received for client ${client.uid} in room ${message.room}`);
 
-	const clientSocket = sockets.get(client.uid);
-	if (isValidSocket(clientSocket)) {
-		// remove rooms from the socket that left, not all clients
-		clientSocket.rooms.delete(message.room);
-	}
+	sockets.get(client.uid)?.rooms.delete(message.room);
 
 	rooms.removeUser(message.room, client.uid);
 
@@ -44,6 +40,6 @@ export async function handleLeave(client: DirectusWebsocket, message: Omit<Leave
 	if (isRoomEmpty(message.room)) {
 		console.log(`[realtime:leave] Last client in the room has left, removing room instance`);
 
-		rooms.remove(message.room);
+		rooms.delete(message.room);
 	}
 }

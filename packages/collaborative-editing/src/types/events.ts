@@ -1,7 +1,12 @@
-import { ServerEvent } from '../hooks/types';
 import { AwarenessColor } from '../interface/types';
 
 export type ClientEvent = 'update' | 'awareness' | 'sync' | 'ping' | 'connected' | 'directus';
+
+export type DirectusServerEvent = 'pong';
+
+export type RealtimeServerEvent = 'yjs-connect' | 'update' | 'join' | 'leave' | 'activate' | 'deactivate' | 'refresh';
+
+export type ServerEvent = DirectusServerEvent | RealtimeServerEvent;
 
 export type WebsocketBaseMessage = {
 	type: ServerEvent;
@@ -10,7 +15,7 @@ export type WebsocketBaseMessage = {
 export interface ConnectMessage extends WebsocketBaseMessage {
 	type: 'yjs-connect';
 	color: AwarenessColor;
-	refresh: boolean;
+	refreshId: string | null;
 }
 export interface PongMessage extends WebsocketBaseMessage {
 	type: 'pong';
@@ -60,6 +65,7 @@ export type WebsocketBaseMessagePayload = {
 
 export interface ConnectPayload extends WebsocketBaseMessagePayload {
 	event: 'connected';
+	refreshId: string;
 }
 
 export interface SyncPayload extends WebsocketBaseMessagePayload {

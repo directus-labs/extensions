@@ -10,7 +10,7 @@ import {
 } from '../../../types/events';
 import { ActiveField } from '../../types';
 import { useColor } from '../use-color';
-import { useWS } from './ws';
+import { useWS } from '../use-ws';
 
 interface DirectusProviderOptions {
 	doc: Y.Doc;
@@ -115,6 +115,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 
 		if (payload.event === 'connected') {
 			this.emit('connected', []);
+			this.ws.refreshId.value = payload.refreshId;
 		} else if (payload.event === 'update') {
 			const update = payload.update;
 
@@ -206,7 +207,11 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		this.emit('debug', ['connect', this.room]);
 
 		// indicate this connection is for yjs
-		this.send({ type: 'yjs-connect', color: useColor().value, refresh: this.ws.instantiated.value });
+		this.send({
+			type: 'yjs-connect',
+			color: useColor().value,
+			refreshId: this.ws.refreshId.value,
+		});
 
 		this.emit('connected', []);
 	}

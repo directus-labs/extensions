@@ -1,10 +1,10 @@
 import { Item, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
-import { Context, DirectusWebsocket } from '../types';
+import { Context, RealtimeWebSocket } from '../types';
 import { getRelationInfo } from './get-relation-info';
 
 export async function sanitizePayload(
-	socket: DirectusWebsocket,
+	socket: RealtimeWebSocket,
 	room: string,
 	payload: Record<string, unknown>,
 	ctx: Pick<Context, 'database' | 'services'> & { schema: SchemaOverview },

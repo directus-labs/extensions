@@ -2,20 +2,14 @@
 import { Accountability } from '@directus/types';
 import { AwarenessColor } from '../interface/types';
 
-export type DirectusServerEvent = 'pong';
-
-export type RealtimeServerEvent = 'yjs-connect' | 'update' | 'join' | 'leave' | 'activate' | 'deactivate' | 'refresh';
-
-export type ServerEvent = DirectusServerEvent | RealtimeServerEvent;
-
-export type DirectusWebsocketBase = {
+export type DirectusWebSocket = {
 	uid: string;
 	accountability: Accountability;
 	expires_at: number | null;
 	refresh_token?: string;
-};
+} & WebSocket;
 
-export interface DirectusRealtimeWebsocket extends DirectusWebsocketBase {
+export interface RealtimeWebSocket extends DirectusWebSocket {
 	id: string;
 	rooms: Set<string>;
 	color: AwarenessColor;
@@ -29,9 +23,8 @@ export type Context = {
 	getSchema: (options?: any, attempt?: number) => Promise<any>;
 };
 
-export type DirectusWebsocket = WebSocket & DirectusRealtimeWebsocket;
-
 export interface RealtimeSocket {
-	client: DirectusWebsocket;
+	client: RealtimeWebSocket;
 	rooms: Set<string>;
+	deleted?: boolean;
 }

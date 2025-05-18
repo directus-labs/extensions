@@ -1,5 +1,6 @@
 import { useSdk } from '@directus/extensions-sdk';
 import { realtime } from '@directus/sdk';
+import { useSessionStorage } from '@vueuse/core';
 import { ref } from 'vue';
 
 const _state: { ws: ReturnType<typeof createWS> | undefined } = {
@@ -21,6 +22,8 @@ function createWS() {
 			reconnect: { delay: 1000, retries: 10 },
 		}),
 	);
+
+	const refreshId = useSessionStorage<string | null>('realtime-session-id', null);
 
 	const handlers: WSHandler = {
 		message: [],
@@ -49,12 +52,10 @@ function createWS() {
 	}
 
 	const connected = ref(false);
-	const instantiated = ref(false);
 
 	ws.onWebSocket('open', () => {
 		connected.value = true;
 		handlers.open?.();
-		instantiated.value = true;
 	});
 
 	ws.onWebSocket('close', () => {
@@ -76,7 +77,7 @@ function createWS() {
 	return {
 		client: ws,
 		connected,
-		instantiated,
+		refreshId,
 		onOpen,
 		onClose,
 		onError,

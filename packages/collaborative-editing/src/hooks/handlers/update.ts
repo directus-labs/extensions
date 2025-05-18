@@ -2,11 +2,11 @@ import * as Y from 'yjs';
 import type { UpdateMessage, UpdatePayload } from '../../types/events';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
-import type { Context, DirectusWebsocket } from '../types';
+import type { Context, RealtimeWebSocket } from '../types';
 import { isValidSocket } from '../utils/is-valid-socket';
 import { sanitizePayload } from '../utils/sanitize-payload';
 
-export async function handleUpdate(client: DirectusWebsocket, message: Omit<UpdateMessage, 'type'>, ctx: Context) {
+export async function handleUpdate(client: RealtimeWebSocket, message: Omit<UpdateMessage, 'type'>, ctx: Context) {
 	const sockets = useSockets();
 	const rooms = useRooms();
 	const { getSchema, services, database } = ctx;
@@ -19,7 +19,7 @@ export async function handleUpdate(client: DirectusWebsocket, message: Omit<Upda
 
 	const room = rooms.get(roomName);
 
-	if (!room) return;
+	if (!room || !sockets.get(client.uid)?.rooms.has(roomName)) return;
 
 	console.log(`[realtime:update] Event received from client ${client.uid} in room ${roomName}`);
 

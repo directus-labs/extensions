@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from 'vitest';
 import { sanitizePayload } from './sanitize-payload';
 
 import { SchemaBuilder } from '@directus/schema-builder';
-import { DirectusWebsocket } from '../types';
+import { RealtimeWebSocket } from '../types';
 
 function getServices() {
 	const ItemsService = vi.fn();
@@ -54,7 +54,7 @@ function getErrorServices(errorsOn: [field: string, s?: unknown][]) {
 	};
 }
 
-const socket = { id: 'tester' } as DirectusWebsocket;
+const socket = { id: 'tester' } as RealtimeWebSocket;
 
 const database = vi.fn();
 

@@ -1,8 +1,8 @@
 import { Accountability, SchemaOverview } from '@directus/types';
-import { Context, DirectusWebsocket } from '../types';
+import { Context, RealtimeWebSocket } from '../types';
 
 export async function getSockerUser(
-	socket: DirectusWebsocket,
+	socket: RealtimeWebSocket,
 	ctx: Pick<Context, 'database' | 'services'> & { schema: SchemaOverview; accountability: Accountability },
 ) {
 	const { accountability, services, database: knex, schema } = ctx;

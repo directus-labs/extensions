@@ -1,12 +1,12 @@
 import type { AwarenessUserAddPayload, JoinMessage, SyncPayload } from '../../types/events';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
-import type { Context, DirectusWebsocket } from '../types';
+import type { Context, RealtimeWebSocket } from '../types';
 import { getSockerUser } from '../utils/get-socket-user';
 import { isValidSocket } from '../utils/is-valid-socket';
 import { sanitizePayload } from '../utils/sanitize-payload';
 
-export async function handleJoin(client: DirectusWebsocket, message: Omit<JoinMessage, 'type'>, ctx: Context) {
+export async function handleJoin(client: RealtimeWebSocket, message: Omit<JoinMessage, 'type'>, ctx: Context) {
 	const { getSchema, services, database } = ctx;
 	const rooms = useRooms();
 	const sockets = useSockets();

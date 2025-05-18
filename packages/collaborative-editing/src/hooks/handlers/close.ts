@@ -1,23 +1,28 @@
 import { REFRESH_CLOSE_WINDOW_MS } from '../constants';
 import { useJobs } from '../modules/use-jobs';
 import { useSockets } from '../modules/use-sockets';
-import { DirectusWebsocket } from '../types';
-import { isValidSocket } from '../utils/is-valid-socket';
+import { RealtimeWebSocket } from '../types';
 import { handleLeave } from './leave';
 
-export function handleClose(client: DirectusWebsocket) {
+export function handleClose(client: RealtimeWebSocket) {
 	const jobs = useJobs();
 	const sockets = useSockets();
 
-	// delay deletion in case of refresh
+	const socket = sockets.get(client.uid);
+
+	if (!socket) {
+		return;
+	}
+
+	// mark as deleted
+	socket.deleted = true;
+
+	// delay actual deletion in case of refresh
 	jobs.add(
 		client.id,
 		() => {
 			// leave all rooms
-			const clientSocket = sockets.get(client.uid);
-			if (!isValidSocket(clientSocket)) return;
-
-			clientSocket.rooms.forEach((room: string) => {
+			sockets.get(client.uid)?.rooms.forEach((room: string) => {
 				handleLeave(client, { room });
 			});
 

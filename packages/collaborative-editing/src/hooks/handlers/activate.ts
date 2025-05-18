@@ -1,16 +1,18 @@
 import { ActivateMessage, AwarenessFieldActivatePayload } from '../../types/events';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
-import { Context, DirectusWebsocket } from '../types';
+import { Context, RealtimeWebSocket } from '../types';
 import { isValidSocket } from '../utils/is-valid-socket';
 
-export async function handleActivate(client: DirectusWebsocket, message: Omit<ActivateMessage, 'type'>, ctx: Context) {
+export async function handleActivate(client: RealtimeWebSocket, message: Omit<ActivateMessage, 'type'>, ctx: Context) {
 	const { getSchema, services, database: knex } = ctx;
 	const sockets = useSockets();
 	const rooms = useRooms();
 	const schema = await getSchema();
 
 	const { room, field, collection, primaryKey } = message;
+
+	if (!room || !sockets.get(client.uid)?.rooms.has(message.room)) return;
 
 	console.log(`[realtime:activate] Event received for field ${field} in room ${room}`);
 
