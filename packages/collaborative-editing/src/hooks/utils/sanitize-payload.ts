@@ -1,5 +1,6 @@
 import { Item, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
+import { UNDEFINED_VALUE } from '../../constants';
 import { Context, RealtimeWebSocket } from '../types';
 import { getRelationInfo } from './get-relation-info';
 
@@ -106,14 +107,14 @@ export async function sanitizePayload(
 			const o2mPayload = value as
 				| { create: Partial<Item>[]; update: Partial<Item>[]; delete: number[] }
 				| number[]
-				| undefined
+				| typeof UNDEFINED_VALUE
 				| null;
 
 			// Discard will send array of ids o2mPayload: [1,2,3] instead of object syntax
 			if (Array.isArray(o2mPayload)) continue;
 
 			// Undoing an action sends undefined
-			if (o2mPayload === undefined || o2mPayload === null) {
+			if (o2mPayload === UNDEFINED_VALUE || o2mPayload === null) {
 				sanitizedPayload[field] = {
 					create: [],
 					update: [],

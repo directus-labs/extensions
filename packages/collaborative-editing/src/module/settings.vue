@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { ValidationError } from '@directus/types';
-import type { Ref } from 'vue';
 import { useStores } from '@directus/extensions-sdk';
+import type { ValidationError } from '@directus/types';
 import { clone, merge } from 'lodash-es';
+import type { Ref } from 'vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ZodError } from 'zod';
-import { ModuleSettings, type CollaborativeEditingConfigType, defaultSettings } from './types';
-import { zodErrorToValidationErrors } from './utils/errors';
 import { useIsAdmin } from './composables/use-is-admin';
 import { fields } from './settings-fields';
+import { defaultSettings, ModuleSettings, type CollaborativeEditingConfigType } from './types';
+import { zodErrorToValidationErrors } from './utils/errors';
 
 const { t } = useI18n();
 const { useSettingsStore, useFieldsStore } = useStores();

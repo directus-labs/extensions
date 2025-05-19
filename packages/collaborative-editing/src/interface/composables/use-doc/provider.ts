@@ -1,6 +1,7 @@
 import { ObservableV2 } from 'lib0/observable';
 import { Ref } from 'vue';
 import * as Y from 'yjs';
+import { UNDEFINED_VALUE } from '../../../constants';
 import {
 	ActivateMessage,
 	AwarenessUserAddPayload,
@@ -9,6 +10,7 @@ import {
 	WebsocketMessagePayload,
 } from '../../../types/events';
 import { ActiveField } from '../../types';
+import { parseUpdate } from '../../utils/parse-update';
 import { useColor } from '../use-color';
 import { useWS } from '../use-ws';
 
@@ -59,7 +61,10 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 			return;
 		}
 
-		this.ws.client.sendMessage(data);
+		const message =
+			data.type === 'update' ? JSON.stringify(data, (_, v) => (v === undefined ? UNDEFINED_VALUE : v)) : data;
+
+		this.ws.client.sendMessage(message);
 	}
 
 	connect() {
@@ -110,7 +115,9 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		}
 	}
 
-	private handleMessage(payload: WebsocketMessagePayload) {
+	private handleMessage(message: WebsocketMessagePayload) {
+		const payload = message.event === 'update' || message.event === 'sync' ? parseUpdate(message) : message;
+
 		this.emit('debug', ['message:payload', payload]);
 
 		if (payload.event === 'connected') {
