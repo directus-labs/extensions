@@ -1,6 +1,6 @@
 import { defineModule } from '@directus/extensions-sdk';
 import ModuleComponent from './settings.vue';
-
+import { initializeCollaborativeEditing } from './utils/initialize-collaborative-editing';
 export default defineModule({
 	id: 'collab-module',
 	name: 'Collaborative Editing',
@@ -11,4 +11,8 @@ export default defineModule({
 			component: ModuleComponent,
 		},
 	],
+	preRegisterCheck() {
+		initializeCollaborativeEditing();
+		return true;
+	},
 });

@@ -20,7 +20,7 @@ const collaborativeEditingEnabled = computed(() => {
 	const moduleEnabled = (settingsStore.settings as Settings).module_bar.find(
 		(module) => module.type === 'module' && module.id === 'collab-module',
 	)?.enabled;
-	const enabled = settings.settings.value?.collaborativeEditingEnabled;
+	const enabled = settings.settings.value?.enabled_globally;
 	return moduleEnabled && enabled;
 });
 

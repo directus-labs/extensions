@@ -16,5 +16,15 @@ export function useSettings(stores?: ReturnType<typeof useStores>) {
 		return null;
 	});
 
-	return { settings };
+	const enabledGlobally = computed(() => {
+		return settings.value?.enabled_globally;
+	});
+
+	// @TODO: implement this after next milestone
+	// Uncomment the dropdown field for collections in the module definition
+	/*const collections = computed(() => {
+		return uniqBy([...(settings.value?.collections ?? [])], 'collection');
+	});*/
+
+	return { settings, enabledGlobally };
 }
