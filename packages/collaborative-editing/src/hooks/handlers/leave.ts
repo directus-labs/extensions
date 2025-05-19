@@ -2,7 +2,7 @@ import type { AwarenessUserRemovePayload, LeaveMessage } from '../../types/event
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
 import type { RealtimeWebSocket } from '../types';
-import { isLastUserSocket } from '../utils/is-last-socket';
+import { isLastUserSessionInRoom } from '../utils/is-last-user-session-in-room';
 import { isRoomEmpty } from '../utils/is-room-empty';
 import { isValidSocket } from '../utils/is-valid-socket';
 
@@ -17,7 +17,7 @@ export async function handleLeave(client: RealtimeWebSocket, message: Omit<Leave
 	rooms.removeUser(message.room, client.uid);
 
 	// Do not send awareness if a session (tab) is still open
-	if (!isLastUserSocket(client)) {
+	if (!isLastUserSessionInRoom(client, message.room)) {
 		console.log(`[realtime:leave] User awareness event skipped due to other sessions being active`);
 		return;
 	}
