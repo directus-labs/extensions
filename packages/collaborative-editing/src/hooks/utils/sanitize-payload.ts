@@ -15,9 +15,7 @@ export async function sanitizePayload(
 
 	const sanitizedPayload: Record<string, unknown> = {};
 
-	for (const field in payload) {
-		if (!Object.prototype.hasOwnProperty.call(payload, field)) continue;
-
+	for (const field of Object.keys(payload)) {
 		try {
 			// Ensure they can read the field in the room, otherwise skip entire payload/processing
 			await new services.ItemsService(collection, {
