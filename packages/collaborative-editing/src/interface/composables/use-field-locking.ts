@@ -30,7 +30,7 @@ export function useFieldLocking() {
 				collection: state.activeField.collection,
 				field: state.activeField.field,
 				primaryKey: state.activeField.primaryKey,
-				lastUpdated: Date.now(),
+				lastUpdated: state.activeField.lastUpdated,
 			});
 		}
 
@@ -101,16 +101,10 @@ export function useFieldLocking() {
 
 					input.classList.add('disabled');
 				}
-			} else {
-				// If no inputs found, add a pointer-events: none style
-				el.dataset.originalPointerEvents = el.style.pointerEvents;
-				el.style.pointerEvents = 'none';
 			}
 
 			// Add locked class
-			el.classList.add('field-locked-by-others');
-			el.style.opacity = '0.7';
-			el.style.cursor = 'not-allowed';
+			el.classList.add('collab-field-locked');
 		}
 	}
 
@@ -141,18 +135,10 @@ export function useFieldLocking() {
 						delete input.dataset.originalDisabled;
 					}
 				}
-			} else {
-				// Restore pointer events
-				if (el.dataset.originalPointerEvents !== undefined) {
-					el.style.pointerEvents = el.dataset.originalPointerEvents;
-					delete el.dataset.originalPointerEvents;
-				}
 			}
 
 			// Remove locked class
-			el.classList.remove('field-locked-by-others');
-			el.style.opacity = '1';
-			el.style.cursor = 'auto';
+			el.classList.remove('collab-field-locked');
 		}
 	}
 

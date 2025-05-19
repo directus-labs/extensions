@@ -2,6 +2,7 @@ import Color from 'colorjs.io';
 import { watch } from 'vue';
 import { useAwarenessStore } from '../stores/awarenessStore';
 import { findBorderElement } from '../utils';
+import { WYSIWYG_EDITOR_SELECTOR } from '../constants';
 
 export function useFieldBorders() {
 	const allFields = new Set<string>();
@@ -74,7 +75,58 @@ export function useFieldBorders() {
 		{ deep: true, immediate: true },
 	);
 
+	// Observe for TinyMCE editors being created and initialized
+	function observeTinyMCECreation() {
+		const observer = new MutationObserver((mutations) => {
+			let needsUpdate = false;
+
+			for (const mutation of mutations) {
+				if (mutation.type === 'childList') {
+					const addedNodes = Array.from(mutation.addedNodes);
+
+					// Check if any TinyMCE editors were added
+					for (const node of addedNodes) {
+						if (node instanceof HTMLElement) {
+							if (node.classList?.contains(WYSIWYG_EDITOR_SELECTOR) || node.querySelector(WYSIWYG_EDITOR_SELECTOR)) {
+								needsUpdate = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			if (needsUpdate) {
+				// Wait a moment for the editors to finish initializing
+				setTimeout(() => {
+					updateBorders();
+				}, 200);
+			}
+		});
+
+		// Observe the entire document for TinyMCE editors being added
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true,
+		});
+
+		return observer;
+	}
+
+	// Start observing for TinyMCE editor creation
+	const editorObserver = observeTinyMCECreation();
+
 	return {
 		updateFieldBorders: () => updateBorders(),
+		cleanup: () => {
+			editorObserver.disconnect();
+
+			// Clean up borders on unmount
+			for (const element of elementsWithBorders) {
+				if (element?.style) {
+					element.style.removeProperty('box-shadow');
+				}
+			}
+		},
 	};
 }

@@ -7,3 +7,9 @@
 	--collab-orange: #ee9746;
 	--collab-red: #ea7d8f;
 }
+
+.collab-field-locked {
+	pointer-events: none;
+	opacity: 0.7;
+	cursor: not-allowed;
+}

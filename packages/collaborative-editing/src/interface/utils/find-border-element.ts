@@ -1,29 +1,32 @@
-// find-border-element.ts
-export function findBorderElement(fieldName: string, collection: string) {
-	if (!fieldName || !collection) return null;
+import { WYSIWYG_EDITOR_SELECTOR } from '../constants';
 
-	const fieldEl = document.querySelector(`[data-field="${fieldName}"][data-collection="${collection}"]`);
+export function findBorderElement(collection: string, field: string, primaryKey: string): HTMLElement | null {
+	const selector = `[data-collection="${collection}"][data-field="${field}"][data-primary-key="${primaryKey}"]`;
+	const fieldElement = document.querySelector(selector) as HTMLElement | null;
 
-	if (!fieldEl) return null;
+	if (!fieldElement) return null;
 
-	const interfaceImplEl = fieldEl.closest('.interface')?.firstElementChild;
+	// Special handling for TinyMCE
+	const tinyMCEEditor = fieldElement.querySelector(WYSIWYG_EDITOR_SELECTOR) as HTMLElement | null;
+	if (tinyMCEEditor) {
+		// For TinyMCE, we want to apply the border to the entire editor container
+		const editorContainer = tinyMCEEditor.closest('.interface') || tinyMCEEditor;
+		return editorContainer as HTMLElement;
+	}
 
-	if (interfaceImplEl) return interfaceImplEl;
+	// For regular inputs, find the most appropriate element
+	const input = fieldElement.querySelector('input, textarea, select, [contenteditable="true"]') as HTMLElement | null;
+	if (input) {
+		// For inputs, find their wrapping container
+		const inputContainer = input.closest('.input, .v-input') || input.parentElement;
+		return (inputContainer as HTMLElement) || input;
+	}
 
-	// 	const tag = interfaceImplEl.tagName.toLowerCase();
-	// 	const classes = new Set(Array.from(interfaceImplEl.classList));
+	// Default fallback
+	return fieldElement;
+}
 
-	// 	if (classes.has('v-input')) {
-	// 		return interfaceImplEl.firstElementChild;
-	// 	}
-
-	// 	if (classes.has('v-select')) {
-	// 		return interfaceImplEl.querySelector('.v-input')?.firstElementChild;
-	// 	}
-
-	// 	if (classes.has('v-textarea') || classes.has('interface-input-rich-text-md')) {
-	// 		return interfaceImplEl;
-	// 	}
-
-	return null;
+export function getFieldFromDOM(collection: string, field: string, primaryKey: string): HTMLElement | null {
+	const selector = `[data-collection="${collection}"][data-field="${field}"][data-primary-key="${primaryKey}"]`;
+	return document.querySelector(selector) as HTMLElement | null;
 }
