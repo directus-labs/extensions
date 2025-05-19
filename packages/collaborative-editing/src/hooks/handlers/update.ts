@@ -37,13 +37,13 @@ export async function handleUpdate(client: RealtimeWebSocket, message: Omit<Upda
 	const changeDoc = new Y.Doc();
 	Y.applyUpdate(changeDoc, Y.encodeStateAsUpdate(room.doc));
 
-	for (const field in Object.keys(sanitizedPayload)) {
+	for (const field of Object.keys(sanitizedPayload)) {
 		changeDoc.getMap(roomName).set(field, sanitizedPayload[field]);
 	}
 	Y.applyUpdate(room.doc, Y.encodeStateAsUpdate(changeDoc));
 
 	const updatePayload: Record<string, unknown> = {};
-	for (const field in Object.keys(sanitizedPayload)) {
+	for (const field of Object.keys(sanitizedPayload)) {
 		updatePayload[field] = room.doc.getMap(roomName).get(field);
 	}
 
