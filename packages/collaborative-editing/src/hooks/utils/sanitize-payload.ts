@@ -35,6 +35,13 @@ export async function sanitizePayload(
 		const value = payload[field];
 
 		if (relation === null) {
+			const fieldSchema = schema.collections[collection].fields[field];
+
+			// skip processing hash or password fields, they will be snyced on save
+			if (fieldSchema.special.some((v) => v === 'conceal' || v === 'hash')) {
+				continue;
+			}
+
 			sanitizedPayload[field] = value;
 		} else if (relation.type === 'm2a') {
 			// M2A Update
