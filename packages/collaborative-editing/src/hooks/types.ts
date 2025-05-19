@@ -11,7 +11,6 @@ export type DirectusWebSocket = {
 
 export interface RealtimeWebSocket extends DirectusWebSocket {
 	id: string;
-	rooms: Set<string>;
 	color: AwarenessColor;
 }
 

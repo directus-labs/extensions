@@ -10,7 +10,7 @@ export function isLastUserSessionInRoom(client: RealtimeWebSocket, room: string)
 			isValidSocket(socket) &&
 			socket.client.id === client.id &&
 			socket.client.uid !== client.uid &&
-			socket.client.rooms.has(room)
+			socket.rooms.has(room)
 		) {
 			return false;
 		}
