@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import './styles.css';
 import { useStores } from '@directus/extensions-sdk';
 import type { Settings } from '@directus/types';
 import { computed, onUnmounted, watch } from 'vue';
 import { useSettings } from '../module/utils/use-settings';
-import { useAvatarStacks } from './composables/use-avatar-stacks';
-import { useDoc } from './composables/use-doc';
-import { useCurrentUser } from './composables/use-current-user';
-import { useAwarenessStore } from './stores/awarenessStore';
-import type { ActiveField } from './types';
 import { AwarenessUserAddPayload } from '../types/events';
-const { useSettingsStore } = useStores();
+import { useAvatarStacks } from './composables/use-avatar-stacks';
+import { useCurrentUser } from './composables/use-current-user';
+import { useDoc } from './composables/use-doc';
 import { useFieldAwareness } from './composables/use-field-awareness';
+import { useAwarenessStore } from './stores/awarenessStore';
+import './styles.css';
+import type { ActiveField } from './types';
+const { useSettingsStore } = useStores();
 const settingsStore = useSettingsStore();
 const settings = useSettings();
 const awarenessStore = useAwarenessStore();
 const currentUser = useCurrentUser();
 const collaborativeEditingEnabled = computed(() => {
-	const moduleEnabled = (settingsStore.settings as Settings).module_bar.find(
+	const moduleEnabled = (settingsStore.settings as Settings)?.module_bar.find(
 		(module) => module.type === 'module' && module.id === 'collab-module',
 	)?.enabled;
 	const enabled = settings.settings.value?.enabled_globally;
