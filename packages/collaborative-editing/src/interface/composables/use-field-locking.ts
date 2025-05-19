@@ -30,6 +30,7 @@ export function useFieldLocking() {
 				collection: state.activeField.collection,
 				field: state.activeField.field,
 				primaryKey: state.activeField.primaryKey,
+				lastUpdated: Date.now(),
 			});
 		}
 
@@ -67,22 +68,38 @@ export function useFieldLocking() {
 		return Array.from(elements) as HTMLElement[];
 	}
 
+	function findFieldInputElement(el: HTMLElement): HTMLElement[] {
+		const inputs = el.querySelectorAll(
+			'.interface > *:first-child,.interface input,.interface .input,.interface textarea,.interface select,.interface [contenteditable="true"]',
+		);
+		return Array.from(inputs).filter((i) => i instanceof HTMLElement);
+	}
+
 	function lockField(field: Omit<ActiveField, 'uid'>) {
 		const elements = findFieldElements(field);
 		for (const el of elements) {
 			// Find the actual input elements inside the container
-			const inputs = el.querySelectorAll('input, textarea, select, [contenteditable="true"]');
-			const inputsArray = Array.from(inputs);
+			const inputsArray = findFieldInputElement(el);
 
 			if (inputsArray.length > 0) {
 				// If inputs found, disable them
 				for (const input of inputsArray) {
+					const disabled = input.classList.contains('disabled');
+
 					// Save original state in a data attribute
-					if (!(input as HTMLElement).dataset.originalDisabled) {
-						(input as HTMLElement).dataset.originalDisabled = (input as HTMLInputElement).disabled.toString();
+					if (!input.dataset.originalDisabled) {
+						input.dataset.originalDisabled = disabled + '';
 					}
 
-					(input as HTMLInputElement).disabled = true;
+					if (
+						input instanceof HTMLInputElement ||
+						input instanceof HTMLTextAreaElement ||
+						input instanceof HTMLSelectElement
+					) {
+						input.disabled = true;
+					}
+
+					input.classList.add('disabled');
 				}
 			} else {
 				// If no inputs found, add a pointer-events: none style
@@ -101,18 +118,27 @@ export function useFieldLocking() {
 		const elements = findFieldElements(field);
 		for (const el of elements) {
 			// Restore inputs
-			const inputs = el.querySelectorAll('input, textarea, select, [contenteditable="true"]');
-			const inputsArray = Array.from(inputs);
+			const inputsArray = findFieldInputElement(el);
 
 			if (inputsArray.length > 0) {
 				for (const input of inputsArray) {
 					// Restore original state
-					const originalDisabled = (input as HTMLElement).dataset.originalDisabled;
+					const originalDisabled = input.dataset.originalDisabled;
 
-					if (originalDisabled !== undefined) {
-						(input as HTMLInputElement).disabled = originalDisabled === 'true';
+					if (originalDisabled === 'false') {
+						input.classList.remove('disabled');
 
-						delete (input as HTMLElement).dataset.originalDisabled;
+						if (
+							input instanceof HTMLInputElement ||
+							input instanceof HTMLTextAreaElement ||
+							input instanceof HTMLSelectElement
+						) {
+							input.disabled = false;
+						}
+					}
+
+					if (input.dataset.originalDisabled !== undefined) {
+						delete input.dataset.originalDisabled;
 					}
 				}
 			} else {
