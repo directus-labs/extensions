@@ -43,7 +43,7 @@ export function useDoc(opts: UseYJSOptions = {}) {
 				if (!currentV || !changedV) return;
 				if (isEqual(changedV, currentV)) return;
 				// change will only ever be one aside from when we discard
-				if (isEqual(changedV, currentV) && changeCount(currentV, changedV) > 1) return;
+				if (isEqual(changedV, initialValues.value) && changeCount(currentV, changedV) > 1) return;
 
 				for (const [key, current] of entries(currentV)) {
 					const changeV = changedV[key];
