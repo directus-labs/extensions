@@ -9,7 +9,17 @@ export function parseUpdate<T>(message: T) {
 		if (isObject(value)) {
 			parsed[key] = parseUpdate(value as Record<string, unknown>);
 		} else if (Array.isArray(value)) {
-			parsed[key] = value.map((v) => (isObject(v) ? parseUpdate(v) : v));
+			parsed[key] = value.map((v) => {
+				let ivalue = v;
+
+				if (isObject(v)) {
+					ivalue = parseUpdate(v);
+				} else if (v === UNDEFINED_VALUE) {
+					ivalue = undefined;
+				}
+
+				return ivalue;
+			});
 		} else if (value === UNDEFINED_VALUE) {
 			parsed[key] = undefined;
 		} else {
