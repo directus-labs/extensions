@@ -53,8 +53,24 @@ function createWS() {
 
 	const connected = ref(false);
 
-	ws.onWebSocket('open', () => {
+	ws.onWebSocket('open', function () {
 		connected.value = true;
+
+		this.addEventListener('message', (message: MessageEvent) => {
+			let payload;
+			try {
+				payload = JSON.parse(message.data);
+			} catch {
+				// ignore
+				return;
+			}
+
+			// For token expiry it should auto refresh right away instead of waiting for token to expire
+			if (payload.type === 'auth' && payload.status === 'error' && payload.error?.code === 'TOKEN_EXPIRED') {
+				this.close();
+			}
+		});
+
 		handlers.open?.();
 	});
 
