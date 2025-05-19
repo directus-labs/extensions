@@ -37,18 +37,14 @@ export async function handleUpdate(client: RealtimeWebSocket, message: Omit<Upda
 	const changeDoc = new Y.Doc();
 	Y.applyUpdate(changeDoc, Y.encodeStateAsUpdate(room.doc));
 
-	for (const field in sanitizedPayload) {
-		if (Object.prototype.hasOwnProperty.call(sanitizedPayload, field)) {
-			changeDoc.getMap(roomName).set(field, sanitizedPayload[field]);
-		}
+	for (const field in Object.keys(sanitizedPayload)) {
+		changeDoc.getMap(roomName).set(field, sanitizedPayload[field]);
 	}
 	Y.applyUpdate(room.doc, Y.encodeStateAsUpdate(changeDoc));
 
 	const updatePayload: Record<string, unknown> = {};
-	for (const field in sanitizedPayload) {
-		if (Object.prototype.hasOwnProperty.call(sanitizedPayload, field)) {
-			updatePayload[field] = room.doc.getMap(roomName).get(field);
-		}
+	for (const field in Object.keys(sanitizedPayload)) {
+		updatePayload[field] = room.doc.getMap(roomName).get(field);
 	}
 
 	// Emit the update to all current room clients if they have permission to access the field
