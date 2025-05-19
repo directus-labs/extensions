@@ -126,8 +126,8 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		} else if (payload.event === 'update') {
 			const update = payload.update;
 
-			for (const field in update) {
-				if (Object.prototype.hasOwnProperty.call(update, field)) {
+			if (update) {
+				for (const field of Object.keys(update)) {
 					this.emit('doc:set', [field, update[field], 'update']);
 				}
 			}
