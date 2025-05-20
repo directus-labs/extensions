@@ -1,23 +1,23 @@
 import { onUnmounted } from 'vue';
 import { DirectusProvider } from './use-doc';
-import { useActiveField } from './use-active-field';
-import { useWysiwygFields } from './use-wysiwyg-fields';
+import { useFieldRegistry, standardFieldHandler, selectFieldHandler, wysiwygFieldHandler } from './use-field-registry';
 import { useFieldLocking } from './use-field-locking';
 import { useFieldBorders } from './use-field-borders';
 
 export function useFieldAwareness(provider: DirectusProvider) {
-	// Set up standard active field tracking
-	useActiveField(provider);
+	// Initialize the field registry
+	const registry = useFieldRegistry(provider);
 
-	// Set up wysiwyg field tracking
-	useWysiwygFields(provider);
+	// Register all field types and store cleanup functions
+	const unregisterStandard = registry.registerHandler(standardFieldHandler);
+	const unregisterSelect = registry.registerHandler(selectFieldHandler);
+	const unregisterWysiwyg = registry.registerHandler(wysiwygFieldHandler);
 
-	// Set up field locking
+	// Set up field locking and borders
 	const { updateFieldLocking } = useFieldLocking();
-
-	// Set up field borders
 	const { updateFieldBorders, cleanup: cleanupBorders } = useFieldBorders();
 
+	// Watch for DOM changes to update locking and borders
 	const observer = new MutationObserver(() => {
 		updateFieldLocking();
 		updateFieldBorders();
@@ -30,15 +30,27 @@ export function useFieldAwareness(provider: DirectusProvider) {
 		characterData: false,
 	});
 
-	onUnmounted(() => {
+	// Cleanup function
+	function cleanup() {
+		// Unregister handlers
+		unregisterStandard();
+		unregisterSelect();
+		unregisterWysiwyg();
+
+		// Cleanup other components
 		observer.disconnect();
 		cleanupBorders();
-	});
+		registry.cleanup();
+	}
+
+	onUnmounted(cleanup);
 
 	return {
-		cleanup: () => {
-			observer.disconnect();
-			cleanupBorders();
-		},
+		registry,
+		cleanup,
+		// Utils
+		isFieldActive: registry.isFieldActive,
+		getActiveHandler: registry.getActiveHandler,
+		activeField: registry.activeField,
 	};
 }

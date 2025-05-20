@@ -4,6 +4,7 @@ import { useAwarenessStore } from '../stores/awarenessStore';
 import { findBorderElement } from '../utils';
 import { WYSIWYG_EDITOR_SELECTOR } from '../constants';
 
+// @TODO: Move this into the field registry
 export function useFieldBorders() {
 	const allFields = new Set<string>();
 	const elementsWithBorders = new Set<HTMLElement>();
@@ -11,7 +12,6 @@ export function useFieldBorders() {
 
 	// Function to update field borders with a given alpha value
 	function updateBorders() {
-		console.log('updateBorders');
 		const states = awarenessStore.list;
 
 		// Get current user and active field

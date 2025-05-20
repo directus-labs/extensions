@@ -2,6 +2,7 @@ import { onMounted, watch } from 'vue';
 import { useAwarenessStore } from '../stores/awarenessStore';
 import type { ActiveField } from '../types';
 
+// @TODO: Move this into the field registry
 export function useFieldLocking() {
 	const awarenessStore = useAwarenessStore();
 	const lockedFields = new Set<Omit<ActiveField, 'uid'>>();

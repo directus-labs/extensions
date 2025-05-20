@@ -7,6 +7,8 @@ export type AwarenessThemeColorMap = {
 	[key in AwarenessColor]: `${typeof themePrefix}${key}`;
 };
 
+export type AwarenessFieldType = 'text' | 'text-area' | 'wysiwyg' | 'select' | 'multi-select' | 'toggle';
+
 export interface AwarenessUser {
 	uid: string;
 	id?: string | null | undefined;
@@ -23,6 +25,7 @@ export interface ActiveField {
 	field: string;
 	primaryKey: string;
 	lastUpdated: number;
+	interface?: string;
 }
 
 export interface AwarenessByUid {

@@ -111,10 +111,6 @@ watch(enabledCollections, async (newEnabledCollections) => {
 		}
 	}
 });
-
-watch(awarenessStore?.byUid, (value) => {
-	console.log('awarenessStore from controller', value);
-});
 </script>
 
 <template>

@@ -9,13 +9,17 @@ import { useCurrentUser } from './composables/use-current-user';
 import { useDoc } from './composables/use-doc';
 import { useFieldAwareness } from './composables/use-field-awareness';
 import { useAwarenessStore } from './stores/awarenessStore';
+import { useFieldMeta } from './composables/use-field-meta';
 import './styles.css';
 import type { ActiveField } from './types';
+
 const { useSettingsStore } = useStores();
 const settingsStore = useSettingsStore();
 const settings = useSettings();
 const awarenessStore = useAwarenessStore();
 const currentUser = useCurrentUser();
+const fieldMeta = useFieldMeta();
+
 const collaborativeEditingEnabled = computed(() => {
 	const moduleEnabled = (settingsStore.settings as Settings)?.module_bar.find(
 		(module) => module.type === 'module' && module.id === 'collab-module',
@@ -44,7 +48,8 @@ const provider = useDoc({
 	},
 });
 
-const { cleanup: cleanupFieldAwareness } = useFieldAwareness(provider);
+// Initialize field awareness with registry
+const fieldAwareness = useFieldAwareness(provider);
 
 useAvatarStacks();
 
@@ -82,19 +87,24 @@ provider.on('user:remove', (uid: string) => {
 });
 
 provider.on('field:activate', (uid: string, payload: { field: ActiveField }) => {
-	console.log('field:activate', payload.field);
-	awarenessStore.setActiveField(uid, payload.field);
+	const fieldMetaData = fieldMeta.getFieldMetaFromPayload(payload.field);
+	if (fieldMetaData) {
+		awarenessStore.setActiveField(uid, {
+			...fieldMetaData,
+			uid,
+			lastUpdated: Date.now(),
+		});
+	}
 });
 
 provider.on('field:deactivate', (uid: string) => {
-	console.log('field:deactivate', uid);
 	awarenessStore.removeActiveField(uid);
 });
 
 onUnmounted(() => {
 	provider.leave();
 	awarenessStore.reset();
-	cleanupFieldAwareness();
+	fieldAwareness.cleanup();
 });
 </script>
 

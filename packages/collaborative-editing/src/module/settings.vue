@@ -23,8 +23,6 @@ const collaborativeEditingSettings = computed(() => settingsStore.settings.colla
 
 const collaborativeEditingSettingsField = fieldsStore.getField('directus_settings', 'collaborative_editing_settings');
 
-console.log('collaborativeEditingSettings', collaborativeEditingSettings);
-
 const initialValues = ref(clone(settingsStore.settings.collaborative_editing_settings));
 
 const edits: Ref<Partial<CollaborativeEditingConfigType> | null> = ref(null);
