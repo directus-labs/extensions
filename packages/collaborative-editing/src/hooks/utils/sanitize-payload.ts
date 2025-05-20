@@ -41,7 +41,7 @@ export async function sanitizePayload(
 			const fieldSchema = schema.collections[collection].fields[field];
 
 			// skip processing hash or password fields, they will be snyced on save
-			if (fieldSchema.special.some((v) => v === 'conceal' || v === 'hash')) {
+			if (fieldSchema?.special.some((v) => v === 'conceal' || v === 'hash')) {
 				continue;
 			}
 
