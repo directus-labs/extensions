@@ -8,25 +8,30 @@ export async function sanitizePayload(
 	socket: RealtimeWebSocket,
 	room: string,
 	payload: Record<string, unknown>,
-	ctx: Pick<Context, 'database' | 'services'> & { schema: SchemaOverview },
+	ctx: Pick<Context, 'database' | 'services'> & { schema: SchemaOverview; checkFields?: boolean },
 ) {
-	const { services, database: knex, schema } = ctx;
+	const { services, database: knex, schema, checkFields } = ctx;
 	const [collection, primaryKey] = room.split(':');
 
 	const sanitizedPayload: Record<string, unknown> = {};
 
 	for (const field of Object.keys(payload)) {
-		try {
-			// Ensure they can read the field in the room, otherwise skip entire payload/processing
-			await new services.ItemsService(collection, {
-				knex,
-				accountability: socket.accountability,
-				schema,
-			}).readOne(primaryKey, { fields: [field] });
-		} catch {
-			console.log(`[realtime:sanitize-payload] Skipped ${field} for ${socket.id} due to insufficient permissions`);
-			continue;
+		if (checkFields !== false) {
+			try {
+				// Ensure they can read the field in the room, otherwise skip entire payload/processing
+				await new services.ItemsService(collection, {
+					knex,
+					accountability: socket.accountability,
+					schema,
+				}).readOne(primaryKey, { fields: [field] });
+			} catch {
+				console.log(`[realtime:sanitize-payload] Skipped ${field} for ${socket.id} due to insufficient permissions`);
+				continue;
+			}
 		}
+
+		// Reset check fields
+		ctx.checkFields = true;
 
 		const relation = getRelationInfo(schema.relations, collection, field);
 
@@ -42,33 +47,27 @@ export async function sanitizePayload(
 
 			sanitizedPayload[field] = value;
 		} else if (relation.type === 'm2a') {
-			// M2A Update
-			if (relation.collection && relation.payloadField) {
-				let m2aCollection;
+			const m2aPayload = value as Record<string, unknown>;
 
-				try {
-					// attempt to read the collection and PK of the record, it is not provided in the payload
-					m2aCollection = await new services.ItemsService(collection, {
-						knex,
-						accountability: null,
-						schema,
-					}).readOne(primaryKey, { fields: [relation.collection, relation.payloadField] });
-				} catch {
-					continue;
-				}
+			// Do not process m2a if no selected collection
+			if (!relation.collection || !(relation.collection in payload)) continue;
 
-				if (m2aCollection) {
-					const m2aSanitizedUpdatePayload = await sanitizePayload(
-						socket,
-						`${m2aCollection[relation.collection]}:${m2aCollection[relation.payloadField]}`,
-						payload[relation.payloadField] as Record<string, unknown>,
-						ctx,
-					);
+			const m2oCollection = payload[relation.collection] as string;
+			const m2aRelatedPrimaryKey = schema.collections[m2oCollection].primary;
 
-					if (m2aSanitizedUpdatePayload) {
-						sanitizedPayload[field] = m2aSanitizedUpdatePayload;
-					}
-				}
+			// Skip "Create New"
+			if (!(m2aRelatedPrimaryKey in m2aPayload)) continue;
+
+			// M2A "Add Existing" or Update
+			const m2aSanitizedUpdatePayload = await sanitizePayload(
+				socket,
+				`${m2oCollection}:${m2aPayload[m2aRelatedPrimaryKey]}`,
+				m2aPayload,
+				ctx,
+			);
+
+			if (m2aSanitizedUpdatePayload) {
+				sanitizedPayload[field] = m2aSanitizedUpdatePayload;
 			}
 		} else if (relation.type === 'm2o') {
 			const relatedPrimaryKey = schema.collections[relation.collection!].primary;
@@ -137,14 +136,20 @@ export async function sanitizePayload(
 				if (!(relation.payloadField in create)) continue;
 
 				// "Add Existing" for M2A/M2M
+				if (!relation.junctionField) continue;
+
 				const o2mSanitizedExistingPayload = await sanitizePayload(
 					socket,
 					`${relation.collection}:${create[relation.payloadField]}`,
 					create,
-					ctx,
+					{ ...ctx, checkFields: false },
 				);
 
 				if (o2mSanitizedExistingPayload) {
+					if (!(relation.junctionField in o2mSanitizedExistingPayload)) {
+						o2mSanitizedExistingPayload[relation.junctionField] = {};
+					}
+
 					o2mSanitizedCreatePayloads.push(o2mSanitizedExistingPayload);
 				}
 			}

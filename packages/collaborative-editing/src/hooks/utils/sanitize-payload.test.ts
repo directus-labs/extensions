@@ -2,16 +2,12 @@ import { describe, expect, test, vi } from 'vitest';
 import { sanitizePayload } from './sanitize-payload';
 
 import { SchemaBuilder } from '@directus/schema-builder';
+import { EventContext } from '@directus/types';
 import { RealtimeWebSocket } from '../types';
 
 function getServices() {
 	const ItemsService = vi.fn();
-	ItemsService.prototype.readOne = vi.fn((pk, { fields }: { fields: string[] }) => {
-		// M2A
-		if (fields.length === 2 && fields[0] === 'collection' && fields[1] === 'item') {
-			return { collection: 'child', item: 999 };
-		}
-
+	ItemsService.prototype.readOne = vi.fn(() => {
 		return;
 	});
 
@@ -30,11 +26,6 @@ function getErrorServices(errorsOn: [field: string, s?: unknown][]) {
 	const ItemsService = vi.fn();
 	ItemsService.prototype.readOne = vi.fn((pk, { fields }: { fields: string[] }) => {
 		const field = fields.find((f) => errorOn.has(f));
-
-		// M2A
-		if (fields.length === 2 && fields[0] === 'collection' && fields[1] === 'item') {
-			return { collection: 'child', item: 999 };
-		}
 
 		if (!field) {
 			return;
@@ -56,7 +47,7 @@ function getErrorServices(errorsOn: [field: string, s?: unknown][]) {
 
 const socket = { id: 'tester' } as RealtimeWebSocket;
 
-const database = vi.fn();
+const database = vi.fn() as unknown as EventContext['database'];
 
 const schema = new SchemaBuilder()
 	.collection('parents', (c) => {
@@ -348,7 +339,7 @@ describe('Relations', () => {
 			test('M2A', async () => {
 				const payload = {
 					builder_child: {
-						create: [{ parents_id: '2', collection: 'child', item: { id: 3 } }],
+						create: [{ parents_id: '2', collection: 'child', item: { id: 999 } }],
 						update: [],
 						delete: [],
 					},
@@ -362,7 +353,7 @@ describe('Relations', () => {
 
 				expect(sanitizedPayload).toStrictEqual({
 					builder_child: {
-						create: [{ collection: 'child', parents_id: '2' }],
+						create: [{ collection: 'child', parents_id: '2', item: {} }],
 						update: [],
 						delete: [],
 					},
@@ -421,12 +412,17 @@ describe('Relations', () => {
 				const sanitizedPayload = await sanitizePayload(socket, 'parents:1', payload, {
 					database,
 					schema,
-					services: getErrorServices([['parents_id', 2], ['collection'], ['id', 999]]),
+					services: getErrorServices([['id']]),
 				});
 
 				expect(sanitizedPayload).toStrictEqual({
 					builder_child: {
-						create: [],
+						create: [
+							{
+								collection: 'child',
+								item: {},
+							},
+						],
 						delete: [],
 						update: [],
 					},
