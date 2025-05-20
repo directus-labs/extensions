@@ -88,7 +88,7 @@ export default defineOperationApp({
 								value: 'anthropic',
 							},
 							{
-								text: 'Open Ai',
+								text: 'Open AI',
 								value: 'openai',
 							},
 							{
