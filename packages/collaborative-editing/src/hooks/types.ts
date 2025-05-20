@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Accountability } from '@directus/types';
+import { Accountability, EventContext } from '@directus/types';
 import { AwarenessColor } from '../interface/types';
 
 export type DirectusWebSocket = {
@@ -16,7 +16,7 @@ export interface RealtimeWebSocket extends DirectusWebSocket {
 
 export type Context = {
 	services: any;
-	database: any;
+	database: EventContext['database'];
 	env: Record<string, any>;
 	logger: any;
 	getSchema: (options?: any, attempt?: number) => Promise<any>;

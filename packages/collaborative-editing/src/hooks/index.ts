@@ -7,6 +7,7 @@ import {
 	handleDeactivate,
 	handleJoin,
 	handleLeave,
+	handleSave,
 	handleUpdate,
 } from './handlers';
 import { useSockets } from './modules/use-sockets';
@@ -47,4 +48,13 @@ export default defineHook(async ({ action }, ctx) => {
 	action('websocket.close', ({ client }) => {
 		handleClose(client);
 	});
+
+	action('items.update', (meta, eventContext) =>
+		handleSave(meta, {
+			database: ctx.database,
+			schema: eventContext.schema,
+			accountability: eventContext.accountability,
+			services: ctx.services,
+		}),
+	);
 });

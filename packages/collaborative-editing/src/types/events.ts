@@ -1,6 +1,6 @@
 import { AwarenessColor } from '../interface/types';
 
-export type ClientEvent = 'update' | 'awareness' | 'sync' | 'ping' | 'connected' | 'directus';
+export type ClientEvent = 'update' | 'awareness' | 'sync' | 'ping' | 'connected' | 'save';
 
 export type DirectusServerEvent = 'pong';
 
@@ -116,9 +116,15 @@ export interface AwarenessUserRemovePayload extends WebsocketBaseMessagePayload 
 	uid: string;
 }
 
+export interface SavePayload extends WebsocketBaseMessagePayload {
+	event: 'save';
+	save: Record<string, unknown> | null;
+}
+
 export type WebsocketMessagePayload =
 	| ConnectPayload
 	| SyncPayload
+	| SavePayload
 	| UpdatePayload
 	| AwarenessFieldActivatePayload
 	| AwarenessFieldDeactivatePayload
