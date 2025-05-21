@@ -40,6 +40,7 @@ interface FieldValue {
 
 const emit = defineEmits<{
 	setFieldValue: [FieldValue];
+	saveAndStay: [{}];
 }>();
 
 const provider = useDoc({
@@ -99,6 +100,10 @@ provider.on('field:activate', (uid: string, payload: { field: ActiveField }) => 
 
 provider.on('field:deactivate', (uid: string) => {
 	awarenessStore.removeActiveField(uid);
+});
+
+provider.on('item:save', () => {
+	emit('saveAndStay', {});
 });
 
 onUnmounted(() => {
