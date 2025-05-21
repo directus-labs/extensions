@@ -22,6 +22,7 @@ export default defineOperationApp({
 	],
 	options: (context) => {
 		const anthropicModels = [
+			{ text: 'Claude 3.7 Sonnet', value: 'claude-3-7-sonnet-latest' },
 			{ text: 'Claude 3.5 Sonnet', value: 'claude-3-5-sonnet-latest' },
 			{ text: 'Claude 3.5 Haiku', value: 'claude-3-5-haiku-latest' },
 			{ text: 'Claude 3.5 Opus', value: 'claude-3-5-opus-latest' },
