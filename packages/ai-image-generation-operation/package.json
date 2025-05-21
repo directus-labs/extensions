@@ -1,8 +1,8 @@
 {
 	"name": "@directus-labs/ai-image-generation-operation",
 	"type": "module",
-	"version": "1.0.2",
-	"description": "Use DALLE•E 3 to generate images based on a user prompt.",
+	"version": "1.0.3",
+	"description": "Use DALLE•E 3 or GPT Image 1 to generate images based on a user prompt.",
 	"license": "MIT",
 	"keywords": [
 		"directus",

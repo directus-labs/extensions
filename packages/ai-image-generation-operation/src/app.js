@@ -30,9 +30,29 @@ export default {
 			meta: {
 				width: 'full',
 				interface: 'input',
-				options: {
-					masked: true,
-				},
+				options: { masked: true },
+			},
+		},
+		{
+			field: 'token',
+			name: 'Directus API Token',
+			type: 'string',
+			required: true,
+			meta: {
+				width: 'full',
+				interface: 'input',
+				options: { masked: true },
+			},
+		},
+		{
+			field: 'publicUrl',
+			name: 'Directus Public URL',
+			type: 'string',
+			required: true,
+			meta: {
+				width: 'full',
+				interface: 'input',
+				note: 'Root URL of your Directus instance (e.g. https://cms.example.com)',
 			},
 		},
 		{
@@ -45,14 +65,8 @@ export default {
 				interface: 'select-dropdown',
 				options: {
 					choices: [
-						{
-							text: 'GPT Image 1 (Latest)',
-							value: 'gpt-image-1',
-						},
-						{
-							text: 'DALL·E 3 (Legacy)',
-							value: 'dall-e-3',
-						},
+						{ text: 'GPT Image 1 (Latest)', value: 'gpt-image-1' },
+						{ text: 'DALL·E 3 (Legacy)', value: 'dall-e-3' },
 					],
 				},
 			},
@@ -77,14 +91,8 @@ export default {
 				interface: 'select-dropdown',
 				options: {
 					choices: [
-						{
-							text: 'Standard',
-							value: 'standard',
-						},
-						{
-							text: 'High',
-							value: 'hd',
-						},
+						{ text: 'Standard', value: 'standard' },
+						{ text: 'High', value: 'hd' },
 					],
 				},
 			},
@@ -99,18 +107,9 @@ export default {
 				interface: 'select-dropdown',
 				options: {
 					choices: [
-						{
-							text: 'Square',
-							value: 'square',
-						},
-						{
-							text: 'Portrait',
-							value: 'portrait',
-						},
-						{
-							text: 'Landscape',
-							value: 'landscape',
-						},
+						{ text: 'Square', value: 'square' },
+						{ text: 'Portrait', value: 'portrait' },
+						{ text: 'Landscape', value: 'landscape' },
 					],
 				},
 			},
