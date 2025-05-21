@@ -32,10 +32,11 @@ export default {
 
 			const data = genResponse.data.data[0];
 			let fileId;
+			const cleanPublicUrl = publicUrl.replace(/\/$/, '');
 
 			if (model === 'dall-e-3') {
 				// DALL·E 3 gives back a URL we can pass to Directus file import
-				const importResponse = await request(`${publicUrl}/files/import`, {
+				const importResponse = await request(`${cleanPublicUrl}/files/import`, {
 					method: 'POST',
 					headers: {
 						'Authorization': `Bearer ${token}`,
@@ -51,7 +52,7 @@ export default {
 				// eslint-disable-next-line n/prefer-global/buffer
 				const buffer = globalThis.Buffer.from(data.b64_json, 'base64');
 
-				const uploadResponse = await request(`${publicUrl}/files`, {
+				const uploadResponse = await request(`${cleanPublicUrl}/files`, {
 					method: 'POST',
 					headers: {
 						'Authorization': `Bearer ${token}`,
