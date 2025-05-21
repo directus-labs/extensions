@@ -49,12 +49,5 @@ export default defineHook(async ({ action }, ctx) => {
 		handleClose(client);
 	});
 
-	action('items.update', (meta, eventContext) =>
-		handleSave(meta, {
-			database: ctx.database,
-			schema: eventContext.schema,
-			accountability: eventContext.accountability,
-			services: ctx.services,
-		}),
-	);
+	action('items.update', (meta) => handleSave(meta));
 });

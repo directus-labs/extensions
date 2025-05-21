@@ -118,7 +118,6 @@ export interface AwarenessUserRemovePayload extends WebsocketBaseMessagePayload 
 
 export interface SavePayload extends WebsocketBaseMessagePayload {
 	event: 'save';
-	save: Record<string, unknown> | null;
 }
 
 export type WebsocketMessagePayload =

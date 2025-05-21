@@ -27,7 +27,7 @@ interface DirectusProviderEvents {
 	'user:remove': (uid: string) => void;
 	'doc:update': (field: string, value: unknown) => void;
 	'doc:set': (field: string, value: unknown, origin: 'update' | 'sync' | 'form') => void;
-	'item:save': (save: Record<string, unknown>) => void;
+	'item:save': () => void;
 	debug: (event: string, ...data: unknown[]) => void;
 }
 
@@ -133,9 +133,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 				}
 			}
 		} else if (payload.event === 'save') {
-			if (payload.save) {
-				this.emit('item:save', [payload.save]);
-			}
+			this.emit('item:save', []);
 		} else if (payload.event === 'awareness') {
 			// Handle user awareness
 			if (payload.type === 'user') {
