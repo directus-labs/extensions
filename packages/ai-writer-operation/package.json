@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/ai-writer-operation",
 	"type": "module",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "Use OpenAI, Claude, Meta and Mistral Text Generation APIs to generate text.",
 	"author": "Directus Labs",
 	"contributors": [
