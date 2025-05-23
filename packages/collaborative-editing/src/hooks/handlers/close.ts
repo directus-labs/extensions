@@ -1,4 +1,4 @@
-import { useSockets } from '../modules/use-sockets';
+import { useSockets } from '../lib/use-sockets';
 import { Context, RealtimeWebSocket } from '../types';
 import { handleLeave } from './leave';
 

@@ -1,8 +1,8 @@
 import type { UpdateMessage } from '../../shared/types/events';
 import { BROADCAST_CHANNEL } from '../constants';
-import { useBus } from '../modules/bus';
-import { useRooms } from '../modules/use-rooms';
-import { useSockets } from '../modules/use-sockets';
+import { useBus } from '../lib/bus';
+import { useRooms } from '../lib/use-rooms';
+import { useSockets } from '../lib/use-sockets';
 import type { BroadcastPayload, Context, RealtimeWebSocket } from '../types';
 import { sanitizePayload } from '../utils/sanitize-payload';
 

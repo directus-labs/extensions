@@ -1,4 +1,4 @@
-import { useSockets } from '../modules/use-sockets';
+import { useSockets } from '../lib/use-sockets';
 import { isValidSocket } from './is-valid-socket';
 
 export function isRoomEmpty(room: string) {

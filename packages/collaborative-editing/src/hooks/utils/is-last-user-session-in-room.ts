@@ -1,4 +1,4 @@
-import { useSockets } from '../modules/use-sockets';
+import { useSockets } from '../lib/use-sockets';
 import { RealtimeWebSocket } from '../types';
 import { isValidSocket } from './is-valid-socket';
 

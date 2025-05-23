@@ -1,8 +1,8 @@
 import { DeactivateMessage } from '../../shared/types/events';
 import { BROADCAST_CHANNEL } from '../constants';
-import { useBus } from '../modules/bus';
-import { useRooms } from '../modules/use-rooms';
-import { useSockets } from '../modules/use-sockets';
+import { useBus } from '../lib/bus';
+import { useRooms } from '../lib/use-rooms';
+import { useSockets } from '../lib/use-sockets';
 import { BroadcastPayload, Context, RealtimeWebSocket } from '../types';
 
 export async function handleDeactivate(

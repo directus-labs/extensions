@@ -11,8 +11,8 @@ import {
 	handleSave,
 	handleUpdate,
 } from './handlers';
-import { handleBroadcast, useBus } from './modules/bus';
-import { useSockets } from './modules/use-sockets';
+import { handleBroadcast, useBus } from './lib/bus';
+import { useSockets } from './lib/use-sockets';
 import { BroadcastPayload } from './types';
 
 export default defineHook(async ({ action }, ctx) => {

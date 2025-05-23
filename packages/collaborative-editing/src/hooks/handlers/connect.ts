@@ -1,6 +1,6 @@
 import { ConnectMessage, ConnectPayload } from '../../shared/types/events';
-import { useId } from '../modules/use-id';
-import { useSockets } from '../modules/use-sockets';
+import { useId } from '../lib/use-id';
+import { useSockets } from '../lib/use-sockets';
 import { RealtimeWebSocket } from '../types';
 
 export function handleConnect(client: RealtimeWebSocket, message: Omit<ConnectMessage, 'type'>) {

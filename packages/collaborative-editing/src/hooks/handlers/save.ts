@@ -1,6 +1,6 @@
 import { BROADCAST_CHANNEL } from '../constants';
-import { useBus } from '../modules/bus';
-import { useRooms } from '../modules/use-rooms';
+import { useBus } from '../lib/bus';
+import { useRooms } from '../lib/use-rooms';
 import { BroadcastPayload, Context } from '../types';
 
 interface HandleSaveMeta {
