@@ -1,30 +1,23 @@
 import { Accountability, SchemaOverview } from '@directus/types';
-import { Context, RealtimeWebSocket } from '../types';
+import { Context } from '../types';
 
-export async function getSockerUser(
-	socket: RealtimeWebSocket,
+export async function getSocketUser(
+	userId: string,
 	ctx: Pick<Context, 'database' | 'services'> & { schema: SchemaOverview; accountability: Accountability },
 ) {
 	const { accountability, services, database: knex, schema } = ctx;
 
-	let user = {
-		uid: socket.id,
-		color: socket.color,
-	};
-
 	try {
-		const dbUser = await new services.UsersService({
+		return new services.UsersService({
 			knex,
 			accountability,
 			schema,
-		}).readOne(socket.accountability.user, {
+		}).readOne(userId, {
 			fields: ['id', 'first_name', 'last_name', 'avatar'],
 		});
-
-		user = { ...user, ...dbUser };
 	} catch {
-		console.log(`User awareness payload set to anonymous, no permission to access ${socket.accountability.user}`);
+		console.log(`User awareness payload set to anonymous, no permission to access ${userId}`);
 	}
 
-	return user;
+	return {};
 }

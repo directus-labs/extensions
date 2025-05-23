@@ -1,1 +1,1 @@
-export const REFRESH_CLOSE_WINDOW_MS = 30000;
+export const BROADCAST_CHANNEL = 'realtime:broadcast';

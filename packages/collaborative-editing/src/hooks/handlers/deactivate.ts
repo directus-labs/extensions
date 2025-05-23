@@ -1,14 +1,21 @@
-import { AwarenessFieldDeactivatePayload, DeactivateMessage } from '../../types/events';
+import { DeactivateMessage } from '../../types/events';
+import { BROADCAST_CHANNEL } from '../constants';
+import { useBus } from '../modules/bus';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
-import { RealtimeWebSocket } from '../types';
-import { isValidSocket } from '../utils/is-valid-socket';
+import { BroadcastPayload, Context, RealtimeWebSocket } from '../types';
 
-export async function handleDeactivate(client: RealtimeWebSocket, message: Omit<DeactivateMessage, 'type'>) {
+export async function handleDeactivate(
+	client: RealtimeWebSocket,
+	message: Omit<DeactivateMessage, 'type'>,
+	ctx: Context,
+) {
+	const { env } = ctx;
+	const { room } = message;
+
 	const sockets = useSockets();
 	const rooms = useRooms();
-
-	const { room } = message;
+	const bus = useBus(env);
 
 	console.log(`[realtime:deactivate] Event received for ${client.uid} in room ${room}`);
 
@@ -16,22 +23,13 @@ export async function handleDeactivate(client: RealtimeWebSocket, message: Omit<
 
 	rooms.removeField(room, client.id);
 
-	for (const [, socket] of sockets) {
-		if (!isValidSocket(socket) || socket.rooms.has(room) === false) continue;
-
-		const payload: AwarenessFieldDeactivatePayload = {
-			event: 'awareness',
-			type: 'field',
-			action: 'remove',
-			uid: client.id,
-		};
-
-		console.log(`[realtime:activate] Field awareness event sent to ${socket.client.uid}`);
-
-		try {
-			socket.client.send(JSON.stringify(payload));
-		} catch (error) {
-			console.log(error);
-		}
-	}
+	const broadcast: BroadcastPayload = {
+		type: 'awareness-field',
+		room,
+		action: 'remove',
+		data: {
+			id: client.id,
+		},
+	};
+	bus.publish(BROADCAST_CHANNEL, broadcast);
 }

@@ -73,9 +73,11 @@
 		"@directus/types": "^13.1.1"
 	},
 	"dependencies": {
+		"@directus/memory": "^3.0.4",
 		"@directus/sdk": "^19.1.0",
 		"@vueuse/core": "^13.1.0",
 		"colorjs.io": "^0.5.2",
+		"ioredis": "5.5.0",
 		"lib0": "^0.2.107",
 		"lodash-es": "^4.17.21",
 		"pinia": "^3.0.2",

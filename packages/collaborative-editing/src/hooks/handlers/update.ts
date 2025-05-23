@@ -1,17 +1,18 @@
-import * as Y from 'yjs';
-import type { UpdateMessage, UpdatePayload } from '../../types/events';
+import type { UpdateMessage } from '../../types/events';
+import { BROADCAST_CHANNEL } from '../constants';
+import { useBus } from '../modules/bus';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
-import type { Context, RealtimeWebSocket } from '../types';
-import { isValidSocket } from '../utils/is-valid-socket';
+import type { BroadcastPayload, Context, RealtimeWebSocket } from '../types';
 import { sanitizePayload } from '../utils/sanitize-payload';
 
 export async function handleUpdate(client: RealtimeWebSocket, message: Omit<UpdateMessage, 'type'>, ctx: Context) {
+	const { getSchema, services, database, env } = ctx;
+	const { room: roomName } = message;
+
 	const sockets = useSockets();
 	const rooms = useRooms();
-	const { getSchema, services, database } = ctx;
-
-	const { room: roomName } = message;
+	const bus = useBus(env);
 
 	const [collection, primaryKey] = roomName.split(':');
 
@@ -25,57 +26,22 @@ export async function handleUpdate(client: RealtimeWebSocket, message: Omit<Upda
 
 	const schema = await getSchema();
 
-	const sanitizedPayload = await sanitizePayload(client, roomName, message.update, { database, schema, services });
+	const sanitizedPayload = await sanitizePayload(client.accountability, roomName, message.update, {
+		database,
+		schema,
+		services,
+	});
 
 	if (!sanitizedPayload) {
 		console.log(`[realtime:update] Skipping update to doc ${room.doc.clientID} as no sanitized payload`);
 		return;
 	}
 
-	// Apply update to room doc, this will ensure its shared globally for anyone who joins the room
-	console.log(`[realtime:update] Applying update to doc ${room.doc.clientID}`);
-	const changeDoc = new Y.Doc();
-	Y.applyUpdate(changeDoc, Y.encodeStateAsUpdate(room.doc));
-
-	for (const field of Object.keys(sanitizedPayload)) {
-		changeDoc.getMap(roomName).set(field, sanitizedPayload[field]);
-	}
-	Y.applyUpdate(room.doc, Y.encodeStateAsUpdate(changeDoc));
-
-	const updatePayload: Record<string, unknown> = {};
-	for (const field of Object.keys(sanitizedPayload)) {
-		updatePayload[field] = room.doc.getMap(roomName).get(field);
-	}
-
-	// Emit the update to all current room clients if they have permission to access the field
-	for (const [, socket] of sockets) {
-		if (!isValidSocket(socket) || client.uid === socket.client.uid || socket.rooms.has(roomName) === false) {
-			continue;
-		}
-
-		const socketSanitizedPayload = await sanitizePayload(socket.client, roomName, updatePayload, {
-			database,
-			schema,
-			services,
-		});
-
-		if (socketSanitizedPayload === null) {
-			// Do not send empty events
-			console.log(`[realtime:update] Skipping sending event to ${socket.client.uid} as no sanitized payload`);
-
-			continue;
-		}
-
-		const payload: UpdatePayload = { event: 'update', update: socketSanitizedPayload };
-
-		console.log(
-			`[realtime:update] Event sent to user ${socket.client.accountability.user} with socket uid ${socket.client.uid}`,
-		);
-
-		try {
-			socket.client.send(JSON.stringify(payload));
-		} catch (error) {
-			console.log(error);
-		}
-	}
+	const broadcast: BroadcastPayload = {
+		type: 'room-doc',
+		room: roomName,
+		origin: client.uid,
+		data: sanitizedPayload,
+	};
+	bus.publish(BROADCAST_CHANNEL, broadcast);
 }

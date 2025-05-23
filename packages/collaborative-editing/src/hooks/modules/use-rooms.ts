@@ -1,8 +1,16 @@
 import * as Y from 'yjs';
 
+export interface RoomUser {
+	id: string;
+	uid: string;
+	color: string;
+	userId: string;
+}
+
 export interface Room {
+	name: string;
 	fields: Map<string, string>;
-	users: Set<string>;
+	users: Map<string, RoomUser>;
 	doc: Y.Doc;
 }
 
@@ -17,44 +25,31 @@ class RoomMap extends Map<string, Room> {
 
 	add(room: string) {
 		this.set(room, {
+			name: room,
 			doc: new Y.Doc(),
 			fields: new Map(),
-			users: new Set(),
+			users: new Map(),
 		});
 
 		return this.get(room)!;
 	}
 
-	addUser(room: string, socketUId: string) {
-		const r = this.get(room);
-		if (r) {
-			r.users.add(socketUId);
-		}
+	addUser(room: string, user: RoomUser) {
+		(this.get(room) ?? this.add(room)).users.set(user.uid, user);
 	}
 	removeUser(room: string, socketUId: string) {
-		const r = this.get(room);
-		if (r) {
-			r.users.delete(socketUId);
-		}
+		(this.get(room) ?? this.add(room)).users.delete(socketUId);
 	}
-	addField(room: string, sockerId: string, field: string) {
-		const r = this.get(room);
-		if (r) {
-			r.fields.set(sockerId, field);
-		}
+	addField(room: string, socketId: string, field: string) {
+		(this.get(room) ?? this.add(room)).fields.set(socketId, field);
 	}
-	removeField(room: string, sockerId: string) {
-		const r = this.get(room);
-		if (r) {
-			r.fields.delete(sockerId);
-		}
+	removeField(room: string, socketId: string) {
+		(this.get(room) ?? this.add(room)).fields.delete(socketId);
 	}
 
 	updateDoc(room: string, update: Uint8Array) {
-		const r = this.get(room);
-		if (r) {
-			Y.applyUpdate(r.doc, update);
-		}
+		const r = this.get(room) ?? this.add(room);
+		Y.applyUpdate(r.doc, update);
 	}
 }
 

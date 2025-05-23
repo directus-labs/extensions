@@ -1,5 +1,6 @@
 import { defineHook } from '@directus/extensions-sdk';
 import { ServerEvent } from '../types/events';
+import { BROADCAST_CHANNEL } from './constants';
 import {
 	handleActivate,
 	handleClose,
@@ -10,10 +11,13 @@ import {
 	handleSave,
 	handleUpdate,
 } from './handlers';
+import { handleBroadcast, useBus } from './modules/bus';
 import { useSockets } from './modules/use-sockets';
+import { BroadcastPayload } from './types';
 
 export default defineHook(async ({ action }, ctx) => {
 	const sockets = useSockets();
+	const bus = useBus(ctx.env);
 
 	action('websocket.message', async ({ message, client }) => {
 		if (!client.accountability?.user) return;
@@ -34,20 +38,26 @@ export default defineHook(async ({ action }, ctx) => {
 				handleActivate(client, payload, ctx);
 				break;
 			case 'deactivate':
-				handleDeactivate(client, payload);
+				handleDeactivate(client, payload, ctx);
 				break;
 			case 'join':
 				handleJoin(client, payload, ctx);
 				break;
 			case 'leave':
-				handleLeave(client, payload);
+				handleLeave(client, payload, ctx);
 				break;
 		}
 	});
 
-	action('websocket.close', ({ client }) => {
-		handleClose(client);
+	bus.subscribe(BROADCAST_CHANNEL, (payload: BroadcastPayload) => {
+		handleBroadcast(payload, ctx);
 	});
 
-	action('items.update', (meta) => handleSave(meta));
+	action('websocket.close', ({ client }) => {
+		handleClose(client, ctx);
+	});
+
+	action('items.update', (meta) => {
+		handleSave(meta, ctx);
+	});
 });

@@ -25,5 +25,78 @@ export type Context = {
 export interface RealtimeSocket {
 	client: RealtimeWebSocket;
 	rooms: Set<string>;
-	deleted?: boolean;
 }
+
+export type BroadcastType = 'update' | 'awareness-user' | 'awareness-field' | 'room-doc' | 'save';
+
+export interface BaseBroadcastPayload {
+	type: BroadcastType;
+	room: string;
+}
+
+export interface BroadcastSavePayload extends BaseBroadcastPayload {
+	type: 'save';
+}
+
+export interface BroadcastRoomDocPayload extends BaseBroadcastPayload {
+	type: 'room-doc';
+	origin: string;
+	data: Record<string, unknown> | null;
+}
+
+export interface BroadcastUpdatePayload extends BaseBroadcastPayload {
+	type: 'update';
+	origin: string;
+	data: Record<string, unknown> | null;
+}
+
+export interface BroadcastAwarenessUserAddPayload extends BaseBroadcastPayload {
+	type: 'awareness-user';
+	action: 'add';
+	userId: string;
+	data: {
+		id: string;
+		uid: string;
+		color: AwarenessColor;
+	};
+}
+
+export interface BroadcastAwarenessUserRemovePayload extends BaseBroadcastPayload {
+	type: 'awareness-user';
+	action: 'remove';
+	origin: string;
+	data: {
+		id: string;
+		uid: string;
+	};
+}
+
+export interface BroadcastAwarenessFieldAddPayload extends BaseBroadcastPayload {
+	type: 'awareness-field';
+	action: 'add';
+	data: {
+		id: string;
+		field: string;
+		collection: string;
+		primaryKey: string;
+	};
+}
+
+export interface BroadcastAwarenessFieldRemovePayload extends BaseBroadcastPayload {
+	type: 'awareness-field';
+	action: 'remove';
+	data: {
+		id: string;
+	};
+}
+
+export type BroadcastPayload =
+	| BroadcastAwarenessUserAddPayload
+	| BroadcastAwarenessFieldAddPayload
+	| BroadcastRoomDocPayload
+	| BroadcastSavePayload
+	| BroadcastAwarenessFieldRemovePayload
+	| BroadcastAwarenessUserRemovePayload
+	| BroadcastUpdatePayload;
+
+export type BroadcastContext = Context;

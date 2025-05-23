@@ -1,11 +1,11 @@
-import { Item, SchemaOverview } from '@directus/types';
+import { Accountability, Item, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { UNDEFINED_VALUE } from '../../constants';
-import { Context, RealtimeWebSocket } from '../types';
+import { Context } from '../types';
 import { getRelationInfo } from './get-relation-info';
 
 export async function sanitizePayload(
-	socket: RealtimeWebSocket,
+	accountability: Accountability,
 	room: string,
 	payload: Record<string, unknown>,
 	ctx: Pick<Context, 'database' | 'services'> & { schema: SchemaOverview; checkFields?: boolean },
@@ -21,11 +21,11 @@ export async function sanitizePayload(
 				// Ensure they can read the field in the room, otherwise skip entire payload/processing
 				await new services.ItemsService(collection, {
 					knex,
-					accountability: socket.accountability,
+					accountability,
 					schema,
 				}).readOne(primaryKey, { fields: [field] });
 			} catch {
-				console.log(`[realtime:sanitize-payload] Skipped ${field} for ${socket.id} due to insufficient permissions`);
+				console.log(`[realtime:sanitize-payload] Skipped ${field} due to insufficient permissions`);
 				continue;
 			}
 		}
@@ -60,7 +60,7 @@ export async function sanitizePayload(
 
 			// M2A "Add Existing" or Update
 			const m2aSanitizedUpdatePayload = await sanitizePayload(
-				socket,
+				accountability,
 				`${m2oCollection}:${m2aPayload[m2aRelatedPrimaryKey]}`,
 				m2aPayload,
 				ctx,
@@ -80,7 +80,7 @@ export async function sanitizePayload(
 			if (['number', 'string', 'bigint'].includes(typeof m2oPayload)) {
 				// "Add Existing"
 				const m2oSanitizedExistingPayload = await sanitizePayload(
-					socket,
+					accountability,
 					`${relation.collection}:${m2oPayload}`,
 					{ [relatedPrimaryKey]: m2oPayload },
 					ctx,
@@ -92,7 +92,7 @@ export async function sanitizePayload(
 			} else if (isObject(m2oPayload)) {
 				// Update Existing
 				const m2oSanitizedUpdatePayload = await sanitizePayload(
-					socket,
+					accountability,
 					`${relation.collection}:${m2oPayload[relatedPrimaryKey]}`,
 					m2oPayload,
 					ctx,
@@ -139,7 +139,7 @@ export async function sanitizePayload(
 				if (!relation.junctionField) continue;
 
 				const o2mSanitizedExistingPayload = await sanitizePayload(
-					socket,
+					accountability,
 					`${relation.collection}:${create[relation.payloadField]}`,
 					create,
 					{ ...ctx, checkFields: false },
@@ -160,7 +160,7 @@ export async function sanitizePayload(
 				const updatePrimaryKey = update[relatedPrimaryKey] ? relatedPrimaryKey : relation.payloadField;
 
 				const o2mSanitizedUpdatePayload = await sanitizePayload(
-					socket,
+					accountability,
 					`${relation.collection}:${update[updatePrimaryKey]}`,
 					update,
 					ctx,
@@ -175,7 +175,7 @@ export async function sanitizePayload(
 			for (const del of o2mPayload.delete) {
 				// Delete
 				const o2mSanitizedDelPayload = await sanitizePayload(
-					socket,
+					accountability,
 					`${relation.collection}:${del}`,
 					{ [relatedPrimaryKey]: del },
 					ctx,

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@directus/memory':
+        specifier: ^3.0.4
+        version: 3.0.4(vue@3.5.13(typescript@5.8.3))
       '@directus/sdk':
         specifier: ^19.1.0
         version: 19.1.0
@@ -20,6 +23,9 @@ importers:
       colorjs.io:
         specifier: ^0.5.2
         version: 0.5.2
+      ioredis:
+        specifier: 5.5.0
+        version: 5.5.0
       lib0:
         specifier: ^0.2.107
         version: 0.2.107
@@ -119,6 +125,9 @@ packages:
   '@directus/constants@13.0.1':
     resolution: {integrity: sha512-7Ls9uiOPiUIRx4qsMud097AqgSytjTc9lygSK+Qiv5aPQbNx3iCiqTcpC99eoHUTWS4bD5cUuzSWIXRoQezCUg==}
 
+  '@directus/errors@2.0.1':
+    resolution: {integrity: sha512-AjVJlbjDhhlzId8JIWARj6+hv4IebHwHTSkyzzHpFhjamH8V7laY91KL6MxjzeL33jDlaJycqppKtneRb+5guA==}
+
   '@directus/extensions-sdk@13.1.0':
     resolution: {integrity: sha512-pvh7qeR8+chlikSJY7CkwWZl3+BY9vZ4P1bKDMppbLHOSaDVYb6+IGJ9W4TrxRGVRCAaMf+1c7Olf5ymmCA/3g==}
     engines: {node: '>=12.20.0'}
@@ -141,6 +150,9 @@ packages:
       vue-router:
         optional: true
 
+  '@directus/memory@3.0.4':
+    resolution: {integrity: sha512-Xy26rIi2NJrRwnPYxWlUvFb31ncii2BpmaHL2Vp4Ke3l5hwxNCVZgDpPz2DL1S35EJn5zt27mfXgDxgKm/uqzA==}
+
   '@directus/schema-builder@0.0.1':
     resolution: {integrity: sha512-Bk/TiM34hL60x8Yo/cLIkpC/Sdzh6vNpzaM//AEAtMjmHW77Dvh3tpIv+0vLoqyRFIcmHHiMl5ffH8Z3nj/CIQ==}
 
@@ -150,6 +162,9 @@ packages:
   '@directus/sdk@19.1.0':
     resolution: {integrity: sha512-Nqem9BsvvGyVtAa69mGPtoMoMVkZxdIREdsWvvTzNF4/1XqaFfEiFL7PhtUNfc46/Nufus2+QUKYQbNiAWe3ZA==}
     engines: {node: '>=22'}
+
+  '@directus/storage@12.0.0':
+    resolution: {integrity: sha512-8xoxUkVFd0wyKbPr2j/chXzOlaaatMIaVX6HwXVL3gNC+7jKRgND1odfRiwkednAMChpVRJGMNGaIhhLC4hurw==}
 
   '@directus/system-data@3.1.0':
     resolution: {integrity: sha512-0s7YWuS7DbDRlwcLhKeCDQfLEJAjjy7S4JmV0oMzZO6FMJuN2ah7Sm/oqV/LV0o9H+ftXobq0MlEN6eqazUONA==}
@@ -666,6 +681,9 @@ packages:
     peerDependenciesMeta:
       '@types/node':
         optional: true
+
+  '@ioredis/commands@1.2.0':
+    resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}
 
   '@jridgewell/gen-mapping@0.3.8':
     resolution: {integrity: sha512-imAbBGkb+ebQyxKgzv5Hu2nmROxoDOXHh80evxdoXNOrvAnVx7zimzc1Oo5h9RlfV4vPXaE2iM5pOFbvOCClWA==}
@@ -1246,6 +1264,10 @@ packages:
     resolution: {integrity: sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==}
     engines: {node: '>=0.8'}
 
+  cluster-key-slot@1.1.2:
+    resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
+    engines: {node: '>=0.10.0'}
+
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
     engines: {node: '>=7.0.0'}
@@ -1408,6 +1430,10 @@ packages:
   delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
+
+  denque@2.1.0:
+    resolution: {integrity: sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==}
+    engines: {node: '>=0.10'}
 
   depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
@@ -1813,6 +1839,10 @@ packages:
     resolution: {integrity: sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==}
     engines: {node: '>= 0.10'}
 
+  ioredis@5.5.0:
+    resolution: {integrity: sha512-7CutT89g23FfSa8MDoIFs2GYYa0PaNiW/OrT+nRyjRXHDZd17HmIgy+reOQ/yhh72NznNjGuS8kbCAcA4Ro4mw==}
+    engines: {node: '>=12.22.0'}
+
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
@@ -1950,6 +1980,12 @@ packages:
   lodash-es@4.17.21:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
 
+  lodash.defaults@4.2.0:
+    resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
+
+  lodash.isarguments@3.1.0:
+    resolution: {integrity: sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==}
+
   lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
 
@@ -1968,6 +2004,10 @@ packages:
 
   loupe@3.1.3:
     resolution: {integrity: sha512-kkIp7XSkP78ZxJEsSxW3712C6teJVoeHHwgo9zJ380de7IYyJ2ISlxojcH2pC5OFLewESmnRi/+XCDIEEVyoug==}
+
+  lru-cache@11.0.2:
+    resolution: {integrity: sha512-123qHRfJBmo2jXDbo/a5YOQrJoHF/GNQTLzQ5+IdK5pWpceK17yRc6ozlWd25FxvGKQbIUs91fDFkXmDHTKcyA==}
+    engines: {node: 20 || >=22}
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
@@ -2449,6 +2489,9 @@ packages:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
 
+  rate-limiter-flexible@5.0.5:
+    resolution: {integrity: sha512-+/dSQfo+3FYwYygUs/V2BBdwGa9nFtakDwKt4l0bnvNB53TNT++QSFewwHX9qXrZJuMe9j+TUaU21lm5ARgqdQ==}
+
   raw-body@3.0.0:
     resolution: {integrity: sha512-RmkhL8CAyCRPXCE28MMH0z2PNWQBNk2Q09ZdxM9IOOXwxwZbN+qbWaatPkdkWIKL2ZVDImrN/pK5HTRz2PcS4g==}
     engines: {node: '>= 0.8'}
@@ -2460,6 +2503,14 @@ packages:
   rechoir@0.8.0:
     resolution: {integrity: sha512-/vxpCXddiX8NGfGO/mTafwjq4aFa/71pvamip0++IQk3zG8cbCj0fifNPrjjF1XMXUne91jL9OoxmdykoEtifQ==}
     engines: {node: '>= 10.13.0'}
+
+  redis-errors@1.2.0:
+    resolution: {integrity: sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w==}
+    engines: {node: '>=4'}
+
+  redis-parser@3.0.0:
+    resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
+    engines: {node: '>=4'}
 
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
@@ -2612,6 +2663,9 @@ packages:
 
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
+
+  standard-as-callback@2.1.0:
+    resolution: {integrity: sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A==}
 
   statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
@@ -2990,6 +3044,11 @@ snapshots:
 
   '@directus/constants@13.0.1': {}
 
+  '@directus/errors@2.0.1':
+    dependencies:
+      '@directus/storage': 12.0.0
+      ms: 2.1.3
+
   '@directus/extensions-sdk@13.1.0(@types/node@22.15.15)(@unhead/vue@1.11.20(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(terser@5.39.0)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))':
     dependencies:
       '@directus/composables': 11.1.10(vue@3.5.13(typescript@5.8.3))
@@ -3068,6 +3127,17 @@ snapshots:
       - supports-color
       - tedious
 
+  '@directus/memory@3.0.4(vue@3.5.13(typescript@5.8.3))':
+    dependencies:
+      '@directus/errors': 2.0.1
+      '@directus/utils': 13.0.4(vue@3.5.13(typescript@5.8.3))
+      ioredis: 5.5.0
+      lru-cache: 11.0.2
+      rate-limiter-flexible: 5.0.5
+    transitivePeerDependencies:
+      - supports-color
+      - vue
+
   '@directus/schema-builder@0.0.1(knex@3.1.0)(vue@3.5.13(typescript@5.8.3))':
     dependencies:
       '@directus/types': 13.1.1(knex@3.1.0)(vue@3.5.13(typescript@5.8.3))
@@ -3098,6 +3168,8 @@ snapshots:
       - tedious
 
   '@directus/sdk@19.1.0': {}
+
+  '@directus/storage@12.0.0': {}
 
   '@directus/system-data@3.1.0': {}
 
@@ -3488,6 +3560,8 @@ snapshots:
   '@inquirer/type@3.0.6(@types/node@22.15.15)':
     optionalDependencies:
       '@types/node': 22.15.15
+
+  '@ioredis/commands@1.2.0': {}
 
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:
@@ -4124,6 +4198,8 @@ snapshots:
 
   clone@1.0.4: {}
 
+  cluster-key-slot@1.1.2: {}
+
   color-convert@2.0.1:
     dependencies:
       color-name: 1.1.4
@@ -4279,6 +4355,8 @@ snapshots:
       clone: 1.0.4
 
   delayed-stream@1.0.0: {}
+
+  denque@2.1.0: {}
 
   depd@2.0.0: {}
 
@@ -4756,6 +4834,20 @@ snapshots:
 
   interpret@2.2.0: {}
 
+  ioredis@5.5.0:
+    dependencies:
+      '@ioredis/commands': 1.2.0
+      cluster-key-slot: 1.1.2
+      debug: 4.4.0
+      denque: 2.1.0
+      lodash.defaults: 4.2.0
+      lodash.isarguments: 3.1.0
+      redis-errors: 1.2.0
+      redis-parser: 3.0.0
+      standard-as-callback: 2.1.0
+    transitivePeerDependencies:
+      - supports-color
+
   ipaddr.js@1.9.1: {}
 
   is-arrayish@0.2.1: {}
@@ -4864,6 +4956,10 @@ snapshots:
 
   lodash-es@4.17.21: {}
 
+  lodash.defaults@4.2.0: {}
+
+  lodash.isarguments@3.1.0: {}
+
   lodash.memoize@4.1.2: {}
 
   lodash.merge@4.6.2: {}
@@ -4878,6 +4974,8 @@ snapshots:
       is-unicode-supported: 1.3.0
 
   loupe@3.1.3: {}
+
+  lru-cache@11.0.2: {}
 
   magic-string@0.30.17:
     dependencies:
@@ -5289,6 +5387,8 @@ snapshots:
 
   range-parser@1.2.1: {}
 
+  rate-limiter-flexible@5.0.5: {}
+
   raw-body@3.0.0:
     dependencies:
       bytes: 3.1.2
@@ -5305,6 +5405,12 @@ snapshots:
   rechoir@0.8.0:
     dependencies:
       resolve: 1.22.10
+
+  redis-errors@1.2.0: {}
+
+  redis-parser@3.0.0:
+    dependencies:
+      redis-errors: 1.2.0
 
   resolve-from@4.0.0: {}
 
@@ -5505,6 +5611,8 @@ snapshots:
   stable@0.1.8: {}
 
   stackback@0.0.2: {}
+
+  standard-as-callback@2.1.0: {}
 
   statuses@2.0.1: {}
 

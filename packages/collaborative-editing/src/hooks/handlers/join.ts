@@ -1,57 +1,53 @@
-import type { AwarenessUserAddPayload, JoinMessage, SyncPayload } from '../../types/events';
+import type { JoinMessage, SyncPayload } from '../../types/events';
+import { BROADCAST_CHANNEL } from '../constants';
+import { useBus } from '../modules/bus';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
-import type { Context, RealtimeWebSocket } from '../types';
-import { getSockerUser } from '../utils/get-socket-user';
-import { isValidSocket } from '../utils/is-valid-socket';
+import type { BroadcastPayload, Context, RealtimeWebSocket } from '../types';
+import { getSocketUser } from '../utils/get-socket-user';
 import { sanitizePayload } from '../utils/sanitize-payload';
 
 export async function handleJoin(client: RealtimeWebSocket, message: Omit<JoinMessage, 'type'>, ctx: Context) {
-	const { getSchema, services, database } = ctx;
+	const { getSchema, services, database, env } = ctx;
+	const { room: roomName } = message;
+
 	const rooms = useRooms();
 	const sockets = useSockets();
 	const schema = await getSchema();
+	const bus = useBus(env);
 
-	console.log(`added room: ${message.room}`);
-	const clientSocket = sockets.get(client.uid);
-	if (isValidSocket(clientSocket)) {
-		// add room to this socket only
-		clientSocket.rooms.add(message.room);
-	}
+	console.log(`added room: ${roomName}`);
+	sockets.get(client.uid)?.rooms.add(roomName);
 
-	let room = rooms.get(message.room);
+	let room = rooms.get(roomName);
 
 	if (!room) {
-		console.log(`created doc for room ${message.room}`);
-		room = rooms.add(message.room);
+		console.log(`created doc for room ${roomName}`);
+		room = rooms.add(roomName);
 	}
 
-	rooms.addUser(message.room, client.uid);
+	rooms.addUser(roomName, { uid: client.uid, id: client.id, userId: client.accountability.user!, color: client.color });
 
 	// ====
 	// awareness
-	for (const [, socket] of sockets) {
-		if (!isValidSocket(socket) || socket.rooms.has(message.room) === false) continue;
-
-		const payload: AwarenessUserAddPayload = {
-			event: 'awareness',
-			type: 'user',
-			action: 'add',
-			...(await getSockerUser(client, { accountability: socket.client.accountability, schema, database, services })),
-		};
-
-		try {
-			socket.client.send(JSON.stringify(payload));
-		} catch (error) {
-			console.log(error);
-		}
-	}
+	const broadcast: BroadcastPayload = {
+		type: 'awareness-user',
+		room: roomName,
+		action: 'add',
+		userId: client.accountability.user!,
+		data: {
+			id: client.id,
+			uid: client.uid,
+			color: client.color,
+		},
+	};
+	bus.publish(BROADCAST_CHANNEL, broadcast);
 
 	// ====
 	// state sync
-	const [collection, primaryKey] = message.room.split(':');
+	const [collection, primaryKey] = roomName.split(':');
 
-	const sanitizedPayload = await sanitizePayload(client, message.room, room.doc.getMap(message.room).toJSON(), {
+	const sanitizedPayload = await sanitizePayload(client.accountability, roomName, room.doc.getMap(roomName).toJSON(), {
 		database,
 		schema,
 		services,
@@ -65,33 +61,30 @@ export async function handleJoin(client: RealtimeWebSocket, message: Omit<JoinMe
 	};
 
 	const users = new Map();
-	for (const uid of room.users.keys()) {
-		const socket = sockets.get(uid);
-		if (!isValidSocket(socket)) {
-			continue;
-		}
-
-		if (users.has(socket.client.id)) {
+	for (const [, user] of room.users) {
+		if (users.has(user.id)) {
 			// dont reprocess user
 			continue;
 		}
 
-		const userPayload = await getSockerUser(socket.client, {
-			schema,
-			database,
-			services,
-			accountability: client.accountability,
+		users.set(user.id, {
+			uid: user.id,
+			color: user.color,
+			...(await getSocketUser(user.userId, {
+				schema,
+				database,
+				services,
+				accountability: client.accountability,
+			})),
 		});
-
-		users.set(socket.client.id, userPayload);
 	}
 
 	payload.users = Array.from(users.values());
 
 	for (const [id, field] of room.fields.entries()) {
 		try {
-			await new ctx.services.ItemsService(collection, {
-				knex: ctx.database,
+			await new services.ItemsService(collection, {
+				knex: database,
 				accountability: client.accountability,
 				schema,
 			}).readOne(primaryKey, { fields: [field] });

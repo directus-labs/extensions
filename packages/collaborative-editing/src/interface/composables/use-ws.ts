@@ -1,6 +1,5 @@
 import { useSdk } from '@directus/extensions-sdk';
 import { realtime } from '@directus/sdk';
-import { useSessionStorage } from '@vueuse/core';
 import { ref } from 'vue';
 
 const _state: { ws: ReturnType<typeof createWS> | undefined } = {
@@ -23,7 +22,7 @@ function createWS() {
 		}),
 	);
 
-	const refreshId = useSessionStorage<string | null>('realtime-session-id', null);
+	const rooms = ref<Set<string>>(new Set());
 
 	const handlers: WSHandler = {
 		message: [],
@@ -93,7 +92,7 @@ function createWS() {
 	return {
 		client: ws,
 		connected,
-		refreshId,
+		rooms,
 		onOpen,
 		onClose,
 		onError,

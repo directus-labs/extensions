@@ -123,7 +123,6 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 
 		if (payload.event === 'connected') {
 			this.emit('connected', []);
-			this.ws.refreshId.value = payload.refreshId;
 		} else if (payload.event === 'update') {
 			const update = payload.update;
 
@@ -220,7 +219,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		this.send({
 			type: 'yjs-connect',
 			color: useColor().value,
-			refreshId: this.ws.refreshId.value,
+			rooms: Array.from(this.ws.rooms.value),
 		});
 
 		this.emit('connected', []);
@@ -250,6 +249,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 				room: room,
 			});
 
+			this.ws.rooms.value.add(room);
 			this.room = room;
 		}
 	}
@@ -262,6 +262,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 			room: this.room,
 		});
 
+		this.ws.rooms.value.delete(this.room);
 		this.room = null;
 	}
 }

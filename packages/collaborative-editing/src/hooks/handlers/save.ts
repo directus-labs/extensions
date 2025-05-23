@@ -1,7 +1,7 @@
-import { SavePayload } from '../../types/events';
+import { BROADCAST_CHANNEL } from '../constants';
+import { useBus } from '../modules/bus';
 import { useRooms } from '../modules/use-rooms';
-import { useSockets } from '../modules/use-sockets';
-import { isValidSocket } from '../utils/is-valid-socket';
+import { BroadcastPayload, Context } from '../types';
 
 interface HandleSaveMeta {
 	event: string;
@@ -10,11 +10,12 @@ interface HandleSaveMeta {
 	collection: string;
 }
 
-export async function handleSave(meta: Record<string, unknown>) {
-	const sockets = useSockets();
-	const rooms = useRooms();
-
+export async function handleSave(meta: Record<string, unknown>, ctx: Context) {
+	const { env } = ctx;
 	const { keys, collection } = meta as unknown as HandleSaveMeta;
+
+	const rooms = useRooms();
+	const bus = useBus(env);
 
 	console.log(`[realtime:save] Event received for ${collection}`);
 
@@ -26,23 +27,10 @@ export async function handleSave(meta: Record<string, unknown>) {
 			continue;
 		}
 
-		// Emit the update to all current room clients
-		for (const [, socket] of sockets) {
-			if (!isValidSocket(socket) || socket.rooms.has(roomName) === false) {
-				continue;
-			}
-
-			const payload: SavePayload = { event: 'save' };
-
-			console.log(
-				`[realtime:save] Event sent to user ${socket.client.accountability.user} with socket uid ${socket.client.uid}`,
-			);
-
-			try {
-				socket.client.send(JSON.stringify(payload));
-			} catch (error) {
-				console.log(error);
-			}
-		}
+		const broadcast: BroadcastPayload = {
+			type: 'save',
+			room: roomName,
+		};
+		bus.publish(BROADCAST_CHANNEL, broadcast);
 	}
 }

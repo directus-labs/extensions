@@ -1,16 +1,17 @@
-import { ActivateMessage, AwarenessFieldActivatePayload } from '../../types/events';
+import { ActivateMessage } from '../../types/events';
+import { BROADCAST_CHANNEL } from '../constants';
+import { useBus } from '../modules/bus';
 import { useRooms } from '../modules/use-rooms';
 import { useSockets } from '../modules/use-sockets';
-import { Context, RealtimeWebSocket } from '../types';
-import { isValidSocket } from '../utils/is-valid-socket';
+import { BroadcastPayload, Context, RealtimeWebSocket } from '../types';
 
 export async function handleActivate(client: RealtimeWebSocket, message: Omit<ActivateMessage, 'type'>, ctx: Context) {
-	const { getSchema, services, database: knex } = ctx;
+	const { env } = ctx;
+	const { room, field, collection, primaryKey } = message;
+
 	const sockets = useSockets();
 	const rooms = useRooms();
-	const schema = await getSchema();
-
-	const { room, field, collection, primaryKey } = message;
+	const bus = useBus(env);
 
 	if (!room || !sockets.get(client.uid)?.rooms.has(message.room)) return;
 
@@ -18,39 +19,16 @@ export async function handleActivate(client: RealtimeWebSocket, message: Omit<Ac
 
 	rooms.addField(room, client.id, field);
 
-	for (const [, socket] of sockets) {
-		if (!isValidSocket(socket) || socket.rooms.has(room) === false) continue;
-
-		const payload: AwarenessFieldActivatePayload = {
-			event: 'awareness',
-			type: 'field',
-			action: 'add',
-			uid: client.id,
-			field,
+	const broadcast: BroadcastPayload = {
+		type: 'awareness-field',
+		room,
+		action: 'add',
+		data: {
+			id: client.id,
 			collection,
 			primaryKey,
-		};
-
-		// permission check
-		if (field && collection && primaryKey) {
-			try {
-				await new services.ItemsService(collection, {
-					knex,
-					accountability: socket.client.accountability,
-					schema,
-				}).readOne(primaryKey, { fields: [field] });
-			} catch {
-				console.log(`[realtime:activate] Field awareness event skipped for ${socket.client.uid}`);
-				continue;
-			}
-		}
-
-		console.log(`[realtime:activate] Field awareness event sent to ${socket.client.uid}`);
-
-		try {
-			socket.client.send(JSON.stringify(payload));
-		} catch (error) {
-			console.log(error);
-		}
-	}
+			field,
+		},
+	};
+	bus.publish(BROADCAST_CHANNEL, broadcast);
 }
