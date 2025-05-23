@@ -173,10 +173,10 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 			if (payload.state) {
 				const state = payload.state;
 
-				for (const field in state) {
-					if (Object.prototype.hasOwnProperty.call(state, field)) {
+				for (const field of Object.keys(state)) {
+					setTimeout(() => {
 						this.emit('doc:set', [field, state[field], 'sync']);
-					}
+					}, 1);
 				}
 			}
 
