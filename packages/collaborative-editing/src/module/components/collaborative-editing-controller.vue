@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import type { Collection, Field } from '@directus/types';
 import { useStores } from '@directus/extensions-sdk';
+import type { Collection } from '@directus/types';
 import { computed, watch } from 'vue';
+import { generateRealtimeInterface } from '../../shared/field/generate-realtime-interface';
+import { isRealtimeInterface } from '../../shared/field/is-realtime-interface';
+import { realtimeInterfaceExists } from '../../shared/field/realtime-interface-exists';
 import { useSettings } from '../utils/use-settings';
-import { useAwarenessStore } from '../../interface/stores/awarenessStore';
 
 defineProps<{
 	enabledGlobally: boolean | undefined;
@@ -13,8 +15,6 @@ const { useCollectionsStore, useFieldsStore } = useStores();
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 const settings = useSettings();
-
-const awarenessStore = useAwarenessStore();
 
 const eligibleCollections = computed(() => {
 	return collectionsStore.collections.filter(
@@ -28,52 +28,14 @@ const enabledCollections = computed(() => {
 	return enabledCollections.map((collection: Collection) => collection.collection);
 });
 
-async function doesCollabInterfaceExists(collection: string) {
-	let exists = false;
-	try {
-		// Check if field already exists
-		const existingFields = await fieldsStore.getFieldsForCollection(collection);
-		const collabFields = existingFields.filter(
-			(field: Field) =>
-				field.field === `collab_${collection}` && field.meta?.interface === 'presentation-collab-settings-interface',
-		);
-
-		if (collabFields.length > 0) {
-			console.log(`Collab interface already exists for ${collection}`);
-			exists = true;
-		}
-	} catch (error) {
-		console.error('Error ensuring collab interface exists:', error);
-		throw error;
-	}
-
-	return exists;
-}
-
-function createCollabInterfaceField(collection: string) {
-	const fieldName = `collab_${collection}`;
-
-	return {
-		collection,
-		field: fieldName,
-		type: 'alias',
-		schema: null,
-		meta: {
-			special: ['alias', 'no-data'],
-			interface: 'presentation-collab-settings-interface',
-			width: 'full',
-		},
-	};
-}
-
 watch(enabledCollections, async (newEnabledCollections) => {
 	// Handle adding new collab interfaces
 	newEnabledCollections.forEach(async (collection: string) => {
-		const collabInterfaceField = await doesCollabInterfaceExists(collection);
+		const existingFields = await fieldsStore.getFieldsForCollection(collection);
 
-		if (!collabInterfaceField) {
+		if (!realtimeInterfaceExists(existingFields)) {
 			// Create new field if none exists
-			const fieldData = createCollabInterfaceField(collection);
+			const fieldData = generateRealtimeInterface(collection);
 
 			try {
 				await fieldsStore.createField(collection, fieldData);
@@ -92,10 +54,7 @@ watch(enabledCollections, async (newEnabledCollections) => {
 	for (const collection of collectionsToRemove) {
 		try {
 			const existingFields = await fieldsStore.getFieldsForCollection(collection);
-			const collabFields = existingFields.filter(
-				(field: Field) =>
-					field.field === `collab_${collection}` && field.meta?.interface === 'presentation-collab-settings-interface',
-			);
+			const collabFields = existingFields.filter(isRealtimeInterface);
 
 			// Remove each collab field found
 			for (const field of collabFields) {
