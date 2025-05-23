@@ -1,6 +1,6 @@
 import { isObject } from '@directus/utils';
 import _ from 'lodash-es';
-import { UNDEFINED_VALUE } from '../../constants';
+import { UNDEFINED_VALUE } from '../../shared/constants';
 
 export function parseUpdate<T>(message: T) {
 	const parsed: Record<string, unknown> = {};

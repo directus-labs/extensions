@@ -1,4 +1,4 @@
-import type { UpdateMessage } from '../../types/events';
+import type { UpdateMessage } from '../../shared/types/events';
 import { BROADCAST_CHANNEL } from '../constants';
 import { useBus } from '../modules/bus';
 import { useRooms } from '../modules/use-rooms';

@@ -1,5 +1,5 @@
 import { defineHook } from '@directus/extensions-sdk';
-import { ServerEvent } from '../types/events';
+import { ServerEvent } from '../shared/types/events';
 import { BROADCAST_CHANNEL } from './constants';
 import {
 	handleActivate,

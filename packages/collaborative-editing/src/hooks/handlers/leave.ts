@@ -1,4 +1,4 @@
-import type { LeaveMessage } from '../../types/events';
+import type { LeaveMessage } from '../../shared/types/events';
 import { BROADCAST_CHANNEL } from '../constants';
 import { useBus } from '../modules/bus';
 import { useRooms } from '../modules/use-rooms';

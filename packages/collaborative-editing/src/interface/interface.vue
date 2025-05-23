@@ -3,13 +3,13 @@ import { useStores } from '@directus/extensions-sdk';
 import type { Settings } from '@directus/types';
 import { computed, onUnmounted, watch } from 'vue';
 import { useSettings } from '../module/utils/use-settings';
-import { AwarenessUserAddPayload } from '../types/events';
+import { AwarenessUserAddPayload } from '../shared/types/events';
 import { useAvatarStacks } from './composables/use-avatar-stacks';
 import { useCurrentUser } from './composables/use-current-user';
 import { useDoc } from './composables/use-doc';
 import { useFieldAwareness } from './composables/use-field-awareness';
-import { useAwarenessStore } from './stores/awarenessStore';
 import { useFieldMeta } from './composables/use-field-meta';
+import { useAwarenessStore } from './stores/awarenessStore';
 import './styles.css';
 import type { ActiveField } from './types';
 

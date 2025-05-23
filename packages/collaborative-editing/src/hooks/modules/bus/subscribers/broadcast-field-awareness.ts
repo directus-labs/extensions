@@ -1,4 +1,4 @@
-import { AwarenessFieldActivatePayload } from '../../../../types/events';
+import { AwarenessFieldActivatePayload } from '../../../../shared/types/events';
 import {
 	BroadcastAwarenessFieldAddPayload,
 	BroadcastAwarenessFieldRemovePayload,

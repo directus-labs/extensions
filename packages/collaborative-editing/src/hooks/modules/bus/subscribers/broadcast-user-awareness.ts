@@ -1,4 +1,4 @@
-import { AwarenessUserAddPayload } from '../../../../types/events';
+import { AwarenessUserAddPayload } from '../../../../shared/types/events';
 import {
 	BroadcastAwarenessUserAddPayload,
 	BroadcastAwarenessUserRemovePayload,

@@ -1,14 +1,14 @@
 import { ObservableV2 } from 'lib0/observable';
 import { Ref } from 'vue';
 import * as Y from 'yjs';
-import { UNDEFINED_VALUE } from '../../../constants';
+import { UNDEFINED_VALUE } from '../../../shared/constants';
 import {
 	ActivateMessage,
 	AwarenessUserAddPayload,
 	UpdateMessage,
 	WebsocketMessage,
 	WebsocketMessagePayload,
-} from '../../../types/events';
+} from '../../../shared/types/events';
 import { ActiveField } from '../../types';
 import { parseUpdate } from '../../utils/parse-update';
 import { useColor } from '../use-color';

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { UNDEFINED_VALUE } from '../../constants';
+import { UNDEFINED_VALUE } from '../../shared/constants';
 import { parseUpdate } from './parse-update';
 
 describe('Data Types', () => {

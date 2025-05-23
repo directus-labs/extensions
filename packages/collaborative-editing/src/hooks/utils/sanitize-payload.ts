@@ -1,6 +1,6 @@
 import { Accountability, Item, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
-import { UNDEFINED_VALUE } from '../../constants';
+import { UNDEFINED_VALUE } from '../../shared/constants';
 import { Context } from '../types';
 import { getRelationInfo } from './get-relation-info';
 

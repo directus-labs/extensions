@@ -1,4 +1,4 @@
-import { ActivateMessage } from '../../types/events';
+import { ActivateMessage } from '../../shared/types/events';
 import { BROADCAST_CHANNEL } from '../constants';
 import { useBus } from '../modules/bus';
 import { useRooms } from '../modules/use-rooms';

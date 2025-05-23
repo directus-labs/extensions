@@ -1,4 +1,4 @@
-import { SavePayload } from '../../../../types/events';
+import { SavePayload } from '../../../../shared/types/events';
 import { BroadcastSavePayload } from '../../../types';
 import { isValidSocket } from '../../../utils/is-valid-socket';
 import { useSockets } from '../../use-sockets';

@@ -1,4 +1,4 @@
-import { UpdatePayload } from '../../../../types/events';
+import { UpdatePayload } from '../../../../shared/types/events';
 import { BroadcastContext, BroadcastUpdatePayload } from '../../../types';
 import { isValidSocket } from '../../../utils/is-valid-socket';
 import { sanitizePayload } from '../../../utils/sanitize-payload';

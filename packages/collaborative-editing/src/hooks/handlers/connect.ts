@@ -1,4 +1,4 @@
-import { ConnectMessage, ConnectPayload } from '../../types/events';
+import { ConnectMessage, ConnectPayload } from '../../shared/types/events';
 import { useId } from '../modules/use-id';
 import { useSockets } from '../modules/use-sockets';
 import { RealtimeWebSocket } from '../types';

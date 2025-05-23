@@ -1,4 +1,4 @@
-import type { JoinMessage, SyncPayload } from '../../types/events';
+import type { JoinMessage, SyncPayload } from '../../shared/types/events';
 import { BROADCAST_CHANNEL } from '../constants';
 import { useBus } from '../modules/bus';
 import { useRooms } from '../modules/use-rooms';
