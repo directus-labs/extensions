@@ -37,32 +37,33 @@ export default defineHook(async ({ action, filter }, ctx) => {
 		// ignore
 	}
 
-	action('websocket.message', async ({ message, client }) => {
+	action('websocket.message', async ({ message, client }, eventCtx) => {
 		if (!client.accountability?.user) return;
 		if (message.type !== 'realtime-connect' && sockets.has(client.uid) === false) return;
 
 		console.log(`[realtime:message] Client ${client.uid} sent message ${message.type}`);
 
 		const { type, ...payload } = message;
+		const messageCtx = { ...ctx, database: eventCtx.database };
 
 		switch (type as ServerEvent) {
 			case 'realtime-connect':
 				handleConnect(client, payload);
 				break;
 			case 'update':
-				handleUpdate(client, payload, ctx);
+				handleUpdate(client, payload, messageCtx);
 				break;
 			case 'activate':
-				handleActivate(client, payload, ctx);
+				handleActivate(client, payload, messageCtx);
 				break;
 			case 'deactivate':
-				handleDeactivate(client, payload, ctx);
+				handleDeactivate(client, payload, messageCtx);
 				break;
 			case 'join':
-				handleJoin(client, payload, ctx);
+				handleJoin(client, payload, messageCtx);
 				break;
 			case 'leave':
-				handleLeave(client, payload, ctx);
+				handleLeave(client, payload, messageCtx);
 				break;
 		}
 	});
@@ -71,12 +72,12 @@ export default defineHook(async ({ action, filter }, ctx) => {
 		handleBroadcast(payload, ctx);
 	});
 
-	action('websocket.close', ({ client }) => {
-		handleClose(client, ctx);
+	action('websocket.close', ({ client }, eventCtx) => {
+		handleClose(client, { ...ctx, database: eventCtx.database });
 	});
 
-	action('items.update', (meta) => {
-		handleSave(meta, ctx);
+	action('items.update', (meta, eventCtx) => {
+		handleSave(meta, { ...ctx, database: eventCtx.database });
 	});
 
 	action('settings.update', (payload) => {
