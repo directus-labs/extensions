@@ -4,6 +4,7 @@ import { useRooms } from '../lib/use-rooms';
 import { BroadcastPayload, Context } from '../types';
 
 interface HandleSaveMeta {
+	origin: string;
 	event: string;
 	payload: Record<string, unknown>;
 	keys: (number | string)[];
@@ -12,7 +13,7 @@ interface HandleSaveMeta {
 
 export async function handleSave(meta: Record<string, unknown>, ctx: Context) {
 	const { env } = ctx;
-	const { keys, collection } = meta as unknown as HandleSaveMeta;
+	const { keys, collection, origin } = meta as unknown as HandleSaveMeta;
 
 	const rooms = useRooms();
 	const bus = useBus(env);
@@ -30,6 +31,7 @@ export async function handleSave(meta: Record<string, unknown>, ctx: Context) {
 		const broadcast: BroadcastPayload = {
 			type: 'save',
 			room: roomName,
+			origin,
 		};
 		bus.publish(BROADCAST_CHANNEL, broadcast);
 	}

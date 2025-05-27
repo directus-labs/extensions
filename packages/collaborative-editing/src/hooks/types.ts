@@ -36,6 +36,7 @@ export interface BaseBroadcastPayload {
 
 export interface BroadcastSavePayload extends BaseBroadcastPayload {
 	type: 'save';
+	origin: string;
 }
 
 export interface BroadcastRoomDocPayload extends BaseBroadcastPayload {

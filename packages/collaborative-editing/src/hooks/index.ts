@@ -77,7 +77,9 @@ export default defineHook(async ({ action, filter }, ctx) => {
 	});
 
 	action('items.update', (meta, eventCtx) => {
-		handleSave(meta, { ...ctx, database: eventCtx.database });
+		if (eventCtx.accountability?.user) {
+			handleSave({ ...meta, origin: eventCtx.accountability.user }, { ...ctx, database: eventCtx.database });
+		}
 	});
 
 	action('settings.update', (payload) => {
