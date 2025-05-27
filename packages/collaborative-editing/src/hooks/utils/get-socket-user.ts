@@ -8,13 +8,15 @@ export async function getSocketUser(
 	const { accountability, services, database: knex, schema } = ctx;
 
 	try {
-		return new services.UsersService({
+		const user = await new services.UsersService({
 			knex,
 			accountability,
 			schema,
 		}).readOne(userId, {
 			fields: ['id', 'first_name', 'last_name', 'avatar'],
 		});
+
+		return user;
 	} catch {
 		console.log(`User awareness payload set to anonymous, no permission to access ${userId}`);
 	}

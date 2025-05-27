@@ -24,6 +24,10 @@ function createWS() {
 
 	const rooms = ref<Set<string>>(new Set());
 
+	function disconnect() {
+		ws.disconnect();
+	}
+
 	const handlers: WSHandler = {
 		message: [],
 	};
@@ -92,6 +96,7 @@ function createWS() {
 	return {
 		client: ws,
 		connected,
+		disconnect,
 		rooms,
 		onOpen,
 		onClose,
