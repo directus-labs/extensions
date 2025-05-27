@@ -217,7 +217,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 
 		// indicate this connection is for yjs
 		this.send({
-			type: 'yjs-connect',
+			type: 'realtime-connect',
 			color: useColor().value,
 			rooms: Array.from(this.ws.rooms.value),
 		});

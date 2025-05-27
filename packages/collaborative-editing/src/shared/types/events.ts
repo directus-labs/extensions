@@ -4,7 +4,14 @@ export type ClientEvent = 'update' | 'awareness' | 'sync' | 'ping' | 'connected'
 
 export type DirectusServerEvent = 'pong';
 
-export type RealtimeServerEvent = 'yjs-connect' | 'update' | 'join' | 'leave' | 'activate' | 'deactivate' | 'refresh';
+export type RealtimeServerEvent =
+	| 'realtime-connect'
+	| 'update'
+	| 'join'
+	| 'leave'
+	| 'activate'
+	| 'deactivate'
+	| 'refresh';
 
 export type ServerEvent = DirectusServerEvent | RealtimeServerEvent;
 
@@ -13,7 +20,7 @@ export type WebsocketBaseMessage = {
 };
 
 export interface ConnectMessage extends WebsocketBaseMessage {
-	type: 'yjs-connect';
+	type: 'realtime-connect';
 	color: AwarenessColor;
 	rooms: string[] | null;
 }

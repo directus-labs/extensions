@@ -39,14 +39,14 @@ export default defineHook(async ({ action, filter }, ctx) => {
 
 	action('websocket.message', async ({ message, client }) => {
 		if (!client.accountability?.user) return;
-		if (message.type !== 'yjs-connect' && sockets.has(client.uid) === false) return;
+		if (message.type !== 'realtime-connect' && sockets.has(client.uid) === false) return;
 
 		console.log(`[realtime:message] Client ${client.uid} sent message ${message.type}`);
 
 		const { type, ...payload } = message;
 
 		switch (type as ServerEvent) {
-			case 'yjs-connect':
+			case 'realtime-connect':
 				handleConnect(client, payload);
 				break;
 			case 'update':
