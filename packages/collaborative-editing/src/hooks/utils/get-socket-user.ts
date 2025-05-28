@@ -18,7 +18,7 @@ export async function getSocketUser(
 
 		return user;
 	} catch {
-		console.log(`User awareness payload set to anonymous, no permission to access ${userId}`);
+		// ignore
 	}
 
 	return {};

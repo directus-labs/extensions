@@ -17,6 +17,4 @@ export function handleClose(client: RealtimeWebSocket, ctx: Context) {
 	});
 
 	sockets.delete(client.uid);
-
-	console.log(`[realtime:close] Client ${client.uid} has closed the connection, removed from all rooms`);
 }

@@ -14,15 +14,12 @@ export async function handleLeave(client: RealtimeWebSocket, message: Omit<Leave
 	const sockets = useSockets();
 	const bus = useBus(env);
 
-	console.log(`[realtime:leave] Event received for client ${client.uid} in room ${room}`);
-
 	sockets.get(client.uid)?.rooms.delete(room);
 
 	rooms.removeUser(room, client.uid);
 
 	// Do not send awareness if a session (tab) is still open
 	if (!isLastUserSessionInRoom(client, room)) {
-		console.log(`[realtime:leave] User awareness event skipped due to other sessions being active`);
 		return;
 	}
 

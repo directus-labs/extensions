@@ -15,8 +15,6 @@ export async function handleActivate(client: RealtimeWebSocket, message: Omit<Ac
 
 	if (!room || !sockets.get(client.uid)?.rooms.has(message.room)) return;
 
-	console.log(`[realtime:activate] Event received for field ${field} in room ${room}`);
-
 	rooms.addField(room, client.id, field);
 
 	const broadcast: BroadcastPayload = {

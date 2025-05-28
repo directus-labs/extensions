@@ -22,8 +22,6 @@ export async function handleUpdate(client: RealtimeWebSocket, message: Omit<Upda
 
 	if (!room || !sockets.get(client.uid)?.rooms.has(roomName)) return;
 
-	console.log(`[realtime:update] Event received from client ${client.uid} in room ${roomName}`);
-
 	const schema = await getSchema();
 
 	const sanitizedPayload = await sanitizePayload(client.accountability, roomName, message.update, {
@@ -33,7 +31,6 @@ export async function handleUpdate(client: RealtimeWebSocket, message: Omit<Upda
 	});
 
 	if (!sanitizedPayload) {
-		console.log(`[realtime:update] Skipping update to doc ${room.doc.clientID} as no sanitized payload`);
 		return;
 	}
 

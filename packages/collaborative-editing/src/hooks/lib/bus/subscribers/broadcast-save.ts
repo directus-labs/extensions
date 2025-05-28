@@ -15,14 +15,10 @@ export function broadcastSave(payload: BroadcastSavePayload) {
 
 		const message: SavePayload = { event: 'save', room };
 
-		console.log(
-			`[realtime:save] Event sent to user ${socket.client.accountability.user} with socket uid ${socket.client.uid}`,
-		);
-
 		try {
 			socket.client.send(JSON.stringify(message));
-		} catch (error) {
-			console.log(error);
+		} catch {
+			// ignore
 		}
 	}
 }

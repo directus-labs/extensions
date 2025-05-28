@@ -17,8 +17,6 @@ export async function handleDeactivate(
 	const rooms = useRooms();
 	const bus = useBus(env);
 
-	console.log(`[realtime:deactivate] Event received for ${client.uid} in room ${room}`);
-
 	if (!room || !sockets.get(client.uid)?.rooms.has(message.room)) return;
 
 	rooms.removeField(room, client.id);

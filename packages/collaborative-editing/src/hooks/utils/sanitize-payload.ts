@@ -25,7 +25,6 @@ export async function sanitizePayload(
 					schema,
 				}).readOne(primaryKey, { fields: [field] });
 			} catch {
-				console.log(`[realtime:sanitize-payload] Skipped ${field} due to insufficient permissions`);
 				continue;
 			}
 		}

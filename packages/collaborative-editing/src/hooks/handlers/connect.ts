@@ -13,9 +13,6 @@ export function handleConnect(client: RealtimeWebSocket, message: Omit<ConnectMe
 
 	// Add back rooms on re-connect
 	if (message.rooms && message.rooms.length) {
-		console.log(
-			`[realtime:connect] Refresh detected for client ${client.uid}, rejoining rooms ${message.rooms.join(',')}`,
-		);
 		// rejoin rooms
 		rooms.forEach((r) => rooms.add(r));
 	}
@@ -24,10 +21,6 @@ export function handleConnect(client: RealtimeWebSocket, message: Omit<ConnectMe
 	client.color = color;
 
 	sockets.set(client.uid, { client, rooms });
-
-	console.log(
-		`[realtime:connect] Client ${client.uid} marked as a yjs client for user ${client.accountability.user} with color ${client.color}`,
-	);
 
 	const payload: ConnectPayload = { event: 'connected' };
 	client.send(JSON.stringify(payload));

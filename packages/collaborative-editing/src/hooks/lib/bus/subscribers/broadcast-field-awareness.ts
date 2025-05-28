@@ -51,18 +51,15 @@ export async function broadcastFieldAwareness(
 						schema,
 					}).readOne(primaryKey, { fields: [field] });
 				} catch {
-					console.log(`[realtime:activate] Field awareness event skipped for ${socket.client.uid}`);
 					continue;
 				}
 			}
 		}
 
-		console.log(`[realtime:awareness:field:${action}] Field awareness event sent to ${socket.client.uid}`);
-
 		try {
 			socket.client.send(JSON.stringify(message));
-		} catch (error) {
-			console.log(error);
+		} catch {
+			// ignore
 		}
 	}
 }

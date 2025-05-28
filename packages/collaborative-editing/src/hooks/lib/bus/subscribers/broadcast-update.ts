@@ -27,23 +27,17 @@ export async function broadcastUpdate(payload: BroadcastUpdatePayload, ctx: Broa
 			services,
 		});
 
+		// Do not send empty events
 		if (socketSanitizedPayload === null) {
-			// Do not send empty events
-			console.log(`[realtime:update] Skipping sending event to ${socket.client.uid} as no sanitized payload`);
-
 			continue;
 		}
 
 		const message: UpdatePayload = { event: 'update', update: socketSanitizedPayload };
 
-		console.log(
-			`[realtime:update] Event sent to user ${socket.client.accountability.user} with socket uid ${socket.client.uid}`,
-		);
-
 		try {
 			socket.client.send(JSON.stringify(message));
-		} catch (error) {
-			console.log(error);
+		} catch {
+			// ignore
 		}
 	}
 }

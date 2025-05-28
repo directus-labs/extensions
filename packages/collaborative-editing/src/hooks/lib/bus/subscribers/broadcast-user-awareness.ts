@@ -53,20 +53,16 @@ export async function broadcastUserAwareness(
 			} as AwarenessUserAddPayload;
 		}
 
-		console.log(`[realtime:user:awareness:${action}] User awareness event sent to ${socket.client.uid}`);
-
 		try {
 			socket.client.send(JSON.stringify(message));
-		} catch (error) {
-			console.log(error);
+		} catch {
+			// ignore
 		}
 	}
 
 	if (action === 'remove') {
 		// delete doc if they are last client in the room
 		if (isRoomEmpty(room)) {
-			console.log(`[realtime:leave] Last client in the room has left, removing room instance`);
-
 			rooms.delete(room);
 		}
 	}

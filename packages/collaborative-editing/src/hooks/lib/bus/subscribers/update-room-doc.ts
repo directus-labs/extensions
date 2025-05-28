@@ -16,7 +16,6 @@ export function updateRoomDoc(payload: BroadcastRoomDocPayload, ctx: BroadcastCo
 	if (!room || !data) return;
 
 	// Apply update to room doc, this will ensure its shared globally for anyone who joins the room
-	console.log(`[realtime:update] Applying update to doc ${room.doc.clientID}`);
 	const changeDoc = new Y.Doc();
 	Y.applyUpdate(changeDoc, Y.encodeStateAsUpdate(room.doc));
 

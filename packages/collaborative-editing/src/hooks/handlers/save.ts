@@ -18,8 +18,6 @@ export async function handleSave(meta: Record<string, unknown>, ctx: Context) {
 	const rooms = useRooms();
 	const bus = useBus(env);
 
-	console.log(`[realtime:save] Event received for ${collection}`);
-
 	for (const key of keys) {
 		const roomName = `${collection}:${key}`;
 		const room = rooms.get(roomName);

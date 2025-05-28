@@ -41,7 +41,7 @@ export default defineHook(async ({ action, filter }, ctx) => {
 		if (!client.accountability?.user) return;
 		if (message.type !== 'realtime-connect' && sockets.has(client.uid) === false) return;
 
-		console.log(`[realtime:message] Client ${client.uid} sent message ${message.type}`);
+		ctx.logger.info(`[realtime:message] Client ${client.uid} sent message ${message.type}`);
 
 		const { type, ...payload } = message;
 		const messageCtx = { ...ctx, database: eventCtx.database };
