@@ -1,4 +1,4 @@
-import { AwarenessColor } from '../interface/types';
+import { AwarenessColor } from '../../interface/types';
 
 export type ClientEvent = 'update' | 'awareness' | 'sync' | 'ping' | 'connected' | 'save';
 
