@@ -68,7 +68,6 @@ export function useFieldRegistry(provider: DirectusProvider) {
 	// Registry methods
 	function registerHandler(handler: FieldHandler) {
 		handlers.set(handler.name, handler);
-		console.log(`Registered field handler: ${handler.name}`);
 
 		// Create debounced deactivation
 		debouncedDeactivations.set(handler.name, createDebouncedDeactivation(handler));
@@ -79,7 +78,6 @@ export function useFieldRegistry(provider: DirectusProvider) {
 
 	function unregisterHandler(name: string) {
 		handlers.delete(name);
-		console.log(`Unregistered field handler: ${name}`);
 	}
 
 	// Core activation/deactivation logic
@@ -104,7 +102,6 @@ export function useFieldRegistry(provider: DirectusProvider) {
 			deactivateField();
 		}
 
-		console.log(`Activating field: ${fieldMeta.field} via ${handler.name}`);
 		activeField.value = { element, fieldMeta, handler };
 		provider.activateField(fieldMeta);
 
@@ -113,19 +110,15 @@ export function useFieldRegistry(provider: DirectusProvider) {
 	}
 
 	function deactivateField() {
-		console.log('deactivateField 1 - activeField.value', activeField.value);
 		if (!activeField.value) return;
 
 		const { element, fieldMeta, handler } = activeField.value;
-
-		console.log('deactivateField 2 - element, fieldMeta, handler', { element, fieldMeta, handler });
 
 		// Check pre-deactivation hook
 		if (handler.onBeforeDeactivate && !handler.onBeforeDeactivate(element, fieldMeta)) {
 			return;
 		}
 
-		console.log(`deactivateField 3 - Deactivating field: ${fieldMeta.field} via ${handler.name}`);
 		provider.deactivateField();
 
 		// Post-deactivation hook
@@ -382,9 +375,6 @@ export const selectFieldHandler: FieldHandler = {
 		checkOnDocumentClick: true,
 		ignoreClickSelectors: ['.v-select', '.v-menu', '.v-overlay'],
 	},
-	onAfterActivate: (el, fieldMeta) => {
-		console.log(`Select field ${fieldMeta.field} activated, el: ${el}`);
-	},
 };
 
 export const wysiwygFieldHandler: FieldHandler = {
@@ -399,9 +389,6 @@ export const wysiwygFieldHandler: FieldHandler = {
 		debounceMs: 100,
 		checkOnDocumentClick: true,
 		ignoreClickSelectors: ['.tox-toolbar', '.tox-menubar', '.tox-sidebar', '.tox-dialog', '.tox-tinymce'],
-	},
-	onAfterActivate: (el, fieldMeta) => {
-		console.log(`WYSIWYG field ${fieldMeta.field} activated, el: ${el}`);
 	},
 	onBeforeDeactivate: () => {
 		// If window doesn't have focus, prevent deactivation

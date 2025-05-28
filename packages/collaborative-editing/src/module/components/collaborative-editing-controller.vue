@@ -60,7 +60,6 @@ watch(enabledCollections, async (newEnabledCollections) => {
 			for (const field of collabFields) {
 				try {
 					await fieldsStore.deleteField(collection, field.field);
-					console.log(`Removed collab interface from ${collection}`);
 				} catch (error) {
 					console.error(`Error removing collab interface from ${collection}:`, error);
 				}
@@ -75,3 +74,9 @@ watch(enabledCollections, async (newEnabledCollections) => {
 <template>
 	<div id="collaborative-editing-controller">Collaborative Editing Enabled: {{ enabledGlobally }}</div>
 </template>
+
+<style>
+#collaborative-editing-controller {
+	display: none;
+}
+</style>

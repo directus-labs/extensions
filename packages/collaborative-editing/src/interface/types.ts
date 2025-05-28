@@ -17,6 +17,7 @@ export interface AwarenessUser {
 	avatar?: string | null | undefined;
 	color: AwarenessColor;
 	isCurrentUser: boolean;
+	rooms: Set<string>; // Changed from optional string to required Set
 }
 
 export interface ActiveField {
@@ -24,7 +25,6 @@ export interface ActiveField {
 	collection: string;
 	field: string;
 	primaryKey: string;
-	lastUpdated: number;
 	interface?: string;
 }
 

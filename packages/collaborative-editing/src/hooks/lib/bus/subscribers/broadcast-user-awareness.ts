@@ -26,6 +26,7 @@ export async function broadcastUserAwareness(
 		type: 'user',
 		action,
 		uid: data.id,
+		room,
 	};
 
 	if (action === 'add') {

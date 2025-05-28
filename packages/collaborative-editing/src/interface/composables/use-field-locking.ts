@@ -31,7 +31,6 @@ export function useFieldLocking() {
 				collection: state.activeField.collection,
 				field: state.activeField.field,
 				primaryKey: state.activeField.primaryKey,
-				lastUpdated: state.activeField.lastUpdated,
 			});
 		}
 

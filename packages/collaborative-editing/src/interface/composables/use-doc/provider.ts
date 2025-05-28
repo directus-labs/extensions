@@ -5,6 +5,7 @@ import { UNDEFINED_VALUE } from '../../../shared/constants';
 import {
 	ActivateMessage,
 	AwarenessUserAddPayload,
+	AwarenessUserRemovePayload,
 	UpdateMessage,
 	WebsocketMessage,
 	WebsocketMessagePayload,
@@ -24,10 +25,10 @@ interface DirectusProviderEvents {
 	'field:activate': (uid: string, field: { field: ActiveField }) => void;
 	'field:deactivate': (uid: string, field: { field: null }) => void;
 	'user:add': (user: Omit<AwarenessUserAddPayload, 'event' | 'type' | 'action'>) => void;
-	'user:remove': (uid: string) => void;
+	'user:remove': (user: Omit<AwarenessUserRemovePayload, 'event' | 'type' | 'action'>) => void;
 	'doc:update': (field: string, value: unknown) => void;
 	'doc:set': (field: string, value: unknown, origin: 'update' | 'sync' | 'form') => void;
-	'item:save': () => void;
+	'item:save': (room: string) => void;
 	debug: (event: string, ...data: unknown[]) => void;
 }
 
@@ -132,23 +133,19 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 				}
 			}
 		} else if (payload.event === 'save') {
-			this.emit('item:save', []);
+			this.emit('item:save', [payload.room]);
 		} else if (payload.event === 'awareness') {
 			// Handle user awareness
 			if (payload.type === 'user') {
 				if (payload.action === 'add') {
-					this.emit('user:add', [
-						{
-							uid: payload.uid,
-							id: payload.id,
-							first_name: payload.first_name,
-							last_name: payload.last_name,
-							avatar: payload.avatar,
-							color: payload.color,
-						},
-					]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
+					const { action, event, type, ...user } = payload;
+
+					this.emit('user:add', [user]);
 				} else {
-					this.emit('user:remove', [payload.uid]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
+					const { action, event, type, ...user } = payload;
+					this.emit('user:remove', [user]);
 				}
 			} else if (payload.type === 'field') {
 				if (payload.action === 'add') {
@@ -160,7 +157,6 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 								field: payload.field,
 								collection: payload.collection,
 								primaryKey: payload.primaryKey,
-								lastUpdated: Date.now(),
 							},
 						},
 					]);
@@ -182,16 +178,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 
 			// Add all existing users
 			for (const user of payload.users) {
-				this.emit('user:add', [
-					{
-						uid: user.uid,
-						id: user.id,
-						first_name: user.first_name,
-						last_name: user.last_name,
-						avatar: user.avatar,
-						color: user.color,
-					},
-				]);
+				this.emit('user:add', [user]);
 			}
 
 			// Set all active fields
@@ -204,7 +191,6 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 							field: field.field,
 							collection: field.collection,
 							primaryKey: field.primaryKey,
-							lastUpdated: Date.now(),
 						},
 					},
 				]);

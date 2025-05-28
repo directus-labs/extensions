@@ -6,26 +6,17 @@ import { ACTIVE_FIELD_IDLE_TIMEOUT } from '../constants';
 const CHECK_INTERVAL = 1000 * 10; // Check every 10 seconds
 
 export const useAwarenessStore = defineStore('awareness', () => {
+	const isHandlingSave = ref(false);
 	const byUid = ref<AwarenessByUid>({});
+	// Lookup of last updated timestamps by uid
+	const fieldLastUpdated = ref<Record<string, number>>({});
+
 	const list = computed(() => {
 		return Object.values(byUid.value);
 	});
 
-	const updateActiveFieldLastUpdated = ({
-		collection,
-		field,
-		primaryKey,
-	}: Omit<ActiveField, 'lastUpdated' | 'uid'>) => {
-		Object.values(byUid.value).forEach((state) => {
-			if (
-				state.activeField &&
-				state.activeField.collection === collection &&
-				state.activeField.field === field &&
-				state.activeField.primaryKey === primaryKey
-			) {
-				state.activeField.lastUpdated = Date.now();
-			}
-		});
+	const updateActiveFieldLastUpdated = (uid: string) => {
+		fieldLastUpdated.value[uid] = Date.now();
 	};
 
 	const setActiveField = (uid: string, field: ActiveField) => {
@@ -34,7 +25,7 @@ export const useAwarenessStore = defineStore('awareness', () => {
 				...byUid.value[uid],
 				activeField: field,
 			};
-			updateActiveFieldLastUpdated(field);
+			updateActiveFieldLastUpdated(uid);
 		}
 	};
 
@@ -51,12 +42,26 @@ export const useAwarenessStore = defineStore('awareness', () => {
 		};
 	};
 
+	const addUserToRoom = (uid: string, room: string) => {
+		if (byUid.value[uid]) {
+			byUid.value[uid].user.rooms.add(room);
+		}
+	};
+
+	const removeUserFromRoom = (uid: string, room: string) => {
+		if (byUid.value[uid]) {
+			byUid.value[uid].user.rooms.delete(room);
+		}
+	};
+
 	const removeActiveUser = (uid: string) => {
 		delete byUid.value[uid];
+		delete fieldLastUpdated.value[uid];
 	};
 
 	const removeActiveField = (uid: string) => {
 		if (byUid.value?.[uid]?.activeField) {
+			delete fieldLastUpdated.value[uid];
 			byUid.value[uid].activeField = null;
 		}
 	};
@@ -65,12 +70,34 @@ export const useAwarenessStore = defineStore('awareness', () => {
 		return Object.values(byUid.value).filter((state) => state.activeField);
 	});
 
+	const roomCollaborators = computed(() => {
+		const currentUser = getCurrentUser();
+		if (!currentUser?.user?.rooms || currentUser.user.rooms.size === 0) return [];
+
+		return Object.values(byUid.value).filter((state) => {
+			if (!state.user?.rooms || state.user.rooms.size === 0) return false;
+			// Check if any of the user's rooms match any of the current user's rooms
+			for (const room of state.user.rooms) {
+				if (currentUser.user.rooms.has(room)) {
+					return true;
+				}
+			}
+			return false;
+		});
+	});
+
+	const currentUserHasRoom = (room: string) => {
+		const currentUser = getCurrentUser();
+		return currentUser?.user?.rooms?.has(room) ?? false;
+	};
+
 	const getCurrentUser = () => {
 		return Object.values(byUid.value).find((state) => state.user?.isCurrentUser);
 	};
 
 	const reset = () => {
 		byUid.value = {};
+		fieldLastUpdated.value = {};
 	};
 
 	// Check for idle fields periodically
@@ -79,7 +106,10 @@ export const useAwarenessStore = defineStore('awareness', () => {
 		const uidsToUnlock: string[] = [];
 
 		for (const uid in byUid.value) {
-			if (now - (byUid.value?.[uid]?.activeField?.lastUpdated ?? 0) > ACTIVE_FIELD_IDLE_TIMEOUT) {
+			const field = byUid.value[uid]?.activeField;
+			if (!field) continue;
+
+			if (now - (fieldLastUpdated.value[uid] ?? 0) > ACTIVE_FIELD_IDLE_TIMEOUT) {
 				uidsToUnlock.push(uid);
 			}
 		}
@@ -101,6 +131,8 @@ export const useAwarenessStore = defineStore('awareness', () => {
 	return {
 		setActiveField,
 		setActiveUser,
+		addUserToRoom,
+		removeUserFromRoom,
 		removeActiveUser,
 		removeActiveField,
 		byUid,
@@ -112,5 +144,9 @@ export const useAwarenessStore = defineStore('awareness', () => {
 		},
 		getCurrentUser,
 		updateActiveFieldLastUpdated,
+		roomCollaborators,
+		fieldLastUpdated,
+		currentUserHasRoom,
+		isHandlingSave,
 	};
 });

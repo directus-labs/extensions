@@ -21,6 +21,7 @@ export function useCurrentUser() {
 			color: userColor.value as AwarenessColor,
 			uid: currentUser.id,
 			isCurrentUser: true,
+			rooms: new Set<string>(),
 		}),
 	);
 }

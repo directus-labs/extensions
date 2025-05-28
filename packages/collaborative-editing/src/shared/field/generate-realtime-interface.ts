@@ -8,7 +8,6 @@ export function generateRealtimeInterface(collection: string): DeepPartial<Field
 		type: 'alias',
 		schema: null,
 		meta: {
-			hidden: true,
 			special: ['alias', 'no-data'],
 			interface: 'presentation-collab-settings-interface',
 			width: 'full',

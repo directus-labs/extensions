@@ -113,6 +113,7 @@ export interface AwarenessUserAddPayload extends WebsocketBaseMessagePayload {
 	last_name?: string | null;
 	avatar?: string | null;
 	color: AwarenessColor;
+	room: string;
 }
 
 export interface AwarenessUserRemovePayload extends WebsocketBaseMessagePayload {
@@ -120,10 +121,12 @@ export interface AwarenessUserRemovePayload extends WebsocketBaseMessagePayload 
 	type: 'user';
 	action: 'remove';
 	uid: string;
+	room: string;
 }
 
 export interface SavePayload extends WebsocketBaseMessagePayload {
 	event: 'save';
+	room: string;
 }
 
 export type WebsocketMessagePayload =

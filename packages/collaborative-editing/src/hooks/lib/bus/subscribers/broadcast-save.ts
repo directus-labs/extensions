@@ -13,7 +13,7 @@ export function broadcastSave(payload: BroadcastSavePayload) {
 			continue;
 		}
 
-		const message: SavePayload = { event: 'save' };
+		const message: SavePayload = { event: 'save', room };
 
 		console.log(
 			`[realtime:save] Event sent to user ${socket.client.accountability.user} with socket uid ${socket.client.uid}`,

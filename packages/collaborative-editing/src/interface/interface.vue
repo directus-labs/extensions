@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { useStores } from '@directus/extensions-sdk';
 import type { Settings } from '@directus/types';
-import { computed, onUnmounted, watch } from 'vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import { useSettings } from '../module/utils/use-settings';
-import { AwarenessUserAddPayload } from '../shared/types/events';
-import { useAvatarStacks } from './composables/use-avatar-stacks';
+import { useFieldAvatars } from './composables/use-field-avatars';
+import { useHeaderAvatars } from './composables/use-header-avatars';
 import { useCurrentUser } from './composables/use-current-user';
 import { useDoc } from './composables/use-doc';
 import { useFieldAwareness } from './composables/use-field-awareness';
 import { useFieldMeta } from './composables/use-field-meta';
 import { useAwarenessStore } from './stores/awarenessStore';
+import { useRouter } from 'vue-router';
 import './styles.css';
 import type { ActiveField } from './types';
 
@@ -19,6 +20,7 @@ const settings = useSettings();
 const awarenessStore = useAwarenessStore();
 const currentUser = useCurrentUser();
 const fieldMeta = useFieldMeta();
+const router = useRouter();
 
 const collaborativeEditingEnabled = computed(() => {
 	const moduleEnabled = (settingsStore.settings as Settings)?.module_bar.find(
@@ -40,7 +42,6 @@ interface FieldValue {
 
 const emit = defineEmits<{
 	setFieldValue: [FieldValue];
-	saveAndStay: [{}];
 }>();
 
 const provider = useDoc({
@@ -50,50 +51,84 @@ const provider = useDoc({
 });
 
 // Initialize field awareness with registry
-const fieldAwareness = useFieldAwareness(provider);
+useFieldAwareness(provider);
 
-useAvatarStacks();
+useFieldAvatars();
 
 const isNew = computed(() => props.primaryKey === '+');
 const room = computed(() => props.collection + ':' + props.primaryKey);
 
-if (collaborativeEditingEnabled.value && !provider.connected.value) {
-	provider.connect();
-}
+useHeaderAvatars(room);
 
-if (!isNew.value && provider.connected.value) {
-	provider.join(room.value);
-}
+watch(
+	[isNew, provider.connected, collaborativeEditingEnabled],
+	([isNew, connected, enabled]) => {
+		if (!isNew && enabled && !connected) {
+			provider.connect();
+		}
 
-watch([isNew, provider.connected], ([isNew, connected]) => {
-	if (!isNew && connected) {
-		provider.join(room.value);
-	}
-});
+		if (!isNew && connected) {
+			provider.join(room.value);
+		}
+	},
+	{ immediate: true },
+);
 
 provider.on('debug', (...data) => {
 	console.dir(data, { depth: null });
 });
 
-provider.on('user:add', (user: Omit<AwarenessUserAddPayload, 'event' | 'type' | 'action'>) => {
-	const userAwareness = {
-		...user,
-		isCurrentUser: user.id === currentUser.value.id,
-	};
-	awarenessStore.setActiveUser(user.uid, userAwareness);
+provider.on('user:add', (user: any) => {
+	const existingUser = awarenessStore.byUid[user.uid];
+
+	// For sync events, the room isn't included in the user object, so we use the current room
+	const userRoom = user.room || room.value;
+
+	if (isNew.value) {
+		return;
+	}
+
+	if (existingUser) {
+		// User already exists, just add the room
+		awarenessStore.addUserToRoom(user.uid, userRoom);
+	} else {
+		// New user, create them with the room
+		const userAwareness = {
+			...user,
+			isCurrentUser: user.id === currentUser.value.id,
+			rooms: new Set<string>(),
+		};
+
+		awarenessStore.setActiveUser(user.uid, userAwareness);
+		awarenessStore.addUserToRoom(user.uid, userRoom);
+	}
 });
 
-provider.on('user:remove', (uid: string) => {
-	awarenessStore.removeActiveUser(uid);
+provider.on('user:remove', (payload: { uid: string; room: string }) => {
+	if (isNew.value) {
+		return;
+	}
+
+	awarenessStore.removeUserFromRoom(payload.uid, payload.room);
+
+	// remove user if they have no more rooms
+	const userState = awarenessStore.byUid[payload.uid];
+	if (userState && userState.user.rooms.size === 0) {
+		awarenessStore.removeActiveUser(payload.uid);
+	}
 });
 
 provider.on('field:activate', (uid: string, payload: { field: ActiveField }) => {
+	// Skip field activation for new items
+	if (isNew.value) {
+		return;
+	}
+
 	const fieldMetaData = fieldMeta.getFieldMetaFromPayload(payload.field);
 	if (fieldMetaData) {
 		awarenessStore.setActiveField(uid, {
 			...fieldMetaData,
 			uid,
-			lastUpdated: Date.now(),
 		});
 	}
 });
@@ -102,14 +137,16 @@ provider.on('field:deactivate', (uid: string) => {
 	awarenessStore.removeActiveField(uid);
 });
 
-provider.on('item:save', () => {
-	emit('saveAndStay', {});
+provider.on('item:save', (roomValue: string) => {
+	// NOTE: might make sense to pop a notification here to alert clients
+	// that the item has been comitted by another user
 });
 
 onUnmounted(() => {
-	provider.leave();
-	awarenessStore.reset();
-	fieldAwareness.cleanup();
+	// Only leave if we actually joined (not a new item)
+	if (!isNew.value) {
+		provider.leave();
+	}
 });
 </script>
 

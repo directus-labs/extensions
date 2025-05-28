@@ -61,11 +61,17 @@ export function useDoc(opts: UseYJSOptions = {}) {
 						const primaryKey = fieldEl.getAttribute('data-primary-key');
 						if (collection && primaryKey) {
 							const awarenessStore = useAwarenessStore();
-							awarenessStore.updateActiveFieldLastUpdated({
-								collection,
-								field: key,
-								primaryKey,
+							// Find the user who is editing this specific field
+							const userWithField = Object.entries(awarenessStore.byUid).find((entry) => {
+								const field = entry[1].activeField;
+								return (
+									field && field.field === key && field.collection === collection && field.primaryKey === primaryKey
+								);
 							});
+
+							if (userWithField) {
+								awarenessStore.updateActiveFieldLastUpdated(userWithField[0]);
+							}
 						}
 					}
 				}
