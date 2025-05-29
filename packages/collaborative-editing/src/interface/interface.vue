@@ -54,7 +54,7 @@ useFieldAwareness(provider);
 
 useFieldAvatars();
 
-const isNew = computed(() => props.primaryKey === '+');
+const isNew = computed(() => props.primaryKey === undefined || props.primaryKey === '+');
 const room = computed(() => props.collection + ':' + props.primaryKey);
 
 useHeaderAvatars(room);
