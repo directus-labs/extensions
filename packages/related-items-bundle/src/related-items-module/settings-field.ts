@@ -17,6 +17,6 @@ export const system_field: DeepPartial<Field> = {
 			allowNone: true,
 		},
 		note: 'Select the collections to include the related items module.',
-		width: 'half',
+		width: 'full',
 	},
 };
