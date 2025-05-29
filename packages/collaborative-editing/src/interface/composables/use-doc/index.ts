@@ -14,16 +14,18 @@ export { DirectusProvider } from './provider';
 export function useDoc(opts: UseYJSOptions = {}) {
 	const doc = new Y.Doc();
 
-	const formValues = inject<Record<string, unknown>>('values')!;
+	const formValues = inject<Record<string, unknown>>('values') ?? {};
 
 	const initialValues = ref(unref(formValues));
+	const edits = ref(unref(formValues));
 
 	// once data is loaded assign initial values
 	if (initialValues) {
 		watch(
 			formValues,
 			(v) => {
-				initialValues.value = v;
+				initialValues.value = cloneDeep(v);
+				edits.value = cloneDeep(v);
 			},
 			{ once: true },
 		);
@@ -39,20 +41,23 @@ export function useDoc(opts: UseYJSOptions = {}) {
 	if (formValues) {
 		watch(
 			formValues,
-			(changedV, currentV) => {
-				if (!currentV || !changedV) return;
-				if (isEqual(changedV, currentV)) return;
+			(changedV) => {
+				if (!changedV) return;
+				if (isEqual(changedV, edits.value)) return;
 				// change will only ever be one aside from when we discard
-				if (isEqual(changedV, initialValues.value) && changeCount(currentV, changedV) > 1) return;
+				if (isEqual(changedV, initialValues.value) && changeCount(edits.value, changedV) > 1) return;
 
-				for (const [key, current] of entries(currentV)) {
+				for (const [key, current] of entries(edits.value)) {
 					const changeV = changedV[key];
 
 					if (isEqual(current, changeV)) {
 						continue;
 					}
 
-					provider.emit('doc:set', [cloneDeep(key), cloneDeep(changeV), 'form']);
+					provider.emit('doc:set', [key, cloneDeep(changeV), 'form']);
+
+					// track edits to later compare against
+					edits.value[key] = cloneDeep(changeV);
 
 					// Find the field element and update the timestamp
 					const fieldEl = document.querySelector(`[data-field="${key}"]`);
