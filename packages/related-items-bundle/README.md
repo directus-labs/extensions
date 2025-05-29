@@ -14,7 +14,7 @@ Click on an item to open the draw for more information or make changes to that i
 
 ## Requirements
 
-- Directus 11.0.0+
+- Directus 11.1.2+
 - Admin user to initialize module
 
 ## Installation
