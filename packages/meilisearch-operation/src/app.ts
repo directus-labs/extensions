@@ -109,12 +109,7 @@ export default defineOperationApp({
 							required: action !== 'read',
 						}
 					: {
-							width: 'full',
-							interface: 'presentation-notice',
-							options: {
-								icon: false,
-								text: 'Document not required.',
-							},
+							hidden: true,
 						},
 			},
 		];
