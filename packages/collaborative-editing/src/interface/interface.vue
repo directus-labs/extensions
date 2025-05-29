@@ -1,33 +1,24 @@
 <script setup lang="ts">
 import { useStores } from '@directus/extensions-sdk';
 import type { Settings } from '@directus/types';
-import { computed, onMounted, onUnmounted, watch } from 'vue';
+import { computed, onUnmounted, watch } from 'vue';
 import { useSettings } from '../module/utils/use-settings';
-import { useFieldAvatars } from './composables/use-field-avatars';
-import { useHeaderAvatars } from './composables/use-header-avatars';
 import { useCurrentUser } from './composables/use-current-user';
 import { useDoc } from './composables/use-doc';
+import { useFieldAvatars } from './composables/use-field-avatars';
 import { useFieldAwareness } from './composables/use-field-awareness';
 import { useFieldMeta } from './composables/use-field-meta';
+import { useHeaderAvatars } from './composables/use-header-avatars';
 import { useAwarenessStore } from './stores/awarenessStore';
-import { useRouter } from 'vue-router';
 import './styles.css';
 import type { ActiveField } from './types';
 
 const { useSettingsStore } = useStores();
 const settingsStore = useSettingsStore();
-const settings = useSettings();
+const { settings } = useSettings();
 const awarenessStore = useAwarenessStore();
 const currentUser = useCurrentUser();
 const fieldMeta = useFieldMeta();
-
-const collaborativeEditingEnabled = computed(() => {
-	const moduleEnabled = (settingsStore.settings as Settings)?.module_bar.find(
-		(module) => module.type === 'module' && module.id === 'collab-module',
-	)?.enabled;
-	const enabled = settings.settings.value?.enabled_globally;
-	return moduleEnabled && enabled;
-});
 
 const props = defineProps<{
 	collection: string;
@@ -49,18 +40,28 @@ const provider = useDoc({
 	},
 });
 
-// Initialize field awareness with registry
-useFieldAwareness(provider);
-
-useFieldAvatars();
-
 const isNew = computed(() => props.primaryKey === undefined || props.primaryKey === '+');
 const room = computed(() => props.collection + ':' + props.primaryKey);
 
-useHeaderAvatars(room);
+const realtimeEnabled = computed(() => {
+	const moduleEnabled = (settingsStore.settings as Settings)?.module_bar.find(
+		(module) => module.type === 'module' && module.id === 'collab-module',
+	)?.enabled;
+	const enabledGlobally = settings.value?.enabled_globally;
+
+	return moduleEnabled && enabledGlobally;
+});
+
+const showStatus = computed(() => {
+	if (!realtimeEnabled.value) return false;
+	if (isNew.value) return false;
+	if (provider.connected.value) return false;
+
+	return true;
+});
 
 watch(
-	[isNew, provider.connected, collaborativeEditingEnabled],
+	[isNew, provider.connected, realtimeEnabled],
 	([isNew, connected, enabled]) => {
 		if (!isNew && enabled && !connected) {
 			provider.connect();
@@ -141,6 +142,11 @@ provider.on('item:save', (roomValue: string) => {
 	// that the item has been comitted by another user
 });
 
+// Initialize field awareness with registry
+useFieldAwareness(provider);
+useFieldAvatars();
+useHeaderAvatars(room);
+
 onUnmounted(() => {
 	// Only leave if we actually joined (not a new item)
 	if (!isNew.value) {
@@ -150,7 +156,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<div v-if="collaborativeEditingEnabled && !provider.connected.value" class="collaborative-interface">
+	<div v-if="showStatus" class="collaborative-interface">
 		<v-notice type="danger" center class="connection-status">Realtime status: connecting</v-notice>
 	</div>
 </template>
