@@ -16,17 +16,27 @@ const { users } = defineProps<{
 			v-for="awareness in [...unref(users)].reverse() ?? []"
 			:key="awareness.user.uid"
 			:user="awareness.user"
-			class="avatar"
+			class="user-avatar"
 			:small="small"
 		/>
 	</div>
 </template>
 
 <style>
-.avatar-stack-container {
+.title-container:has(~ .actions.active) .header-avatars-container {
+	display: none;
+}
+.header-avatars-container {
 	position: relative;
 	display: inline-block;
-	margin-left: 10px;
+	margin-left: auto;
+	margin-right: 4px;
+}
+
+.field-avatar-container {
+	position: absolute;
+	right: 0;
+	top: 0;
 }
 </style>
 
@@ -38,26 +48,21 @@ const { users } = defineProps<{
 	position: relative;
 }
 
-.avatar-stack.small {
-	margin-left: 4px;
-	display: inline-flex;
-}
-
-.avatar {
-	margin-right: -8px;
+.user-avatar {
+	margin-right: -2px;
 	position: relative;
 	transition: all var(--fast);
 }
 
-.avatar:last-child {
+.user-avatar:last-child {
 	opacity: 1;
 }
 
-.avatar:first-child {
+.user-avatar:first-child {
 	margin-right: 0;
 }
 
-.avatar-stack:hover .avatar {
+.avatar-stack:hover .user-avatar {
 	margin-right: 4px;
 	opacity: 1;
 }

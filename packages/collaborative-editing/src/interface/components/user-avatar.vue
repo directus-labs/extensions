@@ -44,30 +44,24 @@ const avatarBackgroundColor = computed(() => {
 </script>
 
 <template>
-	<div
-		v-tooltip.bottom="name"
-		class="avatar"
-		:class="{ small, ['unknown-user']: isUnknownUser }"
-		:style="{
-			backgroundColor: avatarBackgroundColor,
-			borderColor: avatarBorderColor,
-		}"
-	>
+	<div v-tooltip.bottom="name" class="avatar-container" :class="{ small, ['unknown-user']: isUnknownUser }">
 		<div>
-			<div v-if="isUnknownUser">
-				<v-icon name="person_outline" class="unknown-user-icon" />
-			</div>
-			<div v-else>
-				<v-image
-					v-if="avatarSrc && !avatarError"
-					:width="small ? '20px' : '24px'"
-					:src="avatarSrc"
-					@error="avatarError = $event"
-				/>
-
-				<div v-else class="initials">
-					{{ initials }}
-				</div>
+			<div
+				class="avatar"
+				:style="{
+					backgroundColor: avatarBackgroundColor,
+					borderColor: avatarBorderColor,
+				}"
+			>
+				<template v-if="isUnknownUser">
+					<v-icon name="person_outline" class="unknown-user-icon" />
+				</template>
+				<template v-else>
+					<v-image v-if="avatarSrc && !avatarError" :src="avatarSrc" @error="avatarError = $event" />
+					<div v-else class="initials">
+						{{ initials }}
+					</div>
+				</template>
 			</div>
 		</div>
 	</div>
@@ -75,67 +69,47 @@ const avatarBackgroundColor = computed(() => {
 
 <style scoped>
 .avatar {
-	width: 28px;
-	height: 28px;
-	padding: 2px;
 	border-radius: 50%;
-	border-width: 2px;
+	border-width: 1.5px;
 	border-style: solid;
 	cursor: default;
+	outline: 1.5px solid #fff;
+
 	display: flex;
-	align-items: center;
+	width: 24px;
+	height: 24px;
 	justify-content: center;
-	outline: 2px solid #fff;
+	align-items: center;
+	gap: 0.46875rem;
+	flex-shrink: 0;
+	aspect-ratio: 1/1;
+
+	color: var(--theme--foreground-accent, #172940);
+	font-family: var(--theme--fonts--sans--font-family, Inter);
+	text-align: center;
+	font-size: 0.5625rem;
+	font-weight: 600;
 }
 
-.avatar.small {
-	width: 22px;
-	height: 22px;
-	padding: 1px;
-}
-
-.avatar div {
-	width: 100%;
-	height: 100%;
+.avatar > img,
+.avatar > .unknown-user-icon,
+.avatar > .initials {
 	border-radius: 50%;
-	overflow: hidden;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	position: relative;
-}
-
-.avatar.small div {
 	width: 100%;
 	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .initials {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	font-size: 12px;
-	font-weight: 600;
-	color: var(--theme--foreground-accent, #172940);
-	font-family: var(--fonts-family-sans, Inter);
-	text-align: center;
 	line-height: 1;
-}
-
-.avatar.small .initials {
-	font-size: 0.75rem;
-	font-style: normal;
-	font-weight: 600;
-	line-height: 0.9375rem; /* 125% */
-}
-
-.unknown-user-icon {
-	color: var(--theme--foreground-subdued);
-	width: 100%;
-	height: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+
+	/* the font itself has spacing that prevents it from being perfectly centered */
+	letter-spacing: -0.015em;
+	transform: translateY(0.5px);
 }
 </style>

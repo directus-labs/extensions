@@ -57,9 +57,6 @@ export function useFieldAvatars() {
 			// Find the field container
 			const fieldContainer = fieldElement.closest('.field') || fieldElement;
 
-			// Find label if it exists
-			const fieldLabel = fieldContainer.querySelector('.field-label');
-
 			// Look for existing avatar stack
 			let container = fieldContainer.querySelector(`.${containerClass}`) as HTMLElement;
 			let existingApp: AppInstance | undefined;
@@ -68,19 +65,9 @@ export function useFieldAvatars() {
 				container = document.createElement('div');
 				container.classList.add(containerClass);
 
-				// If field label exists, append to it, otherwise add after the field
-				if (fieldLabel) {
-					// Insert after the field label text
-					const fieldName = fieldLabel.querySelector('.field-name');
-
-					if (fieldName) {
-						fieldName.append(container);
-					} else {
-						fieldLabel.append(container);
-					}
-				} else {
-					// Insert after the field element
-					fieldElement.parentElement?.insertBefore(container, fieldElement.nextSibling);
+				// If field container exists, append to it, otherwise add after the field
+				if (fieldContainer) {
+					fieldContainer.append(container);
 				}
 			} else {
 				// Find and unmount any existing app in this container

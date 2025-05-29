@@ -14,6 +14,10 @@
 	cursor: not-allowed;
 }
 
-.field[data-field^=collab_] {
+.collab-field-locked .v-input {
+	border-radius: var(--theme--border-radius);
+}
+
+.field[data-field^='collab_'] {
 	position: absolute !important;
 }
