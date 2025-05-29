@@ -5,7 +5,7 @@ export default defineInterface({
 	id: 'presentation-collab-settings-interface',
 	name: 'Collaboration',
 	icon: 'arrow_selector_tool',
-	description: 'Collaboration Settings',
+	description: 'A realtime extension that enables data synchronization across collections.',
 	component: InterfaceComponent,
 	options: null,
 	hideLabel: true,

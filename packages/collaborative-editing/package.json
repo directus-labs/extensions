@@ -1,16 +1,40 @@
 {
 	"name": "@directus-labs/collaborative-editing",
-	"description": "Please enter a description for your extension",
-	"icon": "extension",
+	"type": "module",
 	"version": "1.0.0",
+	"icon": "extension",
+	"description": "A realtime extension that enables data synchronization across collections.",
+	"license": "MIT",
+	"homepage": "https://github.com/directus-labs/extensions#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git"
+	},
+	"bugs": {
+		"url": "https://github.com/directus-labs/extensions/issues"
+	},
+	"author": {
+		"name": "Directus Labs",
+		"url": "https://github.com/directus-labs"
+	},
+	"contributors": [
+		{
+			"name": "robluton",
+			"url": "https://github.com/robluton"
+		},
+		{
+			"name": "ComfortablyCoding",
+			"url": "https://github.com/ComfortablyCoding"
+		}
+	],
+	"files": [
+		"dist"
+	],
 	"keywords": [
 		"directus",
 		"directus-extension",
-		"directus-extension-bundle"
-	],
-	"type": "module",
-	"files": [
-		"dist"
+		"directus-extension-bundle",
+		"realtime"
 	],
 	"directus:extension": {
 		"type": "bundle",
@@ -35,7 +59,7 @@
 				"source": "src/hooks/index.ts"
 			}
 		],
-		"host": "^10.10.0"
+		"host": "^10.0.0 || ^11.0.0"
 	},
 	"scripts": {
 		"build": "directus-extension build",
