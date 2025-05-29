@@ -14,20 +14,15 @@ export default defineHook(({ action }, { services }) => {
 				schema,
 			});
 
-			// Fetch all fields
 			const fields: Field[] = await fieldService.readAll();
-			// Filter to existing fields
 			const existingFields = fields.filter((f) => f.field === 'directus_related_items_alias');
-			// Filter a list of orphaned fields
 			const existingFieldsToDelete = existingFields.filter((f) => !collections.includes(f.collection));
 
 			existingFieldsToDelete.forEach(async (f) => {
-				// Remove orphaned fields
 				await fieldService.deleteField(f.collection, f.field);
 			});
 
 			collections.filter((c) => !existingFields.some((f) => f.collection === c)).forEach(async (c) => {
-				// Create new fields
 				await fieldService.createField(c, alias_field);
 			});
 		}

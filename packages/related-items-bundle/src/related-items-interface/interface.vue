@@ -15,8 +15,6 @@ const props = withDefaults(
 );
 
 const { collection, primaryKey, loading } = toRefs(props);
-
-// refreshList(primaryKey.value);
 </script>
 
 <template>

@@ -35,9 +35,7 @@ async function initializeApp(retry: number = 0) {
 	const settingsStore = useSettingsStore();
 
 	try {
-		// Exit if no settings found
 		if (!('related_items_collections' in settingsStore.settings)) {
-			// Create required fields
 			await fieldStore.upsertField('directus_settings', 'related_items_collections', system_field);
 			await settingsStore.hydrate();
 		}

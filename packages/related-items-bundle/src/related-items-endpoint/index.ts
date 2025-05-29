@@ -34,7 +34,6 @@ export default defineEndpoint({
 			const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
 			const schema = await getSchema();
 
-			// Services
 			const collectionService = new CollectionsService({
 				accountability,
 				schema,
@@ -60,19 +59,11 @@ export default defineEndpoint({
 				return id ? await itemService.readOne(id) : await itemService.readByQuery(query);
 			}
 
-			// Fetch context
 			const requested_item: Record<string, any> = await fetchItem({ collection, id: primaryId, query });
-
-			// Fetch all relations
 			const relations: Relation[] = await relationService.readAll();
-
-			// Extract O2M relations for current collection
 			const related_o2m_collections: Relation[] = relations.filter((r) => r.collection === collection);
-
-			// Extract M2O relations for current collection
 			const related_m2o_collections: Relation[] = relations.filter((r) => r.related_collection === collection || r.meta?.one_allowed_collections?.includes(collection));
 
-			// Fetch collection metadata
 			async function fetchCollectionInfo({ collection, field_name, item_id, relation }: { collection: string | null; field_name: string; item_id: number | string | number[] | string[]; relation: Relation }): Promise<CollectionDetail | null> {
 				if (!collection) return null;
 				const current_collection: Collection = await collectionService.readOne(collection);
@@ -83,20 +74,15 @@ export default defineEndpoint({
 				return { property: current_collection, display_template, template_fields, field_name, many_field: relation.meta?.junction_field, item_id, fields, primaryKey };
 			}
 
-			// Iterate over "Any" collections and fetch metadata
 			async function fetchM2aCollectionInfo({ collections, m2m_relation, relation }: { collections: string[]; m2m_relation: Relation; relation: Relation }) {
 				if (collections.length === 0 || m2m_relation === null) return [];
 				const promises = collections.map(async (collection) => {
 					if (m2m_relation.meta?.many_field && m2m_relation.meta.junction_field && m2m_relation.meta?.one_collection_field) {
-						// Field containing the ID of the linked item
 						const many_field: string = m2m_relation.meta?.many_field;
-						// Field containing the ID of the parent item
 						const junction_field: string = m2m_relation.meta.junction_field;
-						// Field containing the collection ID
 						const one_collection_field: string = m2m_relation.meta?.one_collection_field;
 
 						try {
-							// Fetch IDs of related content
 							const m2a_junction_items: Record<string, number | string>[] = await fetchItem({ collection: m2m_relation.collection, query: {
 								fields: [
 									many_field,
@@ -112,7 +98,6 @@ export default defineEndpoint({
 								limit: -1,
 							} });
 
-							// List of all item IDs belonging to the primary ID
 							const item_ids = m2a_junction_items.map((i) => i[many_field]) as number[] | string[];
 							return await fetchCollectionInfo({ collection, field_name: relation.meta?.one_field ?? relation.field, item_id: item_ids, relation });
 						}
@@ -129,7 +114,6 @@ export default defineEndpoint({
 			}
 
 			async function build_output({ o2m, is_m2a, is_junction, relation_type, collection, related_collection, relation }: { o2m: boolean; is_m2a: boolean; is_junction: boolean; relation_type: string; collection: CollectionDetail; related_collection?: string; relation: Relation }) {
-				// Build array of fields required for visual output
 				const itemFields = [
 					relation_type === 'm2m' ? `${collection.many_field}.${collection.primaryKey}` : collection.primaryKey,
 					...collection.template_fields.map((f) => relation_type === 'm2m' ? `${collection.many_field}.${f}` : f),
@@ -155,7 +139,6 @@ export default defineEndpoint({
 					),
 				];
 
-				// Filters to fetch related content
 				const itemFilters = o2m
 					? (Array.isArray(collection.item_id)
 							? {
@@ -174,7 +157,6 @@ export default defineEndpoint({
 							},
 						};
 
-				// Top level collection info
 				const collectionInfo = {
 					collection: collection.property.collection,
 					fields: itemFields,
@@ -235,10 +217,8 @@ export default defineEndpoint({
 
 					const related_collection = await fetchCollectionInfo({
 						collection: relatedCollection(),
-						field_name: field, // M2O: Field in current table where the Many item ID lived
-						// O2M: Field in Many table where the current item ID lived
+						field_name: field,
 						item_id: o2m ? primaryId : requested_item[field],
-						// O2M: Current Item ID    M2O: ID of Item in Many table
 						relation: r,
 					});
 
