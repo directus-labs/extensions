@@ -122,14 +122,18 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 
 		this.emit('debug', ['message:payload', payload]);
 
+		// discard events that are not from this room
+		if ('room' in payload && payload.room !== this.room) return;
+
 		if (payload.event === 'connected') {
 			this.emit('connected', []);
 		} else if (payload.event === 'update') {
-			const update = payload.update;
-
-			if (update) {
+			if (payload.update) {
+				const update = payload.update;
 				for (const field of Object.keys(update)) {
-					this.emit('doc:set', [field, update[field], 'update']);
+					setTimeout(() => {
+						this.emit('doc:set', [field, update[field], 'update']);
+					}, 1);
 				}
 			}
 		} else if (payload.event === 'save') {

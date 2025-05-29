@@ -84,6 +84,7 @@ export interface SyncPayload extends WebsocketBaseMessagePayload {
 export interface UpdatePayload extends WebsocketBaseMessagePayload {
 	event: 'update';
 	update: Record<string, unknown> | null;
+	room: string;
 }
 
 export interface AwarenessFieldActivatePayload extends WebsocketBaseMessagePayload {

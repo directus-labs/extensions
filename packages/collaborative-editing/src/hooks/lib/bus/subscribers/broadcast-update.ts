@@ -32,7 +32,7 @@ export async function broadcastUpdate(payload: BroadcastUpdatePayload, ctx: Broa
 			continue;
 		}
 
-		const message: UpdatePayload = { event: 'update', update: socketSanitizedPayload };
+		const message: UpdatePayload = { event: 'update', update: socketSanitizedPayload, room };
 
 		try {
 			socket.client.send(JSON.stringify(message));
