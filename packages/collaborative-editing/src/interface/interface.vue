@@ -150,9 +150,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<div v-if="collaborativeEditingEnabled" class="collaborative-interface">
-		<div v-if="!provider.connected.value" class="connection-status">Collaboration status: connecting</div>
-		<slot />
+	<div v-if="collaborativeEditingEnabled && !provider.connected.value" class="collaborative-interface">
+		<v-notice type="danger" center class="connection-status">Realtime status: connecting</v-notice>
 	</div>
 </template>
 
@@ -165,10 +164,6 @@ onUnmounted(() => {
 	position: fixed;
 	bottom: 10px;
 	right: 10px;
-	background: rgba(255, 0, 0, 0.7);
-	color: white;
-	padding: 5px 10px;
-	border-radius: 4px;
 	font-size: 12px;
 	z-index: 9999;
 }
