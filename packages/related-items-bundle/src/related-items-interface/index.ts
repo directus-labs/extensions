@@ -7,6 +7,7 @@ export default defineInterface({
 	icon: 'hub',
 	description: 'Show related items for the current record.',
 	component: InterfaceComponent,
+	hideLabel: true,
 	options: null,
 	types: ['alias'],
 	localTypes: ['presentation'],
