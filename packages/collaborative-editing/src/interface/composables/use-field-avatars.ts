@@ -1,8 +1,10 @@
-import { onUnmounted, ref, watch } from 'vue';
+import { onUnmounted, ref, watch, computed } from 'vue';
 import AvatarStack from '../components/avatar-stack.vue';
 import { getFieldFromDOM } from '../utils';
 import { createAppWithDirectus } from '../utils/create-app-with-directus';
 import { useAwarenessStore } from '../stores/awarenessStore';
+import isEqual from 'lodash-es/isEqual';
+import { ActiveField } from '../types';
 const containerClass = 'field-avatar-container';
 
 interface AppInstance {
@@ -14,8 +16,25 @@ interface AppInstance {
 export function useFieldAvatars() {
 	const apps = ref<AppInstance[]>([]);
 	const awarenessStore = useAwarenessStore();
+	const lastActiveFields = ref<{ uid: string; field: ActiveField | null }[]>([]);
+
+	const activeFields = computed(() => {
+		return Object.entries(awarenessStore.byUid)
+			.filter(([, state]) => state.activeField)
+			.map(([uid, state]) => ({
+				uid,
+				field: state.activeField,
+			}));
+	});
 
 	function createFieldAvatars() {
+		// If the active fields haven't changed, don't recreate the avatars
+		if (isEqual(activeFields.value, lastActiveFields.value)) {
+			return;
+		}
+
+		lastActiveFields.value = activeFields.value;
+
 		// Clean up existing avatar stacks
 		for (const app of apps.value) {
 			app.unmount();
@@ -24,21 +43,12 @@ export function useFieldAvatars() {
 		apps.value = [];
 
 		// Create new avatar stacks for fields with users
-		for (const [, state] of Object.entries(awarenessStore.byUid)) {
-			// Skip users without active fields
-			if (!state.activeField) {
+		for (const { uid, field } of activeFields.value) {
+			if (!field?.collection || !field?.field || !field?.primaryKey) {
 				continue;
 			}
 
-			if (!state.activeField.collection || !state.activeField.field || !state.activeField.primaryKey) {
-				continue;
-			}
-
-			const fieldElement = getFieldFromDOM(
-				state.activeField.collection,
-				state.activeField.field,
-				state.activeField.primaryKey,
-			);
+			const fieldElement = getFieldFromDOM(field.collection, field.field, field.primaryKey);
 
 			if (!fieldElement) {
 				continue;
@@ -76,16 +86,13 @@ export function useFieldAvatars() {
 				// Find and unmount any existing app in this container
 				existingApp = apps.value.find((app) => app.container === container);
 				if (existingApp) {
-					console.log('existing app found and unmounting');
 					existingApp.unmount();
 					apps.value = apps.value.filter((app) => app !== existingApp);
 				}
 			}
-
-			console.log('creating app');
 			// Only show the avatar for the user who has activated this field
 			const app = createAppWithDirectus(AvatarStack, {
-				users: [state],
+				users: [awarenessStore.byUid[uid]],
 				small: true, // Use small avatars to fit better in the field label
 			}) as AppInstance;
 
@@ -97,8 +104,11 @@ export function useFieldAvatars() {
 	}
 
 	watch(
-		() => awarenessStore.byUid,
-		() => {
+		activeFields,
+		(newVal, oldVal) => {
+			if (isEqual(newVal, oldVal)) {
+				return;
+			}
 			createFieldAvatars();
 		},
 		{ deep: true },

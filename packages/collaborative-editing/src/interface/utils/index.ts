@@ -134,3 +134,23 @@ export function getAssetUrl(filename: string, isDownload?: boolean): string {
 
 	return assetUrl.href;
 }
+
+type RoomInput = string | { collection: string; primaryKey: string };
+
+export function isValidRoom(input: RoomInput): boolean {
+	let collection: string;
+	let primaryKey: string;
+
+	if (typeof input === 'string') {
+		const [col, key] = input.split(':');
+		if (!col || !key) return false;
+		collection = col;
+		primaryKey = key;
+	} else {
+		collection = input.collection;
+		primaryKey = input.primaryKey;
+	}
+
+	const numKey = Number(primaryKey);
+	return typeof collection === 'string' && typeof primaryKey === 'string' && Number.isInteger(numKey) && numKey > 0;
+}

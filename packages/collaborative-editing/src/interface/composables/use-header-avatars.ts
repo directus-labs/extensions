@@ -3,6 +3,7 @@ import AvatarStack from '../components/avatar-stack.vue';
 import { createAppWithDirectus } from '../utils/create-app-with-directus';
 import { useAwarenessStore } from '../stores/awarenessStore';
 import { useDrawerState } from './use-drawer-state';
+import { isValidRoom } from '../utils';
 
 const containerClass = 'header-avatars-container';
 
@@ -71,6 +72,8 @@ export function useHeaderAvatars(currentRoom: ComputedRef<string>) {
 	async function createHeaderAvatars() {
 		const roomValue = unref(currentRoom);
 
+		if (!isValidRoom(roomValue)) return;
+
 		// Prevent concurrent creation
 		if (isCreatingHeader.value) return;
 		isCreatingHeader.value = true;
@@ -95,8 +98,14 @@ export function useHeaderAvatars(currentRoom: ComputedRef<string>) {
 			// Use the appropriate container based on whether THIS instance is in the drawer
 			if (isDrawerRoom.value && drawerContainer) {
 				titleContainer = drawerContainer.querySelector('.title-container');
+				// Remove any existing avatar containers in the drawer
+				const existingDrawerContainers = drawerContainer.querySelectorAll(`.${containerClass}`);
+				existingDrawerContainers.forEach((container) => container.remove());
 			} else if (!isDrawerRoom.value && mainContainer) {
 				titleContainer = mainContainer.querySelector('.title-container');
+				// Remove any existing avatar containers in the main container
+				const existingMainContainers = mainContainer.querySelectorAll(`.${containerClass}`);
+				existingMainContainers.forEach((container) => container.remove());
 			}
 
 			if (!titleContainer) {
@@ -109,10 +118,6 @@ export function useHeaderAvatars(currentRoom: ComputedRef<string>) {
 				lastCollaboratorUIDs.value = new Set();
 				return;
 			}
-
-			// Remove any existing avatar containers in this title container for this room
-			const existingContainers = titleContainer.querySelectorAll(`${containerClass}[data-room="${roomValue}"]`);
-			existingContainers.forEach((container) => container.remove());
 
 			const container = document.createElement('div');
 			container.classList.add(containerClass);

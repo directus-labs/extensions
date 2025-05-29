@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useStores } from '@directus/extensions-sdk';
 import type { Settings } from '@directus/types';
-import { computed, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, watch } from 'vue';
 import { useSettings } from '../module/utils/use-settings';
 import { useFieldAvatars } from './composables/use-field-avatars';
 import { useHeaderAvatars } from './composables/use-header-avatars';
@@ -20,7 +20,6 @@ const settings = useSettings();
 const awarenessStore = useAwarenessStore();
 const currentUser = useCurrentUser();
 const fieldMeta = useFieldMeta();
-const router = useRouter();
 
 const collaborativeEditingEnabled = computed(() => {
 	const moduleEnabled = (settingsStore.settings as Settings)?.module_bar.find(
@@ -75,7 +74,7 @@ watch(
 );
 
 provider.on('debug', (...data) => {
-	console.dir(data, { depth: null });
+	//console.dir(data, { depth: null });
 });
 
 provider.on('user:add', (user: any) => {
