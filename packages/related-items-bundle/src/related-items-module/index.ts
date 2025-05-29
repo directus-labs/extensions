@@ -7,7 +7,9 @@ export default defineModule({
 	name: 'Related Items',
 	icon: 'hub',
 	routes: [],
-	preRegisterCheck() {
+	preRegisterCheck(user) {
+    const admin = user.admin_access;
+    if (!admin) return false;
 		injectRelatedItemsField();
 		return true;
 	},

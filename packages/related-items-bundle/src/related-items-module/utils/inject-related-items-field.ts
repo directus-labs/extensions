@@ -1,5 +1,4 @@
 import { STORES_INJECT } from '@directus/constants';
-import { computed } from 'vue';
 import { system_field } from '../settings-field';
 import { getDirectusApp } from './get-directus-app';
 import { getDirectusRouter } from './get-directus-router';
@@ -31,24 +30,19 @@ async function initializeApp(retry: number = 0) {
 	const directusApp = getDirectusApp();
 	const stores = directusApp._container._vnode.component.provides[STORES_INJECT];
 
-	const { useFieldsStore, useSettingsStore, useUserStore } = stores;
+	const { useFieldsStore, useSettingsStore } = stores;
 	const fieldStore = useFieldsStore();
 	const settingsStore = useSettingsStore();
-	const userStore = useUserStore();
 
-	const isAdmin = computed(() => userStore.currentUser?.role?.admin_access ?? userStore.currentUser?.admin_access ?? false);
-
-	if (isAdmin) {
-		try {
-			// Exit if no settings found
-			if (!('related_items_collections' in settingsStore.settings)) {
-				// Create required fields
-				await fieldStore.upsertField('directus_settings', 'related_items_collections', system_field);
-				await settingsStore.hydrate();
-			}
+	try {
+		// Exit if no settings found
+		if (!('related_items_collections' in settingsStore.settings)) {
+			// Create required fields
+			await fieldStore.upsertField('directus_settings', 'related_items_collections', system_field);
+			await settingsStore.hydrate();
 		}
-		catch (error: any) {
-			unexpectedError(error, stores);
-		}
+	}
+	catch (error: any) {
+		unexpectedError(error, stores);
 	}
 }
