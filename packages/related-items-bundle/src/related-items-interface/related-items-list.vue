@@ -3,6 +3,7 @@ import type { CollectionFilters, RelatedItem, RelatedItemObject } from '../types
 import { useApi } from '@directus/extensions-sdk';
 // @ts-expect-error unknown error with format-title
 import { formatTitle } from '@directus/format-title';
+import { getItemRoute } from './utils/get-route';
 import { abbreviateNumber, getEndpoint } from '@directus/utils';
 import { onMounted, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -40,7 +41,6 @@ async function refreshList(): Promise<boolean> {
 		return false;
 	loading.value = true;
 
-	// Reset variables
 	relatedItems.value = [];
 	collections.value = {};
 	totalItemCount.value = 0;
@@ -170,54 +170,69 @@ onMounted(async () => {
 		<v-list-item
 			v-for="item in relatedItems.filter(i => (i.collection === filterCollection || filterCollection === 'all') && i.data).slice(limit * (page - 1), limit * page)"
 			:key="item.item_id"
-			:class="item.disabled ? 'disabled' : ''"
+			:class="{
+				disabled: item.disabled,
+				has_datetime: 'timestamp' in item.data || 'date_created' in item.data
+			}"
 			block
-			:dense="totalItemCount > 4"
+			:dense="(filterCollection === 'all' && totalItemCount > 4) || relatedItems.filter(i => (i.collection === filterCollection)).length > 4"
 			clickable
 			@click="startEditing(item.item_id, item.collection)"
 		>
-			<span v-if="filterCollection === 'all'" class="collection">{{ collectionName(item.collection) }}:&nbsp;</span>
+			<div class="record-name-container">
+				<div v-if="'date_created' in item.data" class="date-created" x-small>
+					<render-template
+						:collection="item.collection"
+						:fields="item.fields"
+						template="{{ date_created }}"
+						:item="item.data"
+					/>
+				</div>
+				<div v-if="'timestamp' in item.data" class="date-created" x-small>
+					<render-template
+						:collection="item.collection"
+						:fields="item.fields"
+						template="{{ timestamp }}"
+						:item="item.data"
+					/>
+				</div>
 
-			<render-template
-				:collection="item.collection"
-				:fields="item.fields"
-				:template="item.template"
-				:item="item.data"
-			/>
+				<div class="record-name">
+					<span v-if="filterCollection === 'all'" class="collection">{{ collectionName(item.collection) }}:&nbsp;</span>
 
-			<div class="spacer" />
+					<render-template
+						:collection="item.collection"
+						:fields="item.fields"
+						:template="item.template"
+						:item="item.data"
+					/>
+				</div>
+			</div>
 
-			<v-chip v-if="'date_created' in item.data" class="date-created" x-small>
-				<render-template
-					:collection="item.collection"
-					:fields="item.fields"
-					template="{{ date_created }}"
-					:item="item.data"
-				/>
-			</v-chip>
-			<v-chip v-if="'timestamp' in item.data" class="date-created" x-small>
-				<render-template
-					:collection="item.collection"
-					:fields="item.fields"
-					template="{{ timestamp }}"
-					:item="item.data"
-				/>
-			</v-chip>
-			<v-chip v-if="item.collection === 'directus_files' && item.data.type" class="file-type" x-small>
-				{{ item.data.type }}
-			</v-chip>
-			<v-chip v-if="item.collection === 'directus_panels' && item.data.dashboard?.name" class="file-type" x-small>
-				{{ formatTitle(item.data.dashboard.name) }}
-			</v-chip>
-			<v-chip v-if="item.field" class="field" x-small>
-				{{ formatTitle(item.field) }}
-			</v-chip>
-			<v-chip v-if="item.relation" class="relation" x-small>
-				{{ item.field === 'item' ? 'M2A' : formatTitle(item.relation) }}
-			</v-chip>
+			<div class="chips">
+				<v-chip v-if="item.collection === 'directus_files' && item.data.type" class="file-type" x-small>
+					{{ item.data.type }}
+				</v-chip>
+				<v-chip v-if="item.collection === 'directus_panels' && item.data.dashboard?.name" class="file-type" x-small>
+					{{ formatTitle(item.data.dashboard.name) }}
+				</v-chip>
+				<v-chip v-if="item.field" class="field" x-small>
+					{{ formatTitle(item.field) }}
+				</v-chip>
+				<v-chip v-if="item.relation" class="relation" x-small>
+					{{ item.field === 'item' ? 'M2A' : formatTitle(item.relation) }}
+				</v-chip>
 
-			<div class="item-actions">
-				<!-- placeholder for actions -->
+				<div v-if="!item.disabled" class="item-actions">
+					<router-link
+						v-tooltip="t('navigate_to_item')"
+						:to="getItemRoute(item.collection, item.item_id)"
+						class="item-link"
+						@click.stop
+					>
+						<v-icon name="launch" />
+					</router-link>
+				</div>
 			</div>
 		</v-list-item>
 		<v-pagination
@@ -239,9 +254,34 @@ onMounted(async () => {
 	/>
 </template>
 
-<style scoped>
-  .disabled {
+<style lang="css" scoped>
+.disabled {
 	color: var(--theme--foreground-subdued);
+}
+
+.v-list-item.has_datetime {
+	height: auto;
+}
+
+.record-name-container {
+	flex: 1;
+	min-width: 0;
+}
+
+.chips {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+}
+
+.record-name {
+	display: flex;
+}
+
+.date-created {
+	font-size: small;
+	line-height: 1;
+	margin-top: 0.2em;
 }
 
 .collection {
@@ -278,22 +318,26 @@ onMounted(async () => {
 }
 
 .collection-filter .v-chip.active {
-	background-color: var(--theme--primary-accent);
-	border-color: var(--theme--primary-accent);
+	background-color: var(--theme--primary);
+	border-color: var(--theme--primary);
 	color: var(--white);
 }
 
 .collection-filter .v-chip:hover {
-	border-color: var(--theme--primary-accent) !important;
+	border-color: var(--theme--primary) !important;
 }
 
 .collection-filter .v-chip:hover .item-count, .collection-filter .v-chip.active .item-count {
-	background-color: var(--theme--primary);
+	background-color: var(--theme--primary-accent);
 	color: var(--white);
 }
 
 .v-chip.file-type, .v-chip.date-created, .v-chip.field {
 	margin-right: 0.5em;
+}
+
+.item-link {
+	margin-left: 0.5em;
 }
 
 .v-pagination {
