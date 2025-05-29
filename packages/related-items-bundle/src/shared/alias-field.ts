@@ -5,10 +5,6 @@ export const alias_field: DeepPartial<Field> = {
 	type: 'alias',
 	meta: {
 		interface: 'related-items-interface',
-		special: [
-			'alias',
-			'no-data',
-		],
 		translations: [
 			{
 				language: 'en-US',
