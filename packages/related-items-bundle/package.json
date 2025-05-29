@@ -7,7 +7,19 @@
 	"keywords": [
 		"directus",
 		"directus-extension",
-		"directus-extension-bundle"
+		"directus-extension-bundle",
+		"relational",
+		"m2o",
+		"m2m",
+		"o2m",
+		"m2a"
+	],
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "Tim Butterfield",
+			"email": "tim.butterfield@me.com"
+		}
 	],
 	"icon": "extension",
 	"files": [
