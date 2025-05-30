@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-const _state: { ids: ReturnType<typeof createId> | undefined } = {
+const cache: { ids: ReturnType<typeof createId> | undefined } = {
 	ids: undefined,
 };
 
@@ -25,9 +25,9 @@ function createId() {
 }
 
 export function useId() {
-	if (_state.ids) return _state.ids;
+	if (cache.ids) return cache.ids;
 
-	_state.ids = createId();
+	cache.ids = createId();
 
-	return _state.ids;
+	return cache.ids;
 }

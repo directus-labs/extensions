@@ -1,13 +1,13 @@
 import { RealtimeSocket } from '../types';
 
-const _state: { sockets: Map<string, RealtimeSocket> | undefined } = {
+const cache: { sockets: Map<string, RealtimeSocket> | undefined } = {
 	sockets: undefined,
 };
 
 export function useSockets() {
-	if (_state.sockets) return _state.sockets;
+	if (cache.sockets) return cache.sockets;
 
-	_state.sockets = new Map();
+	cache.sockets = new Map();
 
-	return _state.sockets;
+	return cache.sockets;
 }

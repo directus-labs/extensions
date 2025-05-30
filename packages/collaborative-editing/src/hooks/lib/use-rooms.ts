@@ -14,7 +14,7 @@ export interface Room {
 	doc: Y.Doc;
 }
 
-const _state: { rooms: RoomMap | undefined } = {
+const cache: { rooms: RoomMap | undefined } = {
 	rooms: undefined,
 };
 
@@ -54,9 +54,9 @@ class RoomMap extends Map<string, Room> {
 }
 
 export function useRooms() {
-	if (_state.rooms) return _state.rooms;
+	if (cache.rooms) return cache.rooms;
 
-	_state.rooms = new RoomMap();
+	cache.rooms = new RoomMap();
 
-	return _state.rooms;
+	return cache.rooms;
 }
