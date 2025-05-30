@@ -29,14 +29,16 @@ const { users } = defineProps<{
 .header-avatars-container {
 	position: relative;
 	display: inline-block;
-	margin-left: auto;
-	margin-right: 4px;
 }
 
 .field-avatar-container {
 	position: absolute;
 	right: 0;
 	top: 0;
+}
+
+.v-item.accordion-section .field-avatar-container {
+	margin-top: -30px;
 }
 </style>
 
