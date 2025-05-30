@@ -13,9 +13,9 @@ export { DirectusProvider } from './provider';
 
 export function useDoc(opts: UseYJSOptions = {}) {
 	const doc = new Y.Doc();
+	const awarenessStore = useAwarenessStore();
 
 	const formValues = inject<Record<string, unknown>>('values') ?? {};
-
 	const initialValues = ref(unref(formValues));
 	const edits = ref(unref(formValues));
 
@@ -44,8 +44,6 @@ export function useDoc(opts: UseYJSOptions = {}) {
 			(changedV) => {
 				if (!changedV) return;
 				if (isEqual(changedV, edits.value)) return;
-				// change will only ever be one aside from when we discard
-				if (isEqual(changedV, initialValues.value) && changeCount(edits.value, changedV) > 1) return;
 
 				for (const [key, current] of entries(edits.value)) {
 					const changeV = changedV[key];
@@ -54,20 +52,15 @@ export function useDoc(opts: UseYJSOptions = {}) {
 						continue;
 					}
 
-					provider.emit('doc:set', [key, cloneDeep(changeV), 'form']);
-
-					// track edits to later compare against
-					edits.value[key] = cloneDeep(changeV);
-
 					// Find the field element and update the timestamp
+					let userWithField;
 					const fieldEl = document.querySelector(`[data-field="${key}"]`);
 					if (fieldEl) {
 						const collection = fieldEl.getAttribute('data-collection');
 						const primaryKey = fieldEl.getAttribute('data-primary-key');
 						if (collection && primaryKey) {
-							const awarenessStore = useAwarenessStore();
 							// Find the user who is editing this specific field
-							const userWithField = Object.entries(awarenessStore.byUid).find((entry) => {
+							userWithField = Object.entries(awarenessStore.byUid).find((entry) => {
 								const field = entry[1].activeField;
 								return (
 									field && field.field === key && field.collection === collection && field.primaryKey === primaryKey
@@ -79,6 +72,22 @@ export function useDoc(opts: UseYJSOptions = {}) {
 							}
 						}
 					}
+
+					// Only discard changes if it is a discard with no other users changing a field
+					const currentUserUid = awarenessStore.getCurrentUser()?.user.uid;
+					if (isEqual(changedV, initialValues.value)) {
+						// more than one change
+						if (changeCount(edits.value, changedV) > 1) return;
+						// A user chose discard and no one is editing this field
+						if (!userWithField) return;
+						// A user chose discard and someone else is editing the field
+						if (currentUserUid && userWithField[0] !== currentUserUid) return;
+					}
+
+					provider.emit('doc:set', [key, cloneDeep(changeV), 'form']);
+
+					// track edits to later compare against
+					edits.value[key] = cloneDeep(changeV);
 				}
 			},
 			{ deep: true },
