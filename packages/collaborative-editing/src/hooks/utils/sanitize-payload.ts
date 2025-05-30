@@ -118,11 +118,7 @@ export async function sanitizePayload(
 
 			// Undoing an action sends undefined
 			if (o2mPayload === UNDEFINED_VALUE || o2mPayload === null) {
-				sanitizedPayload[field] = {
-					create: [],
-					update: [],
-					delete: [],
-				};
+				sanitizedPayload[field] = UNDEFINED_VALUE;
 
 				continue;
 			}
@@ -183,6 +179,18 @@ export async function sanitizePayload(
 				if (o2mSanitizedDelPayload) {
 					o2mSanitizedDelPayloads.push(o2mSanitizedDelPayload[relatedPrimaryKey] as number);
 				}
+			}
+
+			// do not send update if all payloads are filtered out
+			if (
+				o2mSanitizedCreatePayloads.length === 0 &&
+				o2mSanitizedDelPayloads.length === 0 &&
+				o2mSanitizedUpdatePayloads.length == 0 &&
+				(o2mSanitizedCreatePayloads.length !== o2mPayload.create.length ||
+					o2mSanitizedUpdatePayloads.length !== o2mPayload.update.length ||
+					o2mSanitizedDelPayloads.length !== o2mPayload.delete.length)
+			) {
+				continue;
 			}
 
 			sanitizedPayload[field] = {

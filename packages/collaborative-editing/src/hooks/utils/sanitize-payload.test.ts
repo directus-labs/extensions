@@ -203,13 +203,7 @@ describe('Relations', () => {
 				services: getServices(),
 			});
 
-			expect(sanitizedPayload).toStrictEqual({
-				o2m_child: {
-					create: [],
-					delete: [],
-					update: [],
-				},
-			});
+			expect(sanitizedPayload).toStrictEqual(null);
 		});
 
 		test('M2A', async () => {
@@ -232,13 +226,7 @@ describe('Relations', () => {
 				services: getServices(),
 			});
 
-			expect(sanitizedPayload).toStrictEqual({
-				builder_child: {
-					create: [],
-					delete: [],
-					update: [],
-				},
-			});
+			expect(sanitizedPayload).toStrictEqual(null);
 		});
 	});
 
@@ -391,13 +379,7 @@ describe('Relations', () => {
 					services: getErrorServices([['id', 2]]),
 				});
 
-				expect(sanitizedPayload).toStrictEqual({
-					o2m_child: {
-						create: [],
-						delete: [],
-						update: [],
-					},
-				});
+				expect(sanitizedPayload).toStrictEqual(null);
 			});
 
 			test('M2A', async () => {
@@ -624,13 +606,7 @@ describe('Relations', () => {
 					services: getErrorServices([['title'], ['slug'], ['id']]),
 				});
 
-				expect(sanitizedPayload).toStrictEqual({
-					o2m_child: {
-						create: [],
-						delete: [],
-						update: [],
-					},
-				});
+				expect(sanitizedPayload).toStrictEqual(null);
 			});
 
 			test('M2A', async () => {
@@ -658,13 +634,7 @@ describe('Relations', () => {
 					services: getErrorServices([['item'], ['id'], ['collection']]),
 				});
 
-				expect(sanitizedPayload).toStrictEqual({
-					builder_child: {
-						create: [],
-						delete: [],
-						update: [],
-					},
-				});
+				expect(sanitizedPayload).toStrictEqual(null);
 			});
 		});
 	});
@@ -754,9 +724,7 @@ describe('Relations', () => {
 					services: getErrorServices([['id', 9]]),
 				});
 
-				expect(sanitizedPayload).toStrictEqual({
-					builder_child: { create: [], update: [], delete: [] },
-				});
+				expect(sanitizedPayload).toStrictEqual(null);
 			});
 		});
 	});
