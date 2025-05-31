@@ -4,6 +4,14 @@
 	"version": "1.0.0",
 	"description": "Show all related items across selected collections.",
 	"license": "MIT",
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "Tim Butterfield",
+			"email": "tim.butterfield@me.com",
+			"url": "https://www.npmjs.com/~timio23"
+		}
+	],
 	"keywords": [
 		"directus",
 		"directus-extension",
@@ -13,13 +21,6 @@
 		"m2m",
 		"o2m",
 		"m2a"
-	],
-	"author": "Directus Labs",
-	"contributors": [
-		{
-			"name": "Tim Butterfield",
-			"email": "tim.butterfield@me.com"
-		}
 	],
 	"icon": "extension",
 	"files": [
