@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.2.0 (2025-05-02)
+
+### New Features
+- Relational support for values in title, subtitle, and link actions
+- Added intelligent handling of dialog positioning within drawers
+- Added automatic item change detection after flow execution
+- Added reload confirmation dialog when item data is changed by a flow
+- Support for showing help content in a modal vs inline
+- Added comprehensive translation support for interface elements and help content
+
+
+### Fixes
+- Fixed issue with primary key handling in flow execution
+- Fixed dialog stacking when opening drawers from dialogs
+- Fixed issue where dialogs would remain open after flow execution
+- Improved error handling for API requests
+
 ## 1.1.1 (2025-02-21)
 
 ### Fixes
