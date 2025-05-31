@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CollectionFilters, RelatedItem, RelatedItemObject } from '../types';
-import { useApi } from '@directus/extensions-sdk';
+import { useApi, useStores } from '@directus/extensions-sdk';
 // @ts-expect-error unknown error with format-title
 import { formatTitle } from '@directus/format-title';
 import { getItemRoute } from './utils/get-route';
@@ -18,6 +18,8 @@ const loading = ref<boolean>(true);
 const error = ref<boolean>(false);
 
 const api = useApi();
+const { useNotificationsStore } = useStores();
+const notificationsStore = useNotificationsStore();
 const { t, te } = useI18n();
 const router = useRouter();
 
@@ -61,14 +63,15 @@ async function refreshList(): Promise<boolean> {
 			collections.value[d.collection].item_count += d.items.length;
 
 			d.items.forEach((i: Record<string, any>) => {
+				const item_id = d.relation === 'm2m' && d.junction_field ? i[d.junction_field][d.primary_key] : i[d.primary_key];
 				relatedItems.value.push({
 					collection: d.collection,
-					disabled: d.collection.includes('directus_') && ![...systemEditable, ...systemNavigate].includes(d.collection),
+					disabled: (d.collection.includes('directus_') && ![...systemEditable, ...systemNavigate].includes(d.collection)) || (d.collection === props.collection && item_id === props.primaryKey),
 					field: d.field,
 					relation: d.relation,
 					fields: d.fields,
 					template: d.template?.includes('{{ collection }}') ? d.template?.replace('{{ collection }}', collectionName(i.collection, 'plural')) : d.template,
-					item_id: d.relation === 'm2m' && d.junction_field ? i[d.junction_field][d.primary_key] : i[d.primary_key],
+					item_id,
 					data: d.relation === 'm2m' && d.junction_field ? i[d.junction_field] : i,
 				});
 
@@ -98,21 +101,22 @@ function collectionName(collection: string, type: 'singular' | 'plural' = 'singu
 	return formatTitle(collection.replace('directus_', ''));
 }
 
-function startEditing(itemKey: string | number, collection: string) {
-	if (collection.includes('directus_') && !systemEditable.includes(collection)) {
-		if (['directus_flows', 'directus_presets'].includes(collection)) {
-			router.push(`/settings/${collection.replace('directus_', '')}/${itemKey}`);
+function startEditing(item: RelatedItemObject) {
+	if (item.disabled) return;
+	if (item.collection.includes('directus_') && !systemEditable.includes(item.collection)) {
+		if (['directus_flows', 'directus_presets'].includes(item.collection)) {
+			router.push(`/settings/${item.collection.replace('directus_', '')}/${item.item_id}`);
 		}
-		else if (collection === 'directus_dashboards') {
-			router.push(`/insights/${itemKey}`);
+		else if (item.collection === 'directus_dashboards') {
+			router.push(`/insights/${item.item_id}`);
 		}
 
 		return;
 	}
 
 	editModalActive.value = true;
-	editingCollection.value = collection;
-	currentlyEditing.value = itemKey;
+	editingCollection.value = item.collection;
+	currentlyEditing.value = item.item_id;
 }
 
 function cancelEdit() {
@@ -126,9 +130,16 @@ async function saveEdits(item: Record<string, any>) {
 
 	try {
 		await api.patch(`${getEndpoint(editingCollection.value)}/${currentlyEditing.value}`, item);
+		notificationsStore.add({
+			title: t('item_update_success')
+		});
 	}
 	catch (error) {
 		console.warn(error);
+		notificationsStore.add({
+			title: t('errors.UNKNOWN'),
+			type: 'warning',
+		});
 	}
 
 	cancelEdit();
@@ -153,7 +164,7 @@ onMounted(async () => {
 	</template>
 
 	<template v-else-if="totalItemCount === 0">
-		<v-notice>{{ t('no_items') }}</v-notice>
+		<v-notice>No relational items</v-notice>
 	</template>
 
 	<template v-else>
@@ -177,7 +188,7 @@ onMounted(async () => {
 			block
 			:dense="(filterCollection === 'all' && totalItemCount > 4) || relatedItems.filter(i => (i.collection === filterCollection)).length > 4"
 			clickable
-			@click="startEditing(item.item_id, item.collection)"
+			@click="startEditing(item)"
 		>
 			<div class="record-name-container">
 				<div v-if="'date_created' in item.data" class="date-created" x-small>
