@@ -289,20 +289,26 @@ export default defineEndpoint({
 				return Promise.all(promises);
 			}
 
-			const related_content: RelatedItem[] = [];
+			try {
+				const related_content: RelatedItem[] = [];
 
-			const o2m_collection_items = await relatedCollections(related_o2m_collections);
-			const m2o_collection_items = await relatedCollections(related_m2o_collections);
+				const o2m_collection_items = await relatedCollections(related_o2m_collections);
+				const m2o_collection_items = await relatedCollections(related_m2o_collections);
 
-			o2m_collection_items.forEach((c) => {
-				related_content.push(...c);
-			});
+				o2m_collection_items.forEach((c) => {
+					related_content.push(...c);
+				});
 
-			m2o_collection_items.forEach((c) => {
-				related_content.push(...c);
-			});
+				m2o_collection_items.forEach((c) => {
+					related_content.push(...c);
+				});
 
-			res.json(related_content);
+				res.json(related_content);
+			}
+			catch (error) {
+				console.error(error);
+				res.send(500).json({ error: 'Internal Server Error' });
+			}
 		});
 	},
 });
