@@ -10,17 +10,19 @@ export class Replicate extends Provider {
 			throw new InvalidPayloadError({ reason: 'Replicate API Key is missing' });
 		}
 
-		if (options.model === 'meta-llama-3.1-405b-instruct') {
-			super(options, 'https://api.replicate.com/v1/models/meta/meta-llama-3.1-405b-instruct/predictions', options.apiKeyReplicate);
-		}
+		const modelMap: Record<string, string> = {
+			'meta-llama-3.1-405b-instruct': 'meta/meta-llama-3.1-405b-instruct',
+			'llama-3-8b-instruct': 'meta/llama-3-8b-instruct',
+			'mistral-7b-v0.1': 'mistralai/mistral-7b-v0.1',
+		};
 
-		else if (options.model === 'mistral-7b-v0.1') {
-			super(options, 'https://api.replicate.com/v1/models/mistralai/mistral-7b-v0.1/predictions', options.apiKeyReplicate);
-		}
+		const path = modelMap[options.model!];
 
-		else {
+		if (!path) {
 			throw new InvalidPayloadError({ reason: `Model ${options.model} not supported` });
 		}
+
+		super(options, `https://api.replicate.com/v1/models/${path}/predictions`, options.apiKeyReplicate);
 	}
 
 	public async messageRequest(): Promise<string> {
@@ -56,7 +58,7 @@ export class Replicate extends Provider {
 		let hasFinished = false;
 		let message = '';
 
-		while (hasFinished === false) {
+		while (!hasFinished) {
 			await sleep(1000);
 			const fetchedMessage = await this.fetchMessage(data.urls.get);
 			message = fetchedMessage || '';

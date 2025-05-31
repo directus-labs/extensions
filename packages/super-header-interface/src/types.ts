@@ -18,8 +18,11 @@ export interface SuperHeaderProps {
 	subtitle?: string;
 	actions?: Action[];
 	help?: string;
+	helpDisplayMode?: 'inline' | 'modal';
+	enableHelpTranslations?: boolean;
+	helpTranslationsString?: string;
 	values: Record<string, any>;
 	color?: string;
 	collection: string;
-	primaryKey: string;
+	primaryKey?: string | number | null;
 }
