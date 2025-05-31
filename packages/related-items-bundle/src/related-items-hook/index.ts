@@ -19,11 +19,21 @@ export default defineHook(({ action }, { services }) => {
 			const existingFieldsToDelete = existingFields.filter((f) => !collections.includes(f.collection));
 
 			existingFieldsToDelete.forEach(async (f) => {
-				await fieldService.deleteField(f.collection, f.field);
+				try {
+					await fieldService.deleteField(f.collection, f.field);
+				}
+				catch(e){
+					console.error(e);
+				}
 			});
 
 			collections.filter((c) => !existingFields.some((f) => f.collection === c)).forEach(async (c) => {
-				await fieldService.createField(c, alias_field);
+				try {
+					await fieldService.createField(c, alias_field);
+				}
+				catch(e){
+					console.error(e);
+				}
 			});
 		}
 	});
