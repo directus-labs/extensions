@@ -3,7 +3,6 @@
 	"type": "module",
 	"version": "1.0.0",
 	"description": "Show all related items across selected collections.",
-	"license": "MIT",
 	"author": "Directus Labs",
 	"contributors": [
 		{
@@ -12,6 +11,7 @@
 			"url": "https://www.npmjs.com/~timio23"
 		}
 	],
+	"license": "MIT",
 	"keywords": [
 		"directus",
 		"directus-extension",
