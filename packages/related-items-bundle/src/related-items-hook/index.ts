@@ -22,8 +22,8 @@ export default defineHook(({ action }, { services }) => {
 				try {
 					await fieldService.deleteField(f.collection, f.field);
 				}
-				catch(e){
-					console.error(e);
+				catch (error) {
+					console.error(error);
 				}
 			});
 
@@ -31,8 +31,8 @@ export default defineHook(({ action }, { services }) => {
 				try {
 					await fieldService.createField(c, alias_field);
 				}
-				catch(e){
-					console.error(e);
+				catch (error) {
+					console.error(error);
 				}
 			});
 		}

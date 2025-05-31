@@ -56,11 +56,12 @@ export default defineEndpoint({
 					accountability,
 					schema,
 				});
+
 				try {
 					return id ? await itemService.readOne(id) : await itemService.readByQuery(query);
 				}
-				catch(e) {
-					console.error(e);
+				catch (error) {
+					console.error(error);
 					return id ? null : [];
 				}
 			}
@@ -242,21 +243,23 @@ export default defineEndpoint({
 
 					const m2a_allowed_collections = m2m_relation && m2m_relation.meta?.one_allowed_collections !== null
 						? m2m_relation.meta?.one_allowed_collections
-						: is_m2a_junction && r.meta?.one_allowed_collections
-							? r.meta?.one_allowed_collections
-							: [];
+						: (is_m2a_junction && r.meta?.one_allowed_collections
+								? r.meta?.one_allowed_collections
+								: []);
 
 					const m2a_related_collections = is_m2a || is_m2a_junction
 						? await fetchM2aCollectionInfo({
 							collections: m2a_allowed_collections,
-							m2m_relation: is_m2a_junction ? {
-								collection: r.collection,
-								meta: {
-									many_field: 'item',
-									one_collection_field: 'collection',
-									junction_field: 'id',
-								},
-							} : m2m_relation,
+							m2m_relation: is_m2a_junction
+								? {
+										collection: r.collection,
+										meta: {
+											many_field: 'item',
+											one_collection_field: 'collection',
+											junction_field: 'id',
+										},
+									}
+								: m2m_relation,
 							relation: r,
 						})
 						: [];

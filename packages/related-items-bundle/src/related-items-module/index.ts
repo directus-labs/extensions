@@ -8,8 +8,8 @@ export default defineModule({
 	icon: 'hub',
 	routes: [],
 	preRegisterCheck(user) {
-    const admin = user.admin_access;
-    if (!admin) return false;
+		const admin = user.admin_access;
+		if (!admin) return false;
 		injectRelatedItemsField();
 		return true;
 	},

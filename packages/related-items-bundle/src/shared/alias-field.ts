@@ -7,7 +7,7 @@ export const alias_field: DeepPartial<Field> = {
 		interface: 'related-items-interface',
 		special: [
 			'alias',
-			'no-data'
+			'no-data',
 		],
 		translations: [
 			{

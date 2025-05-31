@@ -3,11 +3,11 @@ import type { CollectionFilters, RelatedItem, RelatedItemObject } from '../types
 import { useApi, useStores } from '@directus/extensions-sdk';
 // @ts-expect-error unknown error with format-title
 import { formatTitle } from '@directus/format-title';
-import { getItemRoute } from './utils/get-route';
 import { abbreviateNumber, getEndpoint } from '@directus/utils';
 import { onMounted, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import { getItemRoute } from './utils/get-route';
 
 const props = defineProps<{
 	collection: string;
@@ -64,6 +64,7 @@ async function refreshList(): Promise<boolean> {
 
 			d.items.forEach((i: Record<string, any>) => {
 				const item_id = d.relation === 'm2m' && d.junction_field ? i[d.junction_field][d.primary_key] : i[d.primary_key];
+
 				relatedItems.value.push({
 					collection: d.collection,
 					disabled: (d.collection.includes('directus_') && ![...systemEditable, ...systemNavigate].includes(d.collection)) || (d.collection === props.collection && item_id === props.primaryKey),
@@ -103,6 +104,7 @@ function collectionName(collection: string, type: 'singular' | 'plural' = 'singu
 
 function startEditing(item: RelatedItemObject) {
 	if (item.disabled) return;
+
 	if (item.collection.includes('directus_') && !systemEditable.includes(item.collection)) {
 		if (['directus_flows', 'directus_presets'].includes(item.collection)) {
 			router.push(`/settings/${item.collection.replace('directus_', '')}/${item.item_id}`);
@@ -130,12 +132,14 @@ async function saveEdits(item: Record<string, any>) {
 
 	try {
 		await api.patch(`${getEndpoint(editingCollection.value)}/${currentlyEditing.value}`, item);
+
 		notificationsStore.add({
-			title: t('item_update_success')
+			title: t('item_update_success'),
 		});
 	}
 	catch (error) {
 		console.warn(error);
+
 		notificationsStore.add({
 			title: t('errors.UNKNOWN'),
 			type: 'warning',
@@ -183,7 +187,7 @@ onMounted(async () => {
 			:key="item.item_id"
 			:class="{
 				disabled: item.disabled,
-				has_datetime: 'timestamp' in item.data || 'date_created' in item.data
+				has_datetime: 'timestamp' in item.data || 'date_created' in item.data,
 			}"
 			block
 			:dense="(filterCollection === 'all' && totalItemCount > 4) || relatedItems.filter(i => (i.collection === filterCollection)).length > 4"
