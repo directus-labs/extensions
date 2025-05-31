@@ -827,6 +827,40 @@ importers:
         specifier: ^3.4.30
         version: 3.5.13(typescript@5.8.3)
 
+  packages/related-items-bundle:
+    dependencies:
+      '@directus/eslint-config':
+        specifier: ^0.1.0
+        version: 0.1.0(@typescript-eslint/utils@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2)
+      '@directus/format-title':
+        specifier: ^12.0.1
+        version: 12.0.1
+      vue-i18n:
+        specifier: ^9.14.0
+        version: 9.14.1(vue@3.5.13(typescript@5.8.2))
+      vue-router:
+        specifier: ^4.4.5
+        version: 4.5.0(vue@3.5.13(typescript@5.8.2))
+    devDependencies:
+      '@directus/constants':
+        specifier: ^13.0.0
+        version: 13.0.0
+      '@directus/extensions-sdk':
+        specifier: ^13.0.1
+        version: 13.0.3(@types/node@22.13.10)(@unhead/vue@2.0.0-alpha.19(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(sass@1.85.1)(terser@5.39.0)(typescript@5.8.2)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
+      '@directus/types':
+        specifier: ^13.0.0
+        version: 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.8.2))
+      '@directus/utils':
+        specifier: ^13.0.0
+        version: 13.0.2(vue@3.5.13(typescript@5.8.2))
+      typescript:
+        specifier: ^5.6.3
+        version: 5.8.2
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.8.2)
+
   packages/resend-operation:
     devDependencies:
       '@directus/extensions-sdk':
@@ -1809,6 +1843,9 @@ packages:
   '@directus/format-title@11.0.0':
     resolution: {integrity: sha512-M4Xvwsc8M0x/ZvmxDmSmoechTQ/HRAFjj+PYi5Psn0/XhZ9vU3E8dadEXQDm0UGb30jdt0nrWBSU2+L5AgEwDw==}
     engines: {node: '>=18'}
+
+  '@directus/format-title@12.0.1':
+    resolution: {integrity: sha512-Sx0yMpVnTQWLppevNdwgyKUsrfPCZ503bshzGfsnUuZDLu7yZe4lwatvu2RSzb7tAfJLYC5VdoZg/LXNBfFTRw==}
 
   '@directus/format-title@12.0.1':
     resolution: {integrity: sha512-Sx0yMpVnTQWLppevNdwgyKUsrfPCZ503bshzGfsnUuZDLu7yZe4lwatvu2RSzb7tAfJLYC5VdoZg/LXNBfFTRw==}
