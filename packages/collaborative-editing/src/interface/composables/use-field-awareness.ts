@@ -1,6 +1,12 @@
 import { onUnmounted } from 'vue';
 import { DirectusProvider } from './use-doc';
-import { useFieldRegistry, standardFieldHandler, selectFieldHandler, wysiwygFieldHandler } from './use-field-registry';
+import {
+	useFieldRegistry,
+	standardFieldHandler,
+	selectFieldHandler,
+	wysiwygFieldHandler,
+	datetimeFieldHandler,
+} from './use-field-registry';
 import { useFieldBorders } from './use-field-borders';
 
 export function useFieldAwareness(provider: DirectusProvider) {
@@ -11,6 +17,7 @@ export function useFieldAwareness(provider: DirectusProvider) {
 	const unregisterStandard = registry.registerHandler(standardFieldHandler);
 	const unregisterSelect = registry.registerHandler(selectFieldHandler);
 	const unregisterWysiwyg = registry.registerHandler(wysiwygFieldHandler);
+	const unregisterDatetime = registry.registerHandler(datetimeFieldHandler);
 
 	// Set up field borders
 	const { updateFieldBorders, cleanup: cleanupBorders } = useFieldBorders();
@@ -33,6 +40,7 @@ export function useFieldAwareness(provider: DirectusProvider) {
 		unregisterStandard();
 		unregisterSelect();
 		unregisterWysiwyg();
+		unregisterDatetime();
 
 		// Cleanup other components
 		observer.disconnect();

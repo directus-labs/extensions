@@ -536,7 +536,7 @@ export const selectFieldHandler: FieldHandler = {
 	deactivation: {
 		debounceMs: 50,
 		checkOnDocumentClick: true,
-		ignoreClickSelectors: ['.v-select', '.v-menu', '.v-overlay'],
+		ignoreClickSelectors: ['.v-select', '.v-overlay'],
 	},
 };
 
@@ -559,5 +559,20 @@ export const wysiwygFieldHandler: FieldHandler = {
 			return false; // Prevent deactivation
 		}
 		return true; // Allow normal deactivation logic
+	},
+};
+
+export const datetimeFieldHandler: FieldHandler = {
+	name: 'datetime',
+	selector: '.v-menu:not(.v-select) .v-input .input',
+	detect: (el) => el.matches('.v-menu:not(.v-select) .v-input .input'),
+	activation: {
+		type: 'class',
+		className: 'active',
+	},
+	deactivation: {
+		debounceMs: 50,
+		checkOnDocumentClick: true,
+		ignoreClickSelectors: ['.v-menu', '.v-overlay', '.flatpickr-calendar'],
 	},
 };
