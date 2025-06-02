@@ -4,6 +4,7 @@ import { debounce, DebouncedFunc } from 'lodash-es';
 import { useFieldMeta } from './use-field-meta';
 import { DirectusProvider } from './use-doc';
 import { ACTIVE_FIELD_SELECTOR } from '../constants';
+import { useAwarenessStore } from '../stores/awarenessStore';
 import type { FieldMeta } from './use-field-meta';
 
 export interface FieldHandler {
@@ -44,6 +45,7 @@ interface ActiveField {
 export function useFieldRegistry(provider: DirectusProvider) {
 	const { getFieldMetaFromPayload } = useFieldMeta();
 	const activeElement = useActiveElement();
+	const awarenessStore = useAwarenessStore();
 
 	// Helper function to get field meta from element
 	function getFieldMetaFromElement(el: HTMLElement): FieldMeta | null {
@@ -64,6 +66,119 @@ export function useFieldRegistry(provider: DirectusProvider) {
 	const activeField = ref<ActiveField | null>(null);
 	const observers = new Set<MutationObserver>();
 	let isWindowFocused = true;
+
+	// Create debounced deactivation functions for each handler
+	const debouncedDeactivations = new Map<string, DebouncedFunc<() => void>>();
+
+	// Helper functions for field locking
+	function findFieldInputElement(el: HTMLElement): HTMLElement[] {
+		const inputs = el.querySelectorAll(
+			'.interface > *:first-child,.interface input,.interface .input,.interface textarea,.interface select,.interface [contenteditable="true"]',
+		);
+		return Array.from(inputs).filter((i) => i instanceof HTMLElement);
+	}
+
+	function lockFieldElement(el: HTMLElement) {
+		// Find the actual input elements inside the container
+		const inputsArray = findFieldInputElement(el);
+
+		if (inputsArray.length > 0) {
+			// If inputs found, disable them
+			for (const input of inputsArray) {
+				const disabled = input.classList.contains('disabled');
+
+				// Save original state in a data attribute
+				if (!input.dataset.originalDisabled) {
+					input.dataset.originalDisabled = disabled + '';
+				}
+
+				if (
+					input instanceof HTMLInputElement ||
+					input instanceof HTMLTextAreaElement ||
+					input instanceof HTMLSelectElement
+				) {
+					input.disabled = true;
+				}
+
+				input.classList.add('disabled');
+			}
+		}
+
+		// Add locked class
+		el.classList.add('collab-field-locked');
+	}
+
+	function unlockFieldElement(el: HTMLElement) {
+		// Restore inputs
+		const inputsArray = findFieldInputElement(el);
+
+		if (inputsArray.length > 0) {
+			for (const input of inputsArray) {
+				// Restore original state
+				const originalDisabled = input.dataset.originalDisabled;
+
+				if (originalDisabled === 'false') {
+					input.classList.remove('disabled');
+
+					if (
+						input instanceof HTMLInputElement ||
+						input instanceof HTMLTextAreaElement ||
+						input instanceof HTMLSelectElement
+					) {
+						input.disabled = false;
+					}
+				}
+
+				if (input.dataset.originalDisabled !== undefined) {
+					delete input.dataset.originalDisabled;
+				}
+			}
+		}
+
+		// Remove locked class
+		el.classList.remove('collab-field-locked');
+	}
+
+	function updateFieldLocking() {
+		const states = Object.values(awarenessStore.byUid);
+
+		// Determine which fields should be locked
+		const fieldsToLock = new Set<string>();
+
+		for (const state of states) {
+			// Skip if this is the current user
+			if (state.user?.isCurrentUser) continue;
+
+			// Skip if no active field
+			if (!state.activeField) continue;
+
+			// Add to fields that should be locked
+			const fieldKey = `${state.activeField.collection}:${state.activeField.field}:${state.activeField.primaryKey}`;
+			fieldsToLock.add(fieldKey);
+		}
+
+		// Get all field elements currently in the DOM
+		const allFieldElements = document.querySelectorAll(ACTIVE_FIELD_SELECTOR);
+
+		for (const fieldElement of allFieldElements) {
+			const el = fieldElement as HTMLElement;
+			const collection = el.dataset.collection;
+			const field = el.dataset.field;
+			const primaryKey = el.dataset.primaryKey;
+
+			if (!collection || !field || !primaryKey) continue;
+
+			const fieldKey = `${collection}:${field}:${primaryKey}`;
+			const isCurrentlyLocked = el.classList.contains('collab-field-locked');
+			const shouldBeLocked = fieldsToLock.has(fieldKey);
+
+			if (shouldBeLocked && !isCurrentlyLocked) {
+				lockFieldElement(el);
+			} else if (!shouldBeLocked && isCurrentlyLocked) {
+				unlockFieldElement(el);
+			}
+		}
+	}
 
 	// Registry methods
 	function registerHandler(handler: FieldHandler) {
@@ -127,9 +242,6 @@ export function useFieldRegistry(provider: DirectusProvider) {
 		activeField.value = null;
 	}
 
-	// Create debounced deactivation functions for each handler
-	const debouncedDeactivations = new Map<string, DebouncedFunc<() => void>>();
-
 	function createDebouncedDeactivation(handler: FieldHandler) {
 		const debounceMs = handler.deactivation.debounceMs ?? 100;
 		return debounce(() => {
@@ -191,36 +303,67 @@ export function useFieldRegistry(provider: DirectusProvider) {
 	// so focus detection doesn't work
 	function setupMutationObserver() {
 		const observer = new MutationObserver((mutations) => {
+			let shouldApplyLocking = false;
+
 			for (const mutation of mutations) {
-				if (mutation.type !== 'attributes') continue;
+				// Handle attribute changes (for class-based activation)
+				if (mutation.type === 'attributes') {
+					const target = mutation.target as HTMLElement;
 
-				const target = mutation.target as HTMLElement;
+					// Check each handler
+					for (const handler of handlers.values()) {
+						if (handler.activation.type === 'class' && mutation.attributeName === 'class' && handler.detect(target)) {
+							const hasClass = handler.activation.className && target.classList.contains(handler.activation.className);
+							const fieldMeta = getFieldMetaFromElement(target);
 
-				// Check each handler
-				for (const handler of handlers.values()) {
-					if (handler.activation.type === 'class' && mutation.attributeName === 'class' && handler.detect(target)) {
-						const hasClass = handler.activation.className && target.classList.contains(handler.activation.className);
-						const fieldMeta = getFieldMetaFromElement(target);
-
-						if (hasClass && fieldMeta) {
-							activateField(target, fieldMeta, handler);
-						} else if (
-							!hasClass &&
-							activeField.value &&
-							activeField.value.handler.name === handler.name &&
-							activeField.value.element === target
-						) {
-							const debouncedDeactivate = debouncedDeactivations.get(handler.name);
-							debouncedDeactivate?.();
+							if (hasClass && fieldMeta) {
+								activateField(target, fieldMeta, handler);
+							} else if (
+								!hasClass &&
+								activeField.value &&
+								activeField.value.handler.name === handler.name &&
+								activeField.value.element === target
+							) {
+								const debouncedDeactivate = debouncedDeactivations.get(handler.name);
+								debouncedDeactivate?.();
+							}
 						}
 					}
 				}
+
+				// Handle DOM changes (for accordion expansion/collapse)
+				if (mutation.type === 'childList') {
+					const addedNodes = Array.from(mutation.addedNodes);
+
+					// Check if any field elements were added
+					for (const node of addedNodes) {
+						if (node instanceof HTMLElement) {
+							// Check if this node or its children contain field elements
+							const hasFieldElements =
+								node.matches?.(ACTIVE_FIELD_SELECTOR) || node.querySelector?.(ACTIVE_FIELD_SELECTOR);
+
+							if (hasFieldElements) {
+								shouldApplyLocking = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			// Apply field locking to newly visible elements if needed
+			if (shouldApplyLocking) {
+				// Use a small delay to ensure DOM is fully rendered
+				setTimeout(() => {
+					updateFieldLocking();
+				}, 10);
 			}
 		});
 
 		observer.observe(document.body, {
 			attributes: true,
 			attributeFilter: ['class'],
+			childList: true,
 			subtree: true,
 		});
 
@@ -292,6 +435,15 @@ export function useFieldRegistry(provider: DirectusProvider) {
 		isWindowFocused = false;
 	}
 
+	// Watch for awareness store changes to update field locking
+	watch(
+		() => awarenessStore.byUid,
+		() => {
+			updateFieldLocking();
+		},
+		{ deep: true },
+	);
+
 	// Setup and teardown
 	onMounted(() => {
 		// Setup event listeners
@@ -301,6 +453,9 @@ export function useFieldRegistry(provider: DirectusProvider) {
 
 		// Setup mutation observer
 		setupMutationObserver();
+
+		// Initial application of field locking
+		updateFieldLocking();
 	});
 
 	onUnmounted(() => {
@@ -345,6 +500,14 @@ export function useFieldRegistry(provider: DirectusProvider) {
 			);
 		},
 		getActiveHandler: () => activeField.value?.handler.name,
+		// Field locking methods
+		updateFieldLocking,
+		isFieldLocked: (fieldMeta: FieldMeta) => {
+			const fieldElement = document.querySelector(
+				`[data-collection="${fieldMeta.collection}"][data-field="${fieldMeta.field}"][data-primary-key="${fieldMeta.primaryKey}"]`,
+			);
+			return fieldElement?.classList.contains('collab-field-locked') ?? false;
+		},
 	};
 }
 
