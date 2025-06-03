@@ -352,7 +352,11 @@ onMounted(async () => {
 }
 
 .item-link {
+	--v-icon-color: var(--theme--foreground-subdued);
 	margin-left: 0.5em;
+}
+.item-link:hover {
+	--v-icon-color: var(--theme--form--field--input--foreground);
 }
 
 .v-pagination {
