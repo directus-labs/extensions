@@ -63,7 +63,7 @@ async function refreshList(): Promise<boolean> {
 			collections.value[d.collection].item_count += d.items.length;
 
 			d.items.forEach((i: Record<string, any>) => {
-				const item_id = d.relation === 'm2m' && d.junction_field ? i[d.junction_field][d.primary_key] : i[d.primary_key];
+				const item_id = d.relation === 'm2m' && d.junction_field ? i[d.junction_field]?.[d.primary_key] : i[d.primary_key];
 
 				relatedItems.value.push({
 					collection: d.collection,
