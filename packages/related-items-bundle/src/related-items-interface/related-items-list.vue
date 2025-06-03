@@ -159,10 +159,16 @@ onMounted(async () => {
 </script>
 
 <template>
+	<div class="field-label type-label">
+		<span class="field-name">
+			<div class="v-text-overflow">Related Items</div>
+		</span>
+	</div>
+	
 	<template v-if="primaryKey === '+'">
 		<v-notice>Save changes to see any relational items.</v-notice>
 	</template>
-	
+
 	<template v-else-if="loading">
 		<v-skeleton-loader type="block-list-item-dense"	/>
 	</template>
@@ -178,11 +184,6 @@ onMounted(async () => {
 	</template>
 
 	<template v-else>
-		<div class="field-label type-label">
-			<span class="field-name">
-				<div class="v-text-overflow">Related Items</div>
-			</span>
-		</div>
 		<div class="collection-filter">
 			<v-chip :label="false" clickable :class="filterCollection === 'all' ? 'active' : ''" @click="filterCollection = 'all'">
 				All <span class="item-count">{{ totalItemCount >= 1_000 ? abbreviateNumber(totalItemCount, 1) : totalItemCount }}</span>
