@@ -307,6 +307,7 @@ onMounted(async () => {
 
 .record-name {
 	display: flex;
+	align-items: center;
 }
 
 .date-created {
