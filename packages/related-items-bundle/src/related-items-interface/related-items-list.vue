@@ -332,14 +332,10 @@ onMounted(async () => {
 	text-align: center;
 }
 
-.collection-filter .v-chip.active {
+.collection-filter .v-chip.active, .collection-filter .v-chip:hover {
 	background-color: var(--theme--primary);
 	border-color: var(--theme--primary);
 	color: var(--white);
-}
-
-.collection-filter .v-chip:hover {
-	border-color: var(--theme--primary) !important;
 }
 
 .collection-filter .v-chip:hover .item-count, .collection-filter .v-chip.active .item-count {
