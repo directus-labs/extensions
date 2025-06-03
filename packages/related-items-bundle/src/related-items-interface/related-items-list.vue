@@ -39,8 +39,10 @@ const systemEditable = ['directus_files', 'directus_permissions', 'directus_poli
 const systemNavigate = ['directus_flows', 'directus_presets', 'directus_dashboards'];
 
 async function refreshList(): Promise<boolean> {
-	if (primaryKey.value === '+')
+	if (primaryKey.value === '+') {
+		loading.value = false;
 		return false;
+	}
 	loading.value = true;
 
 	relatedItems.value = [];
@@ -157,7 +159,11 @@ onMounted(async () => {
 </script>
 
 <template>
-	<template v-if="loading">
+	<template v-if="primaryKey === '+'">
+		<v-notice>Save changes to see any relational items.</v-notice>
+	</template>
+	
+	<template v-else-if="loading">
 		<v-skeleton-loader type="block-list-item-dense"	/>
 	</template>
 
