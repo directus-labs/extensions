@@ -1,10 +1,10 @@
 import { DeepPartial, Field } from '@directus/types';
-import { getRelatimeInterfaceName } from './get-realtime-interface-name';
+import { getRealtimeInterfaceName } from './get-realtime-interface-name';
 
 export function generateRealtimeInterface(collection: string): DeepPartial<Field> {
 	return {
 		collection,
-		field: getRelatimeInterfaceName(collection),
+		field: getRealtimeInterfaceName(collection),
 		type: 'alias',
 		schema: null,
 		meta: {
