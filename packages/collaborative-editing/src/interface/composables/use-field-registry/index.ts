@@ -1,46 +1,11 @@
 import { ref, watch, onMounted, onUnmounted, readonly } from 'vue';
 import { useActiveElement } from '@vueuse/core';
 import { debounce, DebouncedFunc } from 'lodash-es';
-import { useFieldMeta } from './use-field-meta';
-import { DirectusProvider } from './use-doc';
-import { ACTIVE_FIELD_SELECTOR } from '../constants';
-import { useAwarenessStore } from '../stores/awarenessStore';
-import type { FieldMeta } from './use-field-meta';
-
-export interface FieldHandler {
-	name: string;
-	// Element detection
-	selector: string;
-	detect: (el: HTMLElement) => boolean;
-
-	// Activation detection
-	activation: {
-		type: 'focus' | 'class' | 'custom';
-		className?: string;
-		customCheck?: (el: HTMLElement) => boolean;
-	};
-
-	// Hooks
-	onBeforeActivate?: (el: HTMLElement, fieldMeta: FieldMeta) => boolean; // return false to prevent
-	onAfterActivate?: (el: HTMLElement, fieldMeta: FieldMeta) => void;
-	onBeforeDeactivate?: (el: HTMLElement, fieldMeta: FieldMeta) => boolean; // return false to prevent
-	onAfterDeactivate?: (el: HTMLElement, fieldMeta: FieldMeta) => void;
-
-	// Deactivation settings
-	deactivation: {
-		debounceMs?: number;
-		checkOnDocumentClick?: boolean;
-		// Selectors to ignore when checking document clicks
-		// One example is the TinyMCE toolbar, which should not be considered a deactivation trigger
-		ignoreClickSelectors?: string[];
-	};
-}
-
-interface ActiveField {
-	element: HTMLElement;
-	fieldMeta: FieldMeta;
-	handler: FieldHandler;
-}
+import { FieldMeta, useFieldMeta } from '../use-field-meta';
+import { DirectusProvider } from '../use-doc';
+import { ACTIVE_FIELD_SELECTOR } from '../../constants';
+import { useAwarenessStore } from '../../stores/awarenessStore';
+import { FieldHandler, ActiveField } from './types';
 
 export function useFieldRegistry(provider: DirectusProvider) {
 	const { getFieldMetaFromPayload } = useFieldMeta();
@@ -510,69 +475,3 @@ export function useFieldRegistry(provider: DirectusProvider) {
 		},
 	};
 }
-
-// Handler for simple input fields that can be focused
-export const standardFieldHandler: FieldHandler = {
-	name: 'standard',
-	selector: 'input, textarea, select, [contenteditable]',
-	detect: (el) => el.matches('input, textarea, select, [contenteditable]'),
-	activation: {
-		type: 'focus',
-	},
-	deactivation: {
-		debounceMs: 50,
-		checkOnDocumentClick: false, // No need for this. Focus handles this automatically
-	},
-};
-
-export const selectFieldHandler: FieldHandler = {
-	name: 'select',
-	selector: '.v-select .input',
-	detect: (el) => el.matches('.v-select .input'),
-	activation: {
-		type: 'class',
-		className: 'active',
-	},
-	deactivation: {
-		debounceMs: 50,
-		checkOnDocumentClick: true,
-		ignoreClickSelectors: ['.v-select', '.v-overlay'],
-	},
-};
-
-export const wysiwygFieldHandler: FieldHandler = {
-	name: 'wysiwyg',
-	selector: '.tox-tinymce',
-	detect: (el) => el.matches('.tox-tinymce'),
-	activation: {
-		type: 'class',
-		className: 'focus',
-	},
-	deactivation: {
-		debounceMs: 100,
-		checkOnDocumentClick: true,
-		ignoreClickSelectors: ['.tox-toolbar', '.tox-menubar', '.tox-sidebar', '.tox-dialog', '.tox-tinymce'],
-	},
-	onBeforeDeactivate: () => {
-		// If window doesn't have focus, prevent deactivation
-		if (!document.hasFocus()) {
-			return false; // Prevent deactivation
-		}
-		return true; // Allow normal deactivation logic
-	},
-};
-
-export const datetimeFieldHandler: FieldHandler = {
-	name: 'datetime',
-	selector: '.v-menu:not(.v-select) .v-input .input',
-	detect: (el) => el.matches('.v-menu:not(.v-select) .v-input .input'),
-	activation: {
-		type: 'class',
-		className: 'active',
-	},
-	deactivation: {
-		debounceMs: 50,
-		checkOnDocumentClick: true,
-		ignoreClickSelectors: ['.v-menu', '.v-overlay', '.flatpickr-calendar'],
-	},
-};

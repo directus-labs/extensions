@@ -1,12 +1,12 @@
 import { onUnmounted } from 'vue';
 import { DirectusProvider } from './use-doc';
+import { useFieldRegistry } from './use-field-registry';
 import {
-	useFieldRegistry,
 	standardFieldHandler,
 	selectFieldHandler,
 	wysiwygFieldHandler,
 	datetimeFieldHandler,
-} from './use-field-registry';
+} from './use-field-registry/handlers';
 import { useFieldBorders } from './use-field-borders';
 
 export function useFieldAwareness(provider: DirectusProvider) {
