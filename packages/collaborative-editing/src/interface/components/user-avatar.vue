@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { getAssetUrl } from '../utils';
 import { computed, ref, toRefs } from 'vue';
-import { themePrefix, AwarenessUser } from '../types';
+import { AwarenessUser, themePrefix } from '../types';
+import { getAssetUrl } from '../utils';
 
 const props = defineProps<{
 	user: AwarenessUser;
@@ -22,7 +22,21 @@ const name = computed(() => {
 	if (isUnknownUser.value) {
 		return 'Unknown User';
 	}
-	return `${user.value.first_name} ${user.value.last_name}`;
+
+	let name = '';
+	const { first_name, last_name } = user.value ?? {};
+
+	if (first_name && first_name.length > 0) {
+		name += first_name;
+	}
+
+	if (last_name && last_name.length > 0) {
+		// add space if first name is present
+		if (name.length > 0) name += ' ';
+
+		name += last_name;
+	}
+	return name;
 });
 
 const initials = computed(() => {
