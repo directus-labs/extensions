@@ -184,7 +184,11 @@ export default defineEndpoint({
 					} });
 					return {
 						...collectionInfo,
-						items: relatedItems,
+						items: relatedItems.filter((value: any, index: number, self: any) =>
+							index === self.findIndex((t: any) => (
+								t[collectionInfo.primary_key] === value[collectionInfo.primary_key]
+							))
+						),
 					};
 				}
 				catch {
