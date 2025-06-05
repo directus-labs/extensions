@@ -131,9 +131,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 			if (payload.update) {
 				const update = payload.update;
 				for (const field of Object.keys(update)) {
-					setTimeout(() => {
-						this.emit('doc:set', [field, update[field], 'update']);
-					}, 1);
+					this.emit('doc:set', [field, update[field], 'update']);
 				}
 			}
 		} else if (payload.event === 'save') {

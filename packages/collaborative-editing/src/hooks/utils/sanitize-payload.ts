@@ -36,9 +36,9 @@ export async function sanitizePayload(
 
 		const value = payload[field];
 
-		if (relation === null) {
-			const fieldSchema = schema.collections[collection].fields[field];
+		const fieldSchema = schema.collections[collection]?.fields?.[field];
 
+		if (relation === null) {
 			// skip processing hash or password fields, they will be snyced on save
 			if (fieldSchema?.special.some((v) => v === 'conceal' || v === 'hash')) {
 				continue;
@@ -115,6 +115,9 @@ export async function sanitizePayload(
 
 			// Discard will send array of ids o2mPayload: [1,2,3] instead of object syntax
 			if (Array.isArray(o2mPayload)) continue;
+
+			// Do not process translation alias
+			if (fieldSchema?.special.some((v) => v === 'translations')) continue;
 
 			// Undoing an action sends undefined
 			if (o2mPayload === UNDEFINED_VALUE || o2mPayload === null) {
