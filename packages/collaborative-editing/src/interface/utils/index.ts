@@ -151,6 +151,5 @@ export function isValidRoom(input: RoomInput): boolean {
 		primaryKey = input.primaryKey;
 	}
 
-	const numKey = Number(primaryKey);
-	return typeof collection === 'string' && typeof primaryKey === 'string' && Number.isInteger(numKey) && numKey > 0;
+	return typeof collection === 'string' && typeof primaryKey === 'string';
 }

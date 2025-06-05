@@ -7,6 +7,8 @@ import { isRealtimeInterface } from '../../shared/field/is-realtime-interface';
 import { realtimeInterfaceExists } from '../../shared/field/realtime-interface-exists';
 import { useSettings } from '../utils/use-settings';
 
+const ALLOWED_SYSTEM_COLLECTIONS = ['directus_users', 'directus_files'];
+
 defineProps<{
 	enabledGlobally: boolean | undefined;
 }>();
@@ -17,9 +19,14 @@ const fieldsStore = useFieldsStore();
 const settings = useSettings();
 
 const eligibleCollections = computed(() => {
-	return collectionsStore.collections.filter(
-		(collection: Collection) => !collection.meta?.system && !collection.meta?.singleton && collection.schema,
-	);
+	return collectionsStore.collections.filter((collection: Collection) => {
+		// Allow specific system collections
+		if (collection.meta?.system) {
+			return ALLOWED_SYSTEM_COLLECTIONS.includes(collection.collection);
+		}
+		// Allow non-singleton collections with schema
+		return !collection.meta?.singleton && collection.schema;
+	});
 });
 
 const enabledCollections = computed(() => {
