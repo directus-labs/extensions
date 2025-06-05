@@ -21,24 +21,24 @@ export async function broadcastUserAwareness(
 	const rooms = useRooms();
 	const schema = await getSchema();
 
-	let message = {
-		event: 'awareness',
-		type: 'user',
-		action,
-		uid: data.id,
-		room,
-	};
-
 	if (action === 'add') {
 		rooms.addUser(room, { uid: data.uid, id: data.id, userId: payload.userId, color: data.color });
 	} else {
 		rooms.removeUser(room, data.uid);
 	}
 
-	for (const [, socket] of sockets) {
+	for await (const [, socket] of sockets) {
 		if (!isValidSocket(socket) || socket.rooms.has(room) === false) continue;
 
 		if (payload.action === 'remove' && socket.client.id === payload.origin) continue;
+
+		let message = {
+			event: 'awareness',
+			type: 'user',
+			action,
+			uid: data.id,
+			room,
+		};
 
 		if (payload.action === 'add') {
 			message = {

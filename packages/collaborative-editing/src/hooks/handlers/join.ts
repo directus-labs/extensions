@@ -59,7 +59,7 @@ export async function handleJoin(client: RealtimeWebSocket, message: Omit<JoinMe
 	};
 
 	const users = new Map();
-	for (const [, user] of room.users) {
+	for await (const [, user] of room.users) {
 		if (users.has(user.id)) {
 			// dont reprocess user
 			continue;
@@ -79,7 +79,7 @@ export async function handleJoin(client: RealtimeWebSocket, message: Omit<JoinMe
 
 	payload.users = Array.from(users.values());
 
-	for (const [id, field] of room.fields.entries()) {
+	for await (const [id, field] of room.fields.entries()) {
 		try {
 			await new services.ItemsService(collection, {
 				knex: database,
