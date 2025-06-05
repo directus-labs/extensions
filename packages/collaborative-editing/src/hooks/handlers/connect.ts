@@ -14,7 +14,7 @@ export function handleConnect(client: RealtimeWebSocket, message: Omit<ConnectMe
 	// Add back rooms on re-connect
 	if (message.rooms && message.rooms.length) {
 		// rejoin rooms
-		rooms.forEach((r) => rooms.add(r));
+		message.rooms.forEach((r) => rooms.add(r));
 	}
 
 	client.id = getId(client.accountability.user!);
