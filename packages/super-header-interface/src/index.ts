@@ -67,6 +67,58 @@ export default defineInterface({
 			},
 		},
 		{
+			field: 'helpDisplayMode',
+			name: 'Help Display Mode',
+			type: 'string',
+			schema: {
+				default_value: 'inline',
+			},
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				note: 'Select the display mode for the help information. Defaults to showing inline with the title. You can also show the help information in a modal.',
+				options: {
+					choices: [
+						{ text: 'Inline', value: 'inline' },
+						{ text: 'Modal', value: 'modal' },
+					],
+				},
+			},
+		},
+		{
+			field: 'enableHelpTranslations',
+			name: 'Enable Help Translations',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				note: 'Enable translations for the help information. If enabled, the help information will be translated using the Help Translations String field. NOTE: this will override the Help field.',
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
+			field: 'helpTranslationsString',
+			name: 'Help Translations String',
+			type: 'json',
+			meta: {
+				width: 'full',
+				interface: 'system-input-translated-string',
+				note: 'Translation string for the help information. You will need to create a translation value for the key in the Translations Settings of your project with the HTML content for each individual language you want to support. NOTE: this will override the Help field.',
+				hidden: true,
+				conditions: [
+					{
+						rule: {
+							enableHelpTranslations: {
+								_eq: true,
+							},
+						},
+						hidden: false,
+					},
+				],
+			},
+		},
+		{
 			field: 'actions',
 			name: 'Actions',
 			type: 'json',
