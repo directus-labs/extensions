@@ -29,15 +29,15 @@ export default defineInterface({
 					},
 				},
 			},
-			{
-				field: 'button_label',
-				name: 'Button Label',
-				meta: {
-					width: 'half',
-					interface: 'system-input-translated-string',
-					options: { placeholder: defaultButtonLabel },
-				},
-			},
+            {
+                field: "button_label",
+                name: "Button Label",
+                meta: {
+                    width: "full",
+                    interface: "system-input-translated-string",
+                    options: { placeholder: defaultButtonLabel },
+                },
+            },
 		];
 	},
 });
