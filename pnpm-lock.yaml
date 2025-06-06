@@ -827,6 +827,43 @@ importers:
         specifier: ^3.4.30
         version: 3.5.13(typescript@5.8.3)
 
+  packages/related-items-bundle:
+    dependencies:
+      '@directus/eslint-config':
+        specifier: ^0.1.0
+        version: 0.1.0(@typescript-eslint/utils@8.32.1(eslint@9.26.0)(typescript@5.8.3))(@vue/compiler-sfc@3.5.14)(eslint@9.26.0)(typescript@5.8.3)
+      '@directus/format-title':
+        specifier: ^12.0.1
+        version: 12.0.1
+      '@directus/system-data':
+        specifier: ^3.1.0
+        version: 3.1.0
+      vue-i18n:
+        specifier: ^9.14.0
+        version: 9.14.4(vue@3.5.13(typescript@5.8.3))
+      vue-router:
+        specifier: ^4.4.5
+        version: 4.5.1(vue@3.5.13(typescript@5.8.3))
+    devDependencies:
+      '@directus/constants':
+        specifier: ^13.0.0
+        version: 13.0.1
+      '@directus/extensions-sdk':
+        specifier: ^13.0.1
+        version: 13.0.4(@types/node@22.15.19)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.89.0)(terser@5.39.2)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))
+      '@directus/types':
+        specifier: ^13.0.0
+        version: 13.1.1(knex@3.1.0)(vue@3.5.13(typescript@5.8.3))
+      '@directus/utils':
+        specifier: ^13.0.0
+        version: 13.0.5(vue@3.5.13(typescript@5.8.3))
+      typescript:
+        specifier: ^5.6.3
+        version: 5.8.3
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.8.3)
+
   packages/resend-operation:
     devDependencies:
       '@directus/extensions-sdk':
