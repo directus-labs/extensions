@@ -43,6 +43,7 @@ async function refreshList(): Promise<boolean> {
 		loading.value = false;
 		return false;
 	}
+
 	loading.value = true;
 
 	relatedItems.value = [];
@@ -164,7 +165,7 @@ onMounted(async () => {
 			<div class="v-text-overflow">Related Items</div>
 		</span>
 	</div>
-	
+
 	<template v-if="primaryKey === '+'">
 		<v-notice>Save changes to see any relational items.</v-notice>
 	</template>
