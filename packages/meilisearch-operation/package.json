@@ -16,7 +16,10 @@
 	"keywords": [
 		"directus",
 		"directus-extension",
-		"directus-extension-operation"
+		"directus-extension-operation",
+		"meilisearch",
+		"search",
+		"index"
 	],
 	"files": [
 		"dist"
