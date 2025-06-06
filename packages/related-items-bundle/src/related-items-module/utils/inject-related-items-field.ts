@@ -3,12 +3,22 @@ import { system_field } from '../settings-field';
 import { getDirectusApp } from './get-directus-app';
 import { getDirectusRouter } from './get-directus-router';
 import { unexpectedError } from './unexpected-error';
+import { nextTick } from 'vue';
+
+const config = { attributes: true, childList: true, subtree: true };
+const observer = new MutationObserver((mutations) => {
+	if (mutations.some((e) => (e.type === 'attributes' && e.attributeName === 'disabled' && (e.target as HTMLButtonElement).disabled))) {
+		hydrateFields();
+	}
+});
 
 export function injectRelatedItemsField() {
 	const router = getDirectusRouter();
 
 	if (router) {
 		router.afterEach(async (to: Record<string, any>) => {
+			if (observer)
+				observer.disconnect();
 			if (to.name === 'settings-project') {
 				initializeApp();
 			}
@@ -43,4 +53,22 @@ async function initializeApp(retry: number = 0) {
 	catch (error: any) {
 		unexpectedError(error, stores);
 	}
+
+	await nextTick();
+	const saveButtons = document.querySelector('.action-buttons');
+	console.log(observer.observe(saveButtons as HTMLElement, config));
+}
+
+async function hydrateFields(){
+	console.log('Hydrate Fields');
+	const router = getDirectusRouter();
+
+	if(router.currentRoute.value.name !== 'settings-project') return;
+
+	const directusApp = getDirectusApp();
+	const stores = directusApp._container._vnode.component.provides[STORES_INJECT];
+	const { useFieldsStore } = stores;
+	const fieldStore = useFieldsStore();
+	setTimeout(
+		await fieldStore.hydrate(), 2000);
 }
