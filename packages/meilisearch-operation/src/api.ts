@@ -11,7 +11,7 @@ export default defineOperationApi<MeiliSearchOptions>({
 			if (!host || !isValidUrl(host)) throw new Error(`Host is invalid. Must be your cloud instance URL or your localhost address. Receieved ${host}`);
 			if (!api_key) throw new Error('API Key is empty. Please ensure to provide an API Key.');
 			if (!search_index) throw new Error(`Search index is required. Receieved ${search_index}`);
-			if (!document_id) throw new Error(`Item ID/Key is required. Receieved ${document_id}`);
+			if (action !== 'read' && (!document_id || (Array.isArray(document_id) && document_id.length === 0))) throw new Error(`Item ID/Key is required. Receieved ${document_id}`);
 			if (['create', 'update'].includes(action) && !document) throw new Error(`Item Data is required for ${action} action.`);
 
 			const client = new MeiliSearch({
