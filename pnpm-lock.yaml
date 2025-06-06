@@ -697,13 +697,13 @@ importers:
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 13.0.3
-        version: 13.0.3(@types/node@22.13.10)(@unhead/vue@2.0.0-alpha.19(vue@3.5.13(typescript@5.8.2)))(knex@3.1.0)(pinia@3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))(sass@1.85.1)(terser@5.39.0)(typescript@5.8.2)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
+        version: 13.0.3(@types/node@22.15.19)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.89.0)(terser@5.39.2)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))
       '@types/node':
         specifier: ^22.13.10
-        version: 22.13.10
+        version: 22.15.19
       vue:
         specifier: ^3.5.13
-        version: 3.5.13(typescript@5.8.2)
+        version: 3.5.13(typescript@5.8.3)
 
   packages/meter-component:
     devDependencies:
@@ -6141,12 +6141,12 @@ packages:
   mdn-data@2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
 
-  meilisearch@0.49.0:
-    resolution: {integrity: sha512-oMJ/e6Or6cz2+owcEKeB11p2OWiWW9NmssqOZC/KIwQB0sBGKLJ7RCpYzf+GhUIZIZ9FRYZ419ox3RGebVQX5g==}
-
   media-typer@1.1.0:
     resolution: {integrity: sha512-aisnrDP4GNe06UcKFnV5bfMNPBUw4jsLGaWwWfnH3v02GnBuXX2MCVn5RbrWo0j3pczUilYblq7fQ7Nw2t5XKw==}
     engines: {node: '>= 0.8'}
+
+  meilisearch@0.49.0:
+    resolution: {integrity: sha512-oMJ/e6Or6cz2+owcEKeB11p2OWiWW9NmssqOZC/KIwQB0sBGKLJ7RCpYzf+GhUIZIZ9FRYZ419ox3RGebVQX5g==}
 
   merge-descriptors@2.0.0:
     resolution: {integrity: sha512-Snk314V5ayFLhp3fkUREub6WtjBfPdCPY1Ln8/8munuLuiYhsABgBVWsozAG+MWMbVEvcdcpbi9R7ww22l9Q3g==}
@@ -9420,6 +9420,58 @@ snapshots:
       rollup-plugin-styles: 4.0.0(rollup@3.29.5)
       semver: 7.6.3
       vite: 4.5.5(@types/node@22.15.17)(sass@1.89.0)(terser@5.39.2)
+      vue: 3.5.13(typescript@5.8.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - '@unhead/vue'
+      - better-sqlite3
+      - debug
+      - knex
+      - less
+      - lightningcss
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - pinia
+      - pino
+      - sass
+      - sqlite3
+      - stylus
+      - sugarss
+      - supports-color
+      - tedious
+      - terser
+      - typescript
+      - vue-router
+
+  '@directus/extensions-sdk@13.0.3(@types/node@22.15.19)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.89.0)(terser@5.39.2)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))':
+    dependencies:
+      '@directus/composables': 11.1.8(vue@3.5.13(typescript@5.8.3))
+      '@directus/constants': 13.0.0
+      '@directus/extensions': 3.0.3(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
+      '@directus/themes': 1.0.9(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
+      '@directus/types': 13.0.0(knex@3.1.0)(vue@3.5.13(typescript@5.8.3))
+      '@directus/utils': 13.0.2(vue@3.5.13(typescript@5.8.3))
+      '@rollup/plugin-commonjs': 25.0.8(rollup@3.29.5)
+      '@rollup/plugin-json': 6.1.0(rollup@3.29.5)
+      '@rollup/plugin-node-resolve': 15.3.1(rollup@3.29.5)
+      '@rollup/plugin-replace': 5.0.7(rollup@3.29.5)
+      '@rollup/plugin-terser': 0.4.4(rollup@3.29.5)
+      '@rollup/plugin-virtual': 3.0.2(rollup@3.29.5)
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.5(@types/node@22.15.19)(sass@1.89.0)(terser@5.39.2))(vue@3.5.13(typescript@5.8.3))
+      chalk: 5.4.1
+      commander: 10.0.1
+      esbuild: 0.17.19
+      execa: 7.2.0
+      fs-extra: 11.2.0
+      inquirer: 12.3.0(@types/node@22.15.19)
+      ora: 6.3.1
+      rollup: 3.29.5
+      rollup-plugin-esbuild: 5.0.0(esbuild@0.17.19)(rollup@3.29.5)
+      rollup-plugin-styles: 4.0.0(rollup@3.29.5)
+      semver: 7.6.3
+      vite: 4.5.5(@types/node@22.15.19)(sass@1.89.0)(terser@5.39.2)
       vue: 3.5.13(typescript@5.8.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -15417,9 +15469,9 @@ snapshots:
 
   mdn-data@2.0.14: {}
 
-  meilisearch@0.49.0: {}
-
   media-typer@1.1.0: {}
+
+  meilisearch@0.49.0: {}
 
   merge-descriptors@2.0.0: {}
 
