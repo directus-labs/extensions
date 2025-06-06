@@ -3,6 +3,14 @@
 	"type": "module",
 	"version": "1.0.0",
 	"description": "Intergrate Directus content with Meilisearch. ",
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "Tim Butterfield",
+			"email": "tim.butterfield@me.com",
+			"url": "https://www.npmjs.com/~timio23"
+		}
+	],
 	"icon": "extension",
 	"license": "MIT",
 	"keywords": [
