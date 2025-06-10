@@ -27,7 +27,7 @@ export async function handleLeave(client: RealtimeWebSocket, message: Omit<Leave
 		type: 'awareness-user',
 		room,
 		action: 'remove',
-		origin: client.id,
+		originId: client.id,
 		data: {
 			id: client.id,
 			uid: client.uid,

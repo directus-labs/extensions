@@ -37,7 +37,7 @@ export async function handleUpdate(client: RealtimeWebSocket, message: Omit<Upda
 	const broadcast: BroadcastPayload = {
 		type: 'room-doc',
 		room: roomName,
-		origin: client.uid,
+		originUid: client.uid,
 		data: sanitizedPayload,
 	};
 	bus.publish(BROADCAST_CHANNEL, broadcast);

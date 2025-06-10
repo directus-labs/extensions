@@ -11,6 +11,7 @@ export interface Room {
 	name: string;
 	fields: Map<string, string>;
 	users: Map<string, RoomUser>;
+	saves: Map<string, Set<string>>;
 	doc: Y.Doc;
 }
 
@@ -29,6 +30,7 @@ class RoomMap extends Map<string, Room> {
 			doc: new Y.Doc(),
 			fields: new Map(),
 			users: new Map(),
+			saves: new Map(),
 		});
 
 		return this.get(room)!;

@@ -1,6 +1,6 @@
 import { BroadcastContext, BroadcastPayload } from '../../types';
 import { broadcastFieldAwareness } from './subscribers/broadcast-field-awareness';
-import { broadcastSave } from './subscribers/broadcast-save';
+import { broadcastSaveCommitted, broadcastSaveConfirm, broadcastSaveConfirmed } from './subscribers/broadcast-save';
 import { broadcastUpdate } from './subscribers/broadcast-update';
 import { broadcastUserAwareness } from './subscribers/broadcast-user-awareness';
 import { updateRoomDoc } from './subscribers/update-room-doc';
@@ -14,7 +14,11 @@ export function handleBroadcast(payload: BroadcastPayload, ctx: BroadcastContext
 		broadcastUserAwareness(payload, ctx);
 	} else if (payload.type === 'room-doc') {
 		updateRoomDoc(payload, ctx);
-	} else if (payload.type === 'save') {
-		broadcastSave(payload);
+	} else if (payload.type === 'save:confirm') {
+		broadcastSaveConfirm(payload);
+	} else if (payload.type === 'save:confirmed') {
+		broadcastSaveConfirmed(payload);
+	} else if (payload.type === 'save:committed') {
+		broadcastSaveCommitted(payload);
 	}
 }

@@ -10,7 +10,9 @@ import {
 	handleDeactivate,
 	handleJoin,
 	handleLeave,
-	handleSave,
+	handleSaveCommitted,
+	handleSaveConfirm,
+	handleSaveConfirmed,
 	handleUpdate,
 } from './handlers';
 import { handleBroadcast, useBus } from './lib/bus';
@@ -65,6 +67,12 @@ export default defineHook(async ({ action, filter }, ctx) => {
 			case 'leave':
 				handleLeave(client, payload, messageCtx);
 				break;
+			case 'save:confirm':
+				handleSaveConfirm(client, payload, messageCtx);
+				break;
+			case 'save:confirmed':
+				handleSaveConfirmed(client, payload, messageCtx);
+				break;
 		}
 	});
 
@@ -72,14 +80,14 @@ export default defineHook(async ({ action, filter }, ctx) => {
 		handleBroadcast(payload, ctx);
 	});
 
-	action('websocket.close', ({ client }, eventCtx) => {
-		handleClose(client, { ...ctx, database: eventCtx.database });
-	});
-
 	action('items.update', (meta, eventCtx) => {
 		if (eventCtx.accountability?.user) {
-			handleSave({ ...meta, origin: eventCtx.accountability.user }, { ...ctx, database: eventCtx.database });
+			handleSaveCommitted(meta, { ...ctx, database: eventCtx.database });
 		}
+	});
+
+	action('websocket.close', ({ client }, eventCtx) => {
+		handleClose(client, { ...ctx, database: eventCtx.database });
 	});
 
 	action('settings.update', (payload) => {

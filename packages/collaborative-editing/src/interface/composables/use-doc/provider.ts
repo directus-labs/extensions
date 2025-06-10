@@ -28,7 +28,9 @@ interface DirectusProviderEvents {
 	'user:remove': (user: Omit<AwarenessUserRemovePayload, 'event' | 'type' | 'action'>) => void;
 	'doc:update': (field: string, value: unknown) => void;
 	'doc:set': (field: string, value: unknown, origin: 'update' | 'sync' | 'form') => void;
-	'item:save': (room: string) => void;
+	'save:cancel': () => void;
+	'save:commit': () => void;
+	'save:committed': () => void;
 	debug: (event: string, ...data: unknown[]) => void;
 }
 
@@ -36,21 +38,22 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 	ws: ReturnType<typeof useWS>;
 	doc: Y.Doc;
 	room: string | null;
+	savedAt: number | null;
 	lastOrigin: 'form' | 'update' | 'sync' | null;
 	public readonly connected: Ref<boolean>;
 	constructor(opts: DirectusProviderOptions) {
 		super();
 
-		this.ws = useWS();
-
+		this.room = null;
+		this.doc = opts.doc;
 		this.lastOrigin = null;
+		this.savedAt = null;
 
+		// socket
+		this.ws = useWS();
+		this.connected = this.ws.connected;
 		this.ws.onOpen(this.handleConnection.bind(this));
 		this.ws.onMessage<WebsocketMessagePayload>(this.handleMessage.bind(this));
-
-		this.doc = opts.doc;
-		this.room = null;
-		this.connected = this.ws.connected;
 
 		this.registerHandlers();
 	}
@@ -123,7 +126,7 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 		this.emit('debug', ['message:payload', payload]);
 
 		// discard events that are not from this room
-		if ('room' in payload && payload.room !== this.room) return;
+		if (this.room === null || ('room' in payload && payload.room !== this.room)) return;
 
 		if (payload.event === 'connected') {
 			this.emit('connected', []);
@@ -134,8 +137,29 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 					this.emit('doc:set', [field, update[field], 'update']);
 				}
 			}
-		} else if (payload.event === 'save') {
-			this.emit('item:save', [payload.room]);
+		} else if (payload.event === 'save:committed') {
+			if (this.savedAt) {
+				// Do not process committed for the save initiator session, app will handle their refresh
+				this.savedAt = null;
+				return;
+			}
+
+			this.emit('save:committed', []);
+		} else if (payload.event === 'save:commit') {
+			if (this.savedAt === null) return;
+
+			this.emit('save:commit', []);
+		} else if (payload.event === 'save:confirm') {
+			if (this.savedAt && payload.savedAt > this.savedAt) {
+				// cancel if later save
+				this.savedAt = null;
+				this.emit('save:cancel', []);
+			} else if (this.savedAt && this.savedAt === payload.savedAt) {
+				// Do not process confirm for save initiators sesssion
+				return;
+			}
+
+			this.send({ type: 'save:confirmed', room: this.room, id: payload.id });
 		} else if (payload.event === 'awareness') {
 			// Handle user awareness
 			if (payload.type === 'user') {
@@ -252,5 +276,16 @@ export class DirectusProvider extends ObservableV2<DirectusProviderEvents> {
 
 		this.ws.rooms.value.delete(this.room);
 		this.room = null;
+	}
+
+	preSave() {
+		if (!this.room || this.savedAt) return;
+
+		this.savedAt = Date.now();
+		this.send({
+			type: 'save:confirm',
+			room: this.room,
+			savedAt: this.savedAt,
+		});
 	}
 }

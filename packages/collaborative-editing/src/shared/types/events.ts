@@ -1,6 +1,14 @@
 import { AwarenessColor } from '../../interface/types';
 
-export type ClientEvent = 'update' | 'awareness' | 'sync' | 'ping' | 'connected' | 'save';
+export type ClientEvent =
+	| 'update'
+	| 'awareness'
+	| 'sync'
+	| 'ping'
+	| 'connected'
+	| 'save:commit'
+	| 'save:confirm'
+	| 'save:committed';
 
 export type DirectusServerEvent = 'pong';
 
@@ -11,7 +19,8 @@ export type RealtimeServerEvent =
 	| 'leave'
 	| 'activate'
 	| 'deactivate'
-	| 'refresh';
+	| 'save:confirmed'
+	| 'save:confirm';
 
 export type ServerEvent = DirectusServerEvent | RealtimeServerEvent;
 
@@ -57,6 +66,18 @@ export interface DeactivateMessage extends WebsocketBaseMessage {
 	room: string;
 }
 
+export interface SaveConfirmedMessage extends WebsocketBaseMessage {
+	type: 'save:confirmed';
+	room: string;
+	id: string;
+}
+
+export interface SaveConfirmMessage extends WebsocketBaseMessage {
+	type: 'save:confirm';
+	room: string;
+	savedAt: number;
+}
+
 export type WebsocketMessage =
 	| ConnectMessage
 	| PongMessage
@@ -64,7 +85,9 @@ export type WebsocketMessage =
 	| LeaveMessage
 	| UpdateMessage
 	| ActivateMessage
-	| DeactivateMessage;
+	| DeactivateMessage
+	| SaveConfirmedMessage
+	| SaveConfirmMessage;
 
 export type WebsocketBaseMessagePayload = {
 	event: ClientEvent;
@@ -125,15 +148,29 @@ export interface AwarenessUserRemovePayload extends WebsocketBaseMessagePayload 
 	room: string;
 }
 
-export interface SavePayload extends WebsocketBaseMessagePayload {
-	event: 'save';
+export interface SaveCommitPayload extends WebsocketBaseMessagePayload {
+	event: 'save:commit';
+	room: string;
+}
+
+export interface SaveConfirmPayload extends WebsocketBaseMessagePayload {
+	event: 'save:confirm';
+	room: string;
+	savedAt: number;
+	id: string;
+}
+
+export interface SaveCommittedPayload extends WebsocketBaseMessagePayload {
+	event: 'save:committed';
 	room: string;
 }
 
 export type WebsocketMessagePayload =
 	| ConnectPayload
 	| SyncPayload
-	| SavePayload
+	| SaveCommitPayload
+	| SaveConfirmPayload
+	| SaveCommittedPayload
 	| UpdatePayload
 	| AwarenessFieldActivatePayload
 	| AwarenessFieldDeactivatePayload

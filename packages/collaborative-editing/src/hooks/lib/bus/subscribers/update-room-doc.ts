@@ -6,7 +6,7 @@ import { useBus } from '../use-bus';
 
 export function updateRoomDoc(payload: BroadcastRoomDocPayload, ctx: BroadcastContext) {
 	const { env } = ctx;
-	const { data, origin, room: roomName } = payload;
+	const { data, originUid, room: roomName } = payload;
 
 	const bus = useBus(env);
 	const rooms = useRooms();
@@ -33,7 +33,7 @@ export function updateRoomDoc(payload: BroadcastRoomDocPayload, ctx: BroadcastCo
 		type: 'update',
 		room: room.name,
 		data: updatePayload,
-		origin,
+		originUid,
 	};
 	bus.publish(BROADCAST_CHANNEL, broadcast);
 }

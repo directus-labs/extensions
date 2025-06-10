@@ -27,27 +27,49 @@ export interface RealtimeSocket {
 	rooms: Set<string>;
 }
 
-export type BroadcastType = 'update' | 'awareness-user' | 'awareness-field' | 'room-doc' | 'save';
+export type BroadcastType =
+	| 'update'
+	| 'awareness-user'
+	| 'awareness-field'
+	| 'room-doc'
+	| 'save:confirm'
+	| 'save:confirmed'
+	| 'save:committed';
 
 export interface BaseBroadcastPayload {
 	type: BroadcastType;
 	room: string;
 }
 
-export interface BroadcastSavePayload extends BaseBroadcastPayload {
-	type: 'save';
-	origin: string;
+export interface BroadcastSaveConfirmPayload extends BaseBroadcastPayload {
+	type: 'save:confirm';
+	originId: string;
+	data: {
+		savedAt: number;
+	};
+}
+
+export interface BroadcastSaveConfirmedPayload extends BaseBroadcastPayload {
+	type: 'save:confirmed';
+	originId: string;
+	data: {
+		id: string;
+	};
+}
+
+export interface BroadcastSaveCommittedPayload extends BaseBroadcastPayload {
+	type: 'save:committed';
 }
 
 export interface BroadcastRoomDocPayload extends BaseBroadcastPayload {
 	type: 'room-doc';
-	origin: string;
+	originUid: string;
 	data: Record<string, unknown> | null;
 }
 
 export interface BroadcastUpdatePayload extends BaseBroadcastPayload {
 	type: 'update';
-	origin: string;
+	originUid: string;
 	data: Record<string, unknown> | null;
 }
 
@@ -65,7 +87,7 @@ export interface BroadcastAwarenessUserAddPayload extends BaseBroadcastPayload {
 export interface BroadcastAwarenessUserRemovePayload extends BaseBroadcastPayload {
 	type: 'awareness-user';
 	action: 'remove';
-	origin: string;
+	originId: string;
 	data: {
 		id: string;
 		uid: string;
@@ -95,7 +117,9 @@ export type BroadcastPayload =
 	| BroadcastAwarenessUserAddPayload
 	| BroadcastAwarenessFieldAddPayload
 	| BroadcastRoomDocPayload
-	| BroadcastSavePayload
+	| BroadcastSaveConfirmPayload
+	| BroadcastSaveConfirmedPayload
+	| BroadcastSaveCommittedPayload
 	| BroadcastAwarenessFieldRemovePayload
 	| BroadcastAwarenessUserRemovePayload
 	| BroadcastUpdatePayload;
