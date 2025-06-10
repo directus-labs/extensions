@@ -48,7 +48,7 @@ export function useDoc(opts: UseYJSOptions = {}) {
 				for (const [key, current] of entries(edits.value)) {
 					const changeV = changedV[key];
 
-					if (isEqual(current, changeV)) {
+					if (isEqual(current, changeV) || !(key in changedV)) {
 						continue;
 					}
 

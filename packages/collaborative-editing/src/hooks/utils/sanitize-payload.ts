@@ -54,15 +54,14 @@ export async function sanitizePayload(
 			const m2oCollection = payload[relation.collection] as string;
 			const m2aRelatedPrimaryKey = schema.collections[m2oCollection].primary;
 
-			// Skip "Create New"
-			if (!(m2aRelatedPrimaryKey in m2aPayload)) continue;
+			const isNew = !(m2aRelatedPrimaryKey in m2aPayload);
 
 			// M2A "Add Existing" or Update
 			const m2aSanitizedUpdatePayload = await sanitizePayload(
 				accountability,
-				`${m2oCollection}:${m2aPayload[m2aRelatedPrimaryKey]}`,
+				`${m2oCollection}:${isNew ? null : m2aPayload[m2aRelatedPrimaryKey]}`,
 				m2aPayload,
-				ctx,
+				{ ...ctx, checkFields: !isNew },
 			);
 
 			if (m2aSanitizedUpdatePayload) {
@@ -73,8 +72,7 @@ export async function sanitizePayload(
 
 			const m2oPayload = value as number | string | bigint | Partial<Item> | null;
 
-			// skip "Create New"
-			if (isObject(m2oPayload) && !(relatedPrimaryKey in m2oPayload)) continue;
+			const isNew = isObject(m2oPayload) && !(relatedPrimaryKey in m2oPayload);
 
 			if (['number', 'string', 'bigint'].includes(typeof m2oPayload)) {
 				// "Add Existing"
@@ -92,9 +90,9 @@ export async function sanitizePayload(
 				// Update Existing
 				const m2oSanitizedUpdatePayload = await sanitizePayload(
 					accountability,
-					`${relation.collection}:${m2oPayload[relatedPrimaryKey]}`,
+					`${relation.collection}:${isNew ? null : m2oPayload[relatedPrimaryKey]}`,
 					m2oPayload,
-					ctx,
+					{ ...ctx, checkFields: !isNew },
 				);
 
 				if (m2oSanitizedUpdatePayload) {
@@ -114,15 +112,13 @@ export async function sanitizePayload(
 				| null;
 
 			// Discard will send array of ids o2mPayload: [1,2,3] instead of object syntax
-			if (Array.isArray(o2mPayload)) continue;
-
-			// Do not process translation alias
-			if (fieldSchema?.special.some((v) => v === 'translations')) continue;
+			if (Array.isArray(o2mPayload)) {
+				continue;
+			}
 
 			// Undoing an action sends undefined
 			if (o2mPayload === UNDEFINED_VALUE || o2mPayload === null) {
-				sanitizedPayload[field] = UNDEFINED_VALUE;
-
+				sanitizedPayload[field] = o2mPayload;
 				continue;
 			}
 
@@ -131,20 +127,17 @@ export async function sanitizePayload(
 			const o2mSanitizedCreatePayloads: Partial<Item>[] = [];
 			for (const create of o2mPayload.create) {
 				// skip "Create New"
-				if (!(relation.payloadField in create)) continue;
-
-				// "Add Existing" for M2A/M2M
-				if (!relation.junctionField) continue;
+				const isNew = !(relation.payloadField in create);
 
 				const o2mSanitizedExistingPayload = await sanitizePayload(
 					accountability,
-					`${relation.collection}:${create[relation.payloadField]}`,
+					`${relation.collection}:${isNew ? null : create[relation.payloadField]}`,
 					create,
 					{ ...ctx, checkFields: false },
 				);
 
 				if (o2mSanitizedExistingPayload) {
-					if (!(relation.junctionField in o2mSanitizedExistingPayload)) {
+					if (relation.junctionField && !(relation.junctionField in o2mSanitizedExistingPayload)) {
 						o2mSanitizedExistingPayload[relation.junctionField] = {};
 					}
 
