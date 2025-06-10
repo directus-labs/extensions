@@ -2,10 +2,10 @@ import { API_INJECT, SDK_INJECT, STORES_INJECT } from '@directus/constants';
 import { Component, createApp, Directive, inject } from 'vue';
 import { routeLocationKey, routerKey } from 'vue-router';
 import { getDirectusApp, getDirectusAppProvides } from '../../interface/utils/get-directus-app';
-import CollaborativeEditingApp from '../components/collaborative-editing-app.vue';
+import RealtimeCollaborationApp from '../components/realtime-collaboration-app.vue';
 
-export function initializeCollaborativeEditing() {
-	const app = createApp(CollaborativeEditingApp);
+export function injectRealtimeApp() {
+	const app = createApp(RealtimeCollaborationApp);
 	const directusApp = getDirectusApp();
 
 	// Register components from the Directus app

@@ -4,7 +4,7 @@ import type { Settings } from '@directus/types';
 import { computed, watchEffect } from 'vue';
 import { useWS } from '../../interface/composables/use-ws';
 import { useSettings } from '../utils/use-settings';
-import CollaborativeEditingController from './collaborative-editing-controller.vue';
+import RealtimeCollaborationController from './realtime-collaboration-controller.vue';
 
 const { useSettingsStore, useAppStore } = useStores();
 const settingsStore = useSettingsStore();
@@ -33,6 +33,6 @@ const unwatch = watchEffect(() => {
 
 <template>
 	<v-error-boundary>
-		<CollaborativeEditingController v-if="moduleEnabled" :enabledGlobally="enabledGlobally" />
+		<RealtimeCollaborationController v-if="moduleEnabled" :enabledGlobally="enabledGlobally" />
 	</v-error-boundary>
 </template>

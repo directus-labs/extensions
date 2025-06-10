@@ -79,11 +79,11 @@ watch(enabledCollections, async (newEnabledCollections) => {
 </script>
 
 <template>
-	<div id="collaborative-editing-controller">Collaborative Editing Enabled: {{ enabledGlobally }}</div>
+	<div id="realtime-collaboration-controller">Realtime Collaboration Enabled: {{ enabledGlobally }}</div>
 </template>
 
 <style>
-#collaborative-editing-controller {
+#realtime-collaboration-controller {
 	display: none;
 }
 </style>
