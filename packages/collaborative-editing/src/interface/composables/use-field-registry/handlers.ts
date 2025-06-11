@@ -3,7 +3,7 @@ import { FieldHandler } from './types';
 // Handler for simple input fields that can be focused
 export const standardFieldHandler: FieldHandler = {
 	name: 'standard',
-	detect: (el) => el.matches('input, textarea, select, [contenteditable]'),
+	detect: (el) => el.matches('input, textarea, select, [contenteditable], canvas[class^=map]'),
 	activation: {
 		type: 'focus',
 	},
