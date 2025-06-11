@@ -68,7 +68,7 @@ const avatarBackgroundColor = computed(() => {
 				}"
 			>
 				<template v-if="isUnknownUser">
-					<v-icon name="person_outline" class="unknown-user-icon" />
+					<v-icon name="person_outline" class="unknown-user-icon" x-small />
 				</template>
 				<template v-else>
 					<v-image v-if="avatarSrc && !avatarError" :src="avatarSrc" @error="avatarError = $event" />
