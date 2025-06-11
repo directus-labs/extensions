@@ -1,13 +1,14 @@
 import { onUnmounted } from 'vue';
 import { DirectusProvider } from './use-doc';
+import { useFieldBorders } from './use-field-borders';
 import { useFieldRegistry } from './use-field-registry';
 import {
-	standardFieldHandler,
-	selectFieldHandler,
-	wysiwygFieldHandler,
 	datetimeFieldHandler,
+	drawerFieldHandler,
+	selectFieldHandler,
+	standardFieldHandler,
+	wysiwygFieldHandler,
 } from './use-field-registry/handlers';
-import { useFieldBorders } from './use-field-borders';
 
 export function useFieldAwareness(provider: DirectusProvider) {
 	// Initialize the field registry (handles both activation and locking)
@@ -18,6 +19,7 @@ export function useFieldAwareness(provider: DirectusProvider) {
 	const unregisterSelect = registry.registerHandler(selectFieldHandler);
 	const unregisterWysiwyg = registry.registerHandler(wysiwygFieldHandler);
 	const unregisterDatetime = registry.registerHandler(datetimeFieldHandler);
+	const unregisterDrawer = registry.registerHandler(drawerFieldHandler);
 
 	// Set up field borders
 	const { updateFieldBorders, cleanup: cleanupBorders } = useFieldBorders();
@@ -41,6 +43,7 @@ export function useFieldAwareness(provider: DirectusProvider) {
 		unregisterSelect();
 		unregisterWysiwyg();
 		unregisterDatetime();
+		unregisterDrawer();
 
 		// Cleanup other components
 		observer.disconnect();

@@ -62,3 +62,16 @@ export const datetimeFieldHandler: FieldHandler = {
 		ignoreClickSelectors: ['.v-menu', '.v-overlay', '.flatpickr-calendar'],
 	},
 };
+
+export const drawerFieldHandler: FieldHandler = {
+	name: 'drawer',
+	detect: (el) => el.matches('.collection-item-dropdown>button'),
+	activation: {
+		type: 'focus',
+	},
+	deactivation: {
+		debounceMs: 50,
+		checkOnDocumentClick: true,
+		ignoreDrawerSelection: true,
+	},
+};

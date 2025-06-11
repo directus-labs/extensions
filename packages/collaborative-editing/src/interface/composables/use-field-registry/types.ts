@@ -25,6 +25,7 @@ export interface FieldHandler {
 		// Selectors to ignore when checking document clicks
 		// One example is the TinyMCE toolbar, which should not be considered a deactivation trigger
 		ignoreClickSelectors?: string[];
+		ignoreDrawerSelection?: boolean;
 	};
 }
 

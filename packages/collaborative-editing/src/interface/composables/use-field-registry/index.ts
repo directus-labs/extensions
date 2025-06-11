@@ -1,11 +1,11 @@
-import { ref, watch, onMounted, onUnmounted, readonly } from 'vue';
 import { useActiveElement } from '@vueuse/core';
 import { debounce, DebouncedFunc } from 'lodash-es';
-import { FieldMeta, useFieldMeta } from '../use-field-meta';
-import { DirectusProvider } from '../use-doc';
+import { onMounted, onUnmounted, readonly, ref, watch } from 'vue';
 import { ACTIVE_FIELD_SELECTOR } from '../../constants';
 import { useAwarenessStore } from '../../stores/awarenessStore';
-import { FieldHandler, ActiveField } from './types';
+import { DirectusProvider } from '../use-doc';
+import { FieldMeta, useFieldMeta } from '../use-field-meta';
+import { ActiveField, FieldHandler } from './types';
 
 export function useFieldRegistry(provider: DirectusProvider) {
 	const { getFieldMetaFromPayload } = useFieldMeta();
@@ -361,6 +361,7 @@ export function useFieldRegistry(provider: DirectusProvider) {
 				'.tox-menubar',
 				'.tox-sidebar',
 				'.tox-dialog',
+				'.table-row',
 			];
 
 			const shouldIgnoreGlobally = globalIgnoreSelectors.some((selector) => target.closest(selector) !== null);
@@ -372,7 +373,7 @@ export function useFieldRegistry(provider: DirectusProvider) {
 		}
 
 		// Continue with existing handler-specific logic if we didn't deactivate globally
-		const { handler } = activeField.value;
+		const { handler, element } = activeField.value;
 
 		if (!handler.deactivation.checkOnDocumentClick) return;
 
@@ -382,6 +383,16 @@ export function useFieldRegistry(provider: DirectusProvider) {
 			if (target.closest(selector)) {
 				return;
 			}
+		}
+
+		// Do not unfocus on drawer item selection
+		// target is assumed to be a drawer if it is not a child of the element and is under the dialog output
+		if (
+			handler.deactivation.ignoreDrawerSelection &&
+			!element.contains(target) &&
+			document.querySelector('#dialog-outlet')?.contains(target)
+		) {
+			return;
 		}
 
 		// Check if field is still active according to its specific activation type
