@@ -13,7 +13,7 @@ const { enabledGlobally } = useSettings();
 const moduleEnabled = computed(
 	() =>
 		(settingsStore.settings as Settings)?.module_bar?.find(
-			(module) => module.type === 'module' && module.id === 'collab-module',
+			(module) => module.type === 'module' && module.id === 'realtime-settings',
 		)?.enabled,
 );
 

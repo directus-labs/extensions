@@ -45,7 +45,7 @@ const room = computed(() => props.collection + ':' + props.primaryKey);
 
 const realtimeEnabled = computed(() => {
 	const moduleEnabled = (settingsStore.settings as Settings)?.module_bar.find(
-		(module) => module.type === 'module' && module.id === 'collab-module',
+		(module) => module.type === 'module' && module.id === 'realtime-settings',
 	)?.enabled;
 	const enabledGlobally = settings.value?.enabled_globally;
 
