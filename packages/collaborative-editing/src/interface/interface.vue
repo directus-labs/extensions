@@ -3,6 +3,7 @@ import { useStores } from '@directus/extensions-sdk';
 import type { Settings } from '@directus/types';
 import { computed, onUnmounted, watch } from 'vue';
 import { useSettings } from '../module/utils/use-settings';
+import { MODULE_ID } from '../shared/constants';
 import { useCurrentUser } from './composables/use-current-user';
 import { useDoc } from './composables/use-doc';
 import { useFieldAvatars } from './composables/use-field-avatars';
@@ -45,7 +46,7 @@ const room = computed(() => props.collection + ':' + props.primaryKey);
 
 const realtimeEnabled = computed(() => {
 	const moduleEnabled = (settingsStore.settings as Settings)?.module_bar.find(
-		(module) => module.type === 'module' && module.id === 'realtime-settings',
+		(module) => module.type === 'module' && module.id === MODULE_ID,
 	)?.enabled;
 	const enabledGlobally = settings.value?.enabled_globally;
 

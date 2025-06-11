@@ -6,7 +6,6 @@ import type { Ref } from 'vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ZodError } from 'zod';
-import { useIsAdmin } from './composables/use-is-admin';
 import { fields } from './settings-fields';
 import { defaultSettings, ModuleSettings, type CollaborativeEditingConfigType } from './types';
 import { zodErrorToValidationErrors } from './utils/errors';
@@ -16,8 +15,6 @@ const { useSettingsStore, useFieldsStore } = useStores();
 
 const fieldsStore = useFieldsStore();
 const settingsStore = useSettingsStore();
-
-const isAdmin = useIsAdmin();
 
 const collaborativeEditingSettings = computed(() => settingsStore.settings.collaborative_editing_settings);
 
@@ -114,13 +111,7 @@ async function createCollaborativeEditingSettings() {
 		<!-- Main Content -->
 		<main class="container">
 			<template v-if="collaborativeEditingSettings">
-				<section v-if="!isAdmin">
-					<v-info icon="block" title="Unauthorized Access" type="danger" center>
-						You do not have permission to access this page. Please contact an admin to configure collaborative editing
-						settings.
-					</v-info>
-				</section>
-				<section v-if="isAdmin">
+				<section>
 					<v-form
 						v-model="edits"
 						:initial-values="initialValues"

@@ -1,8 +1,9 @@
 import { defineModule } from '@directus/extensions-sdk';
+import { MODULE_ID } from '../shared/constants';
 import ModuleSettings from './settings.vue';
 import { injectRealtimeApp } from './utils/inject-realtime-app';
 export default defineModule({
-	id: 'realtime-settings',
+	id: MODULE_ID,
 	name: 'Realtime Collaboration',
 	icon: 'communication',
 	routes: [
@@ -11,7 +12,9 @@ export default defineModule({
 			component: ModuleSettings,
 		},
 	],
-	preRegisterCheck() {
+	preRegisterCheck(user) {
+		if (!user.admin_access) return false;
+
 		injectRealtimeApp();
 		return true;
 	},
