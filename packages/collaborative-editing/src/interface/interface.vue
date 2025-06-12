@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useStores } from '@directus/extensions-sdk';
 import type { Settings } from '@directus/types';
-import { computed, onUnmounted, watch, ref, onMounted, nextTick } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useSettings } from '../module/utils/use-settings';
 import { MODULE_ID } from '../shared/constants';
 import { useCurrentUser } from './composables/use-current-user';
@@ -80,6 +80,14 @@ watch(
 		}
 
 		if (!isNew && connected) {
+			// clear any previous data from the room
+			awarenessStore.list.forEach((u) => {
+				const user = awarenessStore.byUid[u.user.uid]?.user;
+				if (user && user.rooms.has(room.value)) {
+					awarenessStore.byUid[u.user.uid]?.user.rooms.delete(room.value);
+				}
+			});
+
 			provider.join(room.value);
 		}
 	},
