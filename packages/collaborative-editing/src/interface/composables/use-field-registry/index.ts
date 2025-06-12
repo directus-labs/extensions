@@ -467,7 +467,7 @@ export function useFieldRegistry(provider: DirectusProvider) {
 		unregisterHandler,
 		activeField: readonly(activeField),
 		cleanup,
-		// Utility methods
+		deactivateField,
 		isFieldActive: (fieldMeta: FieldMeta) => {
 			return (
 				activeField.value?.fieldMeta.field === fieldMeta.field &&
@@ -476,7 +476,6 @@ export function useFieldRegistry(provider: DirectusProvider) {
 			);
 		},
 		getActiveHandler: () => activeField.value?.handler.name,
-		// Field locking methods
 		updateFieldLocking,
 		isFieldLocked: (fieldMeta: FieldMeta) => {
 			const fieldElement = document.querySelector(

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useStores } from '@directus/extensions-sdk';
 import type { Settings } from '@directus/types';
-import { computed, onUnmounted, watch } from 'vue';
+import { computed, onUnmounted, watch, ref, onMounted, nextTick } from 'vue';
 import { useSettings } from '../module/utils/use-settings';
 import { MODULE_ID } from '../shared/constants';
 import { useCurrentUser } from './composables/use-current-user';
@@ -13,6 +13,17 @@ import { useHeaderAvatars } from './composables/use-header-avatars';
 import { useAwarenessStore } from './stores/awarenessStore';
 import './styles.css';
 import type { ActiveField } from './types';
+
+const SAVE_BUTTON_SELECTOR = '.header-bar .actions .v-button:not(.secondary) > button';
+
+type SaveFlowStatus = 'idle' | 'commit' | 'committed' | 'cancelled';
+
+type SaveAction = 'Default' | 'Save and Stay' | 'Save and Create New';
+const saveFlowStatus = ref<SaveFlowStatus>('idle');
+const storedSaveHandler = ref<() => void>(() => {});
+const saveFlowRole = ref<'initiator' | 'participant' | null>(null);
+const saveAction = ref<SaveAction | null>(null);
+const hasLeftRoom = ref(false);
 
 const { useSettingsStore } = useStores();
 const settingsStore = useSettingsStore();
@@ -119,6 +130,13 @@ provider.on('user:remove', (payload: { uid: string; room: string }) => {
 	}
 });
 
+const resetSaveFlow = () => {
+	saveFlowStatus.value = 'idle';
+	storedSaveHandler.value = () => {};
+	saveFlowRole.value = null;
+	saveAction.value = null;
+};
+
 provider.on('field:activate', (uid: string, payload: { field: ActiveField }) => {
 	// Skip field activation for new items
 	if (isNew.value) {
@@ -138,10 +156,162 @@ provider.on('field:deactivate', (uid: string) => {
 	awarenessStore.removeActiveField(uid);
 });
 
-provider.on('item:save', (roomValue: string) => {
-	// NOTE: might make sense to pop a notification here to alert clients
-	// that the item has been comitted by another user
+const { deactivateField } = useFieldAwareness(provider);
+
+provider.on('save:commit', () => {
+	saveFlowStatus.value = 'commit';
+	saveFlowRole.value = 'initiator';
+
+	const currentUser = awarenessStore.getCurrentUser();
+	if (currentUser?.user?.uid) {
+		awarenessStore.removeActiveField(currentUser.user.uid);
+	}
+	deactivateField();
 });
+
+provider.on('save:cancel', () => {
+	resetSaveFlow();
+});
+
+provider.on('save:committed', () => {
+	saveFlowStatus.value = 'committed';
+	if (saveFlowRole.value !== 'initiator' && saveFlowRole.value === null) {
+		saveFlowRole.value = 'participant';
+	}
+});
+
+function executeStoredSaveHandler() {
+	// Only leave the room if we're in the drawer and haven't already left
+	if (!isNew.value && !hasLeftRoom.value) {
+		const currentInterface = document.querySelector(
+			`[data-collection="${props.collection}"][data-primary-key="${props.primaryKey}"]`,
+		);
+		const isInDrawer = currentInterface?.closest('.v-drawer') !== null;
+
+		if (isInDrawer) {
+			provider.leave();
+			hasLeftRoom.value = true;
+		}
+	}
+
+	nextTick(() => {
+		storedSaveHandler.value();
+	});
+}
+
+function preventOriginalSave(e: MouseEvent) {
+	e.preventDefault();
+	e.stopPropagation();
+	e.stopImmediatePropagation();
+}
+
+watch([saveFlowStatus, saveFlowRole], ([saveFlowStatus, saveFlowRole]) => {
+	if (saveFlowStatus === 'commit' && saveFlowRole === 'initiator') {
+		executeStoredSaveHandler();
+	}
+
+	if (saveFlowStatus === 'committed' && saveFlowRole === 'participant') {
+		window.location.reload();
+	}
+});
+
+onMounted(() => {
+	initSaveHandler();
+});
+
+function handleSaveClick(e: MouseEvent) {
+	const saveButton = e.target instanceof HTMLElement ? e.target.closest(SAVE_BUTTON_SELECTOR) : null;
+
+	if (saveButton && saveFlowStatus.value === 'idle') {
+		saveAction.value = 'Default';
+
+		storedSaveHandler.value = () => {
+			// Create a new click event with the same properties
+			const newEvent = new MouseEvent('click', {
+				bubbles: true,
+				cancelable: true,
+				view: window,
+			});
+
+			// Dispatch the event on the original target
+			if (e.target instanceof HTMLElement) {
+				e.target.dispatchEvent(newEvent);
+			}
+		};
+
+		preventOriginalSave(e);
+		provider.preSave();
+	}
+}
+
+function isSavePopperMenu(element: Element): boolean {
+	const text = element.textContent?.toLowerCase() || '';
+	return text.includes('save and stay') || text.includes('save and create new');
+}
+
+function handlePopperMenuClick(e: Event) {
+	const target = e.target as HTMLElement;
+	const menuItem = target.closest('.v-list-item');
+
+	// Only proceed if we haven't already started a save flow
+	if (menuItem && isSavePopperMenu(menuItem) && saveFlowStatus.value === 'idle') {
+		// Prevent the event from triggering other handlers
+		e.preventDefault();
+		e.stopPropagation();
+		e.stopImmediatePropagation();
+
+		saveAction.value = menuItem.textContent as SaveAction;
+
+		storedSaveHandler.value = () => {
+			const newEvent = new MouseEvent('click', {
+				bubbles: true,
+				cancelable: true,
+				view: window,
+			});
+
+			// Find the actual save button and trigger the click on it
+			const saveButton = document.querySelector(SAVE_BUTTON_SELECTOR);
+			if (saveButton) {
+				saveButton.dispatchEvent(newEvent);
+			}
+		};
+
+		provider.preSave();
+	}
+}
+
+function initSaveHandler() {
+	document.addEventListener('click', handleSaveClick);
+
+	// Set up mutation observer for popper menu
+	const observer = new MutationObserver((mutations) => {
+		for (const mutation of mutations) {
+			if (mutation.type === 'childList') {
+				for (const node of mutation.addedNodes) {
+					if (node instanceof Element && node.classList.contains('v-menu-popper')) {
+						// Add click handler to the menu itself
+						node.addEventListener('click', handlePopperMenuClick as EventListener);
+						// Also add click handler to any list items that might be added later
+						const listItems = node.querySelectorAll('.v-list-item');
+						listItems.forEach((item) => {
+							item.addEventListener('click', handlePopperMenuClick as EventListener);
+						});
+					}
+				}
+				for (const node of mutation.removedNodes) {
+					if (node instanceof Element && node.classList.contains('v-menu-popper')) {
+						node.removeEventListener('click', handlePopperMenuClick as EventListener);
+					}
+				}
+			}
+		}
+	});
+
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true,
+	});
+}
 
 // Initialize field awareness with registry
 useFieldAwareness(provider);
@@ -149,10 +319,12 @@ useFieldAvatars();
 useHeaderAvatars(room);
 
 onUnmounted(() => {
-	// Only leave if we actually joined (not a new item)
-	if (!isNew.value) {
+	// Only leave if we actually joined (not a new item) and haven't already left
+	if (!isNew.value && !hasLeftRoom.value) {
 		provider.leave();
 	}
+
+	document.removeEventListener('click', handleSaveClick);
 });
 </script>
 

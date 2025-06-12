@@ -59,5 +59,6 @@ export function useFieldAwareness(provider: DirectusProvider) {
 		isFieldActive: registry.isFieldActive,
 		getActiveHandler: registry.getActiveHandler,
 		activeField: registry.activeField,
+		deactivateField: registry.deactivateField,
 	};
 }

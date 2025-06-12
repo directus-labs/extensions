@@ -4,6 +4,8 @@ import { createAppWithDirectus } from '../utils/create-app-with-directus';
 import { useAwarenessStore } from '../stores/awarenessStore';
 import { useDrawerState } from './use-drawer-state';
 import { isValidRoom } from '../utils';
+import sortBy from 'lodash-es/sortBy';
+import debounce from 'lodash-es/debounce';
 
 const containerClass = 'header-avatars-container';
 
@@ -21,6 +23,9 @@ export function useHeaderAvatars(currentRoom: ComputedRef<string>) {
 	const headerApp = ref<AppInstance | null>(null);
 	const headerContainer = ref<HTMLElement | null>(null);
 	const isCreatingHeader = ref(false);
+	const lastValidRoom = ref<string | null>(null);
+	const mountPromise = ref<Promise<void> | null>(null);
+	const createTimeout = ref<number | null>(null);
 
 	// Track the last set of collaborator UIDs to detect actual changes
 	const lastCollaboratorUIDs = ref<Set<string>>(new Set());
@@ -69,29 +74,62 @@ export function useHeaderAvatars(currentRoom: ComputedRef<string>) {
 		return false;
 	};
 
+	async function cleanupHeader() {
+		if (headerContainer.value) {
+			headerContainer.value.remove();
+			headerContainer.value = null;
+		}
+
+		if (headerApp.value) {
+			try {
+				headerApp.value.unmount();
+			} catch (error) {
+				console.warn('[Header Avatars] Error unmounting app:', error);
+			}
+			headerApp.value = null;
+		}
+	}
+
 	async function createHeaderAvatars() {
 		const roomValue = unref(currentRoom);
 
-		if (!isValidRoom(roomValue)) return;
+		// Clear any pending create timeout
+		if (createTimeout.value) {
+			window.clearTimeout(createTimeout.value);
+			createTimeout.value = null;
+		}
 
-		// Prevent concurrent creation
-		if (isCreatingHeader.value) return;
+		// Skip if we're already creating headers
+		if (isCreatingHeader.value) {
+			return;
+		}
+
+		// Skip if this is an invalid room
+		if (!isValidRoom(roomValue)) {
+			return;
+		}
+
+		// Skip if this is the same room AND the number of collaborators hasn't changed
+		if (
+			roomValue === lastValidRoom.value &&
+			roomSpecificCollaborators.value.length === lastCollaboratorUIDs.value.size
+		) {
+			return;
+		}
+
 		isCreatingHeader.value = true;
 
 		try {
+			// Wait for any existing mount operation to complete
+			if (mountPromise.value) {
+				await mountPromise.value;
+			}
+
+			// Clean up existing header
+			await cleanupHeader();
+
 			const mainContainer = document.querySelector('#directus');
 			const drawerContainer = document.querySelector('.v-drawer');
-
-			// Clean up existing header container and app for THIS instance only
-			if (headerContainer.value) {
-				headerContainer.value.remove();
-				headerContainer.value = null;
-			}
-
-			if (headerApp.value) {
-				headerApp.value.unmount();
-				headerApp.value = null;
-			}
 
 			let titleContainer: HTMLElement | null = null;
 
@@ -127,15 +165,32 @@ export function useHeaderAvatars(currentRoom: ComputedRef<string>) {
 			titleContainer.append(container);
 
 			// Create header stack with room-specific collaborators only
+			// We are just sorting them so that the order is consistent and the avatars don't get shuffled when unmounting/remounting
+			const sortedUsers = sortBy(
+				[...roomSpecificCollaborators.value],
+				[
+					(collab) => (collab.user.first_name ? collab.user.first_name.toLowerCase() : undefined),
+					(collab) => (collab.user.first_name ? 0 : 1), // Place those without first_name at the end
+				],
+			);
 			const app = createAppWithDirectus(AvatarStack, {
-				users: roomSpecificCollaborators.value,
+				users: sortedUsers,
 			}) as AppInstance;
 
 			headerApp.value = app;
-			app.mount(container);
 
-			// Update the tracked collaborator UIDs
+			// Create a promise for the mount operation
+			mountPromise.value = new Promise((resolve) => {
+				app.mount(container);
+				resolve();
+			});
+
+			await mountPromise.value;
+			mountPromise.value = null;
+
+			// Update the tracked collaborator UIDs and last valid room
 			lastCollaboratorUIDs.value = new Set(roomSpecificCollaborators.value.map((collab) => collab.user.uid));
+			lastValidRoom.value = roomValue;
 		} catch (error) {
 			console.error(`[${roomValue}] Error creating header avatars:`, error);
 		} finally {
@@ -152,16 +207,24 @@ export function useHeaderAvatars(currentRoom: ComputedRef<string>) {
 				return;
 			}
 
-			// Recreate the header stack when users actually change
-			createHeaderAvatars();
+			debouncedCreateHeaderAvatars();
 		},
 		{ deep: true },
 	);
 
+	const debouncedCreateHeaderAvatars = debounce(createHeaderAvatars, 100);
+
+	// Initialize header avatars after a short delay to ensure DOM is ready
+	const initializeHeaderAvatars = () => {
+		setTimeout(() => {
+			debouncedCreateHeaderAvatars();
+		}, 100);
+	};
+
 	watch(
 		() => isDrawerOpen.value,
 		() => {
-			createHeaderAvatars();
+			debouncedCreateHeaderAvatars();
 		},
 	);
 
@@ -170,7 +233,11 @@ export function useHeaderAvatars(currentRoom: ComputedRef<string>) {
 		() => {
 			// Clean up existing avatars first
 			if (headerApp.value) {
-				headerApp.value.unmount();
+				try {
+					headerApp.value.unmount();
+				} catch (error) {
+					console.warn('Error unmounting header avatars:', error);
+				}
 				headerApp.value = null;
 			}
 			if (headerContainer.value) {
@@ -179,29 +246,17 @@ export function useHeaderAvatars(currentRoom: ComputedRef<string>) {
 			}
 			// Reset tracked collaborators since we're in a new room
 			lastCollaboratorUIDs.value = new Set();
-			createHeaderAvatars();
+			debouncedCreateHeaderAvatars();
 		},
 	);
 
 	onMounted(() => {
-		// Wait a bit for the DOM to be ready, especially for drawer detection
-		setTimeout(() => {
-			createHeaderAvatars();
-		}, 100);
+		initializeHeaderAvatars();
 	});
 
 	onUnmounted(() => {
-		// Clean up header avatar stack for THIS instance only
-		if (headerApp.value) {
-			headerApp.value.unmount();
-			headerApp.value = null;
-		}
-
-		if (headerContainer.value) {
-			headerContainer.value.remove();
-			headerContainer.value = null;
-		}
-
+		debouncedCreateHeaderAvatars.cancel();
+		cleanupHeader();
 		// Clear tracked collaborators
 		lastCollaboratorUIDs.value = new Set();
 	});

@@ -151,5 +151,8 @@ export function isValidRoom(input: RoomInput): boolean {
 		primaryKey = input.primaryKey;
 	}
 
+	// Reject rooms with a plus sign as the primary key
+	if (primaryKey === '+') return false;
+
 	return typeof collection === 'string' && typeof primaryKey === 'string';
 }
