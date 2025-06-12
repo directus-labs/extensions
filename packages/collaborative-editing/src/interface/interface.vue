@@ -11,6 +11,7 @@ import { useFieldAwareness } from './composables/use-field-awareness';
 import { useFieldMeta } from './composables/use-field-meta';
 import { useHeaderAvatars } from './composables/use-header-avatars';
 import { useAwarenessStore } from './stores/awarenessStore';
+import { waitForElement } from './utils/wait-for-element';
 import './styles.css';
 import type { ActiveField } from './types';
 
@@ -288,7 +289,10 @@ function handlePopperMenuClick(e: Event) {
 	}
 }
 
-function initSaveHandler() {
+async function initSaveHandler() {
+	// Wait for the save button to exist before attaching the click handler
+	await waitForElement(SAVE_BUTTON_SELECTOR);
+
 	document.addEventListener('click', handleSaveClick);
 
 	// Set up mutation observer for popper menu
