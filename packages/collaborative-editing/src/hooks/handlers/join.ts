@@ -53,6 +53,7 @@ export async function handleJoin(client: RealtimeWebSocket, message: Omit<JoinMe
 
 	const payload: SyncPayload = {
 		event: 'sync',
+		room: roomName,
 		state: sanitizedPayload,
 		users: [],
 		fields: [],

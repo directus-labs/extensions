@@ -99,6 +99,7 @@ export interface ConnectPayload extends WebsocketBaseMessagePayload {
 
 export interface SyncPayload extends WebsocketBaseMessagePayload {
 	event: 'sync';
+	room: string;
 	state: Record<string, unknown> | null;
 	users: Omit<AwarenessUserAddPayload, 'event' | 'type' | 'action'>[];
 	fields: Omit<AwarenessFieldActivatePayload, 'event' | 'type' | 'action'>[];
