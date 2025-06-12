@@ -1,5 +1,5 @@
 {
-	"name": "@directus-labs/collaborative-editing",
+	"name": "@directus-labs/realtime-editing",
 	"type": "module",
 	"version": "1.0.0",
 	"icon": "extension",
