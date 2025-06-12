@@ -75,7 +75,7 @@ export function broadcastSaveCommitted(payload: BroadcastSaveCommittedPayload) {
 	const sockets = useSockets();
 
 	// reset the room doc
-	useRooms().get(room)?.doc.destroy();
+	useRooms().clearDoc(room);
 
 	for (const [, socket] of sockets) {
 		if (!isValidSocket(socket) || socket.rooms.has(room) === false) continue;

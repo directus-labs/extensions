@@ -53,6 +53,11 @@ class RoomMap extends Map<string, Room> {
 		const r = this.get(room) ?? this.add(room);
 		Y.applyUpdate(r.doc, update);
 	}
+
+	clearDoc(room: string) {
+		const r = this.get(room) ?? this.add(room);
+		r.doc = new Y.Doc();
+	}
 }
 
 export function useRooms() {
