@@ -39,6 +39,65 @@ _For larger projects, migrations naturally use significant bandwidth. Limits hav
 
 Refer to the Official Guide for details on installing the extension from the Marketplace or manually.
 
+## Configuration
+
+### Hybrid Configuration System
+
+The migration module uses a two-tier configuration system combining environment variables and Directus presets for maximum flexibility.
+
+### 1. Environment Variables (Admin Defaults)
+
+Administrators can set default values that apply to all users via environment variables:
+
+```bash
+# Default destination URL
+MIGRATION_BUNDLE_DEFAULT_URL=https://stage.example.com
+
+# Default admin token (optional - can be left empty for security)
+MIGRATION_BUNDLE_DEFAULT_TOKEN=your-admin-token
+
+# Default selected options (comma-separated)
+MIGRATION_BUNDLE_DEFAULT_OPTIONS=content,users,flows
+```
+
+Available options for `MIGRATION_BUNDLE_DEFAULT_OPTIONS`:
+- `content` - Collections and their data
+- `users` - Users, roles, and permissions
+- `comments` - Activity comments
+- `presets` - User bookmarks
+- `dashboards` - Insights dashboards
+- `extensions` - Installed extensions
+- `flows` - Automation flows
+
+### 2. Directus Presets (User Configurations)
+
+Users can save their migration configurations as Directus presets, which are stored in the database and accessible across sessions and devices.
+
+**Features:**
+- **Named Configurations**: Save multiple configs like "Production Sync", "Content Only", "Full Migration"
+- **Scope Control**: Save presets for yourself, your role, or globally (admin only)
+- **Quick Access**: Load saved configurations from a dropdown menu
+- **Override Defaults**: User presets take precedence over environment defaults
+
+**How to use:**
+1. Configure your migration settings (URL, token, options)
+2. Click the bookmark icon (📑) to save as a preset
+3. Choose a name and scope (personal/role/global)
+4. Load saved presets from the dropdown above the form
+
+### 3. Configuration Priority
+
+The system follows this priority order:
+1. **User-selected preset** (highest priority)
+2. **Environment defaults** (if no preset selected)
+3. **Empty form** (if neither configured)
+
+This approach provides:
+- **For Admins**: Environment-specific defaults across environments
+- **For Users**: Personal saved configurations
+- **For Teams**: Shared configurations via role-based presets
+- **Best Practice**: Consistent setups with flexibility
+
 ## How to Customize the Migration
 
 1. On the migration module, add the destination server and token and click **Check**
