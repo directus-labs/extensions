@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { AxiosProgressEvent } from 'axios';
-import type { MigrationConfig, Payload } from '../types/extension';
+import type { Payload } from '../types/extension';
 import { useApi } from '@directus/extensions-sdk';
 import { defineComponent, reactive, ref, watch } from 'vue';
 import { md } from '../utils/md';
@@ -32,6 +32,12 @@ export default defineComponent({
 		const presetScope = ref<'user' | 'role' | 'global'>('user');
 		const showDeleteConfirmation = ref(false);
 		const presetToDelete = ref<number | null>(null);
+		const hasChanges = ref<boolean>(false);
+		const originalConfig = ref<{ baseURL: string; token: string; options: Options[] }>({
+			baseURL: '',
+			token: '',
+			options: [],
+		});
 
 		const migrationOptions = ref<{
 			label: string;
@@ -125,19 +131,20 @@ export default defineComponent({
 
 			if (preset?.layout_options) {
 				// Parse if it's a string, otherwise use as-is
-				const options = typeof preset.layout_options === 'string' 
-					? JSON.parse(preset.layout_options) 
+				const options = typeof preset.layout_options === 'string'
+					? JSON.parse(preset.layout_options)
 					: preset.layout_options;
 				baseURL.value = options.baseURL || '';
 				token.value = options.token || '';
 				migrationOptionsSelections.value = options.selectedOptions || [];
-				
+
 				// Store original config
 				originalConfig.value = {
 					baseURL: options.baseURL || '',
 					token: options.token || '',
-					options: [...(options.selectedOptions || [])]
+					options: [...(options.selectedOptions || [])],
 				};
+
 				hasChanges.value = false;
 			}
 		};
@@ -231,68 +238,60 @@ export default defineComponent({
 		// Initialize on mount
 		initialize();
 
-		// Track if current config has changes
-		const hasChanges = ref<boolean>(false);
-		const originalConfig = ref<{ baseURL: string; token: string; options: Options[] }>({
-			baseURL: '',
-			token: '',
-			options: []
-		});
-
 		// Update preset
 		const updatePreset = async () => {
 			if (!selectedPresetId.value || selectedPresetId.value === null) return;
-			
+
 			isSavingConfig.value = true;
-			
+
 			try {
 				await api.post('/migration/presets', {
-					name: presets.value.find(p => p.id === selectedPresetId.value)?.bookmark || 'Migration Config',
+					name: presets.value.find((p) => p.id === selectedPresetId.value)?.bookmark || 'Migration Config',
 					scope: 'user', // Always user for existing presets
 					baseURL: baseURL.value,
 					token: token.value,
 					options: migrationOptionsSelections.value,
 					id: selectedPresetId.value, // Update existing
 				});
-				
+
 				// Reload presets to get fresh data
 				await loadPresets();
-				
+
 				// Update the preset in our local array with new values
-				const presetIndex = presets.value.findIndex(p => p.id === selectedPresetId.value);
+				const presetIndex = presets.value.findIndex((p) => p.id === selectedPresetId.value);
+
 				if (presetIndex !== -1) {
 					presets.value[presetIndex].layout_options = JSON.stringify({
 						baseURL: baseURL.value,
 						token: token.value,
-						selectedOptions: migrationOptionsSelections.value
+						selectedOptions: migrationOptionsSelections.value,
 					});
 				}
-				
+
 				// Update original config after save
 				originalConfig.value = {
 					baseURL: baseURL.value,
 					token: token.value,
-					options: [...migrationOptionsSelections.value]
+					options: [...migrationOptionsSelections.value],
 				};
+
 				hasChanges.value = false;
-			} catch (error) {
+			}
+			catch (error) {
 				console.error('Failed to update preset:', error);
-			} finally {
+			}
+			finally {
 				isSavingConfig.value = false;
 			}
 		};
 
 		// Watch for changes
 		watch([baseURL, token, migrationOptionsSelections], () => {
-			if (selectedPresetId.value && selectedPresetId.value !== null) {
-				// Check if values differ from original
-				hasChanges.value = 
-					baseURL.value !== originalConfig.value.baseURL ||
-					token.value !== originalConfig.value.token ||
-					JSON.stringify(migrationOptionsSelections.value) !== JSON.stringify(originalConfig.value.options);
-			} else {
-				hasChanges.value = false;
-			}
+			hasChanges.value = selectedPresetId.value && selectedPresetId.value !== null
+				? baseURL.value !== originalConfig.value.baseURL
+				|| token.value !== originalConfig.value.token
+				|| JSON.stringify(migrationOptionsSelections.value) !== JSON.stringify(originalConfig.value.options)
+				: false;
 		}, { deep: true });
 
 		const checkHost = async ({ baseURL, token }: Payload): Promise<void> => {
@@ -391,40 +390,40 @@ export default defineComponent({
 				<!-- Preset Selector -->
 				<div v-if="presets.length > 0" class="migration-preset-selector" :class="{ 'has-changes': hasChanges && selectedPresetId }">
 					<div class="preset-row">
-							<v-select
-								v-model="selectedPresetId"
-								:items="[
-									{ text: 'Load from Environment Defaults', value: null },
-									...presets.map(p => ({
-										text: p.bookmark,
-										value: p.id,
-										icon: p.icon,
-										color: p.color,
-									})),
-								]"
-								placeholder="Load Configuration"
-								@update:model-value="loadPreset"
-							>
-								<template #prepend>
-									<v-icon name="bookmark" />
-								</template>
-							</v-select>
-					<transition name="fade-slide">
-						<v-button
-							v-if="hasChanges && selectedPresetId"
-							v-tooltip="'Update preset'"
-							:loading="isSavingConfig"
-							secondary
-							icon
-							@click="updatePreset"
+						<v-select
+							v-model="selectedPresetId"
+							:items="[
+								{ text: 'Load from Environment Defaults', value: null },
+								...presets.map(p => ({
+									text: p.bookmark,
+									value: p.id,
+									icon: p.icon,
+									color: p.color,
+								})),
+							]"
+							placeholder="Load Configuration"
+							@update:model-value="loadPreset"
 						>
-							<v-icon name="save" />
-						</v-button>
-					</transition>
+							<template #prepend>
+								<v-icon name="bookmark" />
+							</template>
+						</v-select>
+						<transition name="fade-slide">
+							<v-button
+								v-if="hasChanges && selectedPresetId"
+								v-tooltip="'Update preset'"
+								:loading="isSavingConfig"
+								secondary
+								icon
+								@click="updatePreset"
+							>
+								<v-icon name="save" />
+							</v-button>
+						</transition>
+					</div>
 				</div>
-			</div>
 
-			<div class="migration-input-container">
+				<div class="migration-input-container">
 					<div class="migration-input">
 						<v-input v-model="baseURL" label="Destination URL" placeholder="https://" :disabled="isValidating || lockInterface || isLoadingConfig" />
 						<v-input v-model="token" label="Admin Token" placeholder="**********" :disabled="isValidating || lockInterface || isLoadingConfig" />
@@ -587,7 +586,6 @@ export default defineComponent({
 	border-radius: calc(var(--theme--border-radius) - 4px);
 	transition: all 0.2s ease;
 }
-
 
 .migration-input-container {
 	padding: var(--theme--form--field--input--padding);
