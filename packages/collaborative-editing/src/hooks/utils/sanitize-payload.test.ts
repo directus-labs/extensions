@@ -279,8 +279,6 @@ describe('Relations', () => {
 					services: getServices(),
 				});
 
-				console.dir({ sanitizedPayload }, { depth: null });
-
 				expect(sanitizedPayload).toStrictEqual(payload);
 			});
 		});

@@ -11,9 +11,9 @@ import { useFieldAwareness } from './composables/use-field-awareness';
 import { useFieldMeta } from './composables/use-field-meta';
 import { useHeaderAvatars } from './composables/use-header-avatars';
 import { useAwarenessStore } from './stores/awarenessStore';
-import { waitForElement } from './utils/wait-for-element';
 import './styles.css';
 import type { ActiveField } from './types';
+import { waitForElement } from './utils/wait-for-element';
 
 const SAVE_BUTTON_SELECTOR = '.header-bar .actions .v-button:not(.secondary) > button';
 
@@ -94,10 +94,6 @@ watch(
 	},
 	{ immediate: true },
 );
-
-provider.on('debug', (...data) => {
-	//console.dir(data, { depth: null });
-});
 
 provider.on('user:add', (user: any) => {
 	const existingUser = awarenessStore.byUid[user.uid];
