@@ -1,0 +1,17 @@
+# User preferences
+.DS_Store
+
+# Dependencies
+node_modules/
+
+# Builds / Caches
+dist/
+
+
+# IDEs / Editors
+.vscode/*
+!.vscode/extensions.json
+
+
+# Temporary files
+TODO
