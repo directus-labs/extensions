@@ -19,6 +19,8 @@ import { handleBroadcast, useBus } from './lib/bus';
 import { useSockets } from './lib/use-sockets';
 import { BroadcastPayload } from './types';
 
+const excludedFromLogs = ['update', 'pong'] as const;
+
 export default defineHook(async ({ action, filter }, ctx) => {
 	const { env, services, database, getSchema } = ctx;
 
@@ -43,7 +45,10 @@ export default defineHook(async ({ action, filter }, ctx) => {
 		if (!client.accountability?.user) return;
 		if (message.type !== 'realtime-connect' && sockets.has(client.uid) === false) return;
 
-		ctx.logger.info(`[realtime:message] Client ${client.uid} sent message ${message.type}`);
+		// Only log message types that are not 'update' or 'pong'
+		if (env.REALTIME_LOGS_ENABLED && !excludedFromLogs.includes(message.type)) {
+			ctx.logger.info(`[realtime:message] Client ${client.uid} sent message ${message.type}`);
+		}
 
 		const { type, ...payload } = message;
 		const messageCtx = { ...ctx, database: eventCtx.database };
