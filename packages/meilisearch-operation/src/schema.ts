@@ -15,5 +15,6 @@ export default {
 		fields: '*',
 		filter: [['genres = horror', 'genres = comedy'], "director = 'Jordan Peele'"],
 		retrieveVectors: false,
+		ids: ['XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'],
 	},
 } as Schema;

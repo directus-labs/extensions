@@ -25,7 +25,7 @@ export default defineOperationApi<MeiliSearchOptions>({
 				if (action === 'delete') {
 					return await index.deleteDocuments(document_id);
 				}
-				else {
+				else if (action === 'update') {
 					const documents = document_id.map((id) => {
 						return {
 							id,
@@ -33,6 +33,9 @@ export default defineOperationApi<MeiliSearchOptions>({
 						};
 					});
 					return await index.updateDocuments(documents);
+				}
+				else {
+					throw new Error('Unsupported action: Array of IDs is only supported in Update or Delete action');
 				}
 			}
 			else {
@@ -43,7 +46,7 @@ export default defineOperationApi<MeiliSearchOptions>({
 							...document,
 						}]);
 					case 'read':
-						return document_id ? await index.getDocument(document_id) : await index.getDocuments(document);
+						return document_id ? await index.getDocument(document_id) : await index.getDocuments(document ?? { offset: 0, limit: 20, fields: '*' });
 					case 'update':
 						return await index.updateDocuments([{
 							id: document_id,

@@ -85,7 +85,7 @@ export default defineOperationApp({
 				meta: {
 					width: 'half',
 					interface: 'input',
-					note: 'The item id for this document',
+					note: ['delete', 'update'].includes(action) ? 'The item ID or IDs to update' : 'The item id for this document',
 					options: {
 						disabled: action === 'read' && options?.['document'],
 					},
@@ -100,10 +100,10 @@ export default defineOperationApp({
 					? {
 							width: 'full',
 							interface: 'input-code',
-							note: 'The item object to create in the search index.',
+							note: action === 'read' ? 'Add a query object for the search index. [Documentation](https://www.meilisearch.com/docs/reference/api/documents#query-parameters)' : 'The item object to create or update the search index.',
 							options: {
 								language: 'json',
-								placeholder: JSON.stringify(schema[action], null, 2),
+								placeholder: 'Item Object or Query. Click for an example ------>',
 								template: JSON.stringify(schema[action]),
 							},
 							required: action !== 'read',
