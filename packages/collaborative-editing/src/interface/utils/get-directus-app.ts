@@ -6,8 +6,8 @@ export function getDirectusAppRoot(): VNode {
 	return getDirectusApp()._container._vnode;
 }
 
-export function getDirectusAppRootComponent(): VNode['component'] & { provides: Record<string, any> } {
-	return getDirectusAppRoot().component! as any;
+export function getDirectusAppRootComponent(): VNode['component'] & { provides: Record<string, unknown> } {
+	return getDirectusAppRoot().component! as VNode['component'] & { provides: Record<string, unknown> };
 }
 
 export function useDirectusAppStores() {
@@ -16,10 +16,10 @@ export function useDirectusAppStores() {
 }
 
 export function getDirectusApp() {
-	// @ts-ignore
+	// @ts-expect-error - this is a valid type
 	return document.querySelector('#app')?.__vue_app__;
 }
 
-export function getDirectusAppProvides(app?: any) {
+export function getDirectusAppProvides(app?: unknown) {
 	return (app ?? getDirectusApp())._container._vnode.component.provides;
 }

@@ -1,4 +1,4 @@
-import type { Component } from 'vue';
+import type { Component, Directive } from 'vue';
 import { SDK_INJECT, STORES_INJECT } from '@directus/constants';
 import { createApp, inject } from 'vue';
 import { routeLocationKey, routerKey } from 'vue-router';
@@ -9,13 +9,13 @@ export function createAppWithDirectus(rootComponent: Component, rootProps?: Reco
 	const app = createApp(rootComponent, rootProps);
 
 	// Register components from the Directus app
-	for (const [name, component] of Object.entries(directusApp._context.components)) {
-		app.component(name, component as any);
+	for (const [name, component] of Object.entries(directusApp._context.components) as [string, Component][]) {
+		app.component(name, component);
 	}
 
 	// Register directives from the Directus app
-	for (const [name, directive] of Object.entries(directusApp._context.directives)) {
-		app.directive(name, directive as any);
+	for (const [name, directive] of Object.entries(directusApp._context.directives) as [string, Directive][]) {
+		app.directive(name, directive);
 	}
 
 	const provides = getDirectusAppRootComponent().provides;
