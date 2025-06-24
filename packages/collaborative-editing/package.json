@@ -1,9 +1,9 @@
 {
-	"name": "@directus-labs/realtime-editing",
+	"name": "@directus-labs/collaborative-editing",
 	"type": "module",
 	"version": "1.0.0",
 	"icon": "extension",
-	"description": "A realtime extension that enables data synchronization across collections.",
+	"description": "A realtime extension that enables data synchronization and collaborative editing across collections.",
 	"license": "MIT",
 	"homepage": "https://github.com/directus-labs/extensions#readme",
 	"repository": {
