@@ -100,7 +100,7 @@ export default defineOperationApp({
 					? {
 							width: 'full',
 							interface: 'input-code',
-							note: action === 'read' ? 'Add a query object for the search index. [Documentation](https://www.meilisearch.com/docs/reference/api/documents#query-parameters)' : 'The item object to create or update the search index.',
+							note: action === 'read' ? 'Add a query object for the search index. See the [Documentation](https://www.meilisearch.com/docs/reference/api/documents#query-parameters).' : 'The item object to create or update the search index.',
 							options: {
 								language: 'json',
 								placeholder: 'Item Object or Query. Click for an example ------>',
