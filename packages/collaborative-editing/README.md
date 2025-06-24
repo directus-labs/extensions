@@ -57,6 +57,10 @@ cd PATH_TO_DIRECTUS_CORE/api/extensions/collaborative-editing
 pnpm i && pnpm dev
 ```
 
+## Logging
+
+To enable logging, add the `REALTIME_LOGS_ENABLED` environment variable in the `.env` file and set it to `true`.
+
 ## Architecture
 
 ### Frontend
