@@ -34,6 +34,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Calculated Fields Bundle](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle) | Bundle | N&#x2F;A | ⭐ |
 | [Card Select Interfaces](//github.com/directus-labs/extensions/tree/main/packages/card-select-interfaces) | Bundle | N&#x2F;A |  |
 | [Choropleth Map Panel](//github.com/directus-labs/extensions/tree/main/packages/choropleth-map-panel) | Panel | N&#x2F;A |  |
+| [Collaborative Editing](//github.com/directus-labs/extensions/tree/main/packages/collaborative-editing) | Bundle | N&#x2F;A |  |
 | [Command Palette Module](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module) | Module | N&#x2F;A | ⭐ |
 | [Elasticsearch Operation](//github.com/directus-labs/extensions/tree/main/packages/elasticsearch-operation) | Operation | N&#x2F;A |  |
 | [Experimental M2A Interface](//github.com/directus-labs/extensions/tree/main/packages/experimental-m2a-interface) | Interface | N&#x2F;A |  |
