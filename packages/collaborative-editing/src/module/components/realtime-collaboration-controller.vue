@@ -24,8 +24,8 @@ const eligibleCollections = computed(() => {
 		if (collection.meta?.system) {
 			return ALLOWED_SYSTEM_COLLECTIONS.includes(collection.collection);
 		}
-		// Allow non-singleton collections with schema
-		return !collection.meta?.singleton && collection.schema;
+		// Allow collections with schema
+		return collection.schema;
 	});
 });
 
