@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Relation } from '@directus/types';
 import type { CollectionFilters, RelatedItem, RelatedItemObject } from '../types';
 import { useApi, useStores } from '@directus/extensions-sdk';
 // @ts-expect-error unknown error with format-title
@@ -14,20 +15,24 @@ const props = defineProps<{
 	primaryKey: number | string;
 }>();
 
-const loading = ref<boolean>(true);
-const error = ref<boolean>(false);
+const { collection, primaryKey } = toRefs(props);
 
 const api = useApi();
-const { useNotificationsStore } = useStores();
+const { useNotificationsStore, useRelationsStore } = useStores();
 const notificationsStore = useNotificationsStore();
+const relationsStore = useRelationsStore();
+const relations: Relation[] = relationsStore.getRelationsForCollection(collection.value);
+
 const { t, te } = useI18n();
 const router = useRouter();
 
-const { collection, primaryKey } = toRefs(props);
+const loading = ref<boolean>(true);
+const error = ref<boolean>(false);
 const relatedItems = ref<RelatedItemObject[]>([]);
 const collections = ref<Record<string, CollectionFilters>>({});
 const totalItemCount = ref<number>(0);
-const editModalActive = ref(false);
+const editModalActive = ref<boolean>(false);
+const editDisabled = ref<boolean>(false);
 const currentlyEditing = ref<string | number | null>(null);
 const editingCollection = ref<string | null>(collection.value);
 const editsAtStart = ref<Record<string, any>>();
@@ -35,8 +40,8 @@ const filterCollection = ref<string>('all');
 const page = ref<number>(1);
 const limit = ref<number>(10);
 
-const systemEditable = ['directus_files', 'directus_permissions', 'directus_policies', 'directus_roles', 'directus_users'];
-const systemNavigate = ['directus_flows', 'directus_presets', 'directus_dashboards'];
+const systemEditable = ['directus_files', 'directus_permissions', 'directus_policies', 'directus_roles'];
+const systemNavigate = ['directus_flows', 'directus_presets', 'directus_dashboards', 'directus_users'];
 
 async function refreshList(): Promise<boolean> {
 	if (primaryKey.value === '+') {
@@ -72,6 +77,7 @@ async function refreshList(): Promise<boolean> {
 					collection: d.collection,
 					disabled: (d.collection.includes('directus_') && ![...systemEditable, ...systemNavigate].includes(d.collection)) || (d.collection === props.collection && item_id === props.primaryKey),
 					field: d.field,
+					junction_field: d.junction_field,
 					relation: d.relation,
 					fields: d.fields,
 					template: d.template?.includes('{{ collection }}') ? d.template?.replace('{{ collection }}', collectionName(i.collection, 'plural')) : d.template,
@@ -119,11 +125,15 @@ function startEditing(item: RelatedItemObject) {
 		else if (item.collection === 'directus_dashboards') {
 			router.push(`/insights/${item.item_id}`);
 		}
+		else if (item.collection === 'directus_users') {
+			router.push(`/users/${item.item_id}`);
+		}
 
 		return;
 	}
 
 	editModalActive.value = true;
+	editDisabled.value = item.relation === 'm2a' || relations.some((r) => r.field === item.field && r.meta?.junction_field === item.junction_field);
 	editingCollection.value = item.collection;
 	currentlyEditing.value = item.item_id;
 }
@@ -280,6 +290,7 @@ onMounted(async () => {
 
 	<drawer-item
 		:active="!!editModalActive"
+		:disabled="editDisabled"
 		:collection="editingCollection"
 		:primary-key="currentlyEditing ?? '+'"
 		:edits="editsAtStart"
