@@ -314,7 +314,7 @@ onMounted(async () => {
 
 .record-name {
 	display: flex;
-	align-items: center;
+	align-items: self-end;
 }
 
 .date-created {
@@ -327,6 +327,7 @@ onMounted(async () => {
 	color: var(--theme--primary);
 	font-weight: bold;
 	white-space: nowrap;
+	line-height: 21px;
 }
 
 .disabled .collection {
