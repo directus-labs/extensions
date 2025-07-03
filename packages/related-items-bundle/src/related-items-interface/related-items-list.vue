@@ -4,7 +4,7 @@ import { useApi, useStores } from '@directus/extensions-sdk';
 // @ts-expect-error unknown error with format-title
 import { formatTitle } from '@directus/format-title';
 import { abbreviateNumber, getEndpoint } from '@directus/utils';
-import { onMounted, ref, toRefs } from 'vue';
+import { computed, onMounted, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { getItemRoute } from './utils/get-route';
@@ -92,6 +92,10 @@ async function refreshList(): Promise<boolean> {
 		return false;
 	}
 }
+
+const relatedView = computed(() => {
+	return relatedItems.value.filter((i) => (i.collection === filterCollection.value || filterCollection.value === 'all') && i.data).slice(limit.value * (page.value - 1), limit.value * page.value);
+});
 
 function collectionName(collection: string, type: 'singular' | 'plural' = 'singular') {
 	if (type === 'singular' && te(`collection_names_singular.${collection}`)) {
@@ -186,83 +190,85 @@ onMounted(async () => {
 
 	<template v-else>
 		<div class="collection-filter">
-			<v-chip :label="false" clickable :class="filterCollection === 'all' ? 'active' : ''" @click="filterCollection = 'all'">
+			<v-chip :label="false" clickable :class="filterCollection === 'all' ? 'active' : ''" @click.stop="filterCollection = 'all'">
 				All <span class="item-count">{{ totalItemCount >= 1_000 ? abbreviateNumber(totalItemCount, 1) : totalItemCount }}</span>
 			</v-chip>
 			<template v-for="item in collections" :key="item.collection">
-				<v-chip v-if="item.item_count > 0" :label="false" clickable :class="filterCollection === item.collection ? 'active' : ''" @click="filterCollection = item.collection, page = 1">
+				<v-chip v-if="item.item_count > 0" :label="false" clickable :class="filterCollection === item.collection ? 'active' : ''" @click.stop="filterCollection = item.collection, page = 1">
 					{{ collectionName(item.collection, 'plural') }} <span class="item-count">{{ item.item_count >= 1_000 ? abbreviateNumber(item.item_count, 1) : item.item_count }}</span>
 				</v-chip>
 			</template>
 		</div>
-		<v-list-item
-			v-for="item in relatedItems.filter(i => (i.collection === filterCollection || filterCollection === 'all') && i.data).slice(limit * (page - 1), limit * page)"
-			:key="item.item_id"
-			:class="{
-				disabled: item.disabled,
-				has_datetime: 'timestamp' in item.data || 'date_created' in item.data,
-			}"
-			block
-			:dense="(filterCollection === 'all' && totalItemCount > 4) || relatedItems.filter(i => (i.collection === filterCollection)).length > 4"
-			clickable
-			@click="startEditing(item)"
-		>
-			<div class="record-name-container">
-				<div v-if="'date_created' in item.data" class="date-created" x-small>
-					<render-template
-						:collection="item.collection"
-						:fields="item.fields"
-						template="{{ date_created }}"
-						:item="item.data"
-					/>
-				</div>
-				<div v-if="'timestamp' in item.data" class="date-created" x-small>
-					<render-template
-						:collection="item.collection"
-						:fields="item.fields"
-						template="{{ timestamp }}"
-						:item="item.data"
-					/>
+		<v-list v-if="relatedView">
+			<v-list-item
+				v-for="item, index in relatedView"
+				:key="index"
+				:class="{
+					disabled: item.disabled,
+					has_datetime: 'timestamp' in item.data || 'date_created' in item.data,
+				}"
+				block
+				:dense="(filterCollection === 'all' && totalItemCount > 4) || relatedItems.filter(i => (i.collection === filterCollection)).length > 4"
+				clickable
+				@click="startEditing(item)"
+			>
+				<div class="record-name-container">
+					<div v-if="'date_created' in item.data" class="date-created" x-small>
+						<render-template
+							:collection="item.collection"
+							:fields="item.fields"
+							template="{{ date_created }}"
+							:item="item.data"
+						/>
+					</div>
+					<div v-if="'timestamp' in item.data" class="date-created" x-small>
+						<render-template
+							:collection="item.collection"
+							:fields="item.fields"
+							template="{{ timestamp }}"
+							:item="item.data"
+						/>
+					</div>
+
+					<div class="record-name">
+						<span v-if="filterCollection === 'all'" class="collection">{{ collectionName(item.collection) }}:&nbsp;</span>
+
+						<render-template
+							:collection="item.collection"
+							:fields="item.fields"
+							:template="item.template"
+							:item="item.data"
+						/>
+					</div>
 				</div>
 
-				<div class="record-name">
-					<span v-if="filterCollection === 'all'" class="collection">{{ collectionName(item.collection) }}:&nbsp;</span>
+				<div class="chips">
+					<v-chip v-if="item.collection === 'directus_files' && item.data.type" class="file-type" x-small>
+						{{ item.data.type }}
+					</v-chip>
+					<v-chip v-if="item.collection === 'directus_panels' && item.data.dashboard?.name" class="file-type" x-small>
+						{{ formatTitle(item.data.dashboard.name) }}
+					</v-chip>
+					<v-chip v-if="item.field" class="field" x-small>
+						{{ formatTitle(item.field) }}
+					</v-chip>
+					<v-chip v-if="item.relation" class="relation" x-small>
+						{{ item.field === 'item' ? 'M2A' : formatTitle(item.relation) }}
+					</v-chip>
 
-					<render-template
-						:collection="item.collection"
-						:fields="item.fields"
-						:template="item.template"
-						:item="item.data"
-					/>
+					<div v-if="!item.disabled" class="item-actions">
+						<router-link
+							v-tooltip="t('navigate_to_item')"
+							:to="getItemRoute(item.collection, item.item_id)"
+							class="item-link"
+							@click.stop
+						>
+							<v-icon name="launch" />
+						</router-link>
+					</div>
 				</div>
-			</div>
-
-			<div class="chips">
-				<v-chip v-if="item.collection === 'directus_files' && item.data.type" class="file-type" x-small>
-					{{ item.data.type }}
-				</v-chip>
-				<v-chip v-if="item.collection === 'directus_panels' && item.data.dashboard?.name" class="file-type" x-small>
-					{{ formatTitle(item.data.dashboard.name) }}
-				</v-chip>
-				<v-chip v-if="item.field" class="field" x-small>
-					{{ formatTitle(item.field) }}
-				</v-chip>
-				<v-chip v-if="item.relation" class="relation" x-small>
-					{{ item.field === 'item' ? 'M2A' : formatTitle(item.relation) }}
-				</v-chip>
-
-				<div v-if="!item.disabled" class="item-actions">
-					<router-link
-						v-tooltip="t('navigate_to_item')"
-						:to="getItemRoute(item.collection, item.item_id)"
-						class="item-link"
-						@click.stop
-					>
-						<v-icon name="launch" />
-					</router-link>
-				</div>
-			</div>
-		</v-list-item>
+			</v-list-item>
+		</v-list>
 		<v-pagination
 			v-if="(filterCollection === 'all' && totalItemCount >= 10) || (filterCollection !== 'all' && (collections[filterCollection]?.item_count ?? 10) >= 10)"
 			v-model="page"
