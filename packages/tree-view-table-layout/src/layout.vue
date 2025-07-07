@@ -98,9 +98,19 @@ function useCollectionPermissions(collection: Ref<string>) {
 
 	return {
 		sortAllowed: computed(() => {
-			if (!props.sortField)
-				return false;
-			return permissionsStore.hasPermission(collection.value, 'sort');
+			if (!props.sortField) return false;
+			
+			const canReadSortField = permissionsStore.hasPermission(collection.value, 'read', props.sortField);
+			const canUpdateSortField = permissionsStore.hasPermission(collection.value, 'update', props.sortField);
+			const sortFieldAllowed = canReadSortField && canUpdateSortField;
+			
+			if (!props.parentField) return sortFieldAllowed;
+			
+			const canReadParentField = permissionsStore.hasPermission(collection.value, 'read', props.parentField);
+			const canUpdateParentField = permissionsStore.hasPermission(collection.value, 'update', props.parentField);
+			const parentFieldAllowed = canReadParentField && canUpdateParentField;
+			
+			return sortFieldAllowed && parentFieldAllowed;
 		}),
 	};
 }
