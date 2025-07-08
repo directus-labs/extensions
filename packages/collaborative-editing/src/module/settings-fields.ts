@@ -13,6 +13,19 @@ export const fields: DeepPartial<Field>[] = [
 			default_value: true,
 		},
 	},
+	{
+		field: 'hide_current_user_avatar',
+		type: 'boolean',
+		name: 'Hide Current User Avatar',
+		meta: {
+			interface: 'toggle',
+			width: 'half',
+			note: 'Hide the current user\'s avatar from collaborative editing indicators',
+		},
+		schema: {
+			default_value: false,
+		},
+	},
 	/*{
 		field: 'collections',
 		type: 'json',
