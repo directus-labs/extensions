@@ -73,6 +73,8 @@ Once enabled, the extension provides seamless collaborative editing:
 
 ## Configuration Options
 
+The extension automatically creates necessary settings fields, injects collaboration interfaces into new collections, configures WebSocket message handlers, and sets up user awareness tracking.
+
 ### Enabling Collaborative Editing
 
 There are two approaches to enable collaborative editing:
@@ -89,10 +91,9 @@ There are two approaches to enable collaborative editing:
 - Search for and add the "Collaboration" interface to enable it for that collection only
 - Might be better approach for instances with sensitive data or anytime where you want more granular control
 
-### Automatic Setup
+### Hide Current User Avatar
 
-The extension automatically creates necessary settings fields, injects collaboration interfaces into new collections, configures WebSocket message handlers, and sets up user awareness tracking.
-
+You can choose to hide your avatar (the current logged in user) from the collaborative editing indicators over the invidual fields you're editing.
 
 ## Local Development
 
