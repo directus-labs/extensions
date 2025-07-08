@@ -1,7 +1,8 @@
-import type { Accountability, Collection, Field, Query, Relation } from '@directus/types';
+import type { Accountability, Collection, Field, Item, Query, Relation } from '@directus/types';
 import type { RelatedItem } from '../types';
 import { defineEndpoint } from '@directus/extensions-sdk';
 import { getFieldsFromTemplate } from '@directus/utils';
+import { calculateRelation } from '../shared/calculate-relation';
 import { displayTemplate } from './utils/display-template';
 
 interface CollectionDetail {
@@ -13,6 +14,7 @@ interface CollectionDetail {
 	item_id: number | string | number[] | string[];
 	fields: Field[];
 	primaryKey: string;
+	junction_items: Item[];
 }
 
 export default defineEndpoint({
@@ -66,19 +68,15 @@ export default defineEndpoint({
 				}
 			}
 
-			const requested_item: Record<string, any> = await fetchItem({ collection, id: primaryId, query });
-			const relations: Relation[] = await relationService.readAll();
-			const related_o2m_collections: Relation[] = relations.filter((r) => r.collection === collection);
-			const related_m2o_collections: Relation[] = relations.filter((r) => r.related_collection === collection || r.meta?.one_allowed_collections?.includes(collection));
-
-			async function fetchCollectionInfo({ collection, field_name, item_id, relation }: { collection: string | null; field_name: string; item_id: number | string | number[] | string[]; relation: Relation }): Promise<CollectionDetail | null> {
+			async function fetchCollectionInfo({ collection, field_name, item_id, relation, junction_items = [] }:
+			{ collection: string | null; field_name: string; item_id: number | string | number[] | string[]; relation: Relation; junction_items?: Item[] }): Promise<CollectionDetail | null> {
 				if (!collection) return null;
 				const current_collection: Collection = await collectionService.readOne(collection);
 				const display_template = displayTemplate(collection, current_collection.meta?.display_template);
 				const template_fields = getFieldsFromTemplate(display_template).filter((t) => !t.includes('$'));
 				const fields: Field[] = await fieldService.readAll(collection);
 				const primaryKey: string = fields.find((f) => f.schema?.is_primary_key)?.field ?? 'id';
-				return { property: current_collection, display_template, template_fields, field_name, many_field: relation.meta?.junction_field, item_id, fields, primaryKey };
+				return { property: current_collection, display_template, template_fields, field_name, many_field: relation.meta?.junction_field, item_id, fields, primaryKey, junction_items };
 			}
 
 			async function fetchM2aCollectionInfo({ collections, m2m_relation, relation }: { collections: string[]; m2m_relation: Relation; relation: Relation }) {
@@ -91,9 +89,7 @@ export default defineEndpoint({
 
 						try {
 							const m2a_junction_items: Record<string, number | string>[] = await fetchItem({ collection: m2m_relation.collection, query: {
-								fields: [
-									many_field,
-								],
+								fields: ['*'],
 								filter: {
 									[junction_field]: {
 										_eq: primaryId,
@@ -106,7 +102,7 @@ export default defineEndpoint({
 							} });
 							const item_ids = m2a_junction_items.map((i) => i[many_field]) as number[] | string[];
 
-							return await fetchCollectionInfo({ collection, field_name: relation.meta?.one_field ?? relation.field, item_id: item_ids, relation });
+							return await fetchCollectionInfo({ collection, field_name: relation.meta?.one_field ?? relation.field, item_id: item_ids, relation, junction_items: m2a_junction_items });
 						}
 						catch (error) {
 							console.error(error);
@@ -122,7 +118,7 @@ export default defineEndpoint({
 
 			async function build_output({ o2m, is_m2a, is_m2a_junction, has_junction, relation_type, collection, related_collection, relation }: { o2m: boolean; is_m2a: boolean; is_m2a_junction: boolean; has_junction: boolean; relation_type: string; collection: CollectionDetail; related_collection?: string; relation: Relation }) {
 				const itemFields = [
-					relation_type === 'm2m' ? `${collection.many_field}.${collection.primaryKey}` : collection.primaryKey,
+					...(relation_type === 'm2m' ? ['*', `${collection.many_field}.${collection.primaryKey}`] : [collection.primaryKey]),
 					...collection.template_fields.map((f) => relation_type === 'm2m' ? `${collection.many_field}.${f}` : f),
 					...(
 						collection.property.collection === 'directus_files'
@@ -154,12 +150,12 @@ export default defineEndpoint({
 									},
 								}
 							: {
-									[collection.field_name]: {
+									[relation.meta?.many_field ?? collection.field_name]: { // O2M relation.meta.many_field
 										_eq: collection.item_id,
 									},
 								})
 					: {
-							[has_junction ? collection.field_name : collection.primaryKey]: {
+							[has_junction ? collection.field_name : collection.primaryKey]: { // Else M2O collection.primaryKey
 								_eq: collection.item_id,
 							},
 						};
@@ -167,16 +163,18 @@ export default defineEndpoint({
 				const collectionInfo = {
 					collection: collection.property.collection,
 					fields: itemFields,
-					relation: relation_type,
+					type: relation_type === 'm2m' && relation.field === 'item' ? 'a2m' : relation_type,
+					relation,
 					translations: collection.property.meta?.translations,
-					field: collection.field_name,
+					field: relation.meta?.one_field ?? collection.field_name,
 					junction_field: has_junction ? relation.meta?.junction_field : null,
 					primary_key: collection.primaryKey,
 					template: collection.display_template ?? `{{ ${collection.primaryKey} }}`,
+					items: collection.junction_items.length > 0 ? collection.junction_items : [],
 				} as RelatedItem;
 
 				try {
-					const relatedItems = await fetchItem({ collection: is_m2a || is_m2a_junction || related_collection === undefined ? collection.property.collection : related_collection, query: {
+					const relatedItems: Item[] = await fetchItem({ collection: is_m2a || is_m2a_junction || related_collection === undefined ? collection.property.collection : related_collection, query: {
 						fields: itemFields,
 						// @ts-expect-error saying _and is missing but it's not required
 						filter: itemFilters,
@@ -184,11 +182,18 @@ export default defineEndpoint({
 					} });
 					return {
 						...collectionInfo,
-						items: relatedItems.filter((value: any, index: number, self: any) =>
-							index === self.findIndex((t: any) => (
-								t[collectionInfo.primary_key] === value[collectionInfo.primary_key]
-							)),
-						),
+						items: collectionInfo.items.length > 0
+							? collectionInfo.items.map((i) => {
+									return {
+										...i,
+										item: relatedItems.find((r) => String(r[collectionInfo.primary_key]) === String(i[collectionInfo.junction_field!])),
+									};
+								})
+							: relatedItems.filter((value: any, index: number, self: any) =>
+									relation_type === 'm2m' || index === self.findIndex((t: any) => (
+										t[collectionInfo.primary_key] === value[collectionInfo.primary_key]
+									)),
+								),
 					};
 				}
 				catch {
@@ -199,36 +204,12 @@ export default defineEndpoint({
 				}
 			}
 
-			async function relatedCollections(relations: Relation[]) {
+			async function relatedCollections(relations: Relation[], requested_item: Item) {
 				const promises = relations.map(async (r) => {
-					const o2m = r.related_collection === collection;
-					const has_junction = (o2m || r.field === 'item') && r.meta?.junction_field !== null;
-					const is_m2a = r.meta?.junction_field === 'item' && (has_junction || !r.related_collection);
-					const is_m2a_junction = r.field === 'item' && !r.related_collection && r.collection === collection;
-
-					const RelationType = () => {
-						if (is_m2a || is_m2a_junction) return 'm2a';
-						if (has_junction) return 'm2m';
-						if (o2m) return 'o2m';
-						return 'm2o';
-					};
-
-					const calculateField = () => {
-						if (has_junction && o2m && !is_m2a) return r.field;
-						if (o2m) return r.meta?.one_field ?? r.field;
-						return r.meta?.many_field ?? r.field;
-					};
-
-					const field = calculateField();
-
-					const relatedCollection = () => {
-						if (o2m) return r.collection;
-						if (r.related_collection) return r.related_collection;
-						return r.collection;
-					};
+					const { o2m, has_junction, is_m2a, is_m2a_junction, relationType, field, relatedCollection } = calculateRelation({ relation: r, collection });
 
 					const related_collection = await fetchCollectionInfo({
-						collection: relatedCollection(),
+						collection: relatedCollection,
 						field_name: field,
 						item_id: o2m ? primaryId : requested_item[field],
 						relation: r,
@@ -280,7 +261,7 @@ export default defineEndpoint({
 							is_m2a,
 							is_m2a_junction,
 							has_junction,
-							relation_type: RelationType(),
+							relation_type: relationType,
 							collection: c as CollectionDetail,
 							related_collection,
 							relation: r,
@@ -294,24 +275,24 @@ export default defineEndpoint({
 			}
 
 			try {
+				const requested_item: Item | null = await fetchItem({ collection, id: primaryId, query });
+				const relations: Relation[] = await relationService.readAll();
+				const related_o2m_collections: Relation[] = relations.filter((r) => r.collection === collection);
+				const related_m2o_collections: Relation[] = relations.filter((r) => r.related_collection === collection || r.meta?.one_allowed_collections?.includes(collection));
 				const related_content: RelatedItem[] = [];
 
-				const o2m_collection_items = await relatedCollections(related_o2m_collections);
-				const m2o_collection_items = await relatedCollections(related_m2o_collections);
+				const o2m_collection_items = requested_item ? await relatedCollections(related_o2m_collections, requested_item) : [];
+				const m2o_collection_items = requested_item ? await relatedCollections(related_m2o_collections, requested_item) : [];
 
-				o2m_collection_items.forEach((c) => {
-					related_content.push(...c);
-				});
-
-				m2o_collection_items.forEach((c) => {
-					related_content.push(...c);
+				[...o2m_collection_items, ...m2o_collection_items].forEach((c) => {
+					related_content.push(...c.filter((i) => !related_content.some((r) => r.collection === i.collection && r.type === i.type && r.field === i.field)));
 				});
 
 				res.json(related_content);
 			}
 			catch (error) {
 				console.error(error);
-				res.send(500).json({ error: 'Internal Server Error' });
+				res.sendStatus(500).json({ error: 'Internal Server Error' });
 			}
 		});
 	},
