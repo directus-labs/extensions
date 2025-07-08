@@ -1,25 +1,31 @@
+import type { Item, PrimaryKey, Relation } from '@directus/types';
+
 export interface RelatedItem {
 	collection: string;
-	relation: 'm2a' | 'm2m' | 'm2o' | 'o2m';
+	type: 'm2a' | 'a2m' | 'm2m' | 'm2o' | 'o2m';
+	relation: Relation;
 	field: string | null;
 	junction_field: string | null;
 	translations: Translations[] | null;
 	fields: string[];
-	primary_key: string;
+	primary_key: PrimaryKey;
 	template?: string | null;
-	items: Record<string, any>;
+	junction_items: Item[];
+	items: Item[];
 }
 
 export interface RelatedItemObject {
+	primary_key?: PrimaryKey;
 	collection: string;
 	disabled: boolean;
 	field: string | null;
 	junction_field: string | null;
-	relation: 'm2a' | 'm2m' | 'm2o' | 'o2m';
+	junction_id: PrimaryKey | null;
+	type: 'm2a' | 'a2m' | 'm2m' | 'm2o' | 'o2m';
 	fields: string[];
 	template?: string | null;
-	item_id: string;
-	data: Record<string, any>;
+	item_id: PrimaryKey | null;
+	data: Item;
 }
 
 export interface CollectionFilters {
