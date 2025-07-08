@@ -528,6 +528,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				'integer',
 				'float',
 				'decimal',
+				'numeric',
 				// boolean
 				'boolean',
 				// dates
