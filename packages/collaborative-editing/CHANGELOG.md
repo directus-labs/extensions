@@ -9,6 +9,7 @@
 ### Improvements
 
 -   Naming conventions now more consistent
+-   Added setting to hide current user avatar
 
 ### Fixes
 
