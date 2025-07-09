@@ -22,6 +22,7 @@ const { collection, primaryKey, loading } = toRefs(props);
 		<RelatedItemsList
 			:primary-key="primaryKey"
 			:collection="collection"
+			:disabled
 		/>
 	</div>
 </template>

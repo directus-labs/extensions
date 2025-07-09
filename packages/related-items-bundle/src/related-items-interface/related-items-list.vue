@@ -15,6 +15,7 @@ import { getItemRoute } from './utils/get-route';
 const props = defineProps<{
 	collection: string;
 	primaryKey: number | string;
+	disabled: boolean;
 }>();
 
 const { collection, primaryKey } = toRefs(props);
@@ -78,7 +79,7 @@ async function refreshList(): Promise<boolean> {
 					relatedItems.value.push({
 						primary_key: d.primary_key,
 						collection: d.collection,
-						disabled: (d.collection.includes('directus_') && ![...systemEditable, ...systemNavigate].includes(d.collection)) || (d.collection === props.collection && item_id === props.primaryKey),
+						disabled: props.disabled || (d.collection.includes('directus_') && ![...systemEditable, ...systemNavigate].includes(d.collection)) || (d.collection === props.collection && item_id === props.primaryKey),
 						field: d.field,
 						junction_field: d.junction_field,
 						junction_id: ['m2m', 'm2a', 'a2m'].includes(d.type) ? i[junctionPrimaryKey.field] : (d.type !== 'm2o' ? item_id : null),
