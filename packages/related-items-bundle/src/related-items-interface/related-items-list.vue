@@ -27,7 +27,7 @@ const relations: Relation[] = relationsStore.getRelationsForCollection(collectio
 const fieldStore = useFieldsStore();
 const { fields } = useCollection(collection);
 const visibleCollectionFields = computed(() => {
-	return fields.value.filter((f) => !f.meta?.hidden && relations.some((r) => f.field === r.meta?.one_field));
+	return fields.value.filter((f) => !f.meta?.hidden && relations.some((r) => f.field === r.meta?.one_field || f.field === r.field));
 });
 
 const { t, te } = useI18n();
@@ -67,25 +67,28 @@ async function refreshList(): Promise<boolean> {
 		const response = await api.get(`/related-items/${collection.value}/${primaryKey.value}`);
 
 		response.data.forEach((d: RelatedItem) => {
-			templates.value[d.collection] = d.template?.includes('{{ collection }}') ? d.template?.replace('{{ collection }}', collectionName(d.collection, 'plural')) : d.template ?? `{{ ${d.primary_key} }}`;
+			const field = fields.value.find((f) => d.field === f.field);
+			templates.value[d.collection] = field?.meta?.options?.template ?? (d.template?.includes('{{ collection }}') ? d.template?.replace('{{ collection }}', collectionName(d.collection, 'plural')) : d.template) ?? `{{ ${d.primary_key} }}`;
 			const junctionPrimaryKey = fieldStore.getPrimaryKeyFieldForCollection(d.relation.collection);
 
 			d.items.forEach((i) => {
 				const item_id = ['m2m', 'm2a', 'a2m'].includes(d.type) && d.junction_field ? i[d.junction_field]?.[d.primary_key] : i[d.primary_key];
 
-				relatedItems.value.push({
-					primary_key: d.primary_key,
-					collection: d.collection,
-					disabled: (d.collection.includes('directus_') && ![...systemEditable, ...systemNavigate].includes(d.collection)) || (d.collection === props.collection && item_id === props.primaryKey),
-					field: d.field,
-					junction_field: d.junction_field,
-					junction_id: ['m2m', 'm2a', 'a2m'].includes(d.type) ? i[junctionPrimaryKey.field] : item_id,
-					type: d.type,
-					fields: d.fields,
-					template: templates.value[d.collection],
-					item_id,
-					data: ['m2m', 'm2a', 'a2m'].includes(d.type) && d.junction_field ? i[d.junction_field] : i,
-				});
+				if (!relatedItems.value.some((ri) => ri.collection === d.collection && ri.field === d.field && ri.type === d.type && ri.item_id === item_id)) {
+					relatedItems.value.push({
+						primary_key: d.primary_key,
+						collection: d.collection,
+						disabled: (d.collection.includes('directus_') && ![...systemEditable, ...systemNavigate].includes(d.collection)) || (d.collection === props.collection && item_id === props.primaryKey),
+						field: d.field,
+						junction_field: d.junction_field,
+						junction_id: ['m2m', 'm2a', 'a2m'].includes(d.type) ? i[junctionPrimaryKey.field] : (d.type !== 'm2o' ? item_id : null),
+						type: d.type,
+						fields: d.fields,
+						template: templates.value[d.collection],
+						item_id,
+						data: ['m2m', 'm2a', 'a2m'].includes(d.type) && d.junction_field ? i[d.junction_field] : i,
+					});
+				}
 			});
 		});
 
@@ -170,7 +173,7 @@ function startEditing(item: RelatedItemObject) {
 	}
 
 	editModalActive.value = true;
-	editDisabled.value = item.type === 'm2a' || visibleCollectionFields.value.some((f) => f.field === item.field);
+	editDisabled.value = visibleCollectionFields.value.some((f) => f.field === item.field);
 	editingCollection.value = item.collection;
 	currentlyEditing.value = item.item_id;
 	editsAtStart.value = item.data;
@@ -210,10 +213,19 @@ onMounted(async () => {
 	await refreshList();
 });
 
-function updateRelatedItems(item: Item) {
-	for (const relatedItem of relatedItems.value) {
-		if (relatedItem.junction_field && relatedItem.junction_field in item && relatedItem.item_id === item[relatedItem.junction_field][relatedItem.primary_key!]) {
+function updateRelatedItems(item: Item | null, field: Field) {
+	for (const [index, relatedItem] of relatedItems.value.entries()) {
+		if (!item) {
+			if (field.field === relatedItem.field) {
+				relatedItems.value.splice(index, 1);
+			}
+		}
+		else if (relatedItem.junction_field && relatedItem.junction_field in item && relatedItem.item_id === item[relatedItem.junction_field][relatedItem.primary_key!]) {
 			const { [relatedItem.primary_key!]: id, ...rest } = item[relatedItem.junction_field];
+			relatedItem.data = { ...relatedItem.data, ...rest };
+		}
+		else if (relatedItem.item_id === item[relatedItem.primary_key!]) {
+			const { [relatedItem.primary_key!]: id, ...rest } = item;
 			relatedItem.data = { ...relatedItem.data, ...rest };
 		}
 	}
@@ -222,16 +234,14 @@ function updateRelatedItems(item: Item) {
 async function createRelatedItems(item: Item, field: Field, relation: Relation | undefined): Promise<RelatedItemObject | null> {
 	if (!relation || !field) return null;
 	const junction_field = relation.meta?.junction_field;
-	if (!junction_field) return null;
-
 	const { is_m2a, relationType } = calculateRelation({ relation, collection: collection.value });
-	const keys = Object.keys(item[junction_field]);
 	const relations = await relationsStore.getRelationsForCollection(relation.collection);
 	const related_collection = is_m2a ? item.collection : (relationType === 'm2m' ? relations.find((r: Relation) => r.field === relation.meta?.junction_field).related_collection : relation.related_collection) ?? collection.value;
 	const primaryKey = fieldStore.getPrimaryKeyFieldForCollection(related_collection);
-	const display_template = templates.value[related_collection] ?? `{{ ${keys[0]} }}`;
+	const keys = Object.keys(junction_field ? item[junction_field] : item);
+	const display_template = field.meta?.options?.template ?? templates.value[related_collection] ?? `{{ ${keys[0]} }}`;
 	const template_fields = [...getFieldsFromTemplate(display_template).filter((t) => !t.includes('$')), ...(related_collection === 'directus_files' ? ['type'] : [])];
-	const item_id = keys.includes(primaryKey.field) ? item[junction_field][primaryKey.field] : null;
+	const item_id = keys.includes(primaryKey.field) ? (junction_field ? item[junction_field][primaryKey.field] : item[primaryKey.field]) : null;
 
 	return {
 		collection: related_collection,
@@ -243,20 +253,37 @@ async function createRelatedItems(item: Item, field: Field, relation: Relation |
 		fields: template_fields,
 		template: display_template,
 		item_id,
-		data: item_id ? await fetchDisplayData({ collection: related_collection, id: item_id, fields: template_fields }) : item[junction_field],
+		data: item_id ? await fetchDisplayData({ collection: related_collection, id: item_id, fields: template_fields }) : (junction_field ? item[junction_field] : item),
 	};
 }
 
 visibleCollectionFields.value.forEach((f) => {
-	watch(() => values.value[f.field], () => {
-		deletedRelatedItems.value[f.field] = [];
+	watch(() => values.value[f.field], async () => {
 		newRelatedItems.value[f.field] = [];
+		deletedRelatedItems.value[f.field] = [];
 
-		if (values.value?.[f.field] && 'create' in values.value[f.field]) {
+		if (relations.some((r) => f.field === r.field)) {
+			if (typeof values?.value[f.field] === 'string') {
+				const relation = relations.find((r) => f.field === r.field);
+				const primaryKey = fieldStore.getPrimaryKeyFieldForCollection(relation?.related_collection);
+				const newItem: RelatedItemObject | null = await createRelatedItems({ [primaryKey.field]: values.value[f.field] }, f, relation);
+
+				if (newItem) {
+					newRelatedItems.value[f.field]?.push(newItem);
+				}
+			}
+			else if (typeof values?.value[f.field] === 'object') {
+				updateRelatedItems(values?.value[f.field], f);
+			}
+		}
+
+		if (!values.value?.[f.field]) return;
+
+		if (relations.some((r) => f.field === r.meta?.one_field) && typeof values.value[f.field] === 'object' && 'create' in values.value[f.field]) {
 			page.value = 1;
 
 			values.value[f.field].update.forEach((u: Item) => {
-				updateRelatedItems(u);
+				updateRelatedItems(u, f);
 			});
 
 			deletedRelatedItems.value[f.field] = values.value[f.field].delete ?? [];
