@@ -8,7 +8,6 @@ import { formatTitle } from '@directus/format-title';
 import { abbreviateNumber, getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, inject, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 import { calculateRelation } from '../shared/calculate-relation';
 import { getItemRoute } from './utils/get-route';
 
@@ -32,8 +31,6 @@ const visibleCollectionFields = computed(() => {
 });
 
 const { t, te } = useI18n();
-const router = useRouter();
-
 const loading = ref<boolean>(true);
 const error = ref<boolean>(false);
 const relatedItems = ref<RelatedItemObject[]>([]);
@@ -158,20 +155,7 @@ function collectionName(collection: string, type: 'singular' | 'plural' = 'singu
 
 function startEditing(item: RelatedItemObject) {
 	if (item.disabled) return;
-
-	if (item.collection.includes('directus_') && !systemEditable.includes(item.collection)) {
-		if (['directus_flows', 'directus_presets'].includes(item.collection)) {
-			router.push(`/settings/${item.collection.replace('directus_', '')}/${item.item_id}`);
-		}
-		else if (item.collection === 'directus_dashboards') {
-			router.push(`/insights/${item.item_id}`);
-		}
-		else if (item.collection === 'directus_users') {
-			router.push(`/users/${item.item_id}`);
-		}
-
-		return;
-	}
+	if (systemNavigate.includes(item.collection)) return;
 
 	editModalActive.value = true;
 	editDisabled.value = visibleCollectionFields.value.some((f) => f.field === item.field);
@@ -342,7 +326,7 @@ visibleCollectionFields.value.forEach((f) => {
 				v-for="item, index in relatedView"
 				:key="index"
 				:class="{
-					disabled: item.disabled,
+					disabled: item.disabled || systemNavigate.includes(item.collection),
 					has_datetime: 'timestamp' in item.data || 'date_created' in item.data,
 				}"
 				block
