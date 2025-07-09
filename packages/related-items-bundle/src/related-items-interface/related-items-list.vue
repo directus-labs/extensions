@@ -78,6 +78,7 @@ async function refreshList(): Promise<boolean> {
 						collection: d.collection,
 						disabled: props.disabled || (d.collection.includes('directus_') && ![...systemEditable, ...systemNavigate].includes(d.collection)) || (d.collection === props.collection && item_id === props.primaryKey),
 						field: d.field,
+						relation: d.relation,
 						junction_field: d.junction_field,
 						junction_id: ['m2m', 'm2a', 'a2m'].includes(d.type) ? i[junctionPrimaryKey.field] : (d.type !== 'm2o' ? item_id : null),
 						type: d.type,
@@ -158,7 +159,7 @@ function startEditing(item: RelatedItemObject) {
 	if (systemNavigate.includes(item.collection)) return;
 
 	editModalActive.value = true;
-	editDisabled.value = visibleCollectionFields.value.some((f) => f.field === item.field);
+	editDisabled.value = visibleCollectionFields.value.some((f) => f.field === item.field || f.field === item.relation.field);
 	editingCollection.value = item.collection;
 	currentlyEditing.value = item.item_id;
 	editsAtStart.value = item.data;
@@ -232,6 +233,7 @@ async function createRelatedItems(item: Item, field: Field, relation: Relation |
 		collection: related_collection,
 		disabled: true,
 		field: field.field,
+		relation,
 		junction_field: junction_field ?? null,
 		junction_id: null,
 		type: relationType,
