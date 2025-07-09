@@ -136,7 +136,7 @@ export default defineEndpoint({
 							: []
 					),
 					...(
-						collection.property.collection === 'directus_notifications'
+						collection.property.collection === 'directus_notifications' || collection.property.collection === 'directus_activity'
 							? ['timestamp']
 							: []
 					),
@@ -175,10 +175,11 @@ export default defineEndpoint({
 
 				try {
 					const relatedItems: Item[] = await fetchItem({ collection: is_m2a || is_m2a_junction || related_collection === undefined ? collection.property.collection : related_collection, query: {
+						sort: related_collection === 'directus_activity' ? ['-timestamp'] : [],
 						fields: itemFields,
 						// @ts-expect-error saying _and is missing but it's not required
 						filter: itemFilters,
-						limit: -1,
+						limit: related_collection === 'directus_activity' ? 2000 : -1,
 					} });
 					return {
 						...collectionInfo,
