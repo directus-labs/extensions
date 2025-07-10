@@ -380,7 +380,7 @@ visibleCollectionFields.value.forEach((f) => {
 						{{ item.type.toUpperCase() }}
 					</v-chip>
 
-					<div v-if="!item.disabled && item.item_id" class="item-actions">
+					<div v-if="item.item_id" class="item-actions">
 						<router-link
 							v-tooltip="t('navigate_to_item')"
 							:to="getItemRoute(item.collection, item.item_id)"
