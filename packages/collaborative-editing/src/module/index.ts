@@ -4,7 +4,7 @@ import ModuleSettings from './settings.vue';
 import { injectRealtimeApp } from './utils/inject-realtime-app';
 export default defineModule({
 	id: MODULE_ID,
-	name: 'Realtime Collaboration',
+	name: 'Collaborative Editing',
 	icon: 'communication',
 	routes: [
 		{
