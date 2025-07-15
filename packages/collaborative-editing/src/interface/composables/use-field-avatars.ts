@@ -5,6 +5,7 @@ import { createAppWithDirectus } from '../utils/create-app-with-directus';
 import { useAwarenessStore } from '../stores/awarenessStore';
 import { ACTIVE_FIELD_SELECTOR } from '../constants';
 import { ActiveField, AwarenessItem } from '../types';
+import { useSettings } from '../../module/utils/use-settings';
 
 const containerClass = 'field-avatar-container';
 
@@ -17,6 +18,7 @@ interface AppInstance {
 export function useFieldAvatars() {
 	const apps = ref<AppInstance[]>([]);
 	const awarenessStore = useAwarenessStore();
+	const { settings } = useSettings();
 
 	function createAvatarForField(activeField: Omit<ActiveField, 'uid'>, states: AwarenessItem[]) {
 		const { collection, field, primaryKey } = activeField;
@@ -40,6 +42,17 @@ export function useFieldAvatars() {
 			container.remove();
 		});
 
+		// Filter out current user's avatar if setting is enabled
+		let filteredStates = states;
+		if (settings.value?.hide_current_user_avatar) {
+			filteredStates = states.filter((state) => !state.user.isCurrentUser);
+		}
+
+		// Don't create avatar container if no users to show
+		if (filteredStates.length === 0) {
+			return;
+		}
+
 		// Create new container
 		const container = document.createElement('div');
 		container.classList.add(containerClass);
@@ -49,7 +62,7 @@ export function useFieldAvatars() {
 
 		// Create the avatar app
 		const app = createAppWithDirectus(AvatarStack, {
-			users: states,
+			users: filteredStates,
 		}) as AppInstance;
 
 		app.container = container;
