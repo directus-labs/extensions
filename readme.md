@@ -48,7 +48,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Input Rich Text HTML File Link](//github.com/directus-labs/extensions/tree/main/packages/input-rich-text-html-file-link) | Interface | N&#x2F;A |  |
 | [Liquidjs Operation](//github.com/directus-labs/extensions/tree/main/packages/liquidjs-operation) | Operation | ✅ |  |
 | [Extension Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component) | Bundle | N&#x2F;A |  |
-| [Meilisearch Operation](//github.com/directus-labs/extensions/tree/main/packages/meilisearch-operation) | Operation | ✅ |  |
+| [Meilisearch Operation](//github.com/directus-labs/extensions/tree/main/packages/meilisearch-operation) | Operation | N&#x2F;A |  |
 | [Migration Bundle](//github.com/directus-labs/extensions/tree/main/packages/migration-bundle) | Bundle | N&#x2F;A |  |
 | [Multilevel Autocomplete API Interface](//github.com/directus-labs/extensions/tree/main/packages/multilevel-autocomplete-api-interface) | Interface | N&#x2F;A |  |
 | [Opensearch Operation](//github.com/directus-labs/extensions/tree/main/packages/opensearch-operation) | Operation | N&#x2F;A |  |
