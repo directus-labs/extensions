@@ -8,6 +8,7 @@ const defaultDisplayMap: Record<Type, string> = {
 	'date': 'datetime',
 	'dateTime': 'datetime',
 	'decimal': 'formatted-value',
+	'numeric': 'formatted-value',
 	'float': 'formatted-value',
 	'integer': 'formatted-value',
 	'json': 'raw',

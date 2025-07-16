@@ -22,6 +22,6 @@ Click a cell within the collection spreadsheet and press `[Enter]` or `Double-cl
 
 ## Allowed fields
 
-**Types:** string, text, bigInteger, integer, float, decimal, boolean, dateTime, date, time, timestamp.
+**Types:** string, text, bigInteger, integer, float, decimal, numeric, boolean, dateTime, date, time, timestamp.
 
 **Interfaces:** boolean, datetime, input, input-autocomplete-api, select-color, select-dropdown, select-icon, slider.
