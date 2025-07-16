@@ -30,6 +30,7 @@ const props = withDefaults(
 		buttonIcon: string;
 		buttonTooltip: string;
 		exitMessage: string;
+		rootSelector: string;
 	}>(),
 	{
 		batchActiveFields: () => [],
@@ -113,7 +114,7 @@ function useInjectButtonBar() {
 	}
 
 	function getRootForm() {
-		return document.querySelector('main>.v-form');
+		return document.querySelector(props.rootSelector);
 	}
 
 	function injectButtonBar() {
