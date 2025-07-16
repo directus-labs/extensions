@@ -219,8 +219,8 @@ onMounted(() => {
 			YEAR: ['5y', '5y'],
 		},
 		async on_date_change(task, start: Date, end: Date) {
-			const startDate = new Date(task.start);
-			const endDate = new Date(task.end);
+			const startDate = new Date(start);
+			const endDate = new Date(end);
 
 			startDate.setUTCFullYear(start.getUTCFullYear());
 			endDate.setUTCFullYear(end.getUTCFullYear());
