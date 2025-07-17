@@ -45,9 +45,108 @@ export default defineEndpoint({
 
 		const storage = toArray(env.STORAGE_LOCATIONS)[0];
 
-		router.get('/*', async (req, res) => res.sendStatus(400));
+		router.get('/*', async (req, res) => {
+			if (req.url === '/defaults') {
+				// Return ENV-based defaults
+				const defaults = {
+					baseURL: env.MIGRATION_BUNDLE_DEFAULT_URL || '',
+					token: env.MIGRATION_BUNDLE_DEFAULT_TOKEN || '',
+					options: env.MIGRATION_BUNDLE_DEFAULT_OPTIONS 
+						? String(env.MIGRATION_BUNDLE_DEFAULT_OPTIONS).split(',').map((s: string) => s.trim())
+						: []
+				};
+				res.json(defaults);
+			} else if (req.url === '/presets') {
+				// Get migration presets for current user
+				const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
+				
+				if (!accountability?.admin) {
+					res.sendStatus(401);
+					return;
+				}
+
+				try {
+					// Query presets with proper priority (user > role > global)
+					const presets = await database('directus_presets')
+						.where({
+							collection: 'migration_bundle',
+							user: accountability.user
+						})
+						.orWhere(function() {
+							this.where({
+								collection: 'migration_bundle',
+								user: null,
+								role: accountability.role
+							});
+						})
+						.orWhere(function() {
+							this.where({
+								collection: 'migration_bundle',
+								user: null,
+								role: null
+							});
+						})
+						.whereNotNull('bookmark')
+						.orderBy([
+							{ column: 'user', order: 'desc', nulls: 'last' },
+							{ column: 'role', order: 'desc', nulls: 'last' },
+							{ column: 'bookmark', order: 'asc' }
+						]);
+
+					res.json({ data: presets });
+				} catch (error) {
+					console.error('Failed to load presets:', error);
+					res.json({ data: [] });
+				}
+			} else {
+				res.sendStatus(400);
+			}
+		});
 
 		router.post('/*', async (req, res) => {
+			if (req.url === '/presets') {
+				// Create or update migration preset
+				const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
+				
+				if (!accountability?.admin) {
+					res.sendStatus(401);
+					return;
+				}
+
+				try {
+					const preset = {
+						collection: 'migration_bundle',
+						bookmark: req.body.name || `Migration Config ${new Date().toLocaleDateString()}`,
+						user: req.body.scope === 'user' ? accountability.user : 
+							  req.body.scope === 'global' ? null : accountability.user,
+						role: req.body.scope === 'role' ? accountability.role : null,
+						icon: 'sync',
+						color: '#2ECDA7',
+						layout: 'custom',
+						layout_options: JSON.stringify({
+							baseURL: req.body.baseURL,
+							token: req.body.token,
+							selectedOptions: req.body.options
+						})
+					};
+
+					// Check if preset exists for update
+					if (req.body.id) {
+						await database('directus_presets')
+							.where({ id: req.body.id })
+							.update(preset);
+						res.json({ data: { ...preset, id: req.body.id } });
+					} else {
+						const [id] = await database('directus_presets').insert(preset);
+						res.json({ data: { ...preset, id } });
+					}
+				} catch (error) {
+					console.error('Failed to save preset:', error);
+					res.status(500).json({ error: 'Failed to save preset' });
+				}
+				return;
+			}
+
 			if (!['/run', '/dry-run', '/check'].includes(req.url)) {
 				res.sendStatus(400);
 				throw new Error('Bad Request');
@@ -342,6 +441,34 @@ export default defineEndpoint({
 					res.end();
 					console.error(error);
 				}
+			}
+		});
+
+		// DELETE endpoint for presets
+		router.delete('/presets/:id', async (req, res) => {
+			const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
+			
+			if (!accountability?.admin) {
+				res.sendStatus(401);
+				return;
+			}
+
+			try {
+				const presetId = parseInt(req.params.id);
+				
+				// Only allow deletion of user's own presets or if they have proper permissions
+				await database('directus_presets')
+					.where({ 
+						id: presetId,
+						collection: 'migration_bundle',
+						user: accountability.user 
+					})
+					.delete();
+
+				res.json({ success: true });
+			} catch (error) {
+				console.error('Failed to delete preset:', error);
+				res.status(500).json({ error: 'Failed to delete preset' });
 			}
 		});
 	},
