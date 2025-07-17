@@ -22,7 +22,7 @@ const { fileURL, fileIsValid } = useSelectedFile();
 function useSelectedFile() {
 	const fieldValues = inject('values', ref<Record<string, any>>({}));
 
-	const fileID = computed(() => {
+		const fileID = computed(() => {
 		if (!props.file_field)
 			return null;
 		return fieldValues.value[props.file_field] ?? null;
@@ -31,7 +31,8 @@ function useSelectedFile() {
 	const fileURL = computed(() => {
 		if (!fileID.value)
 			return null;
-		return getAssetUrl(fileID.value);
+
+		return getAssetUrl(fileID.value.id ?? fileID.value);
 	});
 
 	const fileIsValid = computed(() => !!fileID.value);
