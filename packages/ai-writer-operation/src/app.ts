@@ -136,7 +136,7 @@ export default defineOperationApp({
 					required: true,
 					interface: 'select-dropdown',
 					options: {
-            			allowOther: true,
+						allowOther: true,
 						choices: getModels(context.aiProvider),
 					},
 					width: 'half',
