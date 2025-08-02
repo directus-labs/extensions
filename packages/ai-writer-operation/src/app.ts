@@ -32,23 +32,9 @@ export default defineOperationApp({
 		];
 
 		const openAiModels = [
-			{ text: 'GPT-4.1', value: 'gpt-4.1-2025-04-14' },
-			{ text: 'GPT-4.1 Mini', value: 'gpt-4.1-mini-2025-04-14' },
-			{ text: 'GPT-4.1 Nano', value: 'gpt-4.1-nano-2025-04-14' },
-			{ text: 'GPT-4.5 Preview', value: 'gpt-4.5-preview-2025-02-27' },
-			{ text: 'GPT-4o', value: 'gpt-4o-2024-08-06' },
-			{ text: 'GPT-4o Mini', value: 'gpt-4o-mini-2024-07-18' },
-			{ text: 'O1', value: 'o1-2024-12-17' },
-			{ text: 'O1 Pro', value: 'o1-pro-2025-03-19' },
-			{ text: 'O1 Mini', value: 'o1-mini-2024-09-12' },
-			{ text: 'O3', value: 'o3-2025-04-16' },
-			{ text: 'O3 Mini', value: 'o3-mini-2025-01-31' },
-			{ text: 'O4 Mini', value: 'o4-mini-2025-04-16' },
-			{ text: 'GPT-4 Turbo', value: 'gpt-4-turbo' },
-			{ text: 'GPT-4', value: 'gpt-4' },
-			{ text: 'GPT-3.5 Turbo', value: 'gpt-3.5-turbo' },
-			{ text: 'O1 (legacy)', value: 'o1' },
-			{ text: 'O1 Mini (legacy)', value: 'o1-mini' },
+			{ text: "GPT-4o", value: "gpt-4o" },
+			{ text: "GPT-4 Turbo", value: "gpt-4-turbo" },
+			{ text: "GPT-3.5 Turbo", value: "gpt-3.5-turbo" },
 		];
 
 		const replicateModels = [
@@ -150,6 +136,7 @@ export default defineOperationApp({
 					required: true,
 					interface: 'select-dropdown',
 					options: {
+						allowOther: true,
 						choices: getModels(context.aiProvider),
 					},
 					width: 'half',
