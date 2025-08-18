@@ -60,10 +60,8 @@
 		"link": "directus-extension link",
 		"validate": "directus-extension validate"
 	},
-	"dependencies": {
-		"@directus/errors": "^1.0.0"
-	},
 	"devDependencies": {
+		"@directus/errors": "^1.0.0",
 		"@directus/extensions": "^2.0.2",
 		"@directus/extensions-sdk": "^13.0.0",
 		"@types/node": "^22.7.7",

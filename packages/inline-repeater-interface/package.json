@@ -25,7 +25,10 @@
 		"link": "directus-extension link",
 		"validate": "directus-extension validate"
 	},
-	"dependencies": {
+	"devDependencies": {
+		"@directus/extensions-sdk": "13.0.0",
+		"@directus/types": "^13.0.0",
+		"typescript": "^5.5.4",
 		"@directus/format-title": "^12.0.0",
 		"lodash": "^4.17.21",
 		"nanoid": "^5.0.7",
@@ -34,10 +37,5 @@
 		"vue": "^3.4.38",
 		"vue-i18n": "^11.0.1",
 		"vuedraggable": "4.1.0"
-	},
-	"devDependencies": {
-		"@directus/extensions-sdk": "13.0.0",
-		"@directus/types": "^13.0.0",
-		"typescript": "^5.5.4"
 	}
 }

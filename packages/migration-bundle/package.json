@@ -40,7 +40,12 @@
 		"add": "directus-extension add",
 		"validate": "directus-extension validate"
 	},
-	"dependencies": {
+	"devDependencies": {
+		"@directus/extensions-sdk": "13.0.1",
+		"@directus/types": "^13.0.0",
+		"@types/node": "^22.13.4",
+		"typescript": "^5.7.3",
+		"vue": "^3.5.13",
 		"@directus/sdk": "^19.0.1",
 		"@directus/utils": "^13.0.0",
 		"bottleneck": "^2.19.5",
@@ -48,12 +53,5 @@
 		"dompurify": "^3.2.4",
 		"formdata-node": "^6.0.3",
 		"marked": "^15.0.7"
-	},
-	"devDependencies": {
-		"@directus/extensions-sdk": "13.0.1",
-		"@directus/types": "^13.0.0",
-		"@types/node": "^22.13.4",
-		"typescript": "^5.7.3",
-		"vue": "^3.5.13"
 	}
 }

@@ -38,11 +38,9 @@
 		"link": "directus-extension link",
 		"add": "directus-extension add"
 	},
-	"dependencies": {
-		"@directus/utils": "^12.0.0"
-	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "11.0.8",
+		"@directus/utils": "^12.0.0",
 		"typescript": "^5.5.2",
 		"vue": "^3.4.30"
 	}

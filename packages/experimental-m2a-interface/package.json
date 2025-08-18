@@ -37,12 +37,10 @@
 		"link": "directus-extension link",
 		"validate": "directus-extension validate"
 	},
-	"dependencies": {
-		"@vueuse/core": "^13.1.0"
-	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "13.0.4",
 		"typescript": "^5.8.3",
-		"vue": "3.5.13"
+		"vue": "3.5.13",
+		"@vueuse/core": "^13.1.0"
 	}
 }

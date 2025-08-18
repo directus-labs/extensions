@@ -23,12 +23,10 @@
 		"dev": "directus-extension build -w --no-minify",
 		"link": "directus-extension link"
 	},
-	"dependencies": {
-		"sass": "^1.77.8"
-	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "12.0.0",
 		"typescript": "^5.5.4",
-		"vue": "^3.4.36"
+		"vue": "^3.4.36",
+		"sass": "^1.77.8"
 	}
 }

@@ -23,14 +23,12 @@
 		"dev": "directus-extension build -w --no-minify",
 		"link": "directus-extension link"
 	},
-	"dependencies": {
-		"@vueuse/core": "^11.0.3",
-		"date-fns": "^3.6.0",
-		"vue-i18n": "^9.14.0"
-	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "11.0.8",
+		"@vueuse/core": "^11.0.3",
+		"date-fns": "^3.6.0",
 		"typescript": "^5.5.4",
-		"vue": "^3.4.37"
+		"vue": "^3.4.37",
+		"vue-i18n": "^9.14.0"
 	}
 }
