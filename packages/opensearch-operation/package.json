@@ -31,11 +31,9 @@
 		"link": "directus-extension link",
 		"validate": "directus-extension validate"
 	},
-	"dependencies": {
-		"@opensearch-project/opensearch": "^3.4.0"
-	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "13.0.3",
+		"@opensearch-project/opensearch": "^3.4.0",
 		"@types/node": "^22.13.10",
 		"vue": "^3.5.13"
 	}
