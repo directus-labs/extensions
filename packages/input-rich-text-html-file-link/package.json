@@ -33,9 +33,6 @@
 		"dev": "directus-extension build -w --no-minify",
 		"link": "directus-extension link"
 	},
-	"dependencies": {
-		"tinymce": "^7.6.1"
-	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "13.0.1",
 		"@directus/types": "^13.0.0",
@@ -44,6 +41,7 @@
 		"sass": "^1.84.0",
 		"typescript": "^5.7.3",
 		"vue": "^3.5.13",
-		"vue-i18n": "^9.13.1"
+		"vue-i18n": "^9.13.1",
+		"tinymce": "^7.6.1"
 	}
 }

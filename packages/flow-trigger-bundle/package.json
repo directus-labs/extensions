@@ -43,14 +43,12 @@
 		"link": "directus-extension link",
 		"add": "directus-extension add"
 	},
-	"dependencies": {
-		"@directus/format-title": "11.0.0",
-		"@directus/types": "11.1.1",
-		"vue-i18n": "9.13.1"
-	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "12.0.1",
 		"typescript": "^5.5.4",
-		"vue": "^3.4.38"
+		"vue": "^3.4.38",
+		"@directus/format-title": "11.0.0",
+		"@directus/types": "11.1.1",
+		"vue-i18n": "9.13.1"
 	}
 }

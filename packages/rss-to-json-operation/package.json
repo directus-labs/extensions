@@ -51,12 +51,10 @@
 		"dev": "directus-extension build -w --no-minify",
 		"link": "directus-extension link"
 	},
-	"dependencies": {
-		"fast-xml-parser": "^4.4.0"
-	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "11.0.8",
 		"@types/node": "^20.14.5",
+		"fast-xml-parser": "^4.4.0",
 		"typescript": "^5.4.5",
 		"vue": "^3.4.29"
 	}

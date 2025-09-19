@@ -26,21 +26,19 @@
 		"link": "directus-extension link",
 		"validate": "directus-extension validate"
 	},
-	"dependencies": {
-		"@vueuse/core": "^12.3.0",
-		"date-fns": "^4.1.0",
-		"vue-i18n": "^9.14.0",
-		"vue-router": "^4.4.5"
-	},
 	"devDependencies": {
 		"@directus/constants": "^13.0.0",
 		"@directus/extensions-sdk": "^13.0.0",
 		"@directus/types": "^13.0.0",
 		"@directus/utils": "^13.0.0",
+		"@vueuse/core": "^12.3.0",
+		"date-fns": "^4.1.0",
 		"dompurify": "^3.2.3",
 		"lodash-es": "^4.17.21",
 		"marked": "^15.0.6",
 		"typescript": "^5.6.3",
-		"vue": "^3.5.13"
+		"vue": "^3.5.13",
+		"vue-i18n": "^9.14.0",
+		"vue-router": "^4.4.5"
 	}
 }

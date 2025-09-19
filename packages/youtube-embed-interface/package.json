@@ -25,11 +25,9 @@
 		"link": "directus-extension link",
 		"validate": "directus-extension validate"
 	},
-	"dependencies": {
-		"sass": "^1.83.4"
-	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "13.0.0",
+		"sass": "^1.83.4",
 		"typescript": "^5.7.3",
 		"vue": "^3.5.13"
 	}
