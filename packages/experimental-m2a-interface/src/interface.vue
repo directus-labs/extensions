@@ -65,9 +65,10 @@ function removeParentDomElement(el: MaybeHTMLRef) {
 function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	const label = ref('');
 	const buttonMatrix = ref<MatrixButton[]>([]);
-	// eslint-disable-next-line unused-imports/no-unused-vars
+
 	let popupId = '';
 	let firstActionButton: MaybeHTML;
+	let clickTimestamp = 0;
 
 	watch(() => targetBuilder.value, setup, { once: true });
 
@@ -81,16 +82,23 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 
 		label.value = firstActionButton.textContent ?? '';
 
-		const maxTries = 20;
+		const maxTries = 30;
 		let tryCount = 0;
 		let popup;
 
 		do {
-			await delay(tryCount ? 50 : 0);
+			// Longer delay for first few tries to allow popup creation
+			const delay_ms = tryCount === 0 ? 100 : (tryCount < 5 ? 75 : 50);
+			await delay(delay_ms);
+
 			tryCount++;
 
+			clickTimestamp = Date.now(); // Record when we clicked
 			firstActionButton.click();
 			await nextTick();
+
+			// Additional delay after click for popup to fully render
+			await delay(25);
 
 			popup = findAndHandlePopup();
 		}
@@ -105,18 +113,36 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	}
 
 	function findAndHandlePopup() {
-		const popup = document.querySelector('#menu-outlet .v-menu-popper.active:not([data-hacked])');
-		if (!popup)
-			return;
+		const instanceId = `btn-matrix-${clickTimestamp}`;
 
-		(popup as HTMLElement).dataset.hacked = 'hacked';
-		popupId = popup.id;
+		// Find all active popups that haven't been claimed
+		const popups = document.querySelectorAll('#menu-outlet .v-menu-popper.active:not([data-hacked])');
 
-		return popup as HTMLElement;
+		if (popups.length === 0) {
+			return null;
+		}
+
+		// Pick the popup that appeared most recently (DOM order)
+		for (let i = popups.length - 1; i >= 0; i--) {
+			const popup = popups[i] as HTMLElement;
+			const m2aItems = popup.querySelectorAll('.v-list-item.link.clickable');
+
+			if (m2aItems.length > 0) {
+				popup.dataset.hacked = instanceId;
+				popup.dataset.instanceId = instanceId;
+				popupId = popup.id;
+				return popup;
+			}
+		}
+
+		return null;
 	}
 
 	function createButtonMatrix(popup: HTMLElement) {
-		popup.querySelectorAll('.v-list-item.link.clickable')?.forEach((button) => {
+		const items = popup.querySelectorAll('.v-list-item.link.clickable');
+		buttonMatrix.value = []; // Clear existing buttons
+
+		items.forEach((button) => {
 			const label = (button as HTMLElement).textContent;
 			const icon = (button.querySelector('.v-icon [data-icon]') as HTMLElement)?.dataset?.icon ?? 'database';
 
@@ -143,7 +169,20 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 		firstActionButton?.click();
 		await nextTick();
 
-		const popup = document.querySelector('.v-menu-popper.active');
+		// Find the popup that belongs to this button matrix instance
+		// First try to find by our stored popupId, then fallback to active popup
+		let popup: HTMLElement | null = null;
+
+		if (popupId) {
+			// Escape the ID to handle IDs that start with numbers or contain special characters
+			const escapedId = CSS.escape(popupId);
+			popup = document.querySelector(`#${escapedId}`);
+		}
+
+		if (!popup || !popup.classList.contains('active')) {
+			popup = document.querySelector('.v-menu-popper.active');
+		}
+
 		if (!popup) return;
 
 		const items = popup?.querySelectorAll('.v-list-item.link.clickable');
