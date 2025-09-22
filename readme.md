@@ -36,6 +36,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Choropleth Map Panel](//github.com/directus-labs/extensions/tree/main/packages/choropleth-map-panel) | Panel | N&#x2F;A |  |
 | [Collaborative Editing](//github.com/directus-labs/extensions/tree/main/packages/collaborative-editing) | Bundle | N&#x2F;A |  |
 | [Command Palette Module](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module) | Module | N&#x2F;A | ⭐ |
+| [Display Link Interface](//github.com/directus-labs/extensions/tree/main/packages/display-link-interface) | Interface | N&#x2F;A |  |
 | [Elasticsearch Operation](//github.com/directus-labs/extensions/tree/main/packages/elasticsearch-operation) | Operation | N&#x2F;A |  |
 | [Experimental M2A Interface](//github.com/directus-labs/extensions/tree/main/packages/experimental-m2a-interface) | Interface | N&#x2F;A |  |
 | [Field Comments](//github.com/directus-labs/extensions/tree/main/packages/field-comments-module) | Module | N&#x2F;A |  |
