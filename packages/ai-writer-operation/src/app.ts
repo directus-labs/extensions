@@ -76,6 +76,14 @@ export default defineOperationApp({
 				return replicateModels;
 			}
 
+			if (provider === 'openai-compatible') {
+				// For custom providers, allow any model name to be entered
+				return [
+					{ text: 'Custom Model (enter model name below)', value: 'custom' },
+					...openAiModels, // Include OpenAI models as examples
+				];
+			}
+
 			return [];
 		};
 
@@ -97,6 +105,10 @@ export default defineOperationApp({
 							{
 								text: 'Open AI',
 								value: 'openai',
+							},
+							{
+								text: 'OpenAI Compatible (Custom)',
+								value: 'openai-compatible',
 							},
 							{
 								text: 'Replicate (Meta & Mistral)',
@@ -149,6 +161,32 @@ export default defineOperationApp({
 				},
 			},
 			{
+				field: 'apiKeyCustom',
+				name: 'Custom API Key',
+				type: 'string',
+				meta: {
+					required: context.aiProvider === 'openai-compatible',
+					options: {
+						masked: true,
+					},
+					width: 'full',
+					interface: 'input',
+					hidden: context.aiProvider !== 'openai-compatible',
+				},
+			},
+			{
+				field: 'customEndpoint',
+				name: 'Custom Endpoint',
+				type: 'string',
+				meta: {
+					required: context.aiProvider === 'openai-compatible',
+					width: 'full',
+					interface: 'input',
+					hidden: context.aiProvider !== 'openai-compatible',
+					note: 'Enter the base URL of your OpenAI-compatible API (e.g., https://api.example.com/v1). The /chat/completions endpoint will be automatically appended.',
+				},
+			},
+			{
 				field: 'model',
 				name: 'AI Model',
 				type: 'string',
@@ -159,6 +197,18 @@ export default defineOperationApp({
 						choices: getModels(context.aiProvider),
 					},
 					width: 'half',
+				},
+			},
+			{
+				field: 'customModelName',
+				name: 'Custom Model Name',
+				type: 'string',
+				meta: {
+					required: context.aiProvider === 'openai-compatible' && context.model === 'custom',
+					width: 'half',
+					interface: 'input',
+					hidden: !(context.aiProvider === 'openai-compatible' && context.model === 'custom'),
+					note: 'Enter the exact model name as expected by your API provider.',
 				},
 			},
 			{
