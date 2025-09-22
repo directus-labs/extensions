@@ -1,0 +1,8 @@
+.DS_Store
+node_modules
+src
+!dist
+!dist/*.ts
+.eslintrc.*
+*.png
+tsconfig.json

@@ -1,0 +1,52 @@
+{
+  "name": "directus-extension-display-link",
+  "description": "Display URLs, phone numbers, and emails with a link button in Directus",
+  "version": "1.8.0",
+  "icon": "link",
+  "author": "Jacobo Tabernero Rey <jacoborus@gmail.com>",
+  "keywords": [
+    "directus",
+    "directus-extension",
+    "directus-custom-display",
+    "link",
+    "url",
+    "email",
+    "telephone",
+    "display-url",
+    "display-phone-number",
+    "display-telephone"
+  ],
+  "directus:extension": {
+    "type": "display",
+    "path": "dist/index.js",
+    "source": "src/index.ts",
+    "host": ">=10.10.10"
+  },
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build --watch --no-minify",
+    "prepublish": "npm run build",
+    "lint": "eslint"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "12.1.4",
+    "@typescript-eslint/eslint-plugin": "8.20.0",
+    "@typescript-eslint/parser": "8.20.0",
+    "eslint": "9.18.0",
+    "eslint-config-prettier": "10.0.1",
+    "eslint-plugin-prettier": "5.2.2",
+    "eslint-plugin-vue": "^9.7.0",
+    "prettier": "3.4.2",
+    "typescript": "5.7.3",
+    "vue": "^3.5.13"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacoborus/directus-extension-display-link.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jacoborus/directus-extension-display-link/issues"
+  },
+  "homepage": "https://github.com/jacoborus/directus-extension-display-link#readme"
+}
