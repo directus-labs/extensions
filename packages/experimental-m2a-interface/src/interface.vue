@@ -271,7 +271,7 @@ function clearSearch() {
 					<template v-if="searchQuery">
 						<v-icon
 							name="close"
-							:class="{ 'clear-icon': searchQuery }"
+							class="clear-icon"
 							clickable
 							@click="clearSearch"
 						/>
