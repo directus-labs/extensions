@@ -139,17 +139,24 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	}
 
 	async function triggerClick(index: number) {
+		const targetButton = filteredButtonMatrix.value[index];
+		if (!targetButton) return;
+
 		firstActionButton?.click();
 		await nextTick();
 
 		const popup = document.querySelector('.v-menu-popper.active');
-		if (!popup)
-			return;
+		if (!popup) return;
 
 		const items = popup?.querySelectorAll('.v-list-item.link.clickable');
-		const targetItem = items?.[index] as HTMLElement;
-		if (targetItem)
-			targetItem.click();
+
+		// Find the original index in the full button matrix
+		const originalIndex = buttonMatrix.value.findIndex((button) =>
+			button.label === targetButton.label && button.icon === targetButton.icon,
+		);
+
+		const targetItem = items?.[originalIndex] as HTMLElement;
+		if (targetItem) targetItem.click();
 
 		await nextTick();
 		(popup as HTMLElement).style.visibility = 'hidden';
@@ -169,7 +176,7 @@ const buttonRefs = useTemplateRefsList<ComponentPublicInstance>();
 
 const buttonIndices = computed(() => filteredButtonMatrix.value.map((_, i) => i));
 
-const { state: activeButtonIndex, next: cycleNext, prev: cyclePrev, goTo: goToIndex } = useCycleList(
+const { state: activeButtonIndex, next: cycleNext, prev: cyclePrev, go: goToIndex } = useCycleList(
 	buttonIndices,
 	{ initialValue: 0 },
 );
@@ -217,10 +224,8 @@ onKeyStroke('End', (e) => {
 }, keyStrokeOptions);
 
 watch(buttonIndices, (newIndices) => {
-	if (!newIndices.includes(activeButtonIndex.value) && newIndices.length > 0) {
-		goToIndex(0);
-	}
-	else if (newIndices.length === 0) {
+	// Always reset to first button when filter changes since indices have different meanings
+	if (newIndices.length > 0) {
 		goToIndex(0);
 	}
 }, { flush: 'post' });
@@ -230,6 +235,30 @@ useEventListener(gridRef, 'focus', (event: FocusEvent) => {
 		focusButton(activeButtonIndex.value);
 	}
 });
+
+function handleTabFromSearch(event: KeyboardEvent) {
+	if (event.shiftKey) {
+		// Don't handle Shift+Tab, let it go to previous element
+		return;
+	}
+
+	// Only prevent default for forward Tab
+	event.preventDefault();
+
+	if (filteredButtonMatrix.value.length > 0) {
+		// Reset to ensure we're at index 0
+		goToIndex(0);
+
+		// Use nextTick to ensure DOM is updated
+		nextTick(() => {
+			focusButton(0);
+		});
+	}
+}
+
+function clearSearch() {
+	searchQuery.value = '';
+}
 </script>
 
 <template>
@@ -254,32 +283,48 @@ useEventListener(gridRef, 'focus', (event: FocusEvent) => {
 				v-model="searchQuery"
 				:placeholder="props.searchPlaceholder"
 				class="search-input"
+				@keydown.tab="handleTabFromSearch"
 			>
 				<template #prepend>
 					<v-icon name="search" />
+				</template>
+				<template #append>
+					<template v-if="searchQuery">
+						<v-icon
+							name="close"
+							:class="{ 'clear-icon': searchQuery }"
+							clickable
+							@click="searchQuery ? clearSearch() : undefined"
+						/>
+					</template>
 				</template>
 			</v-input>
 
 			<div
 				ref="gridRef"
 				class="grid"
-				tabindex="0"
 			>
-				<!-- eslint-disable-next-line vue/valid-v-for -->
-				<v-button
-					v-for="(button, index) in filteredButtonMatrix"
-					:key="button.label"
-					:ref="buttonRefs.set"
-					:tabindex="index === activeButtonIndex ? 0 : -1"
-					secondary
-					full-width
-					@click="triggerClick(index)"
-					@keydown.enter.prevent="triggerClick(index)"
-					@keydown.space.prevent="triggerClick(index)"
-				>
-					<v-icon :name="button.icon" />
-					<v-text-overflow :text="button.label" size="small" />
-				</v-button>
+				<template v-if="filteredButtonMatrix.length > 0">
+					<v-button
+						v-for="(button, index) in filteredButtonMatrix"
+						:key="button.label"
+						:ref="buttonRefs.set"
+						secondary
+						full-width
+						@click="triggerClick(index)"
+						@keydown.enter.prevent="triggerClick(index)"
+						@keydown.space.prevent="triggerClick(index)"
+					>
+						<v-icon :name="button.icon" />
+						<v-text-overflow :text="button.label" size="small" />
+					</v-button>
+				</template>
+				<div v-else-if="searchQuery" class="no-results">
+					<v-icon name="search_off" class="no-results-icon" />
+					<p class="no-results-text">
+						No items match your search. Try adjusting your search terms.
+					</p>
+				</div>
 			</div>
 		</div>
 	</Teleport>
@@ -341,5 +386,30 @@ useEventListener(gridRef, 'focus', (event: FocusEvent) => {
 
 .search-input {
 	margin-bottom: 12px;
+}
+
+.no-results {
+	background-color: var(--theme--background-subdued);
+	border-radius: var(--theme--border-radius);
+	grid-column: 1 / -1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	text-align: center;
+	color: var(--theme--foreground-subdued);
+}
+
+.no-results-icon {
+	--v-icon-color: var(--theme--foreground-subdued);
+	margin-bottom: 12px;
+	font-size: 48px;
+}
+
+.no-results-text {
+	margin: 0;
+	font-weight: 500;
+	color: var(--theme--foreground);
 }
 </style>
