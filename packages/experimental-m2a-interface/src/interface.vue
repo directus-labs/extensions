@@ -273,7 +273,7 @@ function clearSearch() {
 							name="close"
 							:class="{ 'clear-icon': searchQuery }"
 							clickable
-							@click="searchQuery ? clearSearch() : undefined"
+							@click="clearSearch"
 						/>
 					</template>
 				</template>
