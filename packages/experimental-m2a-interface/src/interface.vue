@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance, Ref } from 'vue';
 import {
-	onKeyStroke,
-	useCycleList,
-	useEventListener,
 	useTemplateRefsList,
 } from '@vueuse/core';
+import { RovingFocusGroup, RovingFocusItem } from 'reka-ui';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 type MaybeHTML = HTMLElement | null | undefined;
@@ -168,73 +166,9 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	}
 }
 
-// --- Keyboard Navigation with VueUse ---
-
+// --- Keyboard Navigation with RovingFocusGroup ---
 const gridRef = ref<HTMLElement | null>(null);
-
 const buttonRefs = useTemplateRefsList<ComponentPublicInstance>();
-
-const buttonIndices = computed(() => filteredButtonMatrix.value.map((_, i) => i));
-
-const { state: activeButtonIndex, next: cycleNext, prev: cyclePrev, go: goToIndex } = useCycleList(
-	buttonIndices,
-	{ initialValue: 0 },
-);
-
-function focusButton(index: number) {
-	nextTick(() => {
-		const targetComponent = buttonRefs.value[index];
-
-		if (targetComponent?.$el) {
-			const targetButtonWrapper = targetComponent.$el as HTMLElement;
-			const innerButton = targetButtonWrapper?.querySelector('button');
-			innerButton?.focus();
-		}
-	});
-}
-
-const keyStrokeOptions = { target: gridRef, passive: false };
-
-onKeyStroke(['ArrowDown', 'ArrowRight'], (e) => {
-	e.preventDefault();
-	cycleNext();
-	focusButton(activeButtonIndex.value);
-}, keyStrokeOptions);
-
-onKeyStroke(['ArrowUp', 'ArrowLeft'], (e) => {
-	e.preventDefault();
-	cyclePrev();
-	focusButton(activeButtonIndex.value);
-}, keyStrokeOptions);
-
-onKeyStroke('Home', (e) => {
-	e.preventDefault();
-	goToIndex(0);
-	focusButton(activeButtonIndex.value);
-}, keyStrokeOptions);
-
-onKeyStroke('End', (e) => {
-	e.preventDefault();
-	const lastIndex = buttonIndices.value.length - 1;
-
-	if (lastIndex >= 0) {
-		goToIndex(lastIndex);
-		focusButton(activeButtonIndex.value);
-	}
-}, keyStrokeOptions);
-
-watch(buttonIndices, (newIndices) => {
-	// Always reset to first button when filter changes since indices have different meanings
-	if (newIndices.length > 0) {
-		goToIndex(0);
-	}
-}, { flush: 'post' });
-
-useEventListener(gridRef, 'focus', (event: FocusEvent) => {
-	if (!gridRef.value?.contains(event.relatedTarget as Node) && buttonIndices.value.length > 0) {
-		focusButton(activeButtonIndex.value);
-	}
-});
 
 function handleTabFromSearch(event: KeyboardEvent) {
 	if (event.shiftKey) {
@@ -242,16 +176,22 @@ function handleTabFromSearch(event: KeyboardEvent) {
 		return;
 	}
 
-	// Only prevent default for forward Tab
+	// If there are no filtered results, let Tab continue to next focusable element
+	if (filteredButtonMatrix.value.length === 0) {
+		return;
+	}
+
+	// Only prevent default for forward Tab when there are buttons to focus
 	event.preventDefault();
 
-	if (filteredButtonMatrix.value.length > 0) {
-		// Reset to ensure we're at index 0
-		goToIndex(0);
-
-		// Use nextTick to ensure DOM is updated
+	if (buttonRefs.value.length > 0) {
+		// Focus the first button directly since RovingFocusGroup doesn't expose focus method
 		nextTick(() => {
-			focusButton(0);
+			const firstButton = buttonRefs.value[0];
+
+			if (firstButton?.$el) {
+				firstButton.$el.focus();
+			}
 		});
 	}
 }
@@ -300,31 +240,29 @@ function clearSearch() {
 				</template>
 			</v-input>
 
-			<div
+			<RovingFocusGroup
+				v-if="filteredButtonMatrix.length > 0"
 				ref="gridRef"
 				class="grid"
+				orientation="horizontal"
 			>
-				<template v-if="filteredButtonMatrix.length > 0">
-					<v-button
-						v-for="(button, index) in filteredButtonMatrix"
-						:key="button.label"
-						:ref="buttonRefs.set"
-						secondary
-						full-width
-						@click="triggerClick(index)"
-						@keydown.enter.prevent="triggerClick(index)"
-						@keydown.space.prevent="triggerClick(index)"
-					>
-						<v-icon :name="button.icon" />
-						<v-text-overflow :text="button.label" size="small" />
-					</v-button>
-				</template>
-				<div v-else-if="searchQuery" class="no-results">
-					<v-icon name="search_off" class="no-results-icon" />
-					<p class="no-results-text">
-						No items match your search. Try adjusting your search terms.
-					</p>
-				</div>
+				<RovingFocusItem
+					v-for="(button, index) in filteredButtonMatrix"
+					:key="button.label"
+					:ref="buttonRefs.set"
+					as="button"
+					class="roving-button"
+					@click="triggerClick(index)"
+				>
+					<v-icon :name="button.icon" />
+					<v-text-overflow :text="button.label" size="small" />
+				</RovingFocusItem>
+			</RovingFocusGroup>
+			<div v-else-if="searchQuery" class="no-results">
+				<v-icon name="search_off" class="no-results-icon" />
+				<p class="no-results-text">
+					No items match your search. Try adjusting your search terms.
+				</p>
 			</div>
 		</div>
 	</Teleport>
@@ -374,6 +312,52 @@ function clearSearch() {
 
 .v-button {
 	--v-button-height: 100px;
+}
+
+.v-button :deep(button:focus) {
+	outline: 2px solid var(--theme--primary);
+	outline-offset: 2px;
+}
+
+.roving-button {
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+	--v-button-background-color: var(--theme--background-normal);
+	--v-button-background-color-hover: var(--theme--background-accent);
+	--v-icon-color: var(--theme--foreground-subdued);
+
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	width: 100%;
+	height: 100px;
+	padding: 12px;
+
+	color: var(--v-button-color);
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 22px;
+	text-decoration: none;
+	background-color: var(--v-button-background-color);
+	border: var(--theme--border-width) solid var(--v-button-background-color);
+	border-radius: var(--theme--border-radius);
+	cursor: pointer;
+	transition: var(--fast) var(--transition);
+	transition-property: background-color, border, color;
+}
+
+.roving-button:hover {
+	color: var(--v-button-color-hover);
+	background-color: var(--v-button-background-color-hover);
+	border-color: var(--v-button-background-color-hover);
+}
+
+.roving-button:focus {
+	outline: 2px solid var(--theme--primary);
+	outline-offset: 2px;
 }
 
 .v-text-overflow {
