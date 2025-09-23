@@ -701,9 +701,6 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
-      nanoid:
-        specifier: 5.1.6
-        version: 5.1.6
       reka-ui:
         specifier: 2.5.0
         version: 2.5.0(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
@@ -7531,11 +7528,6 @@ packages:
 
   nanoid@5.1.5:
     resolution: {integrity: sha512-Ir/+ZpE9fDsNH0hQ3C68uyThDXzYcim2EqcZ8zn8Chtt1iylPT9xXJB0kPCnqzgcEGikO9RxSrh63MsmVCU7Fw==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-
-  nanoid@5.1.6:
-    resolution: {integrity: sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
@@ -18597,8 +18589,6 @@ snapshots:
   nanoid@5.1.2: {}
 
   nanoid@5.1.5: {}
-
-  nanoid@5.1.6: {}
 
   napi-postinstall@0.2.3: {}
 

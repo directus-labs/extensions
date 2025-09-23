@@ -28,7 +28,6 @@
 	"dependencies": {
 		"@directus/format-title": "12.1.0",
 		"lodash": "4.17.21",
-		"nanoid": "5.1.6",
 		"reka-ui": "2.5.0",
 		"sass": "1.77.8",
 		"vue": "3.5.18",
