@@ -235,7 +235,7 @@ function discardAndLeave() {
 			>
 				<template #item="{ element, index }">
 					<AccordionItem :value="index" as-child>
-						<v-list-item block grow class="list-item" clickable>
+						<v-list-item block grow class="list-item">
 							<div class="list-item-content">
 								<AccordionTrigger as-child>
 									<button
@@ -365,8 +365,11 @@ function discardAndLeave() {
 	width: 100%;
 	margin-bottom: 8px;
 
-	&:focus-within:not(:has(.list-item-form:focus-within)) {
+	&:has(.list-item-header:focus-visible):not(:has(.clear-icon:focus-visible)) {
 		border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus)) !important;
+		outline: var(--focus-ring-width) solid var(--focus-ring-color, var(--theme--primary)) !important;
+		outline-offset: var(--focus-ring-offset) !important;
+		border-radius: var(--focus-ring-radius) !important;
 	}
 }
 
@@ -379,6 +382,11 @@ function discardAndLeave() {
 	border: none;
 	background: none;
 	padding: 0;
+	transition: opacity 0.2s ease;
+
+	&:focus-visible {
+		outline: none !important;
+	}
 }
 
 .list-item-header-controls {
