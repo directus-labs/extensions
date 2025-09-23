@@ -386,6 +386,7 @@ function discardAndLeave() {
 
 	&:focus-visible {
 		outline: none !important;
+		border-radius: 0 !important;
 	}
 }
 
