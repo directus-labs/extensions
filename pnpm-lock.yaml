@@ -698,9 +698,6 @@ importers:
       '@directus/format-title':
         specifier: 12.1.0
         version: 12.1.0
-      '@types/lodash':
-        specifier: ^4.17.20
-        version: 4.17.20
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -729,6 +726,9 @@ importers:
       '@directus/types':
         specifier: ^13.0.0
         version: 13.1.1(knex@3.1.0)(vue@3.5.18(typescript@5.8.3))
+      '@types/lodash':
+        specifier: ^4.17.20
+        version: 4.17.20
       typescript:
         specifier: ^5.5.4
         version: 5.8.3
