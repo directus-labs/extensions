@@ -38,6 +38,8 @@
 	"devDependencies": {
 		"@directus/extensions-sdk": "16.0.2",
 		"@directus/types": "^13.0.0",
+		"@types/lodash": "^4.17.20",
 		"typescript": "^5.5.4"
+
 	}
 }

@@ -111,9 +111,52 @@ const internalValue = computed({
 });
 
 const expandedItems = ref<number[]>([]);
+const draggedItemIndex = ref<number | null>(null);
+const isDragging = ref(false);
 
 function isExpanded(index: number) {
 	return expandedItems.value.includes(index);
+}
+
+function onDragStart(evt: any) {
+	draggedItemIndex.value = evt.oldIndex;
+	isDragging.value = true;
+}
+
+function onDragEnd(evt: any) {
+	if (draggedItemIndex.value !== null && evt.newIndex !== evt.oldIndex) {
+		const oldIndex = draggedItemIndex.value;
+		const newIndex = evt.newIndex;
+
+		// Update expanded items to reflect the new positions
+		const updatedExpandedItems = expandedItems.value.map((expandedIndex) => {
+			// If the dragged item was expanded, update its index to the new position
+			if (expandedIndex === oldIndex) {
+				return newIndex;
+			}
+
+			// Adjust other expanded items that were shifted by the drag
+			if (oldIndex < newIndex) {
+				// Item moved down: shift items between oldIndex and newIndex up
+				if (expandedIndex > oldIndex && expandedIndex <= newIndex) {
+					return expandedIndex - 1;
+				}
+			}
+			else {
+				// Item moved up: shift items between newIndex and oldIndex down
+				if (expandedIndex >= newIndex && expandedIndex < oldIndex) {
+					return expandedIndex + 1;
+				}
+			}
+
+			return expandedIndex;
+		});
+
+		expandedItems.value = updatedExpandedItems;
+	}
+
+	draggedItemIndex.value = null;
+	isDragging.value = false;
 }
 
 const itemToRemove = ref<number | null>(null);
@@ -231,6 +274,9 @@ function discardAndLeave() {
 				handle=".drag-handle"
 				v-bind="{ 'force-fallback': true }"
 				class="v-list"
+				:class="{ dragging: isDragging }"
+				@start="onDragStart"
+				@end="onDragEnd"
 				@update:model-value="$emit('input', $event)"
 			>
 				<template #item="{ element, index }">
@@ -284,7 +330,7 @@ function discardAndLeave() {
 												:direction="direction"
 												primary-key="+"
 												@update:model-value="
-													(updatedElement) => {
+													(updatedElement: any) => {
 														const updatedValue = [...internalValue]
 														updatedValue[index] = updatedElement
 														emitValue(updatedValue)
