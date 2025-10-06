@@ -58,7 +58,7 @@ export default defineComponent({
 			},
 		]);
 
-		const migrationOptionsSelections = ref<Options[]>(migrationOptions.value.map((o) => o.value as Options));
+		const migrationOptionsSelections = ref<Options[] | null>(migrationOptions.value.map((o) => o.value as Options));
 
 		const scope = reactive<Record<Options, boolean>>({
 			users: false,
@@ -84,7 +84,7 @@ export default defineComponent({
 			lockInterface.value = true;
 			dataChunk.value = '';
 
-			migrationOptionsSelections.value.forEach((o) => {
+			(migrationOptionsSelections.value ?? []).forEach((o) => {
 				scope[o] = true;
 			});
 
