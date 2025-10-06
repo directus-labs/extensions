@@ -703,6 +703,9 @@ importers:
 
   packages/migration-bundle:
     dependencies:
+      '@directus/errors':
+        specifier: ^1.0.0
+        version: 1.0.1
       '@directus/sdk':
         specifier: ^19.0.1
         version: 19.1.0

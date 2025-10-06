@@ -1,5 +1,6 @@
 import type { Accountability } from '@directus/types';
 import type { Schema } from './api';
+import { ForbiddenError } from '@directus/errors';
 import { defineEndpoint } from '@directus/extensions-sdk';
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { toArray } from '@directus/utils';
@@ -51,15 +52,16 @@ export default defineEndpoint({
 				const defaults = {
 					baseURL: env.MIGRATION_BUNDLE_DEFAULT_URL || '',
 					token: env.MIGRATION_BUNDLE_DEFAULT_TOKEN || '',
-					options: env.MIGRATION_BUNDLE_DEFAULT_OPTIONS 
+					options: env.MIGRATION_BUNDLE_DEFAULT_OPTIONS
 						? String(env.MIGRATION_BUNDLE_DEFAULT_OPTIONS).split(',').map((s: string) => s.trim())
-						: []
+						: [],
 				};
 				res.json(defaults);
-			} else if (req.url === '/presets') {
+			}
+			else if (req.url === '/presets') {
 				// Get migration presets for current user
 				const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
-				
+
 				if (!accountability?.admin) {
 					res.sendStatus(401);
 					return;
@@ -70,44 +72,46 @@ export default defineEndpoint({
 					const presets = await database('directus_presets')
 						.where({
 							collection: 'migration_bundle',
-							user: accountability.user
+							user: accountability.user,
 						})
-						.orWhere(function() {
+						.orWhere(function () {
 							this.where({
 								collection: 'migration_bundle',
 								user: null,
-								role: accountability.role
+								role: accountability.role,
 							});
 						})
-						.orWhere(function() {
+						.orWhere(function () {
 							this.where({
 								collection: 'migration_bundle',
 								user: null,
-								role: null
+								role: null,
 							});
 						})
 						.whereNotNull('bookmark')
 						.orderBy([
 							{ column: 'user', order: 'desc', nulls: 'last' },
 							{ column: 'role', order: 'desc', nulls: 'last' },
-							{ column: 'bookmark', order: 'asc' }
+							{ column: 'bookmark', order: 'asc' },
 						]);
 
 					res.json({ data: presets });
-				} catch (error) {
+				}
+				catch (error) {
 					console.error('Failed to load presets:', error);
 					res.json({ data: [] });
 				}
-			} else {
+			}
+			else {
 				res.sendStatus(400);
 			}
 		});
 
-		router.post('/*', async (req, res) => {
+		router.post('/*', async (req, res, next) => {
 			if (req.url === '/presets') {
 				// Create or update migration preset
 				const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
-				
+
 				if (!accountability?.admin) {
 					res.sendStatus(401);
 					return;
@@ -117,8 +121,9 @@ export default defineEndpoint({
 					const preset = {
 						collection: 'migration_bundle',
 						bookmark: req.body.name || `Migration Config ${new Date().toLocaleDateString()}`,
-						user: req.body.scope === 'user' ? accountability.user : 
-							  req.body.scope === 'global' ? null : accountability.user,
+						user: req.body.scope === 'user'
+							? accountability.user
+							: (req.body.scope === 'global' ? null : accountability.user),
 						role: req.body.scope === 'role' ? accountability.role : null,
 						icon: 'sync',
 						color: '#2ECDA7',
@@ -126,8 +131,8 @@ export default defineEndpoint({
 						layout_options: JSON.stringify({
 							baseURL: req.body.baseURL,
 							token: req.body.token,
-							selectedOptions: req.body.options
-						})
+							selectedOptions: req.body.options,
+						}),
 					};
 
 					// Check if preset exists for update
@@ -135,21 +140,25 @@ export default defineEndpoint({
 						await database('directus_presets')
 							.where({ id: req.body.id })
 							.update(preset);
+
 						res.json({ data: { ...preset, id: req.body.id } });
-					} else {
+					}
+					else {
 						const [id] = await database('directus_presets').insert(preset);
 						res.json({ data: { ...preset, id } });
 					}
-				} catch (error) {
+				}
+				catch (error) {
 					console.error('Failed to save preset:', error);
 					res.status(500).json({ error: 'Failed to save preset' });
 				}
+
 				return;
 			}
 
 			if (!['/run', '/dry-run', '/check'].includes(req.url)) {
-				res.sendStatus(400);
-				throw new Error('Bad Request');
+				next(new ForbiddenError());
+				return;
 			}
 
 			;
@@ -157,16 +166,16 @@ export default defineEndpoint({
 			const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
 
 			if (!accountability?.admin) {
-				res.sendStatus(401);
-				throw new Error('Unauthorised');
+				next(new ForbiddenError());
+				return;
 			}
 
 			const isDryRun = req.url === '/dry-run';
 			const isCheck = req.url === '/check';
 
 			if (!req.body.baseURL || !req.body.token || !req.body.scope) {
-				res.sendStatus(400);
-				throw new Error('Bad Request');
+				next(new ForbiddenError());
+				return;
 			}
 
 			const baseURL = req.body.baseURL;
@@ -447,26 +456,27 @@ export default defineEndpoint({
 		// DELETE endpoint for presets
 		router.delete('/presets/:id', async (req, res) => {
 			const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
-			
+
 			if (!accountability?.admin) {
 				res.sendStatus(401);
 				return;
 			}
 
 			try {
-				const presetId = parseInt(req.params.id);
-				
+				const presetId = Number.parseInt(req.params.id);
+
 				// Only allow deletion of user's own presets or if they have proper permissions
 				await database('directus_presets')
-					.where({ 
+					.where({
 						id: presetId,
 						collection: 'migration_bundle',
-						user: accountability.user 
+						user: accountability.user,
 					})
 					.delete();
 
 				res.json({ success: true });
-			} catch (error) {
+			}
+			catch (error) {
 				console.error('Failed to delete preset:', error);
 				res.status(500).json({ error: 'Failed to delete preset' });
 			}
