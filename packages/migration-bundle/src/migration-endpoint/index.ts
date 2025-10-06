@@ -46,7 +46,14 @@ export default defineEndpoint({
 
 		const storage = toArray(env.STORAGE_LOCATIONS)[0];
 
-		router.get('/*', async (req, res) => {
+		router.get('/*', async (req, res, next) => {
+			const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
+
+			if (!accountability?.admin) {
+				next(new ForbiddenError());
+				return;
+			}
+
 			if (req.url === '/defaults') {
 				// Return ENV-based defaults
 				const defaults = {
@@ -60,12 +67,6 @@ export default defineEndpoint({
 			}
 			else if (req.url === '/presets') {
 				// Get migration presets for current user
-				const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
-
-				if (!accountability?.admin) {
-					res.sendStatus(401);
-					return;
-				}
 
 				try {
 					// Query presets with proper priority (user > role > global)
@@ -108,15 +109,14 @@ export default defineEndpoint({
 		});
 
 		router.post('/*', async (req, res, next) => {
+			const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
+
+			if (!accountability?.admin) {
+				next(new ForbiddenError());
+				return;
+			}
+
 			if (req.url === '/presets') {
-				// Create or update migration preset
-				const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
-
-				if (!accountability?.admin) {
-					res.sendStatus(401);
-					return;
-				}
-
 				try {
 					const preset = {
 						collection: 'migration_bundle',
@@ -157,15 +157,6 @@ export default defineEndpoint({
 			}
 
 			if (!['/run', '/dry-run', '/check'].includes(req.url)) {
-				next(new ForbiddenError());
-				return;
-			}
-
-			;
-
-			const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
-
-			if (!accountability?.admin) {
 				next(new ForbiddenError());
 				return;
 			}
@@ -454,11 +445,11 @@ export default defineEndpoint({
 		});
 
 		// DELETE endpoint for presets
-		router.delete('/presets/:id', async (req, res) => {
+		router.delete('/presets/:id', async (req, res, next) => {
 			const accountability: Accountability | null = 'accountability' in req ? req.accountability as Accountability : null;
 
 			if (!accountability?.admin) {
-				res.sendStatus(401);
+				next(new ForbiddenError());
 				return;
 			}
 

@@ -296,9 +296,16 @@ export default defineComponent({
 
 		const checkHost = async ({ baseURL, token }: Payload): Promise<void> => {
 			isValidating.value = true;
-			const response = await api.post('/migration/check', { baseURL, token, scope });
+
+			try {
+				const response = await api.post('/migration/check', { baseURL, token, scope });
+				validationMessage.value = response.data;
+			}
+			catch {
+				validationMessage.value = { status: 'danger', icon: 'error', message: 'An unknow error occured. Please check logs for more information' };
+			}
+
 			isValidating.value = false;
-			validationMessage.value = response ? response.data : { status: 'danger', icon: 'error', message: 'An unknow error occured. Please check logs for more information' };
 		};
 
 		const extractSchema = async ({ baseURL, token, dryRun }: Payload): Promise<void> => {
@@ -331,9 +338,7 @@ export default defineComponent({
 				},
 			});
 
-			if (response.value.ok) {
-				lockInterface.value = false;
-			}
+			lockInterface.value = false;
 		};
 
 		return {
@@ -418,6 +423,17 @@ export default defineComponent({
 								@click="updatePreset"
 							>
 								<v-icon name="save" />
+							</v-button>
+						</transition>
+						<transition name="fade-slide">
+							<v-button
+								v-if="selectedPresetId"
+								v-tooltip="'Delete preset'"
+								secondary
+								icon
+								@click="deletePreset(selectedPresetId)"
+							>
+								<v-icon name="delete" />
 							</v-button>
 						</transition>
 					</div>
