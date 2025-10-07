@@ -115,7 +115,7 @@ async function extractData(collection: string, ItemsService: any, accountability
 
 async function extractSingleton(collection: string, ItemsService: any, accountability: Accountability, schema: SchemaOverview): Promise<Item | null> {
 	const itemService = new ItemsService(collection, { accountability, schema });
-	return await itemService.readSingleton();
+	return await itemService.readSingleton({});
 }
 
 async function loadFullData(collections: Collection[], itemService: any, primaryKeyMap: any, accountability: Accountability, schema: SchemaOverview): Promise<UserCollectionItems[]> {
