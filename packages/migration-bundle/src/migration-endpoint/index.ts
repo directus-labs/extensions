@@ -1,4 +1,4 @@
-import type { Accountability } from '@directus/types';
+import type { Accountability, ExtensionsServices } from '@directus/types';
 import type { Schema } from './api';
 import { ForbiddenError } from '@directus/errors';
 import { defineEndpoint } from '@directus/extensions-sdk';
@@ -42,7 +42,7 @@ export default defineEndpoint({
 			NotificationsService,
 			SchemaService,
 
-		} = services;
+		} = services as ExtensionsServices;
 
 		const storage = toArray(env.STORAGE_LOCATIONS)[0];
 

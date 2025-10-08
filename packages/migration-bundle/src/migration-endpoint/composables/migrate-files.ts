@@ -1,14 +1,12 @@
 import type { RestClient } from '@directus/sdk';
-import type { File } from '@directus/types';
+import type { ExtensionsServices, File } from '@directus/types';
 import type { DirectusError } from '../../types/extension';
 import type { Schema } from '../api';
-import { readFileSync } from 'node:fs';
-import { appendFile } from 'node:fs/promises';
+import { blob } from 'node:stream/consumers';
 import { readFiles, uploadFiles } from '@directus/sdk';
 import { FormData } from 'formdata-node';
-import { createTmpFile } from '../../utils/create-tmp';
 
-async function migrateFiles({ res, client, service, files, dry_run = false }: { res: any; client: RestClient<Schema>; service: any; files: File[] | null; dry_run: boolean }): Promise<{ response: string; name: string } | DirectusError> {
+async function migrateFiles({ res, client, service, files, dry_run = false }: { res: any; client: RestClient<Schema>; service: InstanceType<ExtensionsServices['AssetsService']>; files: File[] | null; dry_run: boolean }): Promise<{ response: string; name: string } | DirectusError> {
 	if (!files) {
 		res.write('* Couldn\'t read data from extract\r\n\r\n');
 		return { name: 'Directus Error', status: 404, errors: [{ message: 'No files found' }] };
@@ -52,44 +50,49 @@ async function migrateFiles({ res, client, service, files, dry_run = false }: { 
 
 		await Promise.all(filesToUpload.map(async (asset, index) => {
 			const fileName = asset.filename_disk;
-			const { stream, stat } = await service.getAsset(asset.id);
+			let stream, stat;
 
-			if (stat.size > 0) {
-				if (!asset.type) {
-					res.write(`* [Remote] Skipped ${fileName} [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
-				}
-				else {
-					const tmpFile = await createTmpFile().catch(() => null);
+			try {
+				const ass = await service.getAsset(asset.id);
+				stream = ass.stream;
+				stat = ass.stat;
+			}
+			catch {
+				res.write(`* [Remote] Error: Couldn't read ${fileName} (${asset.id}) from source [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+				return;
+			}
 
-					if (!tmpFile) {
-						res.write(`* [Remote] Error: Couldn't write ${fileName} to disk [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
-					}
-					else {
-						await appendFile(tmpFile.path, stream);
-						const fileStream = new Blob([readFileSync(tmpFile.path)], { type: asset.type });
+			if (stat.size <= 0) {
+				return;
+			}
 
-						const form = new FormData();
-						form.append('id', asset.id);
-						if (asset.title)
-							form.append('title', asset.title);
-						if (asset.description)
-							form.append('description', asset.description);
-						if (asset.folder)
-							form.append('folder', asset.folder);
-						form.append('file', fileStream, fileName);
+			if (!asset.type) {
+				res.write(`* [Remote] Skipped ${fileName} (${asset.id}) [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+				return;
+			}
 
-						res.write(`* [Remote] ${fileName} ${stat.size} bytes [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+			const form = new FormData();
+			form.append('id', asset.id);
+			if (asset.title)
+				form.append('title', asset.title);
+			if (asset.description)
+				form.append('description', asset.description);
+			if (asset.folder)
+				form.append('folder', asset.folder);
 
-						if (!dry_run) {
-							// @ts-expect-error-multipart-formdata
-							await client.request(uploadFiles(form));
-						}
+			const myBlob = await blob(stream);
+			form.append('file', myBlob.slice(0, myBlob.size, asset.type), fileName);
 
-						tmpFile.cleanup().catch(() => {
-							res.write(`* Failed to cleanup temporary import file (${tmpFile.path})`);
-						});
-					}
-				}
+			res.write(`* [Remote] ${fileName} (${asset.id}) ${stat.size} bytes [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+
+			if (dry_run) return;
+
+			try {
+				// @ts-expect-error-multipart-formdata
+				await client.request(uploadFiles(form));
+			}
+			catch {
+				res.write(`* [Remote] Error: Couldn't upload ${fileName} (${asset.id}) [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
 			}
 		}));
 
