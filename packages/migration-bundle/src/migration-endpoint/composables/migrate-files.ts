@@ -48,7 +48,7 @@ async function migrateFiles({ res, client, service, files, dry_run = false }: { 
 
 		res.write(filesToUpload.length > 0 ? `* [Remote] Uploading ${filesToUpload.length} ${filesToUpload.length > 1 ? 'Files' : 'File'}\r\n\r\n` : '* No Files to migrate\r\n\r\n');
 
-		await Promise.all(filesToUpload.map(async (asset, index) => {
+		const errors = await Promise.all(filesToUpload.map(async (asset, index) => {
 			const fileName = asset.filename_disk;
 			let stream, stat;
 
@@ -57,9 +57,10 @@ async function migrateFiles({ res, client, service, files, dry_run = false }: { 
 				stream = ass.stream;
 				stat = ass.stat;
 			}
-			catch {
-				res.write(`* [Remote] Error: Couldn't read ${fileName} (${asset.id}) from source [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
-				return;
+			catch (error) {
+				res.write(`* [Remote] Error: Couldn't read ${fileName} from source [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+				console.error(error);
+				return error;
 			}
 
 			if (stat.size <= 0) {
@@ -67,7 +68,7 @@ async function migrateFiles({ res, client, service, files, dry_run = false }: { 
 			}
 
 			if (!asset.type) {
-				res.write(`* [Remote] Skipped ${fileName} (${asset.id}) [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+				res.write(`* [Remote] Skipped ${fileName} [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
 				return;
 			}
 
@@ -83,7 +84,7 @@ async function migrateFiles({ res, client, service, files, dry_run = false }: { 
 			const myBlob = await blob(stream);
 			form.append('file', myBlob.slice(0, myBlob.size, asset.type), fileName);
 
-			res.write(`* [Remote] ${fileName} (${asset.id}) ${stat.size} bytes [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+			res.write(`* [Remote] ${fileName} ${stat.size} bytes [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
 
 			if (dry_run) return;
 
@@ -91,10 +92,16 @@ async function migrateFiles({ res, client, service, files, dry_run = false }: { 
 				// @ts-expect-error-multipart-formdata
 				await client.request(uploadFiles(form));
 			}
-			catch {
-				res.write(`* [Remote] Error: Couldn't upload ${fileName} (${asset.id}) [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+			catch (error) {
+				res.write(`* [Remote] Error: Couldn't upload ${fileName} [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+				console.error(error);
+				return error;
 			}
 		}));
+
+		if (errors.some((error) => error !== undefined)) {
+			return { name: 'Directus Error', status: 500, errors: errors.filter((error) => error !== undefined) as Array<{ message: string }> };
+		}
 
 		return { response: 'Success', name: 'Files' };
 	}

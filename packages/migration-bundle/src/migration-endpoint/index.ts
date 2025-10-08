@@ -341,9 +341,9 @@ export default defineEndpoint({
 								file_response,
 							]);
 
-							res.write(fileMigrationValid ? `</div><h3 class="done">${Icon} Files Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Files Migration Failed</h3>\r\n\r\n`);
+							res.write(fileMigrationValid ? `</div><h3 class="done">${Icon} Files Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Files Migration Partially Failed</h3>\r\n\r\n`);
 
-							if (fileMigrationValid && fieldUpdateValid) {
+							if (fieldUpdateValid) {
 								// Step 2.4: Data
 								res.write(`<div class="pending"><h3>${spinner} Migrating Collections</h3>\r\n\r\n`);
 								const content_response = await migrateData({ res, client, fullData: dataFetch.fullData, singletons: dataFetch.singletons, dry_run: isDryRun });
