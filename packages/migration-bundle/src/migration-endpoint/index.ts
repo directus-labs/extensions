@@ -437,7 +437,7 @@ export default defineEndpoint({
 					res.end();
 				}
 				catch (error) {
-					res.write('An unkown error has occured. See log for details');
+					res.write('An unknown error has occured. See log for details');
 					res.end();
 					console.error(error);
 				}
