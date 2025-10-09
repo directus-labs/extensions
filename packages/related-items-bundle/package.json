@@ -1,0 +1,80 @@
+{
+	"name": "@directus-labs/related-items-bundle",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "Show all related items across selected collections.",
+	"author": "Directus Labs",
+	"contributors": [
+		{
+			"name": "Tim Butterfield",
+			"email": "tim.butterfield@me.com",
+			"url": "https://www.npmjs.com/~timio23"
+		}
+	],
+	"license": "MIT",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle",
+		"relational",
+		"m2o",
+		"m2m",
+		"o2m",
+		"m2a"
+	],
+	"icon": "extension",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "module",
+				"name": "related-items-module",
+				"source": "src/related-items-module/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "related-items-endpoint",
+				"source": "src/related-items-endpoint/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "related-items-interface",
+				"source": "src/related-items-interface/index.ts"
+			},
+			{
+				"type": "hook",
+				"name": "related-items-hook",
+				"source": "src/related-items-hook/index.ts"
+			}
+		],
+		"host": "^11.1.2"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"add": "directus-extension add",
+		"validate": "directus-extension validate"
+	},
+	"dependencies": {
+		"@directus/format-title": "^12.0.1",
+		"@directus/system-data": "^3.1.0",
+		"vue-i18n": "^9.14.0",
+		"vue-router": "^4.4.5"
+	},
+	"devDependencies": {
+		"@directus/constants": "^13.0.0",
+		"@directus/extensions-sdk": "^13.0.1",
+		"@directus/types": "^13.0.0",
+		"@directus/utils": "^13.0.0",
+		"typescript": "^5.6.3",
+		"vue": "^3.5.13"
+	}
+}
