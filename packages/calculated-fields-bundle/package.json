@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/calculated-fields-bundle",
 	"type": "module",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Automatically calculate values based on field values.",
 	"keywords": [
 		"directus",
