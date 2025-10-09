@@ -1,4 +1,4 @@
-import type { Accountability } from '@directus/types';
+import type { Accountability, ExtensionsServices } from '@directus/types';
 import type { Schema } from './api';
 import { ForbiddenError } from '@directus/errors';
 import { defineEndpoint } from '@directus/extensions-sdk';
@@ -42,7 +42,7 @@ export default defineEndpoint({
 			NotificationsService,
 			SchemaService,
 
-		} = services;
+		} = services as ExtensionsServices;
 
 		const storage = toArray(env.STORAGE_LOCATIONS)[0];
 
@@ -341,9 +341,9 @@ export default defineEndpoint({
 								file_response,
 							]);
 
-							res.write(fileMigrationValid ? `</div><h3 class="done">${Icon} Files Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Files Migration Failed</h3>\r\n\r\n`);
+							res.write(fileMigrationValid ? `</div><h3 class="done">${Icon} Files Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Files Migration Partially Failed</h3>\r\n\r\n`);
 
-							if (fileMigrationValid && fieldUpdateValid) {
+							if (fieldUpdateValid) {
 								// Step 2.4: Data
 								res.write(`<div class="pending"><h3>${spinner} Migrating Collections</h3>\r\n\r\n`);
 								const content_response = await migrateData({ res, client, fullData: dataFetch.fullData, singletons: dataFetch.singletons, dry_run: isDryRun });
@@ -437,7 +437,7 @@ export default defineEndpoint({
 					res.end();
 				}
 				catch (error) {
-					res.write('An unkown error has occured. See log for details');
+					res.write('An unknown error has occured. See log for details');
 					res.end();
 					console.error(error);
 				}

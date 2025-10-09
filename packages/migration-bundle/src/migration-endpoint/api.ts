@@ -73,11 +73,12 @@ export async function initLimiter() {
 	});
 
 	limiter.on('failed', async (error, jobInfo) => {
+		console.error(error.message);
+		console.error(error.errors[0]?.message);
+
 		if (error instanceof DirectusError) {
 			const retryAfter = error.headers?.get('Retry-After');
 			const statusCode = error.status;
-			console.error(error.message);
-			console.error(error.errors[0]?.message);
 
 			if (statusCode === 429) {
 				const delay = retryAfter ? Number.parseInt(retryAfter, 10) * 1000 : 60_000;

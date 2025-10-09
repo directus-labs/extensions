@@ -41,19 +41,21 @@
 		"validate": "directus-extension validate"
 	},
 	"dependencies": {
-		"@directus/sdk": "^19.0.1",
-		"@directus/utils": "^13.0.0",
+		"@directus/errors": "^2.0.4",
+		"@directus/extensions": "^3.0.11",
+		"@directus/sdk": "^20.1.0",
+		"@directus/utils": "^13.0.10",
 		"bottleneck": "^2.19.5",
 		"defu": "^6.1.4",
-		"dompurify": "^3.2.4",
+		"dompurify": "^3.2.7",
 		"formdata-node": "^6.0.3",
-		"marked": "^15.0.7"
+		"marked": "^15.0.12"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "13.0.1",
-		"@directus/types": "^13.0.0",
-		"@types/node": "^22.13.4",
-		"typescript": "^5.7.3",
-		"vue": "^3.5.13"
+		"@directus/extensions-sdk": "16.0.2",
+		"@directus/types": "^13.2.3",
+		"@types/node": "^24.7.0",
+		"typescript": "^5.9.3",
+		"vue": "^3.5.22"
 	}
 }
