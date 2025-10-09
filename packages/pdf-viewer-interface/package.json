@@ -34,6 +34,7 @@
 		"link": "directus-extension link"
 	},
 	"devDependencies": {
+		"@directus-labs/utils": "workspace:*",
 		"@directus/extensions-sdk": "^11.0.8",
 		"typescript": "^5.4.5",
 		"vue": "^3.4.27",

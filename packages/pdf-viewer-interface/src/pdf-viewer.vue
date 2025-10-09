@@ -3,7 +3,8 @@ import type { Ref } from 'vue';
 import { ref } from 'vue';
 import VuePdfEmbed from 'vue-pdf-embed';
 // essential styles
-import 'vue-pdf-embed/dist/style/index.css';
+import 'vue-pdf-embed/dist/styles/annotationLayer.css'
+import 'vue-pdf-embed/dist/styles/textLayer.css'
 
 defineProps<{ url: string }>();
 
