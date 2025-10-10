@@ -33,7 +33,6 @@ async function migrateData({
 		await loadSkeletonSingletons(res, client, singletons, dry_run);
 	}
 
-
 	if (fullData) {
 		await loadSkeletonRecords(res, client, fullData, dry_run);
 		await loadFullData(res, client, fullData, dry_run);
@@ -98,7 +97,7 @@ async function getExistingPrimaryKeys(res: any, client: any, collection: string,
 				fields: [primaryKeyField],
 				limit,
 				page,
-				sort
+				sort,
 			}));
 
 			if (response.length === 0)

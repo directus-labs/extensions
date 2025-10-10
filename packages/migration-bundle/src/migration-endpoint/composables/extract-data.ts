@@ -95,7 +95,7 @@ async function extractData(collection: string, ItemsService: any, accountability
 			const response = await itemService.readByQuery({
 				limit,
 				page,
-				sort
+				sort,
 			});
 
 			if (response.length === 0)
