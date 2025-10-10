@@ -330,7 +330,7 @@ function discardAndLeave() {
 												:direction="direction"
 												primary-key="+"
 												@update:model-value="
-													(updatedElement: any) => {
+													(updatedElement: Record<string, unknown>) => {
 														const updatedValue = [...internalValue]
 														updatedValue[index] = updatedElement
 														emitValue(updatedValue)
