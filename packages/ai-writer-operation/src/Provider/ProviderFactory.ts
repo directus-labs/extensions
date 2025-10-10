@@ -13,7 +13,7 @@ export function getProvider(options: AiWriterOperationOptions) {
 		return new Anthropic(options);
 	}
 
-	if (options.aiProvider.toLowerCase() === 'openai') {
+	if (options.aiProvider.toLowerCase() === 'openai' || options.aiProvider.toLowerCase() === 'openai-compatible') {
 		return new OpenAi(options);
 	}
 
@@ -21,5 +21,5 @@ export function getProvider(options: AiWriterOperationOptions) {
 		return new Replicate(options);
 	}
 
-	throw new Error(`Unsoported AI Provider ${options.aiProvider}`);
+	throw new Error(`Unsupported AI Provider ${options.aiProvider}`);
 }
