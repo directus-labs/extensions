@@ -227,12 +227,12 @@ export default defineInterface({
 					name: 'Root selector',
 					type: 'string',
 					meta: {
-						width: 'full'
+						width: 'full',
 					},
 					schema: {
-						default_value: 'main > .v-form',
+						default_value: defaults.rootSelector,
 					},
-				}
+				},
 			],
 		};
 

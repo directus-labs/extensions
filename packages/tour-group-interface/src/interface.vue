@@ -39,6 +39,7 @@ const props = withDefaults(
 		buttonIcon: defaults.buttonIcon,
 		buttonTooltip: defaults.buttonTooltip,
 		exitMessage: defaults.exitMessage,
+		rootSelector: defaults.rootSelector,
 	},
 );
 
@@ -142,6 +143,7 @@ function useTour() {
 	return { tourReady, initTour, startTour };
 
 	function initTour() {
+		console.log('initTour');
 		if (!props.steps?.length)
 			return;
 		tour = driver();
@@ -206,6 +208,8 @@ function useTour() {
 					onHighlighted,
 				};
 			});
+
+		console.log('tourSteps', tourSteps);
 
 		initialized.value = true;
 	}
