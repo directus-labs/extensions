@@ -82,6 +82,7 @@ async function getExistingPrimaryKeys(res: any, client: any, collection: string,
 	const existingKeys = new Set();
 	let page = 1;
 	const limit = 100; // Adjust based on your needs and API limits
+	const sort = [primaryKeyField];
 
 	res.write(`* [Remote] Fetching ${collection} primary keys\r\n\r\n`);
 
@@ -92,6 +93,7 @@ async function getExistingPrimaryKeys(res: any, client: any, collection: string,
 				fields: [primaryKeyField],
 				limit,
 				page,
+				sort,
 			}));
 
 			if (response.length === 0)
