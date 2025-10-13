@@ -82,9 +82,10 @@ async function extractContent({
 	}
 }
 
-async function extractData(collection: string, ItemsService: any, accountability: Accountability, schema: SchemaOverview): Promise<Item[] | null> {
+async function extractData(collection: string, ItemsService: any, accountability: Accountability, schema: SchemaOverview, primaryKeyField: string): Promise<Item[] | null> {
 	let page = 1;
 	const limit = 100;
+	const sort = [primaryKeyField];
 	let data: Item[] | null = [];
 
 	const itemService = new ItemsService(collection, { accountability, schema });
@@ -94,6 +95,7 @@ async function extractData(collection: string, ItemsService: any, accountability
 			const response = await itemService.readByQuery({
 				limit,
 				page,
+				sort,
 			});
 
 			if (response.length === 0)
@@ -130,7 +132,7 @@ async function loadFullData(collections: Collection[], itemService: any, primary
 		return {
 			collection: name,
 			primaryKeyField,
-			items: await extractData(name, itemService, accountability, schema),
+			items: await extractData(name, itemService, accountability, schema, primaryKeyField),
 		};
 	}));
 }
