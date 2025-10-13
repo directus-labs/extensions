@@ -203,7 +203,7 @@ function addNew() {
 		// Focus the first input of the last form
 		nextTick(() => {
 			const forms = document.querySelectorAll('.list-item-form');
-			const lastForm = forms.at(-1);
+			const lastForm = Array.from(forms).at(-1);
 			const firstInput = lastForm?.querySelector('input, select, textarea');
 
 			if (firstInput instanceof HTMLElement) {
