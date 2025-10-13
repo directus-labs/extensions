@@ -205,8 +205,6 @@ async function loadSkeletonSingletons(res: any, client: any, singleton: UserColl
 		const name = collection.collection;
 
 		try {
-			res.write('.');
-
 			if (!dry_run) {
 				// @ts-expect-error string
 				await client.request(updateSingleton(name, {}));
