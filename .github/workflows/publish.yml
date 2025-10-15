@@ -26,6 +26,6 @@ jobs:
       #   env:
       #     NPM_CONFIG_PROVENANCE: true
       #   run: |
-      #     pnpm --recursive publish \
+      #     pnpm --filter "./packages/*" --recursive publish \
       #       --access=public \
       #       --no-git-checks
