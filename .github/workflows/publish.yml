@@ -1,0 +1,31 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: # temporary to test the action
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      # - name: Publish packages to NPM
+      #   env:
+      #     NPM_CONFIG_PROVENANCE: true
+      #   run: |
+      #     pnpm --recursive publish \
+      #       --access=public \
+      #       --no-git-checks

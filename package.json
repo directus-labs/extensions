@@ -5,7 +5,7 @@
 	"license": "MIT",
 	"homepage": "https://github.com/directus-labs/extensions",
 	"engines": {
-		"node": ">=18.18.0",
+		"node": "22",
 		"pnpm": "~9"
 	},
 	"directus:meta": {
