@@ -25,6 +25,9 @@ runs:
         registry-url: ${{ inputs.registry }}
         cache: pnpm
 
+    - name: Update npm
+      run: npm install -g npm@latest
+
     - name: Install dependencies
       shell: bash
       run: pnpm install
