@@ -12,11 +12,12 @@ export function zodErrorToValidationErrors(
 		let valid: ValidationError['valid'];
 
 		switch (issue.code) {
-			case 'invalid_enum_value':
+			case 'invalid_value':
+				// @ts-expect-error `valid` is not used currently.
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				valid = issue.options;
+				valid = issue.values;
 				break;
-			case 'invalid_string':
+			case 'invalid_format':
 				type = 'contains';
 				break;
 		}

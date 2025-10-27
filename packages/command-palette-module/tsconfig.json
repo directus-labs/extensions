@@ -1,9 +1,9 @@
 {
 	"compilerOptions": {
 		"target": "ES2019",
-		"lib": ["ES2019", "DOM"],
+		"lib": ["ES2021", "DOM"],
 		"rootDir": "./src",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"resolveJsonModule": false,
 		"strict": true,
 		"strictBindCallApply": true,
