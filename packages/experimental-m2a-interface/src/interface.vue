@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance, Ref } from 'vue';
 import {
-	onKeyStroke,
-	useCycleList,
-	useEventListener,
 	useTemplateRefsList,
 } from '@vueuse/core';
+import { RovingFocusGroup, RovingFocusItem } from 'reka-ui';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 type MaybeHTML = HTMLElement | null | undefined;
@@ -67,9 +65,10 @@ function removeParentDomElement(el: MaybeHTMLRef) {
 function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	const label = ref('');
 	const buttonMatrix = ref<MatrixButton[]>([]);
-	// eslint-disable-next-line unused-imports/no-unused-vars
+
 	let popupId = '';
 	let firstActionButton: MaybeHTML;
+	let clickTimestamp = 0;
 
 	watch(() => targetBuilder.value, setup, { once: true });
 
@@ -83,16 +82,23 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 
 		label.value = firstActionButton.textContent ?? '';
 
-		const maxTries = 20;
+		const maxTries = 30;
 		let tryCount = 0;
 		let popup;
 
 		do {
-			await delay(tryCount ? 50 : 0);
+			// Longer delay for first few tries to allow popup creation
+			const delay_ms = tryCount === 0 ? 100 : (tryCount < 5 ? 75 : 50);
+			await delay(delay_ms);
+
 			tryCount++;
 
+			clickTimestamp = Date.now(); // Record when we clicked
 			firstActionButton.click();
 			await nextTick();
+
+			// Additional delay after click for popup to fully render
+			await delay(25);
 
 			popup = findAndHandlePopup();
 		}
@@ -107,18 +113,36 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	}
 
 	function findAndHandlePopup() {
-		const popup = document.querySelector('#menu-outlet .v-menu-popper.active:not([data-hacked])');
-		if (!popup)
-			return;
+		const instanceId = `btn-matrix-${clickTimestamp}`;
 
-		(popup as HTMLElement).dataset.hacked = 'hacked';
-		popupId = popup.id;
+		// Find all active popups that haven't been claimed
+		const popups = document.querySelectorAll('#menu-outlet .v-menu-popper.active:not([data-hacked])');
 
-		return popup as HTMLElement;
+		if (popups.length === 0) {
+			return null;
+		}
+
+		// Pick the popup that appeared most recently (DOM order)
+		for (let i = popups.length - 1; i >= 0; i--) {
+			const popup = popups[i] as HTMLElement;
+			const m2aItems = popup.querySelectorAll('.v-list-item.link.clickable');
+
+			if (m2aItems.length > 0) {
+				popup.dataset.hacked = instanceId;
+				popup.dataset.instanceId = instanceId;
+				popupId = popup.id;
+				return popup;
+			}
+		}
+
+		return null;
 	}
 
 	function createButtonMatrix(popup: HTMLElement) {
-		popup.querySelectorAll('.v-list-item.link.clickable')?.forEach((button) => {
+		const items = popup.querySelectorAll('.v-list-item.link.clickable');
+		buttonMatrix.value = []; // Clear existing buttons
+
+		items.forEach((button) => {
 			const label = (button as HTMLElement).textContent;
 			const icon = (button.querySelector('.v-icon [data-icon]') as HTMLElement)?.dataset?.icon ?? 'database';
 
@@ -139,17 +163,37 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	}
 
 	async function triggerClick(index: number) {
+		const targetButton = filteredButtonMatrix.value[index];
+		if (!targetButton) return;
+
 		firstActionButton?.click();
 		await nextTick();
 
-		const popup = document.querySelector('.v-menu-popper.active');
-		if (!popup)
-			return;
+		// Find the popup that belongs to this button matrix instance
+		// First try to find by our stored popupId, then fallback to active popup
+		let popup: HTMLElement | null = null;
+
+		if (popupId) {
+			// Escape the ID to handle IDs that start with numbers or contain special characters
+			const escapedId = CSS.escape(popupId);
+			popup = document.querySelector(`#${escapedId}`);
+		}
+
+		if (!popup || !popup.classList.contains('active')) {
+			popup = document.querySelector('.v-menu-popper.active');
+		}
+
+		if (!popup) return;
 
 		const items = popup?.querySelectorAll('.v-list-item.link.clickable');
-		const targetItem = items?.[index] as HTMLElement;
-		if (targetItem)
-			targetItem.click();
+
+		// Find the original index in the full button matrix
+		const originalIndex = buttonMatrix.value.findIndex((button) =>
+			button.label === targetButton.label && button.icon === targetButton.icon,
+		);
+
+		const targetItem = items?.[originalIndex] as HTMLElement;
+		if (targetItem) targetItem.click();
 
 		await nextTick();
 		(popup as HTMLElement).style.visibility = 'hidden';
@@ -161,75 +205,39 @@ function useButtonMatrix(targetBuilder: MaybeHTMLRef) {
 	}
 }
 
-// --- Keyboard Navigation with VueUse ---
-
+// --- Keyboard Navigation with RovingFocusGroup ---
 const gridRef = ref<HTMLElement | null>(null);
-
 const buttonRefs = useTemplateRefsList<ComponentPublicInstance>();
 
-const buttonIndices = computed(() => filteredButtonMatrix.value.map((_, i) => i));
+function handleTabFromSearch(event: KeyboardEvent) {
+	if (event.shiftKey) {
+		// Don't handle Shift+Tab, let it go to previous element
+		return;
+	}
 
-const { state: activeButtonIndex, next: cycleNext, prev: cyclePrev, goTo: goToIndex } = useCycleList(
-	buttonIndices,
-	{ initialValue: 0 },
-);
+	// If there are no filtered results, let Tab continue to next focusable element
+	if (filteredButtonMatrix.value.length === 0) {
+		return;
+	}
 
-function focusButton(index: number) {
-	nextTick(() => {
-		const targetComponent = buttonRefs.value[index];
+	// Only prevent default for forward Tab when there are buttons to focus
+	event.preventDefault();
 
-		if (targetComponent?.$el) {
-			const targetButtonWrapper = targetComponent.$el as HTMLElement;
-			const innerButton = targetButtonWrapper?.querySelector('button');
-			innerButton?.focus();
-		}
-	});
+	if (buttonRefs.value.length > 0) {
+		// Focus the first button directly since RovingFocusGroup doesn't expose focus method
+		nextTick(() => {
+			const firstButton = buttonRefs.value[0];
+
+			if (firstButton?.$el) {
+				firstButton.$el.focus();
+			}
+		});
+	}
 }
 
-const keyStrokeOptions = { target: gridRef, passive: false };
-
-onKeyStroke(['ArrowDown', 'ArrowRight'], (e) => {
-	e.preventDefault();
-	cycleNext();
-	focusButton(activeButtonIndex.value);
-}, keyStrokeOptions);
-
-onKeyStroke(['ArrowUp', 'ArrowLeft'], (e) => {
-	e.preventDefault();
-	cyclePrev();
-	focusButton(activeButtonIndex.value);
-}, keyStrokeOptions);
-
-onKeyStroke('Home', (e) => {
-	e.preventDefault();
-	goToIndex(0);
-	focusButton(activeButtonIndex.value);
-}, keyStrokeOptions);
-
-onKeyStroke('End', (e) => {
-	e.preventDefault();
-	const lastIndex = buttonIndices.value.length - 1;
-
-	if (lastIndex >= 0) {
-		goToIndex(lastIndex);
-		focusButton(activeButtonIndex.value);
-	}
-}, keyStrokeOptions);
-
-watch(buttonIndices, (newIndices) => {
-	if (!newIndices.includes(activeButtonIndex.value) && newIndices.length > 0) {
-		goToIndex(0);
-	}
-	else if (newIndices.length === 0) {
-		goToIndex(0);
-	}
-}, { flush: 'post' });
-
-useEventListener(gridRef, 'focus', (event: FocusEvent) => {
-	if (!gridRef.value?.contains(event.relatedTarget as Node) && buttonIndices.value.length > 0) {
-		focusButton(activeButtonIndex.value);
-	}
-});
+function clearSearch() {
+	searchQuery.value = '';
+}
 </script>
 
 <template>
@@ -254,32 +262,46 @@ useEventListener(gridRef, 'focus', (event: FocusEvent) => {
 				v-model="searchQuery"
 				:placeholder="props.searchPlaceholder"
 				class="search-input"
+				@keydown.tab="handleTabFromSearch"
 			>
 				<template #prepend>
 					<v-icon name="search" />
 				</template>
+				<template #append>
+					<template v-if="searchQuery">
+						<v-icon
+							name="close"
+							class="clear-icon"
+							clickable
+							@click="clearSearch"
+						/>
+					</template>
+				</template>
 			</v-input>
 
-			<div
+			<RovingFocusGroup
+				v-if="filteredButtonMatrix.length > 0"
 				ref="gridRef"
 				class="grid"
-				tabindex="0"
+				orientation="horizontal"
 			>
-				<!-- eslint-disable-next-line vue/valid-v-for -->
-				<v-button
+				<RovingFocusItem
 					v-for="(button, index) in filteredButtonMatrix"
 					:key="button.label"
 					:ref="buttonRefs.set"
-					:tabindex="index === activeButtonIndex ? 0 : -1"
-					secondary
-					full-width
+					as="button"
+					class="roving-button"
 					@click="triggerClick(index)"
-					@keydown.enter.prevent="triggerClick(index)"
-					@keydown.space.prevent="triggerClick(index)"
 				>
 					<v-icon :name="button.icon" />
 					<v-text-overflow :text="button.label" size="small" />
-				</v-button>
+				</RovingFocusItem>
+			</RovingFocusGroup>
+			<div v-else-if="searchQuery" class="no-results">
+				<v-icon name="search_off" class="no-results-icon" />
+				<p class="no-results-text">
+					No items match your search. Try adjusting your search terms.
+				</p>
 			</div>
 		</div>
 	</Teleport>
@@ -331,6 +353,52 @@ useEventListener(gridRef, 'focus', (event: FocusEvent) => {
 	--v-button-height: 100px;
 }
 
+.v-button :deep(button:focus) {
+	outline: 2px solid var(--theme--primary);
+	outline-offset: 2px;
+}
+
+.roving-button {
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+	--v-button-background-color: var(--theme--background-normal);
+	--v-button-background-color-hover: var(--theme--background-accent);
+	--v-icon-color: var(--theme--foreground-subdued);
+
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	width: 100%;
+	height: 100px;
+	padding: 12px;
+
+	color: var(--v-button-color);
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 22px;
+	text-decoration: none;
+	background-color: var(--v-button-background-color);
+	border: var(--theme--border-width) solid var(--v-button-background-color);
+	border-radius: var(--theme--border-radius);
+	cursor: pointer;
+	transition: var(--fast) var(--transition);
+	transition-property: background-color, border, color;
+}
+
+.roving-button:hover {
+	color: var(--v-button-color-hover);
+	background-color: var(--v-button-background-color-hover);
+	border-color: var(--v-button-background-color-hover);
+}
+
+.roving-button:focus {
+	outline: 2px solid var(--theme--primary);
+	outline-offset: 2px;
+}
+
 .v-text-overflow {
 	width: 100%;
 }
@@ -341,5 +409,30 @@ useEventListener(gridRef, 'focus', (event: FocusEvent) => {
 
 .search-input {
 	margin-bottom: 12px;
+}
+
+.no-results {
+	background-color: var(--theme--background-subdued);
+	border-radius: var(--theme--border-radius);
+	grid-column: 1 / -1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	text-align: center;
+	color: var(--theme--foreground-subdued);
+}
+
+.no-results-icon {
+	--v-icon-color: var(--theme--foreground-subdued);
+	margin-bottom: 12px;
+	font-size: 48px;
+}
+
+.no-results-text {
+	margin: 0;
+	font-weight: 500;
+	color: var(--theme--foreground);
 }
 </style>

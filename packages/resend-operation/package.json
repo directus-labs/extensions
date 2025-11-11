@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/resend-operation",
 	"type": "module",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Resend API operation for Directus Flows. Send emails, update domains, and more.",
 	"keywords": [
 		"directus",

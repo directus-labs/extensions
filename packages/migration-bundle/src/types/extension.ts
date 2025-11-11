@@ -261,4 +261,10 @@ export interface CommentRaw extends Omit<Comment, 'item' | 'date_created' | 'dat
 
 ;
 
+export interface MigrationConfig {
+	baseURL?: string;
+	token?: string;
+	scope?: Partial<Scope>;
+}
+
 export type JSONInput = SchemaOverview | Role | RoleRaw | Policy | PolicyRaw | Permission | User | UserRaw | Access | Folder | File | Dashboard | DashboardRaw | FlowRaw | ModifiedFlowRaw | OperationRaw | Panel | Operation | Settings | Translation | Preset | Extension | Comment | CommentRaw | Share | UserCollectionItems | UserCollectionItem;

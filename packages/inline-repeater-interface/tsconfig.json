@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "ES2019",
-		"lib": ["ES2019", "DOM"],
+		"lib": ["ES2023", "DOM"],
 		"rootDir": "./src",
 		"moduleResolution": "node",
 		"resolveJsonModule": false,
