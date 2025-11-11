@@ -44,18 +44,20 @@
 		"link": "directus-extension link"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "^12.1.2",
-		"@directus/utils": "^12.0.4",
+		"@directus/composables": "^11.2.2",
+		"@directus/extensions-sdk": "^17.0.2",
+		"@directus/system-data": "^3.2.1",
+		"@directus/utils": "^13.0.12",
 		"@json2csv/plainjs": "^7.0.6",
 		"@types/file-saver": "^2.0.7",
 		"@types/lodash": "^4.17.13",
-		"@vueuse/core": "^12.0.0",
+		"@vueuse/core": "^14.0.0 ",
 		"file-saver": "^2.0.5",
 		"lodash": "^4.17.21",
 		"sass": "^1.80.5",
 		"typescript": "^5.6.3",
 		"vue": "^3.5.12",
-		"vue-i18n": "^10.0.4",
+		"vue-i18n": "^11.1.12",
 		"vue-router": "^4.4.5",
 		"vuedraggable": "4.1.0"
 	}
