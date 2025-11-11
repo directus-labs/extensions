@@ -381,12 +381,8 @@ function removeField(fieldKey: string) {
 	display: contents;
 
 	& > :deep(table) {
-		min-width: calc(100% - var(--content-padding)) !important;
-		margin-left: var(--content-padding);
-
-		tr {
-			margin-right: var(--content-padding);
-		}
+		min-width: calc(100% - var(--content-padding) * 2) !important;
+		margin-inline: var(--content-padding);
 	}
 }
 
