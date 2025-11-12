@@ -43,6 +43,21 @@ export default defineInterface({
 					},
 				},
 			},
+			{
+				field: 'autoRefresh',
+				name: 'Auto Refresh',
+				type: 'boolean',
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: 'Automatically refresh item data after flow completes',
+					},
+					width: 'full',
+				},
+				schema: {
+					default_value: true,
+				},
+			},
 		];
 	},
 });

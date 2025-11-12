@@ -29,6 +29,7 @@ const permissionsStore = usePermissionsStore();
 const {
 	runFlow,
 	runningFlows,
+	checkingUnsavedChanges,
 	onTriggerClick,
 	getButtonText,
 	getButtonIcon,
@@ -41,6 +42,7 @@ const {
 } = useFlowTriggers({
 	collection: (trigger) => trigger.collection,
 	keys: (trigger) => trigger.keys,
+	autoRefresh: () => false, // Don't refresh the page when used in a panel
 });
 
 const triggers = computed(() => {
@@ -56,7 +58,7 @@ const triggers = computed(() => {
 		<div v-for="{ trigger } in triggers" class="trigger">
 			<v-button
 				full-width
-				:loading="runningFlows.includes(trigger.flowId)"
+				:loading="runningFlows.includes(trigger.flowId) || checkingUnsavedChanges.includes(trigger.flowId)"
 				@click="onTriggerClick(trigger)"
 			>
 				<v-icon :name="getButtonIcon(trigger)" small left />

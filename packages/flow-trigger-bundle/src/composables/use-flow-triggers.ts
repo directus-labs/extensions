@@ -4,10 +4,13 @@ import { useApi, useStores } from '@directus/extensions-sdk';
 import formatTitle from '@directus/format-title';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { isEqual } from 'lodash-es';
 
 interface FlowTriggerContext {
 	collection: (trigger: Trigger) => string | undefined;
 	keys: (trigger: Trigger) => PrimaryKey[] | undefined;
+	autoRefresh?: () => boolean;
+	formValues?: () => Record<string, any>;
 }
 
 export function useFlowTriggers(context: FlowTriggerContext) {
@@ -53,6 +56,10 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 		description: string;
 		fields: Record<string, any>[];
 	} | null>(null);
+
+	const showUnsavedWarning = ref(false);
+
+	const checkingUnsavedChanges = ref<string[]>([]);
 
 	const isConfirmButtonDisabled = computed(() => {
 		if (!selectedTrigger.value) {
@@ -161,6 +168,15 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 				title: t('run_flow_success', { flow: flow.name }),
 			});
 
+			// Refresh the current page to show updated data (if enabled)
+			const shouldAutoRefresh = context.autoRefresh?.() ?? true;
+			if (shouldAutoRefresh) {
+				// Use a small delay to ensure the notification is visible before refresh
+				setTimeout(() => {
+					window.location.reload();
+				}, 500);
+			}
+
 			resetConfirm();
 		}
 		catch (error) {
@@ -195,15 +211,92 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 		});
 	}
 
+	async function hasUnsavedChanges(trigger: Trigger): Promise<boolean> {
+		try {
+			const collection = context.collection(trigger);
+			const keys = context.keys(trigger);
+
+			// Can't detect unsaved changes if no collection, keys, or form values
+			if (!collection || !keys || keys.length === 0 || keys[0] === '+') {
+				return false;
+			}
+
+			// Can't detect if no form values are available
+			if (!context.formValues) {
+				return false;
+			}
+
+			// Fetch the saved item from API
+			const response = await api.get(`/items/${collection}/${keys[0]}`);
+			const savedValues = response.data.data;
+			const currentValues = context.formValues();
+
+			// Deep compare each field to detect differences
+			for (const key in currentValues) {
+				if (key in savedValues && !isEqual(currentValues[key], savedValues[key])) {
+					return true; // Found a difference
+				}
+			}
+
+			return false; // No differences found
+		}
+		catch (error) {
+			// If we can't fetch the item or compare, assume no unsaved changes
+			console.warn('Could not detect unsaved changes:', error);
+			return false;
+		}
+	}
+
 	async function onTriggerClick(trigger: Trigger) {
 		selectedTrigger.value = trigger;
+
+		// Check if we should warn about unsaved changes
+		const shouldAutoRefresh = context.autoRefresh?.() ?? true;
+		const keys = context.keys(trigger);
+		const isItemDetailPage = keys && keys.length > 0 && keys[0] !== '+';
+
+		if (shouldAutoRefresh && isItemDetailPage) {
+			// Add to checking state
+			const flowId = trigger.flowId;
+			checkingUnsavedChanges.value = [...checkingUnsavedChanges.value, flowId];
+
+			try {
+				// Check for actual unsaved changes
+				const hasChanges = await hasUnsavedChanges(trigger);
+
+				if (hasChanges) {
+					// Show unsaved changes warning
+					showUnsavedWarning.value = true;
+					return;
+				}
+			}
+			finally {
+				// Remove from checking state
+				checkingUnsavedChanges.value = checkingUnsavedChanges.value.filter(
+					(id) => id !== flowId,
+				);
+			}
+		}
+
+		// No unsaved changes or no auto-refresh, proceed directly
 		confirmRunFlow();
+	}
+
+	function proceedAfterWarning() {
+		showUnsavedWarning.value = false;
+		confirmRunFlow();
+	}
+
+	function cancelWarning() {
+		showUnsavedWarning.value = false;
+		selectedTrigger.value = null;
 	}
 
 	return {
 		getFlow,
 		runFlow,
 		runningFlows,
+		checkingUnsavedChanges,
 		onTriggerClick,
 		getButtonText,
 		getButtonIcon,
@@ -213,5 +306,8 @@ export function useFlowTriggers(context: FlowTriggerContext) {
 		isConfirmButtonDisabled,
 		getConfirmButtonText,
 		resetConfirm,
+		showUnsavedWarning,
+		proceedAfterWarning,
+		cancelWarning,
 	};
 }
