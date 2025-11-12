@@ -65,7 +65,7 @@ const selfReferencingM2oFields = computed(() => {
 			v-if="!selfReferencingM2oFields?.length"
 			type="warning"
 		>
-			Create a M2O field that references this collection in your data
+			Create an M2O field that references this collection in your data
 			model settings!
 		</v-notice>
 
