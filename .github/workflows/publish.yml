@@ -23,6 +23,35 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
+      - name: Check if packages exist on NPM
+        run: |
+          missing_packages=""
+          for package in packages/*; do
+            if [ -f "$package/package.json" ]; then
+              name=$(jq -r .name "$package/package.json")
+              private=$(jq -r .private "$package/package.json")
+              
+              if [ "$private" != "true" ]; then
+                echo "Checking if $name exists on NPM..."
+                if ! npm view "$name" > /dev/null 2>&1; then
+                  echo "Error: Package $name does not exist on NPM."
+                  missing_packages="$missing_packages $name"
+                else
+                  echo "Package $name exists."
+                fi
+              fi
+            fi
+          done
+
+          if [ -n "$missing_packages" ]; then
+            echo "Error: The following packages do not exist on NPM:"
+            for package in $missing_packages; do
+              echo " - $package"
+            done
+            echo "Please create these packages on NPM and configure Trusted Publishing before publishing."
+            exit 1
+          fi
+
       - name: Publish packages to NPM
         env:
           NPM_CONFIG_PROVENANCE: true
