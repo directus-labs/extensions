@@ -30,7 +30,7 @@ jobs:
             if [ -f "$package/package.json" ]; then
               name=$(jq -r .name "$package/package.json")
               private=$(jq -r .private "$package/package.json")
-              
+
               if [ "$private" != "true" ]; then
                 echo "Checking if $name exists on NPM..."
                 if ! npm view "$name" > /dev/null 2>&1; then
