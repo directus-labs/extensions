@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request: # temporary to test the action
-    branches:
-      - main
 
 permissions:
   id-token: write
@@ -60,5 +57,4 @@ jobs:
           npm -v
           pnpm --filter "./packages/*" --recursive publish \
             --access=public \
-            --no-git-checks \
-            --dry-run
+            --no-git-checks
