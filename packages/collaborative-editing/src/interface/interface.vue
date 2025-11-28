@@ -15,7 +15,7 @@ import './styles.css';
 import type { ActiveField } from './types';
 import { waitForElement } from './utils/wait-for-element';
 
-const SAVE_BUTTON_SELECTOR = '.header-bar .actions .v-button:not(.secondary) > button';
+const SAVE_BUTTON_SELECTOR = '.header-bar .actions .v-button:not(.secondary) > button:has(i[data-icon=check])';
 
 type SaveFlowStatus = 'idle' | 'commit' | 'committed' | 'cancelled';
 
