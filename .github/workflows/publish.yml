@@ -23,21 +23,24 @@ jobs:
       - name: Check if packages exist on NPM
         run: |
           missing_packages=""
-          for package in packages/*; do
-            if [ -f "$package/package.json" ]; then
-              name=$(jq -r .name "$package/package.json")
-              private=$(jq -r .private "$package/package.json")
 
-              if [ "$private" != "true" ]; then
-                echo "Checking if $name exists on NPM..."
-                if ! npm view "$name" > /dev/null 2>&1; then
-                  echo "Error: Package $name does not exist on NPM."
-                  missing_packages="$missing_packages $name"
-                else
-                  echo "Package $name exists."
+          for pattern in $(yq -r '.packages[]' pnpm-workspace.yaml); do
+            for package in $pattern; do
+              if [ -f "$package/package.json" ]; then
+                name=$(jq -r .name "$package/package.json")
+                private=$(jq -r .private "$package/package.json")
+
+                if [ "$private" != "true" ] && [ "$name" != "null" ]; then
+                  echo "Checking if $name exists on NPM..."
+                  if ! npm view "$name" > /dev/null 2>&1; then
+                    echo "Error: Package $name does not exist on NPM."
+                    missing_packages="$missing_packages $name"
+                  else
+                    echo "Package $name exists."
+                  fi
                 fi
               fi
-            fi
+            done
           done
 
           if [ -n "$missing_packages" ]; then
