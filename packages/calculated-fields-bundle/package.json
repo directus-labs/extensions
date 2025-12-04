@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/calculated-fields-bundle",
 	"type": "module",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Automatically calculate values based on field values.",
 	"keywords": [
 		"directus",
@@ -36,19 +36,19 @@
 		"build:parser": "peggy --format es -o src/lib/parser/index.js src/lib/parser/grammar.pegjs"
 	},
 	"dependencies": {
-		"@directus/extensions": "^1.0.9",
-		"@directus/sdk": "^16.1.1",
-		"@directus/utils": "11.0.8",
-		"@formulajs/formulajs": "^4.4.4",
+		"@directus/extensions": "^3.0.11",
+		"@directus/sdk": "^20.1.0",
+		"@directus/utils": "13.0.10",
+		"@formulajs/formulajs": "^4.5.4",
 		"lodash-es": "^4.17.21"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "11.0.9",
-		"@directus/types": "11.1.1",
+		"@directus/extensions-sdk": "16.0.2",
+		"@directus/types": "13.2.3",
 		"@types/lodash-es": "^4.17.12",
-		"peggy": "^4.0.3",
-		"sass": "^1.77.8",
-		"typescript": "^5.5.4",
-		"vue": "^3.4.34"
+		"peggy": "^4.2.0",
+		"sass": "^1.93.2",
+		"typescript": "^5.9.3",
+		"vue": "3.5.18"
 	}
 }
