@@ -7,6 +7,9 @@ on:
     paths:
       - '**/package.json'
       - pnpm-workspace.yaml
+  pull_request: # temporary to test the action
+    branches:
+      - main
 
 permissions:
   id-token: write
@@ -36,4 +39,5 @@ jobs:
         run: |
           pnpm --filter "./packages/*" --recursive publish \
             --access=public \
-            --no-git-checks
+            --no-git-checks \
+            --dry-run
