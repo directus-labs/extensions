@@ -27,5 +27,4 @@ jobs:
         run: |
           pnpm --filter "./packages/*" --recursive publish \
             --access=public \
-            --no-git-checks \
-            --dry-run
+            --no-git-checks
