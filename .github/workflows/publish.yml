@@ -1,20 +1,11 @@
 name: Publish
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '**/package.json'
-      - pnpm-workspace.yaml
+  workflow_dispatch:
 
 permissions:
   id-token: write
   contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   publish:
