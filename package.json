@@ -8,15 +8,6 @@
 		"node": "22",
 		"pnpm": "~9"
 	},
-	"directus:meta": {
-		"maintained": [
-			"spreadsheet-layout",
-			"gantt-chart-layout",
-			"tour-group-interface",
-			"command-palette-module",
-			"calculated-fields-bundle"
-		]
-	},
 	"scripts": {
 		"premkcert": "mkcert -install",
 		"mkcert": "mkcert -ecdsa -key-file .local/caddy/key.pem -cert-file .local/caddy/cert.pem extensions.directus.labs",
