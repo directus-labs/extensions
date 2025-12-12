@@ -4,7 +4,9 @@
 
 ## 🐰 &nbsp;Introduction
 
-This repository is for our extensions published under the Directus Labs program. Unlike the core [@directus/directus](https://github.com/directus/directus) project, extensions here may not be actively developed after their initial release unless they are indicated as maintained in the table below.
+This repository is for our extensions published under the Directus Labs program. Unlike the core [@directus/directus](https://github.com/directus/directus) project, extensions here may not be actively developed after their initial release.
+
+Customers with support plans should reach out to [support@directus.io](mailto:support@directus.io) for any issues with these extensions.
 
 ## 📦 &nbsp;Extensions
 
