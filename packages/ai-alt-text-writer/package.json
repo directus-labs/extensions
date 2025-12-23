@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/ai-alt-text-writer-operation",
 	"type": "module",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Use Clarifai to create captions for your image files.",
 	"license": "MIT",
 	"keywords": [
