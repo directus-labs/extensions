@@ -5,7 +5,8 @@
 	"description": "Visualize data in stages using a funnel chart.",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions.git"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/funnel-chart-panel"
 	},
 	"keywords": [
 		"directus",

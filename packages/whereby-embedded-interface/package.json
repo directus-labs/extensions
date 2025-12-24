@@ -5,7 +5,8 @@
 	"description": "Embed Whereby video calls inside Directus",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions.git"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/whereby-embedded-interface"
 	},
 	"keywords": [
 		"directus",

@@ -5,7 +5,8 @@
 	"description": "Display items in a gantt chart to plot timelines and dependencies.",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions.git"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/gantt-chart-layout"
 	},
 	"keywords": [
 		"directus",

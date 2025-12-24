@@ -5,7 +5,8 @@
 	"description": "Automatically calculate values based on field values.",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions.git"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/calculated-fields-bundle"
 	},
 	"keywords": [
 		"directus",

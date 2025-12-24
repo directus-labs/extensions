@@ -5,7 +5,8 @@
 	"description": "Present a series of X and Y cooradinates as dots on a graph",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions.git"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/scatter-plot-panel"
 	},
 	"keywords": [
 		"directus",

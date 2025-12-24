@@ -5,7 +5,8 @@
 	"description": "Command palette module for Directus.",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions.git"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/command-palette-module"
 	},
 	"keywords": [
 		"directus",

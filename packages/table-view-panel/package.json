@@ -5,7 +5,8 @@
 	"description": "Display a full table in your insights dashboard.",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions.git"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/table-view-panel"
 	},
 	"keywords": [
 		"directus",

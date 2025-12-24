@@ -5,7 +5,8 @@
 	"description": "Embed Plausible Analytics into your Directus project.",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions.git"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/plausible-analytics-bundle"
 	},
 	"keywords": [
 		"directus",

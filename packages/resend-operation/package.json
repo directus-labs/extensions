@@ -5,7 +5,8 @@
 	"description": "Resend API operation for Directus Flows. Send emails, update domains, and more.",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions.git"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/resend-operation"
 	},
 	"keywords": [
 		"directus",
