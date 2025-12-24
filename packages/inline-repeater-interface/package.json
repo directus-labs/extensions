@@ -4,6 +4,10 @@
 	"version": "1.0.1",
 	"description": "A powerful interface for managing repeatable form fields within Directus that allows inline editing and reordering of items.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

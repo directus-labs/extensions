@@ -12,6 +12,10 @@
 		}
 	],
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

@@ -4,6 +4,10 @@
 	"version": "1.2.0",
 	"description": "Render Liquid templates within Directus flows.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

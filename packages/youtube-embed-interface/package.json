@@ -4,6 +4,10 @@
 	"version": "1.0.0",
 	"description": "Search YouTube videos and generate embed codes",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

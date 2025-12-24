@@ -3,6 +3,10 @@
 	"type": "module",
 	"version": "1.0.0",
 	"description": "Configure one or more flows to be triggered in the editor or dashboards.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

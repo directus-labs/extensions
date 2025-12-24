@@ -4,6 +4,10 @@
 	"version": "1.1.1",
 	"description": "Use Firecrawl's Web Scraping API to extract data from websites.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

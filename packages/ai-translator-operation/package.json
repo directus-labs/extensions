@@ -4,6 +4,10 @@
 	"version": "1.1.0",
 	"description": "Use DeepL's Translation API to translate text into over 30 languages.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

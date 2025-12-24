@@ -3,6 +3,10 @@
 	"type": "module",
 	"version": "1.0.1",
 	"description": "Resend API operation for Directus Flows. Send emails, update domains, and more.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

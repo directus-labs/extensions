@@ -6,7 +6,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extension-meter-component"
+		"url": "https://github.com/directus-labs/extensions.git"
 	},
 	"keywords": [
 		"directus",

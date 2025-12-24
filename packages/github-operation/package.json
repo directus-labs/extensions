@@ -9,6 +9,10 @@
 		"url": "https://utomic.media"
 	},
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git"
+	},
 	"icon": "github",
 	"keywords": [
 		"directus",
