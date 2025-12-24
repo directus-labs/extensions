@@ -11,6 +11,11 @@
 		}
 	],
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/tree-view-table-layout"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

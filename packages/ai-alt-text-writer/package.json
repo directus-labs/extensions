@@ -4,6 +4,11 @@
 	"version": "1.0.3",
 	"description": "Use Clarifai to create captions for your image files.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/ai-alt-text-writer"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

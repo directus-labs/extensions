@@ -6,7 +6,8 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/card-select-interfaces"
 	},
 	"keywords": [
 		"directus",
@@ -52,7 +53,6 @@
 		"reka-ui": "^1.0.0-alpha.7",
 		"vue": "^3.5.11",
 		"vue-i18n": "^10.0.4"
-
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "12.0.1",

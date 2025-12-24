@@ -4,6 +4,11 @@
 	"version": "1.0.0",
 	"description": "Display your data divided into colored geographical areas",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/choropleth-map-panel"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

@@ -4,6 +4,11 @@
 	"version": "1.0.1",
 	"description": "Use Genny's Text-to-Speech API to create new audio files.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/ai-speech-generation-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

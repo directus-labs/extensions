@@ -4,6 +4,11 @@
 	"version": "1.0.2",
 	"description": "Use Clarifai to find and extract text from image files.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/ai-text-extraction-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",
