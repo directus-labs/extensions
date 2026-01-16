@@ -22,6 +22,9 @@ export default defineOperationApp({
 	],
 	options: (context) => {
 		const anthropicModels = [
+			{ text: 'Claude 4.5 Opus', value: 'claude-opus-4-5-20251101' },
+			{ text: 'Claude 4.5 Sonnet', value: 'claude-sonnet-4-5-20250929' },
+			{ text: 'Claude 4.5 Haiku', value: 'claude-haiku-4-5-20251001' },
 			{ text: 'Claude 3.7 Sonnet', value: 'claude-3-7-sonnet-latest' },
 			{ text: 'Claude 3.5 Sonnet', value: 'claude-3-5-sonnet-latest' },
 			{ text: 'Claude 3.5 Haiku', value: 'claude-3-5-haiku-latest' },
@@ -32,6 +35,8 @@ export default defineOperationApp({
 		];
 
 		const openAiModels = [
+			{ text: 'GPT-5.2 Pro', value: 'gpt-5.2-pro-2025-12-11' },
+			{ text: 'GPT-5.2', value: 'gpt-5.2-2025-12-11' },
 			{ text: 'GPT-4.1', value: 'gpt-4.1-2025-04-14' },
 			{ text: 'GPT-4.1 Mini', value: 'gpt-4.1-mini-2025-04-14' },
 			{ text: 'GPT-4.1 Nano', value: 'gpt-4.1-nano-2025-04-14' },
