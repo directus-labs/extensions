@@ -4,6 +4,11 @@
 	"version": "1.0.1",
 	"description": "Use Clarifai's Moderation Recognition Model to analyze image safety.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/ai-image-moderation-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

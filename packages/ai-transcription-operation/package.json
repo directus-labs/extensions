@@ -4,6 +4,11 @@
 	"version": "1.1.1",
 	"description": "Use Deepgram's Speech Recognition API to generate transcripts from audio files.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/ai-transcription-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

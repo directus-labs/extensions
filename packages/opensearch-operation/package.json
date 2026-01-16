@@ -5,6 +5,11 @@
 	"description": "Intergrate Directus content with OpenSearch. ",
 	"icon": "extension",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/opensearch-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

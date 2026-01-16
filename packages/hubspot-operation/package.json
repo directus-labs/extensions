@@ -3,6 +3,11 @@
 	"type": "module",
 	"version": "1.0.1",
 	"description": "Hubspot API operation for managing companies, contacts, activities, and deals.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/hubspot-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

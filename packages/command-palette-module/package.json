@@ -3,6 +3,11 @@
 	"type": "module",
 	"version": "1.1.0",
 	"description": "Command palette module for Directus.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/command-palette-module"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

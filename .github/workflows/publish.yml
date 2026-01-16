@@ -1,0 +1,30 @@
+name: Publish
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    name: Publish Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Check if packages exist on NPM
+        uses: directus/npm-package-existence-checker@v1
+
+      - name: Publish packages to NPM
+        env:
+          NPM_CONFIG_PROVENANCE: true
+        run: |
+          pnpm --filter "./packages/*" --recursive publish \
+            --access=public \
+            --no-git-checks

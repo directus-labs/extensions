@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/experimental-m2a-interface",
 	"type": "module",
-	"version": "1.2.1",
+	"version": "1.3.0",
 	"description": "Add a matrix button selector to the built-in M2A interface",
 	"author": "Directus Labs",
 	"contributors": [
@@ -11,6 +11,11 @@
 		}
 	],
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/experimental-m2a-interface"
+	},
 	"keywords": [
 		"Blocks",
 		"Matrix",
@@ -38,7 +43,8 @@
 		"validate": "directus-extension validate"
 	},
 	"dependencies": {
-		"@vueuse/core": "^13.1.0"
+		"@vueuse/core": "^13.1.0",
+		"reka-ui": "^2.5.0"
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "13.0.4",

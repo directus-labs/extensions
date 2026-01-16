@@ -2,7 +2,7 @@
 import type { AxiosProgressEvent } from 'axios';
 import type { Payload } from '../types/extension';
 import { useApi } from '@directus/extensions-sdk';
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive, ref, watch } from 'vue';
 import { md } from '../utils/md';
 import SupportNavigation from './components/navigation.vue';
 
@@ -23,6 +23,21 @@ export default defineComponent({
 		const dataChunk = ref('');
 		const dryRun = ref<boolean>(true);
 		const forceSchema = ref<boolean>(false);
+		const isLoadingConfig = ref<boolean>(false);
+		const isSavingConfig = ref<boolean>(false);
+		const presets = ref<any[]>([]);
+		const selectedPresetId = ref<number | null>(null);
+		const showSaveDialog = ref<boolean>(false);
+		const presetName = ref<string>('');
+		const presetScope = ref<'user' | 'role' | 'global'>('user');
+		const showDeleteConfirmation = ref(false);
+		const presetToDelete = ref<number | null>(null);
+		const hasChanges = ref<boolean>(false);
+		const originalConfig = ref<{ baseURL: string; token: string; options: Options[] }>({
+			baseURL: '',
+			token: '',
+			options: [],
+		});
 
 		const migrationOptions = ref<{
 			label: string;
@@ -58,7 +73,7 @@ export default defineComponent({
 			},
 		]);
 
-		const migrationOptionsSelections = ref<Options[]>(migrationOptions.value.map((o) => o.value as Options));
+		const migrationOptionsSelections = ref<Options[] | null>(migrationOptions.value.map((o) => o.value as Options));
 
 		const scope = reactive<Record<Options, boolean>>({
 			users: false,
@@ -73,18 +88,231 @@ export default defineComponent({
 
 		const api = useApi();
 
+		// Load ENV defaults
+		const loadEnvDefaults = async () => {
+			try {
+				const response = await api.get('/migration/defaults');
+				const defaults = response.data;
+
+				if (defaults.baseURL) baseURL.value = defaults.baseURL;
+				if (defaults.token) token.value = defaults.token;
+
+				if (defaults.options && defaults.options.length > 0) {
+					migrationOptionsSelections.value = defaults.options.filter((opt: string) =>
+						migrationOptions.value.some((o) => o.value === opt),
+					) as Options[];
+				}
+			}
+			catch {
+				console.warn('No ENV defaults available');
+			}
+		};
+
+		// Load available presets
+		const loadPresets = async () => {
+			try {
+				const response = await api.get('/migration/presets');
+				presets.value = response.data.data || [];
+			}
+			catch (error) {
+				console.error('Failed to load presets:', error);
+			}
+		};
+
+		// Load specific preset
+		const loadPreset = (presetId: number | null) => {
+			if (!presetId) {
+				// Load ENV defaults instead
+				loadEnvDefaults();
+				return;
+			}
+
+			const preset = presets.value.find((p) => p.id === presetId);
+
+			if (preset?.layout_options) {
+				// Parse if it's a string, otherwise use as-is
+				const options = typeof preset.layout_options === 'string'
+					? JSON.parse(preset.layout_options)
+					: preset.layout_options;
+				baseURL.value = options.baseURL || '';
+				token.value = options.token || '';
+				migrationOptionsSelections.value = options.selectedOptions || [];
+
+				// Store original config
+				originalConfig.value = {
+					baseURL: options.baseURL || '',
+					token: options.token || '',
+					options: [...(options.selectedOptions || [])],
+				};
+
+				hasChanges.value = false;
+			}
+		};
+
+		// Save as preset
+		const savePreset = async () => {
+			isSavingConfig.value = true;
+
+			try {
+				const response = await api.post('/migration/presets', {
+					name: presetName.value || 'Migration Config',
+					scope: presetScope.value,
+					baseURL: baseURL.value,
+					token: token.value,
+					options: migrationOptionsSelections.value,
+					// Don't send ID - always create new preset
+				});
+
+				// Reload presets and select the new one
+				await loadPresets();
+
+				if (response.data.data.id) {
+					selectedPresetId.value = response.data.data.id;
+				}
+
+				showSaveDialog.value = false;
+				presetName.value = '';
+			}
+			catch (error) {
+				console.error('Failed to save preset:', error);
+			}
+			finally {
+				isSavingConfig.value = false;
+			}
+		};
+
+		// Delete preset
+		const deletePreset = async (presetId: number) => {
+			presetToDelete.value = presetId;
+			showDeleteConfirmation.value = true;
+		};
+
+		const confirmDelete = async () => {
+			if (presetToDelete.value === null) return;
+
+			try {
+				await api.delete(`/migration/presets/${presetToDelete.value}`);
+				await loadPresets();
+
+				if (selectedPresetId.value === presetToDelete.value) {
+					selectedPresetId.value = null;
+					loadEnvDefaults();
+				}
+			}
+			catch (error) {
+				console.error('Failed to delete preset:', error);
+			}
+			finally {
+				showDeleteConfirmation.value = false;
+				presetToDelete.value = null;
+			}
+		};
+
+		// Initialize on mount
+		const initialize = async () => {
+			isLoadingConfig.value = true;
+
+			// Load presets first
+			await loadPresets();
+
+			// If no presets, load ENV defaults
+			if (presets.value.length === 0) {
+				await loadEnvDefaults();
+			}
+			else {
+				// Auto-select first user preset if available
+				const userPreset = presets.value.find((p) => p.user);
+
+				if (userPreset) {
+					selectedPresetId.value = userPreset.id;
+					loadPreset(userPreset.id);
+				}
+				else {
+					await loadEnvDefaults();
+				}
+			}
+
+			isLoadingConfig.value = false;
+		};
+
+		// Initialize on mount
+		initialize();
+
+		// Update preset
+		const updatePreset = async () => {
+			if (!selectedPresetId.value || selectedPresetId.value === null) return;
+
+			isSavingConfig.value = true;
+
+			try {
+				await api.post('/migration/presets', {
+					name: presets.value.find((p) => p.id === selectedPresetId.value)?.bookmark || 'Migration Config',
+					scope: 'user', // Always user for existing presets
+					baseURL: baseURL.value,
+					token: token.value,
+					options: migrationOptionsSelections.value,
+					id: selectedPresetId.value, // Update existing
+				});
+
+				// Reload presets to get fresh data
+				await loadPresets();
+
+				// Update the preset in our local array with new values
+				const presetIndex = presets.value.findIndex((p) => p.id === selectedPresetId.value);
+
+				if (presetIndex !== -1) {
+					presets.value[presetIndex].layout_options = JSON.stringify({
+						baseURL: baseURL.value,
+						token: token.value,
+						selectedOptions: migrationOptionsSelections.value,
+					});
+				}
+
+				// Update original config after save
+				originalConfig.value = {
+					baseURL: baseURL.value,
+					token: token.value,
+					options: [...migrationOptionsSelections.value],
+				};
+
+				hasChanges.value = false;
+			}
+			catch (error) {
+				console.error('Failed to update preset:', error);
+			}
+			finally {
+				isSavingConfig.value = false;
+			}
+		};
+
+		// Watch for changes
+		watch([baseURL, token, migrationOptionsSelections], () => {
+			hasChanges.value = selectedPresetId.value && selectedPresetId.value !== null
+				? baseURL.value !== originalConfig.value.baseURL
+				|| token.value !== originalConfig.value.token
+				|| JSON.stringify(migrationOptionsSelections.value) !== JSON.stringify(originalConfig.value.options)
+				: false;
+		}, { deep: true });
+
 		const checkHost = async ({ baseURL, token }: Payload): Promise<void> => {
 			isValidating.value = true;
-			const response = await api.post('/migration/check', { baseURL, token, scope });
+
+			try {
+				const response = await api.post('/migration/check', { baseURL, token, scope });
+				validationMessage.value = response.data;
+			}
+			catch {
+				validationMessage.value = { status: 'danger', icon: 'error', message: 'An unknow error occured. Please check logs for more information' };
+			}
+
 			isValidating.value = false;
-			validationMessage.value = response ? response.data : { status: 'danger', icon: 'error', message: 'An unknow error occured. Please check logs for more information' };
 		};
 
 		const extractSchema = async ({ baseURL, token, dryRun }: Payload): Promise<void> => {
 			lockInterface.value = true;
 			dataChunk.value = '';
 
-			migrationOptionsSelections.value.forEach((o) => {
+			(migrationOptionsSelections.value ?? []).forEach((o) => {
 				scope[o] = true;
 			});
 
@@ -110,12 +338,42 @@ export default defineComponent({
 				},
 			});
 
-			if (response.value.ok) {
-				lockInterface.value = false;
-			}
+			lockInterface.value = false;
 		};
 
-		return { baseURL, token, scope, migrationOptions, migrationOptionsSelections, page_description, lockInterface, checkHost, extractSchema, response, dryRun, forceSchema, dataChunk, md, isValidating, validationMessage };
+		return {
+			baseURL,
+			token,
+			scope,
+			migrationOptions,
+			migrationOptionsSelections,
+			page_description,
+			lockInterface,
+			checkHost,
+			extractSchema,
+			response,
+			dryRun,
+			forceSchema,
+			dataChunk,
+			md,
+			isValidating,
+			validationMessage,
+			isLoadingConfig,
+			isSavingConfig,
+			// Preset related
+			presets,
+			selectedPresetId,
+			showSaveDialog,
+			presetName,
+			presetScope,
+			loadPreset,
+			savePreset,
+			deletePreset,
+			showDeleteConfirmation,
+			confirmDelete,
+			hasChanges,
+			updatePreset,
+		};
 	},
 });
 </script>
@@ -133,12 +391,70 @@ export default defineComponent({
 		<div class="migration-container">
 			<div class="migration-main">
 				<p>To get started, enter the destination URL and admin token below, then click <strong>Check</strong>. This will compare both Directus platform and see if they are compatible. Please make sure the destination instance is on the same version and the same database engine as this instance.</p>
+
+				<!-- Preset Selector -->
+				<div v-if="presets.length > 0" class="migration-preset-selector" :class="{ 'has-changes': hasChanges && selectedPresetId }">
+					<div class="preset-row">
+						<v-select
+							v-model="selectedPresetId"
+							:items="[
+								{ text: 'Load from Environment Defaults', value: null },
+								...presets.map(p => ({
+									text: p.bookmark,
+									value: p.id,
+									icon: p.icon,
+									color: p.color,
+								})),
+							]"
+							placeholder="Load Configuration"
+							@update:model-value="loadPreset"
+						>
+							<template #prepend>
+								<v-icon name="bookmark" />
+							</template>
+						</v-select>
+						<transition name="fade-slide">
+							<v-button
+								v-if="hasChanges && selectedPresetId"
+								v-tooltip="'Update preset'"
+								:loading="isSavingConfig"
+								secondary
+								icon
+								@click="updatePreset"
+							>
+								<v-icon name="save" />
+							</v-button>
+						</transition>
+						<transition name="fade-slide">
+							<v-button
+								v-if="selectedPresetId"
+								v-tooltip="'Delete preset'"
+								secondary
+								icon
+								@click="deletePreset(selectedPresetId)"
+							>
+								<v-icon name="delete" />
+							</v-button>
+						</transition>
+					</div>
+				</div>
+
 				<div class="migration-input-container">
 					<div class="migration-input">
-						<v-input v-model="baseURL" label="Destination URL" placeholder="https://" :disabled="isValidating || lockInterface" />
-						<v-input v-model="token" label="Admin Token" placeholder="**********" :disabled="isValidating || lockInterface" />
-						<v-button :disabled="lockInterface" :loading="isValidating" @click="checkHost({ baseURL, token })">
+						<v-input v-model="baseURL" label="Destination URL" placeholder="https://" :disabled="isValidating || lockInterface || isLoadingConfig" />
+						<v-input v-model="token" label="Admin Token" placeholder="**********" :disabled="isValidating || lockInterface || isLoadingConfig" />
+						<v-button :disabled="lockInterface || isLoadingConfig" :loading="isValidating" @click="checkHost({ baseURL, token })">
 							Check
+						</v-button>
+						<v-button
+							v-tooltip="'Save as Preset'"
+							:disabled="lockInterface || isLoadingConfig"
+							secondary
+							small
+							icon
+							@click="showSaveDialog = true"
+						>
+							<v-icon name="bookmark_add" />
 						</v-button>
 					</div>
 
@@ -198,6 +514,46 @@ export default defineComponent({
 				<div v-md="page_description" class="page-description" />
 			</sidebar-detail>
 		</template>
+
+		<!-- Save Preset Dialog -->
+		<v-dialog v-model="showSaveDialog" @cancel="showSaveDialog = false">
+			<v-card>
+				<v-card-title>Save Migration Configuration</v-card-title>
+				<v-card-text>
+					<div class="field">
+						<v-input
+							v-model="presetName"
+							placeholder="Configuration Name"
+							autofocus
+						/>
+					</div>
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="showSaveDialog = false">
+						Cancel
+					</v-button>
+					<v-button primary :loading="isSavingConfig" @click="savePreset">
+						Save
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<!-- Delete Preset Dialog -->
+		<v-dialog v-model="showDeleteConfirmation" @cancel="showDeleteConfirmation = false">
+			<v-card>
+				<v-card-title>Delete Preset</v-card-title>
+				<v-card-text> Are you sure you want to delete this preset? This action cannot be undone. </v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="showDeleteConfirmation = false">
+						Cancel
+					</v-button>
+					<v-button danger @click="confirmDelete">
+						Delete
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
@@ -215,6 +571,38 @@ export default defineComponent({
 	padding: 0 var(--content-padding);
 }
 
+.migration-preset-selector {
+	margin-bottom: var(--theme--form--row-gap);
+	position: relative;
+}
+
+.migration-preset-selector .preset-row {
+	display: flex;
+	gap: 8px;
+	align-items: stretch;
+	background-color: var(--theme--background-subdued);
+	border: var(--theme--border-width) solid var(--theme--border-color);
+	border-radius: var(--theme--border-radius);
+	padding: 4px;
+}
+
+.migration-preset-selector .v-select {
+	flex: 1;
+	background: transparent;
+	border: none;
+}
+
+.migration-preset-selector .v-select :deep(.v-input) {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+}
+
+.migration-preset-selector .v-button {
+	border-radius: calc(var(--theme--border-radius) - 4px);
+	transition: all 0.2s ease;
+}
+
 .migration-input-container {
 	padding: var(--theme--form--field--input--padding);
 	background-color: var(--theme--background-subdued);
@@ -226,8 +614,9 @@ export default defineComponent({
 
 .migration-input {
 	display: grid;
-	grid-template-columns: 2fr 2fr 1fr;
+	grid-template-columns: 2fr 2fr 1fr auto;
 	gap: 20px;
+	align-items: end;
 }
 
 .migration-input:has(+ .migration-validation) {
@@ -452,5 +841,27 @@ h3.skipped .icon i::after {
 
 .migration-container .pending:has(+ .error) .progress-circular {
 	display: none;
+}
+
+/* Fade slide animation */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+	transition: all 0.2s ease;
+}
+
+.fade-slide-enter-from {
+	opacity: 0;
+	transform: translateX(-10px);
+}
+
+.fade-slide-leave-to {
+	opacity: 0;
+	transform: translateX(10px);
+}
+
+/* Optional: Add a subtle indicator when preset has changes */
+.migration-preset-selector.has-changes .preset-row {
+	border-color: var(--theme--primary);
+	box-shadow: 0 0 0 1px var(--theme--primary-background);
 }
 </style>

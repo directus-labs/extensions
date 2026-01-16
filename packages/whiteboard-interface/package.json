@@ -6,6 +6,11 @@
 	"author": "Directus Labs",
 	"contributors": [],
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/whiteboard-interface"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",
