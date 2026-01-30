@@ -48,7 +48,7 @@ onMounted(() => {
 	<v-drawer
 		v-model="active"
 		title="Comments"
-		icon="chat-bubble-outline"
+		icon="chat"
 		persistent
 		@cancel="toggle"
 	>

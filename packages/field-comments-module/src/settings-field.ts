@@ -9,7 +9,7 @@ export const system_field: DeepPartial<Field> = {
 			'cast-json',
 		],
 		options: {
-			icon: 'chat-bubble-outline',
+			icon: 'chat',
 			fields: <DeepPartial<Field[]>>[
 				{
 					field: 'collection',
