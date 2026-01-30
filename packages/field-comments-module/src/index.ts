@@ -6,7 +6,7 @@ export default defineModule({
 	id: 'field-comments',
 	hidden: true,
 	name: 'Field Comments',
-	icon: 'chat',
+	icon: 'chat_bubble_outline',
 	routes: [],
 	preRegisterCheck() {
 		injectFieldLabels();

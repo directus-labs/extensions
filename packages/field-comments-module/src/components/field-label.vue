@@ -22,7 +22,7 @@ useEventListener(event_key.value, (e: Record<string, any>) => {
 		<span v-if="props.count > 0" class="badge">
 			<span>{{ props.count }}</span>
 		</span>
-		<span class="v-icon"><i class="" data-icon="chat" /></span>
+		<span class="v-icon"><i class="" data-icon="chat_bubble_outline" /></span>
 	</div>
 </template>
 
