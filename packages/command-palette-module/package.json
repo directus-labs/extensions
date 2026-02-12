@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/command-palette-module",
 	"type": "module",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Command palette module for Directus.",
 	"repository": {
 		"type": "git",
