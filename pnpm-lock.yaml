@@ -427,8 +427,8 @@ importers:
         specifier: ^13.6.26
         version: 13.6.27
       zod:
-        specifier: ^4.0.14
-        version: 4.0.14
+        specifier: 4.1.12
+        version: 4.1.12
     devDependencies:
       '@directus/schema-builder':
         specifier: ^0.0.1
@@ -500,8 +500,8 @@ importers:
         specifier: ^4.5.0
         version: 4.5.1(vue@3.5.13(typescript@5.8.3))
       zod:
-        specifier: ^4.0.14
-        version: 4.0.14
+        specifier: 4.1.12
+        version: 4.1.12
     devDependencies:
       '@directus/constants':
         specifier: ^12.0.0
@@ -9457,6 +9457,9 @@ packages:
 
   zod@4.0.14:
     resolution: {integrity: sha512-nGFJTnJN6cM2v9kXL+SOBq3AtjQby3Mv5ySGFof5UGRHrRioSJ5iG680cYNjE/yWk671nROcpPj4hAS8nyLhSw==}
+
+  zod@4.1.12:
+    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -22356,5 +22359,7 @@ snapshots:
   zod@3.25.7: {}
 
   zod@4.0.14: {}
+
+  zod@4.1.12: {}
 
   zwitch@2.0.4: {}
