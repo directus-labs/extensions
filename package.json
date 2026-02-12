@@ -5,17 +5,8 @@
 	"license": "MIT",
 	"homepage": "https://github.com/directus-labs/extensions",
 	"engines": {
-		"node": ">=18.18.0",
+		"node": "22",
 		"pnpm": "~9"
-	},
-	"directus:meta": {
-		"maintained": [
-			"spreadsheet-layout",
-			"gantt-chart-layout",
-			"tour-group-interface",
-			"command-palette-module",
-			"calculated-fields-bundle"
-		]
 	},
 	"scripts": {
 		"premkcert": "mkcert -install",

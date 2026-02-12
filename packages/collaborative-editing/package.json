@@ -8,7 +8,8 @@
 	"homepage": "https://github.com/directus-labs/extensions#readme",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus-labs/extensions.git"
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/collaborative-editing"
 	},
 	"bugs": {
 		"url": "https://github.com/directus-labs/extensions/issues"

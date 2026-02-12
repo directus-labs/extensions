@@ -3,6 +3,11 @@
 	"type": "module",
 	"version": "1.0.1",
 	"description": "View timelines for various items in Directus",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/timeline-chart-panel"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

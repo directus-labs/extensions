@@ -93,16 +93,23 @@ const system = inject<Record<string, any>>('system')!;
 const { sortAllowed } = useCollectionPermissions(collection);
 
 function useCollectionPermissions(collection: Ref<string>) {
-	const { usePermissionsStore } = system.stores;
+	const { usePermissionsStore, useUserStore } = system.stores;
 	const permissionsStore = usePermissionsStore();
+	const userStore = useUserStore();
 
-	return {
-		sortAllowed: computed(() => {
-			if (!props.sortField)
-				return false;
-			return permissionsStore.hasPermission(collection.value, 'sort');
-		}),
-	};
+	const sortAllowed = computed(() => {
+		if (!collection.value || !props.sortField) return false;
+
+		if (userStore.isAdmin) return true;
+
+		const permission = permissionsStore.getPermission(collection.value, 'update');
+		if (!permission) return false;
+
+		if (!permission.fields) return false;
+		return permission.fields.includes('*') || permission.fields.includes(props.sortField);
+	});
+
+	return { sortAllowed };
 }
 
 const selectionWritable = useSync(props, 'selection', emit);
@@ -374,12 +381,8 @@ function removeField(fieldKey: string) {
 	display: contents;
 
 	& > :deep(table) {
-		min-width: calc(100% - var(--content-padding)) !important;
-		margin-left: var(--content-padding);
-
-		tr {
-			margin-right: var(--content-padding);
-		}
+		min-width: calc(100% - var(--content-padding) * 2) !important;
+		margin-inline: var(--content-padding);
 	}
 }
 

@@ -7,7 +7,7 @@ const operation: SandboxOperationConfig = {
 	id: 'directus-labs-ai-alt-text-writer-operation',
 	handler: async ({ apiKey, url }: { apiKey: string; url: string }) => {
 		try {
-			const response = await request('https://api.clarifai.com/v2/users/salesforce/apps/blip/models/general-english-image-caption-blip/versions/cdb690f13e62470ea6723642044f95e4/outputs', {
+			const response = await request('https://api.clarifai.com/v2/users/salesforce/apps/blip/models/general-english-image-caption-blip-2/outputs', {
 				method: 'POST',
 				headers: {
 					'Authorization': `Key ${apiKey}`,

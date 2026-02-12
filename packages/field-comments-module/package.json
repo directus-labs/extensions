@@ -1,10 +1,15 @@
 {
 	"name": "@directus-labs/field-comments",
 	"type": "module",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Write comments at the field level",
 	"author": "Tim Butterfield",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/field-comments-module"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",
