@@ -25,7 +25,7 @@
 		"link": "directus-extension link"
 	},
 	"peerDependencies": {
-		"zod": "^4.0.14"
+		"zod": "4.1.12"
 	},
 	"dependencies": {
 		"@directus/format-title": "^11.0.0",
