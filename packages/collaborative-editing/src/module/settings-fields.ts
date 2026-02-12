@@ -20,7 +20,7 @@ export const fields: DeepPartial<Field>[] = [
 		meta: {
 			interface: 'toggle',
 			width: 'half',
-			note: "Hide the current user's avatar from collaborative editing indicators",
+			note: 'Hide the current user\'s avatar from collaborative editing indicators',
 		},
 		schema: {
 			default_value: false,
