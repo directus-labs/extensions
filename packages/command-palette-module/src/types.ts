@@ -10,7 +10,7 @@ export const SearchCollection = z.object({
 	filter: z.object({}).optional().nullable() as z.ZodNullable<z.ZodOptional<z.ZodType<Filter>>>,
 	sort: z.string().optional().nullable(),
 	limit: z.number().gte(-1, 'greater than or equal to -1').nullable(),
-	availableGlobally: z.boolean().optional().default(false),
+	availableGlobally: z.boolean().optional().prefault(false),
 });
 
 export const ModuleSettings = z.object({
@@ -19,7 +19,7 @@ export const ModuleSettings = z.object({
 	}),
 	collections: z.array(SearchCollection),
 	triggerRate: z.number().gte(0, 'greater than or equal to 0').optional(),
-	commandPaletteEnabled: z.boolean().optional().default(true),
+	commandPaletteEnabled: z.boolean().optional().prefault(true),
 	recentSearchLimit: z.number().gte(0, 'greater than or equal to 0').optional(),
 });
 
