@@ -20,7 +20,6 @@
 	},
 	"scripts": {
 		"build": "directus-extension build",
-		"check": "vue-tsc --noEmit",
 		"dev": "directus-extension build -w --no-minify",
 		"link": "directus-extension link"
 	},
