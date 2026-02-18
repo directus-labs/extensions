@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PrimaryKey } from '@directus/types';
 import type { Trigger } from '../types/trigger';
-import { computed } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useFlowTriggers } from '../composables/use-flow-triggers';
 
@@ -19,16 +19,23 @@ const props = withDefaults(
 		primaryKey?: PrimaryKey;
 		field: string;
 		width: string;
+		autoRefresh?: boolean;
 	}>(),
-	{},
+	{
+		autoRefresh: true,
+	},
 );
 
 const { t } = useI18n();
+
+// Inject form values from Directus form context
+const formValues = inject('values', ref<Record<string, any>>({}));
 
 const {
 	getFlow,
 	runFlow,
 	runningFlows,
+	checkingUnsavedChanges,
 	onTriggerClick,
 	getButtonText,
 	getButtonIcon,
@@ -38,9 +45,14 @@ const {
 	isConfirmButtonDisabled,
 	getConfirmButtonText,
 	resetConfirm,
+	showUnsavedWarning,
+	proceedAfterWarning,
+	cancelWarning,
 } = useFlowTriggers({
 	collection: (_) => props.collection,
 	keys: (_) => props.primaryKey ? [props.primaryKey] : undefined,
+	autoRefresh: () => props.autoRefresh ?? true,
+	formValues: () => formValues.value,
 });
 
 const displayInterface = computed(
@@ -74,7 +86,7 @@ function getButtonDisabled(trigger: Trigger) {
 		<div v-for="{ trigger } in props.triggers" class="trigger">
 			<v-button
 				full-width
-				:loading="runningFlows.includes(trigger.flowId)"
+				:loading="runningFlows.includes(trigger.flowId) || checkingUnsavedChanges.includes(trigger.flowId)"
 				:disabled="getButtonDisabled(trigger)"
 				@click="onTriggerClick(trigger)"
 			>
@@ -82,6 +94,26 @@ function getButtonDisabled(trigger: Trigger) {
 				{{ getButtonText(trigger) }}
 			</v-button>
 		</div>
+		<!-- Unsaved Changes Warning Dialog -->
+		<v-dialog :model-value="showUnsavedWarning" @esc="cancelWarning">
+			<v-card>
+				<v-card-title>Unsaved Changes</v-card-title>
+				<v-card-text>
+					<p>You have unsaved changes in this form. If you continue, the page will refresh and these changes will be lost.</p>
+					<p><strong>Do you want to continue?</strong></p>
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="cancelWarning">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button kind="warning" @click="proceedAfterWarning">
+						Discard Changes & Continue
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<!-- Flow Confirmation Dialog -->
 		<v-dialog :model-value="displayCustomConfirmDialog" @esc="resetConfirm">
 			<v-card class="allow-drawer">
 				<v-card-title>{{ confirmDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
