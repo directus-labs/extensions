@@ -35,8 +35,8 @@ body:
         - Calculated Fields Bundle
         - Card Select Interfaces
         - Choropleth Map Panel
-        - Collaborative Editing
         - Command Palette Module
+        - Display Link Interface
         - Elasticsearch Operation
         - Experimental M2A Interface
         - Field Comments
@@ -48,12 +48,14 @@ body:
         - Inline Repeater Interface
         - Input Rich Text HTML File Link
         - Liquidjs Operation
+        - Meilisearch Operation
         - Extension Meter Component
         - Migration Bundle
         - Multilevel Autocomplete API Interface
         - Opensearch Operation
         - PDF Viewer Interface
         - Plausible Analytics Bundle
+        - Related Items Bundle
         - Resend Operation
         - Rss to JSON Operation
         - Scatter Plot Panel
@@ -61,7 +63,6 @@ body:
         - Simple List Interface
         - Spreadsheet Layout
         - Extension Steps Component
-        - Super Header Interface
         - Switch Interface
         - Table View Panel
         - Timeline Chart Panel

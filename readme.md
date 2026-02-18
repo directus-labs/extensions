@@ -36,7 +36,6 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Calculated Fields Bundle](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle) | Bundle | N&#x2F;A |
 | [Card Select Interfaces](//github.com/directus-labs/extensions/tree/main/packages/card-select-interfaces) | Bundle | N&#x2F;A |
 | [Choropleth Map Panel](//github.com/directus-labs/extensions/tree/main/packages/choropleth-map-panel) | Panel | N&#x2F;A |
-| [Collaborative Editing](//github.com/directus-labs/extensions/tree/main/packages/collaborative-editing) | Bundle | N&#x2F;A |
 | [Command Palette Module](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module) | Module | N&#x2F;A |
 | [Display Link Interface](//github.com/directus-labs/extensions/tree/main/packages/display-link-interface) | Display | N&#x2F;A |
 | [Elasticsearch Operation](//github.com/directus-labs/extensions/tree/main/packages/elasticsearch-operation) | Operation | N&#x2F;A |
@@ -65,7 +64,6 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Simple List Interface](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface) | Interface | N&#x2F;A |
 | [Spreadsheet Layout](//github.com/directus-labs/extensions/tree/main/packages/spreadsheet-layout) | Layout | N&#x2F;A |
 | [Extension Steps Component](//github.com/directus-labs/extensions/tree/main/packages/steps-component) | Bundle | N&#x2F;A |
-| [Super Header Interface](//github.com/directus-labs/extensions/tree/main/packages/super-header-interface) | Interface | N&#x2F;A |
 | [Switch Interface](//github.com/directus-labs/extensions/tree/main/packages/switch-interface) | Interface | N&#x2F;A |
 | [Table View Panel](//github.com/directus-labs/extensions/tree/main/packages/table-view-panel) | Panel | N&#x2F;A |
 | [Timeline Chart Panel](//github.com/directus-labs/extensions/tree/main/packages/timeline-chart-panel) | Panel | N&#x2F;A |
