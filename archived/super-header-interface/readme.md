@@ -1,3 +1,10 @@
+# DEPRECATED
+
+> **This extension has been merged into Directus core as the Header interface in v11.14.0 and is no longer maintained.**
+> If you are running Directus 11.14.0 or later, you do not need this extension.
+
+---
+
 # Super Header Interface
 
 ![Super Header Interface thumbnail](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/super-header-interface/docs/super-header-interface.png)

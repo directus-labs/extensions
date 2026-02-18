@@ -1,3 +1,10 @@
+# DEPRECATED
+
+> **This extension has been merged into Directus core as of v11.15.0 and is no longer maintained.**
+> If you are running Directus 11.15.0 or later, you do not need this extension.
+
+---
+
 # Collaborative Editing
 
 ![Collaborative editing thumbnail](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/collaborative-editing/docs/collaborative-post.png)
