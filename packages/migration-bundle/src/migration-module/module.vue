@@ -3,6 +3,7 @@ import type { AxiosProgressEvent } from 'axios';
 import type { Payload } from '../types/extension';
 import { useApi } from '@directus/extensions-sdk';
 import { defineComponent, reactive, ref, watch } from 'vue';
+import { DEFAULT_FILE_BATCH_SIZE, FILE_BATCH_SIZE_OPTIONS } from '../constants';
 import { md } from '../utils/md';
 import SupportNavigation from './components/navigation.vue';
 
@@ -22,14 +23,8 @@ export default defineComponent({
 		const response = ref<Record<string, any>>({});
 		const dataChunk = ref('');
 		const dryRun = ref<boolean>(true);
-		const fileBatchSize = ref<number>(3);
-		const batchSizeOptions = [
-			{ label: '1', value: 1 },
-			{ label: '3', value: 3 },
-			{ label: '5', value: 5 },
-			{ label: '10', value: 10 },
-			{ label: '25', value: 25 },
-		];
+		const fileBatchSize = ref<number>(DEFAULT_FILE_BATCH_SIZE);
+		const batchSizeOptions = FILE_BATCH_SIZE_OPTIONS;
 		const forceSchema = ref<boolean>(false);
 		const isLoadingConfig = ref<boolean>(false);
 		const isSavingConfig = ref<boolean>(false);
@@ -722,7 +717,6 @@ export default defineComponent({
 	cursor: default;
 	flex-shrink: 0;
 }
-
 
 @media (max-width: 700px) {
 	.migration-input {

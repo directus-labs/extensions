@@ -5,9 +5,10 @@ import type { Schema } from '../api';
 import { blob } from 'node:stream/consumers';
 import { readFiles, uploadFiles } from '@directus/sdk';
 import { FormData } from 'formdata-node';
+import { DEFAULT_FILE_BATCH_SIZE } from '../../constants';
 import { chunkArray } from '../../utils/chunk-array';
 
-async function migrateFiles({ res, client, service, files, dry_run = false, file_batch_size = 3 }: { res: any; client: RestClient<Schema>; service: InstanceType<ExtensionsServices['AssetsService']>; files: File[] | null; dry_run: boolean; file_batch_size?: number }): Promise<{ response: string; name: string } | DirectusError> {
+async function migrateFiles({ res, client, service, files, dry_run = false, file_batch_size = DEFAULT_FILE_BATCH_SIZE }: { res: any; client: RestClient<Schema>; service: InstanceType<ExtensionsServices['AssetsService']>; files: File[] | null; dry_run: boolean; file_batch_size?: number }): Promise<{ response: string; name: string } | DirectusError> {
 	if (!files) {
 		res.write('* Couldn\'t read data from extract\r\n\r\n');
 		return { name: 'Directus Error', status: 404, errors: [{ message: 'No files found' }] };

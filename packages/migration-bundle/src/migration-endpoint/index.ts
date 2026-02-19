@@ -4,6 +4,7 @@ import { ForbiddenError } from '@directus/errors';
 import { defineEndpoint } from '@directus/extensions-sdk';
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { toArray } from '@directus/utils';
+import { DEFAULT_FILE_BATCH_SIZE } from '../constants';
 import notifyUser from '../utils/notify-user';
 import saveToFile from '../utils/save-file';
 import { validate_data, validate_migration, validate_system } from '../utils/validate';
@@ -174,7 +175,7 @@ export default defineEndpoint({
 			const scope = req.body.scope;
 			const fileBatchSize = typeof req.body.fileBatchSize === 'number' && req.body.fileBatchSize > 0
 				? req.body.fileBatchSize
-				: 3;
+				: DEFAULT_FILE_BATCH_SIZE;
 
 			const schema = await getSchema();
 			const limiter = await initLimiter();
