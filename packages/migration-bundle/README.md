@@ -105,6 +105,22 @@ This approach provides:
 3. Uncheck any sections to exclude from the migration
 4. Start the migration
 
+### File Batch Size
+
+When the **content** scope is selected, a **Batch size** control appears. This controls how many files are read into memory and uploaded before a new batch begins.
+
+| Value | Behavior |
+|---|---|
+| 5 | Lowest memory usage — best for constrained environments |
+| **10** (default) | Suitable for most projects |
+| 15 | Moderate speed increase |
+| 20 | Faster on high-bandwidth connections |
+| 25 | Maximum throughput — higher memory usage |
+
+**When to adjust:**
+- **Lower the batch size** if the migration runs out of memory or the source/destination server is under heavy load.
+- **Raise the batch size** if you have a fast connection and want to speed up large file libraries.
+
 ![Customise the module](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/migration-bundle/docs/migration-module-customize.jpg)
 
 

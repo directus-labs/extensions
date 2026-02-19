@@ -5,8 +5,10 @@ import type { Schema } from '../api';
 import { blob } from 'node:stream/consumers';
 import { readFiles, uploadFiles } from '@directus/sdk';
 import { FormData } from 'formdata-node';
+import { DEFAULT_FILE_BATCH_SIZE } from '../../constants';
+import { chunkArray } from '../../utils/chunk-array';
 
-async function migrateFiles({ res, client, service, files, dry_run = false }: { res: any; client: RestClient<Schema>; service: InstanceType<ExtensionsServices['AssetsService']>; files: File[] | null; dry_run: boolean }): Promise<{ response: string; name: string } | DirectusError> {
+async function migrateFiles({ res, client, service, files, dry_run = false, file_batch_size = DEFAULT_FILE_BATCH_SIZE }: { res: any; client: RestClient<Schema>; service: InstanceType<ExtensionsServices['AssetsService']>; files: File[] | null; dry_run: boolean; file_batch_size?: number }): Promise<{ response: string; name: string } | DirectusError> {
 	if (!files) {
 		res.write('* Couldn\'t read data from extract\r\n\r\n');
 		return { name: 'Directus Error', status: 404, errors: [{ message: 'No files found' }] };
@@ -48,56 +50,65 @@ async function migrateFiles({ res, client, service, files, dry_run = false }: { 
 
 		res.write(filesToUpload.length > 0 ? `* [Remote] Uploading ${filesToUpload.length} ${filesToUpload.length > 1 ? 'Files' : 'File'}\r\n\r\n` : '* No Files to migrate\r\n\r\n');
 
-		const errors = await Promise.all(filesToUpload.map(async (asset, index) => {
-			const fileName = asset.filename_disk;
-			let stream, stat;
+		const BATCH_SIZE = file_batch_size;
+		const batches = chunkArray(filesToUpload, BATCH_SIZE);
+		const errors: unknown[] = [];
 
-			try {
-				const ass = await service.getAsset(asset.id);
-				stream = ass.stream;
-				stat = ass.stat;
-			}
-			catch (error) {
-				res.write(`* [Remote] Error: Couldn't read ${fileName} from source [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
-				console.error(error);
-				return error;
-			}
+		for (const batch of batches) {
+			const batchErrors = await Promise.all(batch.map(async (asset) => {
+				const index = filesToUpload.indexOf(asset);
+				const fileName = asset.filename_disk;
+				let stream, stat;
 
-			if (stat.size <= 0) {
-				return;
-			}
+				try {
+					const ass = await service.getAsset(asset.id);
+					stream = ass.stream;
+					stat = ass.stat;
+				}
+				catch (error) {
+					res.write(`* [Remote] Error: Couldn't read ${fileName} from source [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+					console.error(error);
+					return error;
+				}
 
-			if (!asset.type) {
-				res.write(`* [Remote] Skipped ${fileName} [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
-				return;
-			}
+				if (stat.size <= 0) {
+					return;
+				}
 
-			const form = new FormData();
-			form.append('id', asset.id);
-			if (asset.title)
-				form.append('title', asset.title);
-			if (asset.description)
-				form.append('description', asset.description);
-			if (asset.folder)
-				form.append('folder', asset.folder);
+				if (!asset.type) {
+					res.write(`* [Remote] Skipped ${fileName} [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+					return;
+				}
 
-			const myBlob = await blob(stream);
-			form.append('file', myBlob.slice(0, myBlob.size, asset.type), fileName);
+				const form = new FormData();
+				form.append('id', asset.id);
+				if (asset.title)
+					form.append('title', asset.title);
+				if (asset.description)
+					form.append('description', asset.description);
+				if (asset.folder)
+					form.append('folder', asset.folder);
 
-			res.write(`* [Remote] ${fileName} ${stat.size} bytes [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+				const myBlob = await blob(stream);
+				form.append('file', myBlob.slice(0, myBlob.size, asset.type), fileName);
 
-			if (dry_run) return;
+				res.write(`* [Remote] ${fileName} ${stat.size} bytes [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
 
-			try {
-				// @ts-expect-error-multipart-formdata
-				await client.request(uploadFiles(form));
-			}
-			catch (error) {
-				res.write(`* [Remote] Error: Couldn't upload ${fileName} [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
-				console.error(error);
-				return error;
-			}
-		}));
+				if (dry_run) return;
+
+				try {
+					// @ts-expect-error-multipart-formdata
+					await client.request(uploadFiles(form));
+				}
+				catch (error) {
+					res.write(`* [Remote] Error: Couldn't upload ${fileName} [${index + 1}/${filesToUpload.length}]\r\n\r\n`);
+					console.error(error);
+					return error;
+				}
+			}));
+
+			errors.push(...batchErrors);
+		}
 
 		if (errors.some((error) => error !== undefined)) {
 			return { name: 'Directus Error', status: 500, errors: errors.filter((error) => error !== undefined) as Array<{ message: string }> };
