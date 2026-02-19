@@ -8,13 +8,14 @@ import {
 	AccordionRoot,
 	AccordionTrigger,
 } from 'reka-ui';
-import { computed, nextTick, ref, toRefs } from 'vue';
+import { computed, inject, nextTick, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
 const props = withDefaults(
 	defineProps<{
 		value: Record<string, unknown>[] | null;
+		field?: string;
 		fields?: DeepPartial<Field>[];
 		template?: string;
 		addLabel?: string;
@@ -161,8 +162,54 @@ function onDragEnd(evt: any) {
 
 const itemToRemove = ref<number | null>(null);
 
-// eslint-disable-next-line unused-imports/no-unused-vars
-const validationErrors = ref<any[]>([]);
+const { updateNestedValidationErrors } = inject<{
+	updateNestedValidationErrors: (field: string, errors: any[]) => void;
+}>('nestedValidation', { updateNestedValidationErrors: () => {} });
+
+const itemValidationErrors = computed<Record<number, any[]>>(() => {
+	const errorsMap: Record<number, any[]> = {};
+
+	internalValue.value?.forEach((item, index) => {
+		const errors: any[] = [];
+
+		for (const field of props.fields ?? []) {
+			if (!field.field || !field.meta?.required) continue;
+
+			const val = item[field.field];
+			const isEmpty = val === null || val === undefined || val === '' || (Array.isArray(val) && val.length === 0);
+
+			if (isEmpty) {
+				errors.push({ field: field.field, type: 'nnull' });
+			}
+		}
+
+		if (errors.length > 0) errorsMap[index] = errors;
+	});
+
+	return errorsMap;
+});
+
+watch(itemValidationErrors, (errorsMap) => {
+	if (!props.field) return;
+
+	const allErrors = Object.entries(errorsMap).flatMap(([indexStr, errors]) => {
+		const index = Number(indexStr);
+		return errors.map((error) => {
+			const fieldDef = props.fields?.find((f) => f.field === error.field);
+			return {
+				...error,
+				// Renders as: "Repeater Field Name → [index] → Sub-field Name"
+				field: `${props.field}.${index}.${error.field}`,
+				nestedNames: {
+					[String(index)]: `[${index + 1}]`,
+					[error.field]: fieldDef?.name ?? fieldDef?.field ?? error.field,
+				},
+			};
+		});
+	});
+
+	updateNestedValidationErrors(props.field, allErrors);
+}, { immediate: true });
 
 const confirmDiscard = ref(false);
 
