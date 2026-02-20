@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/inline-repeater-interface",
 	"type": "module",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "A powerful interface for managing repeatable form fields within Directus that allows inline editing and reordering of items.",
 	"license": "MIT",
 	"repository": {
