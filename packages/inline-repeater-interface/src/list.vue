@@ -201,7 +201,7 @@ watch(itemValidationErrors, (errorsMap) => {
 				// Renders as: "Repeater Field Name → [index] → Sub-field Name"
 				field: `${props.field}.${index}.${error.field}`,
 				nestedNames: {
-					[String(index)]: `[${index + 1}]`,
+					[String(index)]: `[${index}]`,
 					[error.field]: fieldDef?.name ?? fieldDef?.field ?? error.field,
 				},
 			};
