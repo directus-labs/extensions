@@ -34,30 +34,105 @@ async function extractContent({
 	try {
 		res.write('* Fetching collections');
 
-		const collections: Collection[] = await collectionService.readByQuery({
+		// Load all collections first
+		const allCollections: Collection[] = await collectionService.readByQuery({
 			limit: -1,
 		});
 
-		res.write(' ...done\r\n\r\n');
+		// Fix 8: Filter collections based on scope (same logic as fullData/singletons)
+		let collections = allCollections.filter(c => !c.collection.startsWith('directus_'));
+
+		const hasContentFilter = scope.contentCollections && scope.contentCollections.length > 0;
+		const hasSelectedFilter = scope.selectedCollections && scope.selectedCollections.length > 0;
+		const hasExcludedFilter = scope.excludedCollections && scope.excludedCollections.length > 0;
+
+		if (hasContentFilter || hasSelectedFilter) {
+			// Build initial set of included collection names
+			const selectedNames = hasContentFilter
+				? scope.contentCollections!
+				: scope.selectedCollections!;
+
+			const includedNames = new Set<string>(selectedNames);
+
+			// Recursively add parent groups (same logic as filter-schema.ts)
+			let changed = true;
+			let iterations = 0;
+			const maxIterations = 100;
+
+			while (changed && iterations < maxIterations) {
+				changed = false;
+				iterations++;
+				for (const c of allCollections) {
+					if (includedNames.has(c.collection) && c.meta?.group) {
+						if (!includedNames.has(c.meta.group)) {
+							includedNames.add(c.meta.group);
+							changed = true;
+						}
+					}
+				}
+			}
+
+			// Filter collections to only include selected + parent groups
+			collections = collections.filter(c => includedNames.has(c.collection));
+		}
+		else if (hasExcludedFilter) {
+			collections = collections.filter(c =>
+				!scope.excludedCollections!.includes(c.collection)
+			);
+		}
+
+		res.write(` (${collections.length} collections) ...done\r\n\r\n`);
 
 		res.write('* Fetching fields');
 		const primaryKeyMap = await getCollectionPrimaryKeys(fieldService);
 		res.write(' ...done\r\n\r\n');
 
 		res.write('* Fetching full data');
-		const fullData: UserCollectionItems[] = scope.content ? await loadFullData(collections, ItemsService, primaryKeyMap, accountability, schema) : [];
+		const fullData: UserCollectionItems[] = scope.content ? await loadFullData(collections, ItemsService, primaryKeyMap, accountability, schema, scope) : [];
 		res.write(' ...');
 		await saveToFile(fullData, 'items_full_data', fileService, folder, storage);
 		res.write('done\r\n\r\n');
 
 		res.write('* Fetching singletons');
-		const singletons: UserCollectionItem[] = scope.content ? await loadSingletons(collections, ItemsService, accountability, schema) : [];
+		const singletons: UserCollectionItem[] = scope.content ? await loadSingletons(collections, ItemsService, accountability, schema, scope) : [];
 		res.write(' ...');
 		await saveToFile(singletons, 'items_singleton', fileService, folder, storage);
 		res.write('done\r\n\r\n');
 
 		res.write('* Fetching files');
-		const files: File[] = scope.content ? await fileService.readByQuery({ fields: directusFileFields, filter: { _or: [{ folder: { _neq: folder } }, { folder: { _null: true } }] }, limit: -1 }) : [];
+		// Fix 6.3: Filter files based on selected collections
+		let files: File[] = [];
+		if (scope.content) {
+			const contentCols = scope.contentCollections?.length ? scope.contentCollections
+				: (scope.selectedCollections?.length ? scope.selectedCollections : null);
+
+			if (contentCols && contentCols.length > 0) {
+				// Get file IDs from selected collections
+				const fileIds = await getFileIdsFromCollections(contentCols, ItemsService, fieldService, accountability, schema);
+				res.write(` (${fileIds.size} files from ${contentCols.length} collections)`);
+
+				if (fileIds.size > 0) {
+					files = await fileService.readByQuery({
+						fields: directusFileFields,
+						filter: {
+							_and: [
+								{ id: { _in: Array.from(fileIds) } },
+								{ _or: [{ folder: { _neq: folder } }, { folder: { _null: true } }] },
+							],
+						},
+						limit: -1,
+					});
+				}
+			}
+			else {
+				// No filtering - get all files
+				files = await fileService.readByQuery({
+					fields: directusFileFields,
+					filter: { _or: [{ folder: { _neq: folder } }, { folder: { _null: true } }] },
+					limit: -1,
+				});
+			}
+		}
 		res.write(' ...');
 		await saveToFile(files, 'files', fileService, folder, storage);
 		res.write('done\r\n\r\n');
@@ -120,11 +195,25 @@ async function extractSingleton(collection: string, ItemsService: any, accountab
 	return await itemService.readSingleton({});
 }
 
-async function loadFullData(collections: Collection[], itemService: any, primaryKeyMap: any, accountability: Accountability, schema: SchemaOverview): Promise<UserCollectionItems[]> {
+async function loadFullData(collections: Collection[], itemService: any, primaryKeyMap: any, accountability: Accountability, schema: SchemaOverview, scope: Scope): Promise<UserCollectionItems[]> {
 	const userCollections = collections
 		.filter((item) => !item.collection.startsWith('directus_', 0))
 		.filter((item) => item.schema !== null)
-		.filter((item) => !item.meta?.singleton);
+		.filter((item) => !item.meta?.singleton)
+		// Collection-level filtering for content
+		// If contentCollections is specified, use that; otherwise fall back to selectedCollections/excludedCollections
+		.filter((item) => {
+			if (scope.contentCollections && scope.contentCollections.length > 0) {
+				return scope.contentCollections.includes(item.collection);
+			}
+			if (scope.selectedCollections && scope.selectedCollections.length > 0) {
+				return scope.selectedCollections.includes(item.collection);
+			}
+			if (scope.excludedCollections && scope.excludedCollections.length > 0) {
+				return !scope.excludedCollections.includes(item.collection);
+			}
+			return true;
+		});
 
 	return await Promise.all(userCollections.map(async (collection) => {
 		const name = collection.collection;
@@ -137,10 +226,24 @@ async function loadFullData(collections: Collection[], itemService: any, primary
 	}));
 }
 
-async function loadSingletons(collections: Collection[], itemService: any, accountability: Accountability, schema: SchemaOverview): Promise<UserCollectionItem[]> {
+async function loadSingletons(collections: Collection[], itemService: any, accountability: Accountability, schema: SchemaOverview, scope: Scope): Promise<UserCollectionItem[]> {
 	const singletonCollections = collections
 		.filter((item) => !item.collection.startsWith('directus_', 0))
-		.filter((item) => item.meta?.singleton);
+		.filter((item) => item.meta?.singleton)
+		// Collection-level filtering for content
+		// If contentCollections is specified, use that; otherwise fall back to selectedCollections/excludedCollections
+		.filter((item) => {
+			if (scope.contentCollections && scope.contentCollections.length > 0) {
+				return scope.contentCollections.includes(item.collection);
+			}
+			if (scope.selectedCollections && scope.selectedCollections.length > 0) {
+				return scope.selectedCollections.includes(item.collection);
+			}
+			if (scope.excludedCollections && scope.excludedCollections.length > 0) {
+				return !scope.excludedCollections.includes(item.collection);
+			}
+			return true;
+		});
 
 	return await Promise.all(singletonCollections.map(async (collection) => {
 		const name = collection.collection;
@@ -172,6 +275,60 @@ function getPrimaryKey(collectionsMap: any, collection: string) {
 	}
 
 	return collectionsMap[collection];
+}
+
+// Fix 6.3: Get file IDs from selected collections
+async function getFileIdsFromCollections(
+	collections: string[],
+	ItemsService: any,
+	fieldService: any,
+	accountability: Accountability,
+	schema: SchemaOverview,
+): Promise<Set<string>> {
+	const fileIds = new Set<string>();
+
+	// Get all fields to find file-type fields
+	const allFields = await fieldService.readAll();
+	if (!allFields) return fileIds;
+
+	// Find file-type fields in selected collections
+	const fileFields: Array<{ collection: string; field: string }> = [];
+	for (const field of allFields) {
+		if (!collections.includes(field.collection)) continue;
+
+		// Check for file field (uuid with file interface or special)
+		const isFileField = field.type === 'uuid' &&
+			(field.meta?.interface === 'file' ||
+				field.meta?.interface === 'file-image' ||
+				field.meta?.special?.includes('file'));
+
+		if (isFileField) {
+			fileFields.push({ collection: field.collection, field: field.field });
+		}
+	}
+
+	// Query each collection for file IDs
+	for (const { collection, field } of fileFields) {
+		try {
+			const itemService = new ItemsService(collection, { accountability, schema });
+			const items = await itemService.readByQuery({
+				fields: [field],
+				filter: { [field]: { _nnull: true } },
+				limit: -1,
+			});
+
+			for (const item of items) {
+				if (item[field]) {
+					fileIds.add(item[field]);
+				}
+			}
+		}
+		catch (error) {
+			console.error(`Failed to get files from ${collection}.${field}:`, error);
+		}
+	}
+
+	return fileIds;
 }
 
 export default extractContent;

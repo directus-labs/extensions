@@ -172,6 +172,7 @@ export interface Translation {
 }
 
 export interface Scope {
+	schema: boolean;
 	users: boolean;
 	content: boolean;
 	comments: boolean;
@@ -180,6 +181,11 @@ export interface Scope {
 	extensions: boolean;
 	flows: boolean;
 	force: boolean;
+	// Collection-level filtering
+	selectedCollections?: string[];
+	excludedCollections?: string[];
+	// Content-specific collection selection (subset of selectedCollections)
+	contentCollections?: string[];
 }
 
 ;

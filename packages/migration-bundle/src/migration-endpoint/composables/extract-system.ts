@@ -1,6 +1,25 @@
 import type { Accountability, Permission, Preset, SchemaOverview, Settings, Share } from '@directus/types';
 import type { Access, CommentRaw, DashboardRaw, DirectusError, Extension, Folder, ModifiedFlowRaw, OperationRaw, PanelRaw, PolicyRaw, RoleRaw, Scope, SystemExtract, Translation, UserRaw } from '../../types/extension';
 import saveToFile from '../../utils/save-file';
+
+function shouldIncludeCollection(collectionName: string, scope: Scope): boolean {
+	const { selectedCollections, excludedCollections } = scope;
+
+	// If no filtering specified, include all
+	if ((!selectedCollections || selectedCollections.length === 0) &&
+		(!excludedCollections || excludedCollections.length === 0)) {
+		return true;
+	}
+
+	if (selectedCollections && selectedCollections.length > 0) {
+		return selectedCollections.includes(collectionName);
+	}
+	if (excludedCollections && excludedCollections.length > 0) {
+		return !excludedCollections.includes(collectionName);
+	}
+	return true;
+}
+
 import {
 	directusDashboardFields,
 	directusFlowFields,
@@ -100,6 +119,8 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		}
 
 		res.write(scope.content ? '* Fetching folders' : '* Skipping folders\r\n\r\n');
+		// TODO Fix 6.4: Filter folders based on which files are being migrated
+		// Currently loads all folders - duplicates are prevented in migrate-folders.ts
 		const folders: Folder[] = scope.content ? await folderService.readByQuery({ fields: directusFolderFields, filter: { id: { _neq: folder } }, limit: -1 }) : [];
 
 		if (scope.content) {
@@ -118,7 +139,16 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		}
 
 		res.write(scope.dashboards ? '* Fetching panels' : '* Skipping panels\r\n\r\n');
-		const panels: PanelRaw[] = scope.dashboards ? await panelService.readByQuery({ fields: directusPanelFields, limit: -1 }) : [];
+		let panels: PanelRaw[] = scope.dashboards ? await panelService.readByQuery({ fields: directusPanelFields, limit: -1 }) : [];
+
+		// Filter panels by options.collection if collection filtering is active
+		if (scope.dashboards && panels.length > 0) {
+			panels = panels.filter(panel => {
+				// Panels without collection reference are always included
+				if (!panel.options?.collection) return true;
+				return shouldIncludeCollection(panel.options.collection, scope);
+			});
+		}
 
 		if (scope.dashboards) {
 			res.write(' ...');
@@ -127,7 +157,16 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		}
 
 		res.write(scope.flows ? '* Fetching flows' : '* Skipping flows\r\n\r\n');
-		const flows: ModifiedFlowRaw[] = scope.flows ? await flowService.readByQuery({ fields: directusFlowFields, limit: -1 }) : [];
+		let flows: ModifiedFlowRaw[] = scope.flows ? await flowService.readByQuery({ fields: directusFlowFields, limit: -1 }) : [];
+
+		// Filter flows by options.collection if collection filtering is active
+		if (scope.flows && flows.length > 0) {
+			flows = flows.filter(flow => {
+				// Flows without collection reference are always included
+				if (!flow.options?.collection) return true;
+				return shouldIncludeCollection(flow.options.collection, scope);
+			});
+		}
 
 		if (scope.flows) {
 			res.write(' ...');
@@ -136,7 +175,13 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		}
 
 		res.write(scope.flows ? '* Fetching operations' : '* Skipping operations\r\n\r\n');
-		const operations: OperationRaw[] = scope.flows ? await operationService.readByQuery({ fields: directusOperationFields, limit: -1 }) : [];
+		let operations: OperationRaw[] = scope.flows ? await operationService.readByQuery({ fields: directusOperationFields, limit: -1 }) : [];
+
+		// Filter operations: only include operations belonging to included flows
+		if (scope.flows && operations.length > 0) {
+			const includedFlowIds = new Set(flows.map(f => f.id));
+			operations = operations.filter(op => includedFlowIds.has(op.flow));
+		}
 
 		if (scope.flows) {
 			res.write(' ...');
@@ -157,7 +202,16 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		res.write('done\r\n\r\n');
 
 		res.write(scope.presets ? '* Fetching presets' : '* Skipping presets');
-		const presets: Preset[] = scope.presets ? await presetService.readByQuery({ fields: directusPresetFields, limit: -1 }) : [];
+		let presets: Preset[] = scope.presets ? await presetService.readByQuery({ fields: directusPresetFields, limit: -1 }) : [];
+
+		// Filter presets by collection if collection filtering is active
+		if (scope.presets && presets.length > 0) {
+			presets = presets.filter(preset => {
+				// Global presets (no collection) are always included
+				if (!preset.collection) return true;
+				return shouldIncludeCollection(preset.collection, scope);
+			});
+		}
 
 		if (scope.presets) {
 			res.write(' ...');
@@ -175,7 +229,12 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		}
 
 		res.write(scope.comments ? '* Fetching comments' : '* Skipping comments');
-		const comments: CommentRaw[] = scope.comments ? await commentService.readByQuery({ limit: -1 }) : [];
+		let comments: CommentRaw[] = scope.comments ? await commentService.readByQuery({ limit: -1 }) : [];
+
+		// Filter comments by collection if collection filtering is active
+		if (scope.comments && comments.length > 0) {
+			comments = comments.filter(comment => shouldIncludeCollection(comment.collection, scope));
+		}
 
 		if (scope.comments) {
 			res.write(' ...');
