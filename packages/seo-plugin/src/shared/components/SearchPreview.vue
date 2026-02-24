@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { truncate } from '../utils';
 
 defineProps<{
@@ -7,6 +8,8 @@ defineProps<{
 	metaDescription: string;
 	collection: string;
 }>();
+
+const { t } = useI18n();
 
 const hasFaviconError = ref(false);
 
@@ -39,7 +42,7 @@ function getProjectName(): string {
 
 <template>
 	<div class="field">
-		<label class="label field-label type-label">Search Preview</label>
+		<label class="label field-label type-label">{{ t('seo_plugin.ui.search_preview_label') }}</label>
 		<div class="search-container">
 			<div class="search-preview">
 				<div class="preview-url">
@@ -65,10 +68,10 @@ function getProjectName(): string {
 					</div>
 				</div>
 				<div class="preview-title">
-					{{ truncate(title, 60) || 'Enter a title to see preview' }}
+					{{ truncate(title, 60) || t('seo_plugin.ui.preview_title') }}
 				</div>
 				<div class="preview-description">
-					{{ truncate(metaDescription, 160) || 'Enter a meta description to see preview' }}
+					{{ truncate(metaDescription, 160) || t('seo_plugin.ui.preview_description') }}
 				</div>
 			</div>
 		</div>

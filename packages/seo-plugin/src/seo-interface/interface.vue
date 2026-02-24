@@ -8,6 +8,7 @@ import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from 'rek
 import { computed, onMounted, toRefs } from 'vue';
 import OgImagePreview from '../shared/components/OgImagePreview.vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
+import { useI18n } from 'vue-i18n';
 
 import Analysis from './analysis/components/Analysis.vue';
 import FocusKeyphrase from './components/FocusKeyphrase.vue';
@@ -31,6 +32,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<(event: 'input', value: SeoValue) => void>();
 
 const { value } = toRefs(props);
+const { t } = useI18n();
 
 function getDefaultSeoValue(): SeoValue {
 	return {
@@ -133,16 +135,16 @@ const showTabsUi = computed(() => {
 				<div class="indicator-bar" />
 			</TabsIndicator>
 			<TabsTrigger class="tab-trigger" value="metadata">
-				<span>Basic</span>
+				<span>{{ t('seo_plugin.ui.tabs.basic') }}</span>
 			</TabsTrigger>
 			<TabsTrigger v-if="showAdvancedTab" class="tab-trigger" value="advanced-settings">
-				<span>Advanced</span>
+				<span>{{ t('seo_plugin.ui.tabs.advanced') }}</span>
 			</TabsTrigger>
 			<TabsTrigger v-if="showCustomFieldsTab" class="tab-trigger" value="custom-fields">
-				<span>Custom Fields</span>
+				<span>{{ t('seo_plugin.ui.tabs.custom_fields') }}</span>
 			</TabsTrigger>
 			<TabsTrigger v-if="showAnalysisTab" class="tab-trigger" value="analysis">
-				<span>Keyphrase</span>
+				<span>{{ t('seo_plugin.ui.tabs.analysis') }}</span>
 			</TabsTrigger>
 		</TabsList>
 
@@ -197,8 +199,8 @@ const showTabsUi = computed(() => {
 			<!-- Sitemap Fields -->
 			<div v-if="props.showSitemap" class="field">
 				<label class="label field-label type-label">
-					Sitemap Settings
-					<v-icon v-tooltip="'Control how search engines crawl and index your site'" name="info" small class="info-icon" />
+					{{ t('seo_plugin.interface.sitemap_settings') }}
+					<v-icon v-tooltip="t('seo_plugin.tooltips.sitemap_settings')" name="info" small class="info-icon" />
 				</label>
 				<div class="form-grid">
 					<div v-for="sitemapField in sitemapFields" :key="sitemapField.key" class="field half">
@@ -221,8 +223,8 @@ const showTabsUi = computed(() => {
 			<!-- Search Engine Controls -->
 			<div v-if="props.showSearchControls" class="field">
 				<label class="label field-label type-label">
-					Search Engine Controls
-					<v-icon v-tooltip="'Control how search engines interact with this page'" name="info" small class="info-icon" />
+					{{ t('seo_plugin.interface.search_controls') }}
+					<v-icon v-tooltip="t('seo_plugin.tooltips.search_controls')" name="info" small class="info-icon" />
 				</label>
 				<div class="form-grid">
 					<interface-boolean
@@ -236,7 +238,7 @@ const showTabsUi = computed(() => {
 					>
 						<template #append>
 							<v-icon
-								v-tooltip="'Prevents search engines from indexing this page'"
+								v-tooltip="t('seo_plugin.tooltips.no_index')"
 								name="visibility_off"
 								small
 								class="info-icon"
@@ -249,10 +251,10 @@ const showTabsUi = computed(() => {
 						<span>
 							{{
 								internalValue.no_index && internalValue.no_follow
-									? "This page will be hidden from search engines and its links won't be followed"
+									? t('seo_plugin.interface.hidden_and_not_followed')
 									: internalValue.no_index
-										? 'This page will be hidden from search engines'
-										: "Links on this page won't be followed by search engines"
+										? t('seo_plugin.interface.hidden_from_search')
+										: t('seo_plugin.interface.links_not_followed_warning')
 							}}
 						</span>
 					</v-notice>

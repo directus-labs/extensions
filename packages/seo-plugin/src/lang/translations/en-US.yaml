@@ -71,3 +71,31 @@ seo:
     social_media_preview: Social Media Preview
     additional_fields_status: '{filled} of {total} fields completed'
     missing_required_fields: '{count} required fields missing'
+
+  ui:
+    tabs:
+      basic: Basic
+      advanced: Advanced
+      custom_fields: Custom Fields
+      analysis: Keyphrase
+    focus_keyphrase: Focus Keyphrase
+    page_title: Page Title
+    meta_description: Meta Description
+    og_image_missing: Missing
+    click_to_edit: Click to edit
+    input_disabled: Input disabled
+    keyphrase_hint: The main phrase you want this content to rank for in search engines.
+    keyphrase_placeholder: Enter the main keyword or phrase
+    preview_title: Enter a title to see preview
+    preview_description: Enter a meta description to see preview
+    search_preview_label: Search Preview
+    seo_status: SEO Status
+    seo_status_tooltip: Quick checks to see if your SEO is optimized.
+    hidden_from_search_chip: Hidden from search
+    links_not_followed_chip: Links not followed
+    title_label: Title
+    meta_description_label: Meta Description
+    og_image_label: OG Image
+    additional_fields_label: Additional Fields
+    required_count: '{count} required'
+    optional_count: '{count} optional'

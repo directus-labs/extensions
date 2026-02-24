@@ -4,6 +4,7 @@ import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 // @ts-expect-error - types not found in directus-format-title
 import { formatTitle } from '@directus/format-title';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import SearchPreview from '../shared/components/SearchPreview.vue';
 import { useSeoField } from '../shared/composables/useSeoField';
@@ -45,7 +46,7 @@ const additionalFieldsStatus = computed(() => {
 		return {
 			icon: 'error',
 			class: 'error',
-			text: `${missingRequiredFields} required`,
+			text: t('seo_plugin.ui.required_count', { count: missingRequiredFields }),
 		};
 	}
 
@@ -54,7 +55,7 @@ const additionalFieldsStatus = computed(() => {
 		: {
 				icon: 'warning',
 				class: 'warning',
-				text: `${totalFields - filledFields} optional`,
+				text: t('seo_plugin.ui.optional_count', { count: totalFields - filledFields }),
 			};
 });
 
@@ -108,6 +109,8 @@ const status = computed(() => {
 		color: 'success',
 	};
 });
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -120,8 +123,8 @@ const status = computed(() => {
 			</template>
 			<div class="preview-box">
 				<label class="header-label field-label type-label">
-					<span>SEO Status</span>
-					<v-icon v-tooltip="'Quick checks to see if your SEO is optimized.'" name="info" small class="info-icon neutral" />
+					<span>{{ t('seo_plugin.ui.seo_status') }}</span>
+					<v-icon v-tooltip="t('seo_plugin.ui.seo_status_tooltip')" name="info" small class="info-icon neutral" />
 				</label>
 
 				<!-- No Index -->
@@ -132,18 +135,18 @@ const status = computed(() => {
 							class="chip-icon"
 							small
 						/>
-						{{ 'Hidden from search' }}
+						{{ t('seo_plugin.ui.hidden_from_search_chip') }}
 					</v-chip>
 					<v-chip v-if="value.no_follow" small label>
 						<v-icon name="link_off" class="chip-icon" small />
-						{{ 'Links not followed' }}
+						{{ t('seo_plugin.ui.links_not_followed_chip') }}
 					</v-chip>
 				</div>
 
 				<!-- Title -->
 				<div class="preview-box-item border-bottom-dash">
 					<div class="left">
-						<h3>Title</h3>
+						<h3>{{ t('seo_plugin.ui.title_label') }}</h3>
 					</div>
 					<div>
 						<v-chip small label>
@@ -159,7 +162,7 @@ const status = computed(() => {
 				</div>
 				<div class="preview-box-item border-bottom-dash">
 					<div class="left">
-						<h3>Meta Description</h3>
+						<h3>{{ t('seo_plugin.ui.meta_description_label') }}</h3>
 					</div>
 					<div>
 						<v-chip small label>
@@ -177,12 +180,12 @@ const status = computed(() => {
 				<!-- OG Image -->
 				<div v-if="interfaceOptions.showOgImage" class="preview-box-item border-bottom-dash">
 					<div class="left">
-						<h3>OG Image</h3>
+						<h3>{{ t('seo_plugin.ui.og_image_label') }}</h3>
 					</div>
 					<div>
 						<v-chip small label>
 							<v-icon :name="value.og_image ? 'check' : 'error'" :class="value.og_image ? 'success' : 'error'" class="chip-icon" small />
-							{{ value.og_image ? '' : 'Missing' }}
+							{{ value.og_image ? '' : t('seo_plugin.ui.og_image_missing') }}
 						</v-chip>
 					</div>
 				</div>
@@ -190,7 +193,7 @@ const status = computed(() => {
 				<!-- Additional Fields -->
 				<div v-if="additionalFieldsStatus" class="preview-box-item border-bottom-dash">
 					<div class="left">
-						<h3>Additional Fields</h3>
+						<h3>{{ t('seo_plugin.ui.additional_fields_label') }}</h3>
 					</div>
 					<div>
 						<v-chip small label>
