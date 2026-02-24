@@ -1,4 +1,4 @@
-seo:
+seo_plugin:
   fields:
     title: Title
     meta_description: Meta Description
@@ -99,3 +99,19 @@ seo:
     additional_fields_label: Additional Fields
     required_count: '{count} required'
     optional_count: '{count} optional'
+
+  frequencies:
+    always: Always
+    hourly: Hourly
+    daily: Daily
+    weekly: Weekly
+    monthly: Monthly
+    yearly: Yearly
+    never: Never
+
+  priorities:
+    very_high: Very High (1.0)
+    high: High (0.8)
+    medium: Medium (0.5)
+    low: Low (0.3)
+    very_low: Very Low (0.1)

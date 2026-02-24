@@ -5,6 +5,7 @@ import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 import { formatTitle } from '@directus/format-title';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import pluginTranslations from '../lang/index';
 
 import SearchPreview from '../shared/components/SearchPreview.vue';
 import { useSeoField } from '../shared/composables/useSeoField';
@@ -110,7 +111,11 @@ const status = computed(() => {
 	};
 });
 
-const { t } = useI18n();
+const { t, mergeLocaleMessage } = useI18n();
+
+pluginTranslations.forEach((lang) => {
+	mergeLocaleMessage(lang.language, lang.translation);
+});
 </script>
 
 <template>

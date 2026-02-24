@@ -9,6 +9,7 @@ import { computed, onMounted, toRefs } from 'vue';
 import OgImagePreview from '../shared/components/OgImagePreview.vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
 import { useI18n } from 'vue-i18n';
+import pluginTranslations from '../lang/index';
 
 import Analysis from './analysis/components/Analysis.vue';
 import FocusKeyphrase from './components/FocusKeyphrase.vue';
@@ -32,7 +33,11 @@ const props = defineProps<Props>();
 const emit = defineEmits<(event: 'input', value: SeoValue) => void>();
 
 const { value } = toRefs(props);
-const { t } = useI18n();
+const { t, mergeLocaleMessage } = useI18n();
+
+pluginTranslations.forEach((lang) => {
+	mergeLocaleMessage(lang.language, lang.translation);
+});
 
 function getDefaultSeoValue(): SeoValue {
 	return {
@@ -206,16 +211,16 @@ const showTabsUi = computed(() => {
 					<div v-for="sitemapField in sitemapFields" :key="sitemapField.key" class="field half">
 						<v-select
 							:model-value="internalValue.sitemap?.[sitemapField.key as keyof SeoValue['sitemap']] || ''"
-							:items="sitemapField.options"
+							:items="sitemapField.options.map(opt => ({ text: t(opt.text), value: opt.value }))"
 							:disabled="props.disabled"
-							:placeholder="sitemapField.label"
+							:placeholder="t(sitemapField.label)"
 							@update:model-value="updateField(`sitemap.${sitemapField.key}` as 'sitemap.priority' | 'sitemap.change_frequency', $event)"
 						>
 							<template #prepend>
 								<v-icon :name="sitemapField.icon" />
 							</template>
 						</v-select>
-						<small v-if="sitemapField.tooltip" class="hint">{{ sitemapField.tooltip }}</small>
+						<small v-if="sitemapField.tooltip" class="hint">{{ t(sitemapField.tooltip) }}</small>
 					</div>
 				</div>
 			</div>
@@ -233,13 +238,13 @@ const showTabsUi = computed(() => {
 						class="field half"
 						:model-value="internalValue[control.key as 'no_index' | 'no_follow']"
 						:disabled="props.disabled"
-						:label="control.label"
+						:label="t(control.label)"
 						@update:model-value="updateField(control.key as keyof SeoValue, $event)"
 					>
 						<template #append>
 							<v-icon
-								v-tooltip="t('seo_plugin.tooltips.no_index')"
-								name="visibility_off"
+								v-tooltip="t(control.tooltip)"
+								:name="control.icon"
 								small
 								class="info-icon"
 							/>
