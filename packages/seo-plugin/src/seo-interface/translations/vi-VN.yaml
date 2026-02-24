@@ -99,6 +99,9 @@ seo_plugin:
     additional_fields_label: Các trường bổ sung
     required_count: '{count} trường bắt buộc'
     optional_count: '{count} trường tuỳ chọn'
+    upload_image_preview: Tải ảnh lên để xem trước liên kết của bạn sẽ hiển thị như thế nào khi chia sẻ trên mạng xã hội
+    social_preview_desc: Xem trước nội dung của bạn sẽ hiển thị như thế nào khi chia sẻ trên mạng xã hội.
+    recommend_image_size: Kích thước ảnh khuyến nghị
 
   frequencies:
     always: Luôn luôn

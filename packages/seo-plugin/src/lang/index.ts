@@ -104,6 +104,9 @@ export default [
                     additional_fields_label: 'Additional Fields',
                     required_count: '{count} required',
                     optional_count: '{count} optional',
+                    upload_image_preview: 'Upload an image to preview how your links will appear when shared on social media',
+                    social_preview_desc: 'Preview how your content will look when shared on social media.',
+                    recommend_image_size: 'Recommend Image Size',
                 },
                 frequencies: {
                     always: 'Always',
@@ -229,6 +232,9 @@ export default [
                     additional_fields_label: 'Các trường bổ sung',
                     required_count: '{count} trường bắt buộc',
                     optional_count: '{count} trường tuỳ chọn',
+                    upload_image_preview: 'Tải ảnh lên để xem trước liên kết của bạn sẽ hiển thị như thế nào khi chia sẻ trên mạng xã hội',
+                    social_preview_desc: 'Xem trước nội dung của bạn sẽ hiển thị như thế nào khi chia sẻ trên mạng xã hội.',
+                    recommend_image_size: 'Kích thước ảnh khuyến nghị',
                 },
                 frequencies: {
                     always: 'Luôn luôn',
