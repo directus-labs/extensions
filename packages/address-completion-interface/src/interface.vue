@@ -16,6 +16,7 @@ interface AutocompleteLocation {
 type Coordinates = [number, number];
 
 interface GeoProperties {
+	placeId: string;
 	displayName: string;
 	country: string; // ISO 3166-2
 	administrativeArea: string;
@@ -197,7 +198,10 @@ async function onPlaceSelected(location: AutocompleteLocation) {
 				coordinates: [lng, lat],
 				type: 'Point',
 			},
-			properties: getProperties(placeData.place),
+			properties: {
+				placeId: selectedPlaceId.value,
+				...getProperties(placeData.place),
+			},
 			type: 'Feature',
 		};
 
