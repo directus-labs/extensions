@@ -24,6 +24,7 @@ async function migratePresets({ res, client, presets, dry_run = false }: { res: 
 			delete preset.id;
 			const cleanPreset = { ...preset };
 			cleanPreset.user = null;
+			cleanPreset.role = null; // Null out role to prevent FK error when migrating without users
 			return cleanPreset;
 		});
 

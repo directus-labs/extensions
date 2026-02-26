@@ -73,57 +73,106 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 	const shareService = new SharesService({ accountability, schema });
 
 	try {
-		res.write(scope.users ? '* Fetching roles' : '* Skipping roles\r\n\r\n');
-		const roles: RoleRaw[] = scope.users ? await roleService.readByQuery({ fields: directusRoleFields, limit: -1 }) : [];
+		// Get users granular options with defaults
+		const usersGranular = scope.usersGranular || {
+			roles: true,
+			policies: true,
+			permissions: true,
+			userAccounts: true,
+			access: true,
+		};
 
-		if (scope.users) {
+		const shouldFetchRoles = scope.users && usersGranular.roles;
+		const shouldFetchPolicies = scope.users && usersGranular.policies;
+		const shouldFetchPermissions = scope.users && usersGranular.permissions;
+		const shouldFetchUsers = scope.users && usersGranular.userAccounts;
+		const shouldFetchAccess = scope.users && usersGranular.access;
+
+		// Phase 6: Get users selection options
+		const usersSelection = scope.usersSelection || {};
+
+		res.write(shouldFetchRoles ? '* Fetching roles' : '* Skipping roles\r\n\r\n');
+		let roles: RoleRaw[] = shouldFetchRoles ? await roleService.readByQuery({ fields: directusRoleFields, limit: -1 }) : [];
+
+		// Phase 6: Filter roles by selection
+		if (shouldFetchRoles && usersSelection.selectedRoles && usersSelection.selectedRoles.length > 0) {
+			roles = roles.filter(r => usersSelection.selectedRoles!.includes(r.id));
+			res.write(`  (filtered to ${roles.length} selected roles)\r\n`);
+		}
+
+		if (shouldFetchRoles) {
 			res.write(' ...');
 			await saveToFile(roles, 'roles', fileService, folder, storage);
 			res.write('done\r\n\r\n');
 		}
 
-		res.write(scope.users ? '* Fetching policies' : '* Skipping policies\r\n\r\n');
-		const policies: PolicyRaw[] = scope.users ? await policyService.readByQuery({ fields: directusPolicyFields, limit: -1 }) : [];
+		res.write(shouldFetchPolicies ? '* Fetching policies' : '* Skipping policies\r\n\r\n');
+		let policies: PolicyRaw[] = shouldFetchPolicies ? await policyService.readByQuery({ fields: directusPolicyFields, limit: -1 }) : [];
 
-		if (scope.users) {
+		// Phase 6: Filter policies by selection
+		if (shouldFetchPolicies && usersSelection.selectedPolicies && usersSelection.selectedPolicies.length > 0) {
+			policies = policies.filter(p => usersSelection.selectedPolicies!.includes(p.id));
+			res.write(`  (filtered to ${policies.length} selected policies)\r\n`);
+		}
+
+		if (shouldFetchPolicies) {
 			res.write(' ...');
 			await saveToFile(policies, 'policies', fileService, folder, storage);
 			res.write('done\r\n\r\n');
 		}
 
-		res.write(scope.users ? '* Fetching permissions' : '* Skipping permissions\r\n\r\n');
-		const permissions: Permission[] = scope.users ? await permissionService.readByQuery({ limit: -1 }) : [];
+		res.write(shouldFetchPermissions ? '* Fetching permissions' : '* Skipping permissions\r\n\r\n');
+		let permissions: Permission[] = shouldFetchPermissions ? await permissionService.readByQuery({ limit: -1 }) : [];
 
-		if (scope.users) {
+		// Phase 6: Filter permissions by selection
+		if (shouldFetchPermissions && usersSelection.selectedPermissions && usersSelection.selectedPermissions.length > 0) {
+			permissions = permissions.filter(p => usersSelection.selectedPermissions!.includes(p.id));
+			res.write(`  (filtered to ${permissions.length} selected permissions)\r\n`);
+		}
+
+		if (shouldFetchPermissions) {
 			res.write(' ...');
 			await saveToFile(permissions, 'permissions', fileService, folder, storage);
 			res.write('done\r\n\r\n');
 		}
 
-		res.write(scope.users ? '* Fetching users' : '* Skipping users\r\n\r\n');
-		const users: UserRaw[] = scope.users ? await userService.readByQuery({ fields: directusUserFields, limit: -1 }) : [];
+		res.write(shouldFetchUsers ? '* Fetching users' : '* Skipping users\r\n\r\n');
+		let users: UserRaw[] = shouldFetchUsers ? await userService.readByQuery({ fields: directusUserFields, limit: -1 }) : [];
 
-		if (scope.users) {
+		// Phase 6: Filter users by selection
+		if (shouldFetchUsers && usersSelection.selectedUsers && usersSelection.selectedUsers.length > 0) {
+			users = users.filter(u => usersSelection.selectedUsers!.includes(u.id));
+			res.write(`  (filtered to ${users.length} selected users)\r\n`);
+		}
+
+		if (shouldFetchUsers) {
 			res.write(' ...');
 			await saveToFile(users, 'users', fileService, folder, storage);
 			res.write('done\r\n\r\n');
 		}
 
-		res.write(scope.users ? '* Fetching access' : '* Skipping access\r\n\r\n');
-		const access: Access[] = scope.users ? await accessService.readByQuery({ limit: -1 }) : [];
+		res.write(shouldFetchAccess ? '* Fetching access' : '* Skipping access\r\n\r\n');
+		let access: Access[] = shouldFetchAccess ? await accessService.readByQuery({ limit: -1 }) : [];
 
-		if (scope.users) {
+		// Phase 6: Filter access by selection
+		if (shouldFetchAccess && usersSelection.selectedAccess && usersSelection.selectedAccess.length > 0) {
+			access = access.filter(a => usersSelection.selectedAccess!.includes(Number(a.id)));
+			res.write(`  (filtered to ${access.length} selected access rules)\r\n`);
+		}
+
+		if (shouldFetchAccess) {
 			res.write(' ...');
 			await saveToFile(access, 'access', fileService, folder, storage);
 			res.write('done\r\n\r\n');
 		}
 
-		res.write(scope.content ? '* Fetching folders' : '* Skipping folders\r\n\r\n');
-		// TODO Fix 6.4: Filter folders based on which files are being migrated
-		// Currently loads all folders - duplicates are prevented in migrate-folders.ts
-		const folders: Folder[] = scope.content ? await folderService.readByQuery({ fields: directusFolderFields, filter: { id: { _neq: folder } }, limit: -1 }) : [];
+		// Folders: fetch only if explicitly enabled OR if files is enabled (folders needed for file organization)
+		// Removed scope.content check to prevent unwanted folder migration when only content is selected
+		const shouldFetchFolders = scope.folders === true || scope.files === true;
+		res.write(shouldFetchFolders ? '* Fetching folders' : '* Skipping folders\r\n\r\n');
+		const folders: Folder[] = shouldFetchFolders ? await folderService.readByQuery({ fields: directusFolderFields, filter: { id: { _neq: folder } }, limit: -1 }) : [];
 
-		if (scope.content) {
+		if (shouldFetchFolders) {
 			res.write(' ...');
 			await saveToFile(folders, 'folders', fileService, folder, storage);
 			res.write('done\r\n\r\n');
@@ -159,7 +208,13 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		res.write(scope.flows ? '* Fetching flows' : '* Skipping flows\r\n\r\n');
 		let flows: ModifiedFlowRaw[] = scope.flows ? await flowService.readByQuery({ fields: directusFlowFields, limit: -1 }) : [];
 
-		// Filter flows by options.collection if collection filtering is active
+		// Filter flows by selectedFlows if specified
+		if (scope.flows && scope.selectedFlows && scope.selectedFlows.length > 0) {
+			flows = flows.filter(f => scope.selectedFlows!.includes(f.id));
+			res.write(`  (filtered to ${flows.length} selected flows)\r\n`);
+		}
+
+		// Also filter flows by options.collection if collection filtering is active
 		if (scope.flows && flows.length > 0) {
 			flows = flows.filter(flow => {
 				// Flows without collection reference are always included
@@ -178,7 +233,7 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		let operations: OperationRaw[] = scope.flows ? await operationService.readByQuery({ fields: directusOperationFields, limit: -1 }) : [];
 
 		// Filter operations: only include operations belonging to included flows
-		if (scope.flows && operations.length > 0) {
+		if (scope.flows && flows.length > 0) {
 			const includedFlowIds = new Set(flows.map(f => f.id));
 			operations = operations.filter(op => includedFlowIds.has(op.flow));
 		}
@@ -189,17 +244,31 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 			res.write('done\r\n\r\n');
 		}
 
-		res.write('* Fetching settings');
-		const settings: Settings = await settingsService.readSingleton({ fields: directusSettingsFields });
-		res.write(' ...');
-		await saveToFile(settings, 'settings', fileService, folder, storage);
-		res.write('done\r\n\r\n');
+		// Settings: fetch only if scope.settings is not explicitly false (default true for backward compatibility)
+		const shouldFetchSettings = scope.settings !== false;
+		res.write(shouldFetchSettings ? '* Fetching settings' : '* Skipping settings\r\n\r\n');
+		const settings: Settings | null = shouldFetchSettings
+			? await settingsService.readSingleton({ fields: directusSettingsFields })
+			: null;
 
-		res.write('* Fetching translations');
-		const translations: Translation[] = await translationService.readByQuery({ limit: -1 });
-		res.write(' ...');
-		await saveToFile(translations, 'translations', fileService, folder, storage);
-		res.write('done\r\n\r\n');
+		if (shouldFetchSettings && settings) {
+			res.write(' ...');
+			await saveToFile(settings, 'settings', fileService, folder, storage);
+			res.write('done\r\n\r\n');
+		}
+
+		// Translations: fetch only if scope.translations is not explicitly false (default true for backward compatibility)
+		const shouldFetchTranslations = scope.translations !== false;
+		res.write(shouldFetchTranslations ? '* Fetching translations' : '* Skipping translations\r\n\r\n');
+		const translations: Translation[] = shouldFetchTranslations
+			? await translationService.readByQuery({ limit: -1 })
+			: [];
+
+		if (shouldFetchTranslations) {
+			res.write(' ...');
+			await saveToFile(translations, 'translations', fileService, folder, storage);
+			res.write('done\r\n\r\n');
+		}
 
 		res.write(scope.presets ? '* Fetching presets' : '* Skipping presets');
 		let presets: Preset[] = scope.presets ? await presetService.readByQuery({ fields: directusPresetFields, limit: -1 }) : [];
@@ -220,7 +289,16 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		}
 
 		res.write(scope.extensions ? '* Fetching extensions' : '* Skipping extensions\r\n\r\n');
-		const extensions: Extension[] = scope.extensions ? await extensionService.readAll() : [];
+		let extensions: Extension[] = scope.extensions ? await extensionService.readAll() : [];
+
+		// Filter extensions by selectedExtensions if specified
+		if (scope.extensions && scope.selectedExtensions && scope.selectedExtensions.length > 0) {
+			extensions = extensions.filter(e =>
+				scope.selectedExtensions!.includes(e.schema?.name || e.id) ||
+				(e.bundle && scope.selectedExtensions!.includes(e.bundle)),
+			);
+			res.write(`  (filtered to ${extensions.length} selected extensions)\r\n`);
+		}
 
 		if (scope.extensions) {
 			res.write(' ...');

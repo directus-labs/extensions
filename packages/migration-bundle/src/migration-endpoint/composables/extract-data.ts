@@ -99,10 +99,13 @@ async function extractContent({
 		await saveToFile(singletons, 'items_singleton', fileService, folder, storage);
 		res.write('done\r\n\r\n');
 
-		res.write('* Fetching files');
-		// Fix 6.3: Filter files based on selected collections
+		// Files: fetch if files is selected, or content is selected (backward compatibility)
+		const shouldFetchFiles = scope.files === true || (scope.content && scope.files !== false);
+		res.write(shouldFetchFiles ? '* Fetching files' : '* Skipping files\r\n\r\n');
+
 		let files: File[] = [];
-		if (scope.content) {
+		if (shouldFetchFiles) {
+			// Fix 6.3: Filter files based on selected collections when collection filtering is active
 			const contentCols = scope.contentCollections?.length ? scope.contentCollections
 				: (scope.selectedCollections?.length ? scope.selectedCollections : null);
 
@@ -125,17 +128,18 @@ async function extractContent({
 				}
 			}
 			else {
-				// No filtering - get all files
+				// No collection filtering - get all files
 				files = await fileService.readByQuery({
 					fields: directusFileFields,
 					filter: { _or: [{ folder: { _neq: folder } }, { folder: { _null: true } }] },
 					limit: -1,
 				});
 			}
+
+			res.write(' ...');
+			await saveToFile(files, 'files', fileService, folder, storage);
+			res.write('done\r\n\r\n');
 		}
-		res.write(' ...');
-		await saveToFile(files, 'files', fileService, folder, storage);
-		res.write('done\r\n\r\n');
 
 		return {
 			collections,

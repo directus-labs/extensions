@@ -171,15 +171,41 @@ export interface Translation {
 	value: string;
 }
 
+export interface UsersGranularOptions {
+	roles: boolean;
+	policies: boolean;
+	permissions: boolean;
+	userAccounts: boolean;
+	access: boolean;
+}
+
+// Phase 6: Specific item selection for Users tab
+export interface UsersSelectionOptions {
+	selectedRoles?: string[];
+	selectedPolicies?: string[];
+	selectedPermissions?: number[];
+	selectedUsers?: string[];
+	selectedAccess?: number[];
+}
+
 export interface Scope {
 	schema: boolean;
 	users: boolean;
+	usersGranular?: UsersGranularOptions;
+	usersSelection?: UsersSelectionOptions;
 	content: boolean;
+	files: boolean;
+	folders: boolean;
+	selectedFolders?: string[];
 	comments: boolean;
 	presets: boolean;
 	dashboards: boolean;
 	extensions: boolean;
+	selectedExtensions?: string[];
 	flows: boolean;
+	selectedFlows?: string[];
+	settings: boolean;
+	translations: boolean;
 	force: boolean;
 	// Collection-level filtering
 	selectedCollections?: string[];
