@@ -427,19 +427,6 @@ export default defineEndpoint({
 								const content_response = await migrateData({ res, client, fullData: dataFetch.fullData, singletons: dataFetch.singletons, dry_run: isDryRun });
 								const contentMigrationValid = await validate_migration([content_response]);
 								res.write(contentMigrationValid ? `</div><h3 class="done">${Icon} Collections Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Collections Migration Failed</h3>\r\n\r\n`);
-
-								if (contentMigrationValid) {
-									// Step 2.6: Comments
-									if (scope.comments) {
-										res.write(`<div class="pending"><h3>${spinner} Migrating Comments</h3>\r\n\r\n`);
-										const comments_response = await migrateComments({ res, client, comments: systemFetch.comments, dry_run: isDryRun });
-										const commentsMigrationValid = await validate_migration([comments_response]);
-										res.write(commentsMigrationValid ? `</div><h3 class="done">${Icon} Comments Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Comments Migration Failed</h3>\r\n\r\n`);
-									}
-									else {
-										res.write(`<h3 class="skipped">${Icon} Comments Skipped</h3>\r\n\r\n`);
-									}
-								}
 							}
 
 							// Step 2.7: Required Fields
@@ -450,6 +437,17 @@ export default defineEndpoint({
 						}
 						else {
 							res.write(`<h3 class="skipped">${Icon} Content Skipped</h3>\r\n\r\n`);
+						}
+
+						// Step 2.6: Comments (standalone - not dependent on content)
+						if (scope.comments) {
+							res.write(`<div class="pending"><h3>${spinner} Migrating Comments</h3>\r\n\r\n`);
+							const comments_response = await migrateComments({ res, client, comments: systemFetch.comments, dry_run: isDryRun });
+							const commentsMigrationValid = await validate_migration([comments_response]);
+							res.write(commentsMigrationValid ? `</div><h3 class="done">${Icon} Comments Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Comments Migration Failed</h3>\r\n\r\n`);
+						}
+						else {
+							res.write(`<h3 class="skipped">${Icon} Comments Skipped</h3>\r\n\r\n`);
 						}
 
 						// Step 2.7: Dashboards
