@@ -1,6 +1,6 @@
 # AI Writer Operation
 
-Generate text based on a written prompt within Directus Flows with this custom operation, powered by [OpenAI's Text Generation API]([https://.com](https://openai.com/product)), [Anthropic](https://www.anthropic.com/) [MistralAi  (via Replicate)](https://replicate.com/mistralai/mistral-7b-v0.1) and [Meta's LLama (via Replicate)](https://replicate.com/meta/meta-llama-3.1-405b-instruct).
+Generate text based on a written prompt within Directus Flows with this custom operation, powered by [OpenAI's Text Generation API](https://openai.com/product), [Anthropic](https://www.anthropic.com/), [MistralAi (via Replicate)](https://replicate.com/mistralai/mistral-7b-v0.1), [Meta's LLama (via Replicate)](https://replicate.com/meta/meta-llama-3.1-405b-instruct), and any OpenAI-compatible API.
 
 ![The AI Writer operation, showing a masked OpenAI API Key field, model and prompt selection fields, and a multiline text input.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-writer-operation/docs/options.png)
 
@@ -10,10 +10,22 @@ This operation contains some configuration options - an Api-Key, a selection of 
 ![The output showing a string that has been grammatically fixed.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-writer-operation/docs/output.png)
 
 ### API-Keys
-You can generate your API-Keys on the follosing sites:
+You can generate your API-Keys on the following sites:
 - [OpenAI](https://platform.openai.com/api-keys)
 - [Anthropic](https://console.anthropic.com/settings/workspaces/default/keys)
 - [Replicate](https://replicate.com/account/api-tokens)
+
+### OpenAI-Compatible APIs
+The extension now supports any OpenAI-compatible API by selecting "OpenAI Compatible (Custom)" as the AI Provider. This allows you to use services like:
+- Local models (Ollama, LM Studio, etc.)
+- Cloud providers (Azure OpenAI, Google Vertex AI, etc.)
+- Other OpenAI-compatible services (Groq, Together AI, etc.)
+
+When using a custom provider, you'll need to:
+1. Select "OpenAI Compatible (Custom)" as the AI Provider
+2. Enter your custom API endpoint (e.g., `https://api.example.com/v1`)
+3. Provide your API key
+4. Choose a model from the dropdown or select "Custom Model" to enter a specific model name
 
 ## Custom Prompts
 
