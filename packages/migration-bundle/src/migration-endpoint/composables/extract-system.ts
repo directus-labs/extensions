@@ -82,14 +82,21 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 			access: true,
 		};
 
-		const shouldFetchRoles = scope.users && usersGranular.roles;
-		const shouldFetchPolicies = scope.users && usersGranular.policies;
-		const shouldFetchPermissions = scope.users && usersGranular.permissions;
-		const shouldFetchUsers = scope.users && usersGranular.userAccounts;
-		const shouldFetchAccess = scope.users && usersGranular.access;
-
 		// Phase 6: Get users selection options
 		const usersSelection = scope.usersSelection || {};
+
+		// Empty selection = skip (same pattern as selectedFolders, selectedPresets, etc.)
+		const hasEmptyRolesSelection = Array.isArray(usersSelection.selectedRoles) && usersSelection.selectedRoles.length === 0;
+		const hasEmptyPoliciesSelection = Array.isArray(usersSelection.selectedPolicies) && usersSelection.selectedPolicies.length === 0;
+		const hasEmptyPermissionsSelection = Array.isArray(usersSelection.selectedPermissions) && usersSelection.selectedPermissions.length === 0;
+		const hasEmptyUsersSelection = Array.isArray(usersSelection.selectedUsers) && usersSelection.selectedUsers.length === 0;
+		const hasEmptyAccessSelection = Array.isArray(usersSelection.selectedAccess) && usersSelection.selectedAccess.length === 0;
+
+		const shouldFetchRoles = scope.users && usersGranular.roles && !hasEmptyRolesSelection;
+		const shouldFetchPolicies = scope.users && usersGranular.policies && !hasEmptyPoliciesSelection;
+		const shouldFetchPermissions = scope.users && usersGranular.permissions && !hasEmptyPermissionsSelection;
+		const shouldFetchUsers = scope.users && usersGranular.userAccounts && !hasEmptyUsersSelection;
+		const shouldFetchAccess = scope.users && usersGranular.access && !hasEmptyAccessSelection;
 
 		res.write(shouldFetchRoles ? '* Fetching roles' : '* Skipping roles\r\n\r\n');
 		let roles: RoleRaw[] = shouldFetchRoles ? await roleService.readByQuery({ fields: directusRoleFields, limit: -1 }) : [];
