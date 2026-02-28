@@ -453,8 +453,8 @@ export default defineEndpoint({
 						// Step 2.7: Dashboards
 						if (scope.dashboards) {
 							res.write(`<div class="pending"><h3>${spinner} Migrating Insights</h3>\r\n\r\n`);
-							const dashboard_response = await migrateDashboards({ res, client, dashboards: systemFetch.dashboards, dry_run: isDryRun });
-							const panel_response = await migratePanels({ res, client, panels: systemFetch.panels, dry_run: isDryRun });
+							const dashboard_response = await migrateDashboards({ res, client, dashboards: systemFetch.dashboards, selectedDashboards: scope.selectedDashboards, dry_run: isDryRun });
+							const panel_response = await migratePanels({ res, client, panels: systemFetch.panels, selectedDashboards: scope.selectedDashboards, dry_run: isDryRun });
 							const insightsMigrationValid = await validate_migration([dashboard_response, panel_response]);
 							res.write(insightsMigrationValid ? `</div><h3 class="done">${Icon} Insights Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Insights Migration Failed</h3>\r\n\r\n`);
 						}
@@ -495,10 +495,10 @@ export default defineEndpoint({
 							res.write(`<h3 class="skipped">${Icon} Translations Skipped</h3>\r\n\r\n`);
 						}
 
-						// Step 2.11: Translations
+						// Step 2.11: Presets
 						if (scope.presets) {
 							res.write(`<div class="pending"><h3>${spinner} Migrating Presets</h3>\r\n\r\n`);
-							const presets_response = await migratePresets({ res, client, presets: systemFetch.presets, dry_run: isDryRun });
+							const presets_response = await migratePresets({ res, client, presets: systemFetch.presets, selectedPresets: scope.selectedPresets, dry_run: isDryRun });
 							const presetsMigrationValid = await validate_migration([presets_response]);
 							res.write(presetsMigrationValid ? `</div><h3 class="done">${Icon} Presets Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Presets Migration Failed</h3>\r\n\r\n`);
 						}

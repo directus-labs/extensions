@@ -199,7 +199,11 @@ export interface Scope {
 	selectedFolders?: string[];
 	comments: boolean;
 	presets: boolean;
+	// Presets filtering (Issue #014)
+	selectedPresets?: string[];
 	dashboards: boolean;
+	// Dashboards filtering (Issue #014)
+	selectedDashboards?: string[];
 	extensions: boolean;
 	selectedExtensions?: string[];
 	flows: boolean;

@@ -192,6 +192,18 @@ export default defineComponent({
 		const translationKeyPattern = ref<string>('');
 		const isLoadingLanguages = ref<boolean>(false);
 
+		// Issue #014: Bookmarks (Presets) filtering
+		const bookmarksFilterMode = ref<'all' | 'selected'>('all');
+		const availableBookmarks = ref<Array<{ text: string; value: string }>>([]);
+		const selectedBookmarks = ref<string[]>([]);
+		const isLoadingBookmarks = ref<boolean>(false);
+
+		// Issue #014: Insights (Dashboards) filtering
+		const insightsFilterMode = ref<'all' | 'selected'>('all');
+		const availableInsights = ref<Array<{ text: string; value: string; panelCount: number }>>([]);
+		const selectedInsights = ref<string[]>([]);
+		const isLoadingInsights = ref<boolean>(false);
+
 		// Tab-based UI - active tab for granular options
 		const activeTab = ref<string[]>(['schema']);
 
@@ -381,6 +393,78 @@ export default defineComponent({
 			}
 		};
 
+		// Issue #014: Load available bookmarks (presets)
+		const loadBookmarks = async () => {
+			isLoadingBookmarks.value = true;
+			try {
+				const response = await api.get('/presets', {
+					params: {
+						fields: ['id', 'bookmark', 'collection', 'icon', 'color'],
+						limit: -1,
+					},
+				});
+				const presetsData = response.data.data || [];
+				availableBookmarks.value = presetsData
+					.filter((p: any) => p.bookmark) // Only include named bookmarks
+					.map((p: any) => ({
+						text: p.bookmark || `Preset ${p.id}`,
+						value: String(p.id),
+					}))
+					.sort((a: any, b: any) => a.text.localeCompare(b.text));
+			}
+			catch (error) {
+				console.error('Failed to load bookmarks:', error);
+			}
+			finally {
+				isLoadingBookmarks.value = false;
+			}
+		};
+
+		// Issue #014: Load available insights (dashboards)
+		const loadInsights = async () => {
+			isLoadingInsights.value = true;
+			try {
+				// Fetch dashboards
+				const dashboardsResponse = await api.get('/dashboards', {
+					params: {
+						fields: ['id', 'name', 'icon', 'color'],
+						limit: -1,
+					},
+				});
+				const dashboardsData = dashboardsResponse.data.data || [];
+
+				// Fetch panels to count per dashboard
+				const panelsResponse = await api.get('/panels', {
+					params: {
+						fields: ['id', 'dashboard'],
+						limit: -1,
+					},
+				});
+				const panelsData = panelsResponse.data.data || [];
+
+				// Count panels per dashboard
+				const panelCounts: Record<string, number> = {};
+				panelsData.forEach((panel: any) => {
+					const dashboardId = panel.dashboard;
+					panelCounts[dashboardId] = (panelCounts[dashboardId] || 0) + 1;
+				});
+
+				availableInsights.value = dashboardsData
+					.map((d: any) => ({
+						text: d.name || `Dashboard ${d.id}`,
+						value: String(d.id),
+						panelCount: panelCounts[d.id] || 0,
+					}))
+					.sort((a: any, b: any) => a.text.localeCompare(b.text));
+			}
+			catch (error) {
+				console.error('Failed to load insights:', error);
+			}
+			finally {
+				isLoadingInsights.value = false;
+			}
+		};
+
 		// Load Users tab data when tab becomes active
 		watch(activeTab, (tab) => {
 			if (tab[0] === 'users' && availableRoles.value.length === 0) {
@@ -393,6 +477,14 @@ export default defineComponent({
 			// Issue #013: Load languages when Translations tab becomes active
 			if (tab[0] === 'translations' && availableLanguages.value.length === 0) {
 				loadLanguages();
+			}
+			// Issue #014: Load bookmarks when Bookmarks tab becomes active
+			if (tab[0] === 'presets' && availableBookmarks.value.length === 0) {
+				loadBookmarks();
+			}
+			// Issue #014: Load insights when Insights tab becomes active
+			if (tab[0] === 'dashboards' && availableInsights.value.length === 0) {
+				loadInsights();
 			}
 		});
 
@@ -443,6 +535,14 @@ export default defineComponent({
 					// Fix: Ensure 'files' is always included in options (backward compatibility)
 					if (!options.includes('files')) {
 						options = [...options, 'files'];
+					}
+					// Fix: Ensure 'settings' is always included in options
+					if (!options.includes('settings')) {
+						options = [...options, 'settings'];
+					}
+					// Fix: Ensure 'translations' is always included in options
+					if (!options.includes('translations')) {
+						options = [...options, 'translations'];
 					}
 					migrationOptionsSelections.value = options;
 				}
@@ -498,6 +598,14 @@ export default defineComponent({
 				// Fix: Ensure 'files' is always included in preset options (backward compatibility)
 				if (!selectedOptions.includes('files')) {
 					selectedOptions = [...selectedOptions, 'files'];
+				}
+				// Fix: Ensure 'settings' is always included in preset options
+				if (!selectedOptions.includes('settings')) {
+					selectedOptions = [...selectedOptions, 'settings'];
+				}
+				// Fix: Ensure 'translations' is always included in preset options
+				if (!selectedOptions.includes('translations')) {
+					selectedOptions = [...selectedOptions, 'translations'];
 				}
 				migrationOptionsSelections.value = selectedOptions;
 
@@ -772,6 +880,16 @@ export default defineComponent({
 				}
 			}
 
+			// Issue #014: Add bookmarks (presets) filtering to scope
+			if (scope.presets && bookmarksFilterMode.value === 'selected') {
+				extendedScope.selectedPresets = selectedBookmarks.value;
+			}
+
+			// Issue #014: Add insights (dashboards) filtering to scope
+			if (scope.dashboards && insightsFilterMode.value === 'selected') {
+				extendedScope.selectedDashboards = selectedInsights.value;
+			}
+
 			// Files defaults to true if content is selected (backward compatibility)
 			if (scope.content && !migrationOptionsSelections.value?.includes('files')) {
 				extendedScope.files = true;
@@ -871,6 +989,16 @@ export default defineComponent({
 			selectedLanguages,
 			translationKeyPattern,
 			isLoadingLanguages,
+			// Issue #014: Bookmarks (Presets) filtering
+			bookmarksFilterMode,
+			availableBookmarks,
+			selectedBookmarks,
+			isLoadingBookmarks,
+			// Issue #014: Insights (Dashboards) filtering
+			insightsFilterMode,
+			availableInsights,
+			selectedInsights,
+			isLoadingInsights,
 		};
 	},
 });
@@ -1033,11 +1161,18 @@ export default defineComponent({
 								Users
 							</v-tab>
 							<v-tab
-								v-if="migrationOptionsSelections?.includes('flows')"
-								value="flows"
+								v-if="migrationOptionsSelections?.includes('presets')"
+								value="presets"
 							>
-								<v-icon name="bolt" small />
-								Flows
+								<v-icon name="bookmark" small />
+								Bookmarks
+							</v-tab>
+							<v-tab
+								v-if="migrationOptionsSelections?.includes('dashboards')"
+								value="dashboards"
+							>
+								<v-icon name="insights" small />
+								Insights
 							</v-tab>
 							<v-tab
 								v-if="migrationOptionsSelections?.includes('extensions')"
@@ -1045,6 +1180,13 @@ export default defineComponent({
 							>
 								<v-icon name="extension" small />
 								Extensions
+							</v-tab>
+							<v-tab
+								v-if="migrationOptionsSelections?.includes('flows')"
+								value="flows"
+							>
+								<v-icon name="bolt" small />
+								Flows
 							</v-tab>
 							<v-tab
 								v-if="migrationOptionsSelections?.includes('settings')"
@@ -1307,6 +1449,121 @@ export default defineComponent({
 									<div class="dependency-hint">
 										<v-icon name="info" small />
 										<span>Dependencies: Policies require Roles, Permissions require Policies, User Accounts require Roles, Access requires Users + Policies. Selecting a user auto-selects their role.</span>
+									</div>
+								</div>
+							</v-tab-item>
+
+							<!-- Bookmarks Tab (Issue #014) -->
+							<v-tab-item value="presets">
+								<div class="tab-panel">
+									<h4>Bookmarks Filtering</h4>
+									<p class="tab-hint">Choose which bookmarks (presets) to migrate from the source instance.</p>
+
+									<div class="filter-mode-selector">
+										<v-radio
+											v-model="bookmarksFilterMode"
+											value="all"
+											label="Migrate all bookmarks"
+											:disabled="lockInterface"
+										/>
+										<v-radio
+											v-model="bookmarksFilterMode"
+											value="selected"
+											label="Select specific bookmarks"
+											:disabled="lockInterface"
+										/>
+									</div>
+
+									<v-select
+										v-if="bookmarksFilterMode === 'selected'"
+										v-model="selectedBookmarks"
+										:items="availableBookmarks"
+										:disabled="lockInterface || isLoadingBookmarks"
+										:loading="isLoadingBookmarks"
+										:multiple-preview-threshold="3"
+										item-text="text"
+										item-value="value"
+										placeholder="Select bookmarks to migrate..."
+										multiple
+										class="tab-select"
+									>
+										<template #prepend>
+											<v-icon name="bookmark" />
+										</template>
+									</v-select>
+
+									<div v-if="bookmarksFilterMode === 'selected' && selectedBookmarks.length > 0" class="selection-info">
+										<v-icon name="check_circle" small />
+										<span>{{ selectedBookmarks.length }} bookmark(s) selected for migration.</span>
+									</div>
+
+									<v-notice v-if="bookmarksFilterMode === 'selected' && selectedBookmarks.length === 0 && !isLoadingBookmarks" type="warning" class="tab-notice">
+										<v-icon name="warning" small />
+										No bookmarks selected. Bookmarks migration will be skipped.
+									</v-notice>
+
+									<div class="bookmarks-merge-note">
+										<v-icon name="info" small />
+										<span>Bookmarks are merged by ID. Existing bookmarks on the target will be updated if IDs match.</span>
+									</div>
+								</div>
+							</v-tab-item>
+
+							<!-- Insights Tab (Issue #014) -->
+							<v-tab-item value="dashboards">
+								<div class="tab-panel">
+									<h4>Insights Filtering</h4>
+									<p class="tab-hint">Choose which dashboards to migrate from the source instance. Associated panels will be included automatically.</p>
+
+									<div class="filter-mode-selector">
+										<v-radio
+											v-model="insightsFilterMode"
+											value="all"
+											label="Migrate all dashboards"
+											:disabled="lockInterface"
+										/>
+										<v-radio
+											v-model="insightsFilterMode"
+											value="selected"
+											label="Select specific dashboards"
+											:disabled="lockInterface"
+										/>
+									</div>
+
+									<v-select
+										v-if="insightsFilterMode === 'selected'"
+										v-model="selectedInsights"
+										:items="availableInsights.map(i => ({ text: `${i.text} (${i.panelCount} panels)`, value: i.value }))"
+										:disabled="lockInterface || isLoadingInsights"
+										:loading="isLoadingInsights"
+										:multiple-preview-threshold="3"
+										item-text="text"
+										item-value="value"
+										placeholder="Select dashboards to migrate..."
+										multiple
+										class="tab-select"
+									>
+										<template #prepend>
+											<v-icon name="insights" />
+										</template>
+									</v-select>
+
+									<div v-if="insightsFilterMode === 'selected' && selectedInsights.length > 0" class="selection-info">
+										<v-icon name="check_circle" small />
+										<span>
+											{{ selectedInsights.length }} dashboard(s) selected
+											({{ availableInsights.filter(i => selectedInsights.includes(i.value)).reduce((sum, i) => sum + i.panelCount, 0) }} panels will be included).
+										</span>
+									</div>
+
+									<v-notice v-if="insightsFilterMode === 'selected' && selectedInsights.length === 0 && !isLoadingInsights" type="warning" class="tab-notice">
+										<v-icon name="warning" small />
+										No dashboards selected. Insights migration will be skipped.
+									</v-notice>
+
+									<div class="insights-merge-note">
+										<v-icon name="info" small />
+										<span>Dashboards and their panels are migrated together. Selecting a dashboard automatically includes all its panels.</span>
 									</div>
 								</div>
 							</v-tab-item>
@@ -2086,8 +2343,11 @@ h3.skipped .icon i::after {
 }
 
 /* Issue #013: Settings and Translations tab styles */
+/* Issue #014: Bookmarks and Insights tab styles */
 .settings-merge-note,
-.translations-merge-note {
+.translations-merge-note,
+.bookmarks-merge-note,
+.insights-merge-note {
 	display: flex;
 	align-items: flex-start;
 	gap: 8px;
@@ -2100,7 +2360,9 @@ h3.skipped .icon i::after {
 }
 
 .settings-merge-note .v-icon,
-.translations-merge-note .v-icon {
+.translations-merge-note .v-icon,
+.bookmarks-merge-note .v-icon,
+.insights-merge-note .v-icon {
 	flex-shrink: 0;
 	margin-top: 2px;
 }
