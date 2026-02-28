@@ -179,6 +179,19 @@ export default defineComponent({
 		const selectedUserAccounts = ref<string[]>([]);
 		const selectedAccessRules = ref<number[]>([]);
 
+		// Issue #013: Settings filtering
+		const settingsFilterMode = ref<'all' | 'selected'>('all');
+		const availableSettingsFields = ref<Array<{ text: string; value: string }>>([]);
+		const selectedSettingsFields = ref<string[]>([]);
+		const isLoadingSettings = ref<boolean>(false);
+
+		// Issue #013: Translations filtering
+		const translationsFilterMode = ref<'all' | 'filtered'>('all');
+		const availableLanguages = ref<Array<{ text: string; value: string }>>([]);
+		const selectedLanguages = ref<string[]>([]);
+		const translationKeyPattern = ref<string>('');
+		const isLoadingLanguages = ref<boolean>(false);
+
 		// Tab-based UI - active tab for granular options
 		const activeTab = ref<string[]>(['schema']);
 
@@ -190,7 +203,7 @@ export default defineComponent({
 			}
 			// Check if current tab is still valid
 			const currentTab = activeTab.value[0];
-			const tabOptions = ['schema', 'content', 'users', 'flows', 'extensions'];
+			const tabOptions = ['schema', 'content', 'users', 'flows', 'extensions', 'settings', 'translations'];
 			if (currentTab && selections.includes(currentTab as Options)) {
 				return; // Current tab is still valid
 			}
@@ -299,10 +312,87 @@ export default defineComponent({
 			]);
 		};
 
+		// Issue #013: Load available settings fields
+		const loadSettingsFields = async () => {
+			isLoadingSettings.value = true;
+			try {
+				const response = await api.get('/settings');
+				const settings = response.data.data || {};
+				// Extract field names from settings object
+				const fields = Object.keys(settings)
+					.filter(key => !key.startsWith('id')) // Exclude id field
+					.map(key => ({
+						text: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+						value: key,
+					}))
+					.sort((a, b) => a.text.localeCompare(b.text));
+				availableSettingsFields.value = fields;
+			}
+			catch (error) {
+				console.error('Failed to load settings fields:', error);
+			}
+			finally {
+				isLoadingSettings.value = false;
+			}
+		};
+
+		// Issue #013: Load available languages for translations
+		const loadLanguages = async () => {
+			isLoadingLanguages.value = true;
+			try {
+				const response = await api.get('/translations', {
+					params: {
+						fields: ['language'],
+						groupBy: ['language'],
+						limit: -1,
+					},
+				});
+				const translations = response.data.data || [];
+				const languages = [...new Set(translations.map((t: any) => t.language))]
+					.filter(Boolean)
+					.map(lang => ({
+						text: lang as string,
+						value: lang as string,
+					}))
+					.sort((a, b) => a.text.localeCompare(b.text));
+				availableLanguages.value = languages;
+			}
+			catch (error) {
+				console.error('Failed to load languages:', error);
+				// Fallback: try to get unique languages from all translations
+				try {
+					const fallbackResponse = await api.get('/translations', { params: { fields: ['language'], limit: -1 } });
+					const allTranslations = fallbackResponse.data.data || [];
+					const uniqueLanguages = [...new Set(allTranslations.map((t: any) => t.language))]
+						.filter(Boolean)
+						.map(lang => ({
+							text: lang as string,
+							value: lang as string,
+						}))
+						.sort((a, b) => a.text.localeCompare(b.text));
+					availableLanguages.value = uniqueLanguages;
+				}
+				catch (fallbackError) {
+					console.error('Failed to load languages (fallback):', fallbackError);
+				}
+			}
+			finally {
+				isLoadingLanguages.value = false;
+			}
+		};
+
 		// Load Users tab data when tab becomes active
 		watch(activeTab, (tab) => {
 			if (tab[0] === 'users' && availableRoles.value.length === 0) {
 				loadUsersTabData();
+			}
+			// Issue #013: Load settings fields when Settings tab becomes active
+			if (tab[0] === 'settings' && availableSettingsFields.value.length === 0) {
+				loadSettingsFields();
+			}
+			// Issue #013: Load languages when Translations tab becomes active
+			if (tab[0] === 'translations' && availableLanguages.value.length === 0) {
+				loadLanguages();
 			}
 		});
 
@@ -667,6 +757,21 @@ export default defineComponent({
 				extendedScope.selectedExtensions = selectedExtensions.value;
 			}
 
+			// Issue #013: Add settings filtering to scope
+			if (scope.settings && settingsFilterMode.value === 'selected') {
+				extendedScope.selectedSettings = selectedSettingsFields.value;
+			}
+
+			// Issue #013: Add translations filtering to scope
+			if (scope.translations && translationsFilterMode.value === 'filtered') {
+				if (selectedLanguages.value.length > 0) {
+					extendedScope.selectedLanguages = selectedLanguages.value;
+				}
+				if (translationKeyPattern.value.trim()) {
+					extendedScope.translationKeyPattern = translationKeyPattern.value.trim();
+				}
+			}
+
 			// Files defaults to true if content is selected (backward compatibility)
 			if (scope.content && !migrationOptionsSelections.value?.includes('files')) {
 				extendedScope.files = true;
@@ -755,6 +860,17 @@ export default defineComponent({
 			selectedPermissions,
 			selectedUserAccounts,
 			selectedAccessRules,
+			// Issue #013: Settings filtering
+			settingsFilterMode,
+			availableSettingsFields,
+			selectedSettingsFields,
+			isLoadingSettings,
+			// Issue #013: Translations filtering
+			translationsFilterMode,
+			availableLanguages,
+			selectedLanguages,
+			translationKeyPattern,
+			isLoadingLanguages,
 		};
 	},
 });
@@ -929,6 +1045,20 @@ export default defineComponent({
 							>
 								<v-icon name="extension" small />
 								Extensions
+							</v-tab>
+							<v-tab
+								v-if="migrationOptionsSelections?.includes('settings')"
+								value="settings"
+							>
+								<v-icon name="settings" small />
+								Settings
+							</v-tab>
+							<v-tab
+								v-if="migrationOptionsSelections?.includes('translations')"
+								value="translations"
+							>
+								<v-icon name="translate" small />
+								Translations
 							</v-tab>
 						</v-tabs>
 
@@ -1239,6 +1369,137 @@ export default defineComponent({
 											{{ availableExtensions.filter(e => e.source === 'local').length }} local extension(s) found.
 											Local extensions cannot be auto-migrated and must be installed manually on the target.
 										</span>
+									</div>
+								</div>
+							</v-tab-item>
+
+							<!-- Settings Tab (Issue #013) -->
+							<v-tab-item value="settings">
+								<div class="tab-panel">
+									<h4>Settings Filtering</h4>
+									<p class="tab-hint">Choose which settings to migrate from the source instance.</p>
+
+									<div class="filter-mode-selector">
+										<v-radio
+											v-model="settingsFilterMode"
+											value="all"
+											label="Migrate all settings"
+											:disabled="lockInterface"
+										/>
+										<v-radio
+											v-model="settingsFilterMode"
+											value="selected"
+											label="Select specific settings"
+											:disabled="lockInterface"
+										/>
+									</div>
+
+									<v-select
+										v-if="settingsFilterMode === 'selected'"
+										v-model="selectedSettingsFields"
+										:items="availableSettingsFields"
+										:disabled="lockInterface || isLoadingSettings"
+										:loading="isLoadingSettings"
+										:multiple-preview-threshold="3"
+										item-text="text"
+										item-value="value"
+										placeholder="Select settings fields to migrate..."
+										multiple
+										class="tab-select"
+									>
+										<template #prepend>
+											<v-icon name="tune" />
+										</template>
+									</v-select>
+
+									<div v-if="settingsFilterMode === 'selected' && selectedSettingsFields.length > 0" class="selection-info">
+										<v-icon name="check_circle" small />
+										<span>{{ selectedSettingsFields.length }} setting(s) selected for migration.</span>
+									</div>
+
+									<v-notice v-if="settingsFilterMode === 'selected' && selectedSettingsFields.length === 0 && !isLoadingSettings" type="warning" class="tab-notice">
+										<v-icon name="warning" small />
+										No settings selected. Settings migration will be skipped.
+									</v-notice>
+
+									<div class="settings-merge-note">
+										<v-icon name="info" small />
+										<span>Settings are merged with the target instance. Source values will override target values for selected fields.</span>
+									</div>
+								</div>
+							</v-tab-item>
+
+							<!-- Translations Tab (Issue #013) -->
+							<v-tab-item value="translations">
+								<div class="tab-panel">
+									<h4>Translations Filtering</h4>
+									<p class="tab-hint">Filter translations by language or key pattern.</p>
+
+									<div class="filter-mode-selector">
+										<v-radio
+											v-model="translationsFilterMode"
+											value="all"
+											label="Migrate all translations"
+											:disabled="lockInterface"
+										/>
+										<v-radio
+											v-model="translationsFilterMode"
+											value="filtered"
+											label="Filter translations"
+											:disabled="lockInterface"
+										/>
+									</div>
+
+									<div v-if="translationsFilterMode === 'filtered'" class="translations-filters">
+										<div class="filter-section">
+											<h5>Language Selection</h5>
+											<v-select
+												v-model="selectedLanguages"
+												:items="availableLanguages"
+												:disabled="lockInterface || isLoadingLanguages"
+												:loading="isLoadingLanguages"
+												:multiple-preview-threshold="3"
+												item-text="text"
+												item-value="value"
+												placeholder="All languages (or select specific)"
+												multiple
+												class="tab-select"
+											>
+												<template #prepend>
+													<v-icon name="language" />
+												</template>
+											</v-select>
+										</div>
+
+										<div class="filter-section">
+											<h5>Key Pattern Filter (RegEx)</h5>
+											<v-input
+												v-model="translationKeyPattern"
+												:disabled="lockInterface"
+												placeholder="e.g., ^admin\\. or menu_.*"
+												class="tab-input"
+											>
+												<template #prepend>
+													<v-icon name="search" />
+												</template>
+											</v-input>
+											<p class="filter-hint">Use regular expressions to filter translation keys. Leave empty for all keys.</p>
+										</div>
+									</div>
+
+									<div v-if="translationsFilterMode === 'filtered' && selectedLanguages.length > 0" class="selection-info">
+										<v-icon name="check_circle" small />
+										<span>{{ selectedLanguages.length }} language(s) selected.</span>
+									</div>
+
+									<v-notice v-if="translationsFilterMode === 'filtered' && selectedLanguages.length === 0 && !isLoadingLanguages" type="warning" class="tab-notice">
+										<v-icon name="warning" small />
+										No languages selected. Translations migration will be skipped.
+									</v-notice>
+
+									<div class="translations-merge-note">
+										<v-icon name="info" small />
+										<span>Translations are merged by key. Existing translations on the target will be updated if keys match.</span>
 									</div>
 								</div>
 							</v-tab-item>
@@ -1822,5 +2083,54 @@ h3.skipped .icon i::after {
 .section-select {
 	width: 100%;
 	margin-top: 8px;
+}
+
+/* Issue #013: Settings and Translations tab styles */
+.settings-merge-note,
+.translations-merge-note {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin-top: 16px;
+	padding: 12px;
+	background-color: var(--theme--background-subdued);
+	border-radius: var(--theme--border-radius);
+	font-size: 12px;
+	color: var(--theme--foreground-subdued);
+}
+
+.settings-merge-note .v-icon,
+.translations-merge-note .v-icon {
+	flex-shrink: 0;
+	margin-top: 2px;
+}
+
+.translations-filters {
+	margin-top: 16px;
+}
+
+.filter-section {
+	margin-bottom: 20px;
+}
+
+.filter-section:last-child {
+	margin-bottom: 0;
+}
+
+.filter-section h5 {
+	margin: 0 0 8px 0;
+	font-weight: 500;
+	font-size: 13px;
+	color: var(--theme--foreground);
+}
+
+.filter-hint {
+	margin-top: 6px;
+	font-size: 11px;
+	color: var(--theme--foreground-subdued);
+}
+
+.tab-input {
+	width: 100%;
 }
 </style>

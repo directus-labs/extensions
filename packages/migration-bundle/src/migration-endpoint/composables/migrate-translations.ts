@@ -3,17 +3,57 @@ import type { DirectusError, Translation } from '../../types/extension';
 import type { Schema } from '../api';
 import { createTranslations, readTranslations } from '@directus/sdk';
 
-async function migrateTranslations({ res, client, translations, dry_run = false }: { res: any; client: RestClient<Schema>; translations: Translation[] | null; dry_run: boolean }): Promise<{ response: string; name: string } | DirectusError> {
+async function migrateTranslations({
+	res,
+	client,
+	translations,
+	selectedLanguages,
+	translationKeyPattern,
+	dry_run = false,
+}: {
+	res: any;
+	client: RestClient<Schema>;
+	translations: Translation[] | null;
+	selectedLanguages?: string[];
+	translationKeyPattern?: string;
+	dry_run: boolean;
+}): Promise<{ response: string; name: string } | DirectusError> {
 	if (!translations) {
 		res.write('* Couldn\'t read data from extract\r\n\r\n');
 		return { name: 'Directus Error', status: 404, errors: [{ message: 'No translations found' }] };
 	}
-	else if (translations.length === 0) {
-		res.write('* No Translations to migrate\r\n\r\n');
+
+	// Issue #013: Handle empty language selection = skip migration
+	if (selectedLanguages && selectedLanguages.length === 0) {
+		res.write('* Translations skipped (empty language selection)\r\n\r\n');
+		return { response: 'Skipped', name: 'Translations' };
+	}
+
+	// Issue #013: Filter by selected languages
+	let filteredTranslations = translations;
+	if (selectedLanguages && selectedLanguages.length > 0) {
+		filteredTranslations = translations.filter((t) => selectedLanguages.includes(t.language));
+		res.write(`* Filtering to languages: ${selectedLanguages.join(', ')}\r\n\r\n`);
+	}
+
+	// Issue #013: Filter by key pattern
+	if (translationKeyPattern) {
+		try {
+			const regex = new RegExp(translationKeyPattern);
+			filteredTranslations = filteredTranslations.filter((t) => regex.test(t.key));
+			res.write(`* Filtering by key pattern: ${translationKeyPattern}\r\n\r\n`);
+		}
+		catch (e) {
+			res.write(`* Invalid key pattern regex: ${translationKeyPattern}\r\n\r\n`);
+		}
+	}
+
+	if (filteredTranslations.length === 0) {
+		res.write('* No Translations match filter criteria\r\n\r\n');
 		return { response: 'Empty', name: 'Translations' };
 	}
 
-	res.write(`* [Local] Found ${translations.length} translations\r\n\r\n`);
+	res.write(`* [Local] Found ${filteredTranslations.length} translations (filtered from ${translations.length})\r\n\r\n`);
 
 	try {
 		// Fetch existing translations
@@ -23,7 +63,7 @@ async function migrateTranslations({ res, client, translations, dry_run = false 
 
 		const existingTranslationKeys = new Set(existingTranslations.map((t) => `${t.language}_${t.key}`));
 
-		const newTranslations = translations.filter((t) => {
+		const newTranslations = filteredTranslations.filter((t) => {
 			const key = `${t.language}_${t.key}`;
 
 			if (existingTranslationKeys.has(key)) {

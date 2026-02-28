@@ -49,12 +49,44 @@ function mergeJsonStrings(current: string, incoming: string): string {
 	}
 }
 
-async function migrateSettings({ res, client, settings, dry_run = false }: { res: any; client: RestClient<Schema>; settings: Settings | null; dry_run: boolean }): Promise<{ response: string; name: string } | DirectusError> {
+async function migrateSettings({
+	res,
+	client,
+	settings,
+	selectedSettings,
+	dry_run = false,
+}: {
+	res: any;
+	client: RestClient<Schema>;
+	settings: Settings | null;
+	selectedSettings?: string[];
+	dry_run: boolean;
+}): Promise<{ response: string; name: string } | DirectusError> {
 	res.write('* [Local] Loading Settings\r\n\r\n');
+
+	// Issue #013: Handle empty selection = skip migration
+	if (selectedSettings && selectedSettings.length === 0) {
+		res.write('* Settings skipped (empty selection)\r\n\r\n');
+		return { response: 'Skipped', name: 'Settings' };
+	}
 
 	try {
 		const currentSettings = await client.request(readSettings());
-		const mergedSettings = customDefu(currentSettings, settings) as DirectusSettings;
+
+		// Issue #013: Filter settings if selectedSettings provided
+		let settingsToMerge = settings;
+		if (selectedSettings && selectedSettings.length > 0 && settings) {
+			const filteredSettings: Partial<Settings> = {};
+			for (const field of selectedSettings) {
+				if (field in settings) {
+					(filteredSettings as any)[field] = (settings as any)[field];
+				}
+			}
+			settingsToMerge = filteredSettings as Settings;
+			res.write(`* Filtering to ${selectedSettings.length} selected field(s): ${selectedSettings.join(', ')}\r\n\r\n`);
+		}
+
+		const mergedSettings = customDefu(settingsToMerge, currentSettings) as DirectusSettings;
 
 		if (!dry_run) {
 			await client.request(updateSettings(mergedSettings));

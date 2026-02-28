@@ -476,7 +476,7 @@ export default defineEndpoint({
 						// Step 2.9: Settings
 						if (scope.settings !== false) {
 							res.write(`<div class="pending"><h3>${spinner} Migrating Settings</h3>\r\n\r\n`);
-							const settings_response = await migrateSettings({ res, client, settings: systemFetch.settings, dry_run: isDryRun });
+							const settings_response = await migrateSettings({ res, client, settings: systemFetch.settings, selectedSettings: scope.selectedSettings, dry_run: isDryRun });
 							const settingsMigrationValid = await validate_migration([settings_response]);
 							res.write(settingsMigrationValid ? `</div><h3 class="done">${Icon} Settings Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Settings Migration Failed</h3>\r\n\r\n`);
 						}
@@ -487,7 +487,7 @@ export default defineEndpoint({
 						// Step 2.10: Translations
 						if (scope.translations !== false) {
 							res.write(`<div class="pending"><h3>${spinner} Migrating Translations</h3>\r\n\r\n`);
-							const translations_response = await migrateTranslations({ res, client, translations: systemFetch.translations, dry_run: isDryRun });
+							const translations_response = await migrateTranslations({ res, client, translations: systemFetch.translations, selectedLanguages: scope.selectedLanguages, translationKeyPattern: scope.translationKeyPattern, dry_run: isDryRun });
 							const translationsMigrationValid = await validate_migration([translations_response]);
 							res.write(translationsMigrationValid ? `</div><h3 class="done">${Icon} Translations Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Translations Migration Failed</h3>\r\n\r\n`);
 						}

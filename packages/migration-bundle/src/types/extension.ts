@@ -205,7 +205,12 @@ export interface Scope {
 	flows: boolean;
 	selectedFlows?: string[];
 	settings: boolean;
+	// Settings filtering (Issue #013)
+	selectedSettings?: string[];
 	translations: boolean;
+	// Translations filtering (Issue #013)
+	selectedLanguages?: string[];
+	translationKeyPattern?: string;
 	force: boolean;
 	// Collection-level filtering
 	selectedCollections?: string[];
