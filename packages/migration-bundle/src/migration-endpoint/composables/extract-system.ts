@@ -168,9 +168,37 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 
 		// Folders: fetch only if explicitly enabled OR if files is enabled (folders needed for file organization)
 		// Removed scope.content check to prevent unwanted folder migration when only content is selected
-		const shouldFetchFolders = scope.folders === true || scope.files === true;
+		// Issue #009: Skip if selectedFolders is an empty array (explicit skip)
+		const hasEmptyFolderSelection = Array.isArray(scope.selectedFolders) && scope.selectedFolders.length === 0;
+		const shouldFetchFolders = !hasEmptyFolderSelection && (scope.folders === true || scope.files === true);
 		res.write(shouldFetchFolders ? '* Fetching folders' : '* Skipping folders\r\n\r\n');
-		const folders: Folder[] = shouldFetchFolders ? await folderService.readByQuery({ fields: directusFolderFields, filter: { id: { _neq: folder } }, limit: -1 }) : [];
+		let folders: Folder[] = shouldFetchFolders ? await folderService.readByQuery({ fields: directusFolderFields, filter: { id: { _neq: folder } }, limit: -1 }) : [];
+
+		// Issue #009: Filter folders by selectedFolders if specified
+		if (shouldFetchFolders && scope.selectedFolders && scope.selectedFolders.length > 0 && folders.length > 0) {
+			const beforeCount = folders.length;
+			// Include selected folders and their parent folders (to maintain structure)
+			const selectedIds = new Set(scope.selectedFolders);
+			const includedIds = new Set<string>();
+
+			// Helper to include folder and all its parents
+			const includeWithParents = (folderId: string) => {
+				includedIds.add(folderId);
+				const folder = folders.find(f => f.id === folderId);
+				if (folder?.parent) {
+					includeWithParents(folder.parent);
+				}
+			};
+
+			// Include all selected folders with their parents
+			scope.selectedFolders.forEach(id => {
+				const folder = folders.find(f => f.id === id);
+				if (folder) includeWithParents(id);
+			});
+
+			folders = folders.filter(f => includedIds.has(f.id));
+			res.write(` (filtered: ${folders.length}/${beforeCount})`);
+		}
 
 		if (shouldFetchFolders) {
 			res.write(' ...');
@@ -309,9 +337,13 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		res.write(scope.comments ? '* Fetching comments' : '* Skipping comments');
 		let comments: CommentRaw[] = scope.comments ? await commentService.readByQuery({ limit: -1 }) : [];
 
-		// Filter comments by collection if collection filtering is active
-		if (scope.comments && comments.length > 0) {
+		// Filter comments by collection if includeCommentsForContent is enabled (Issue #009)
+		// When true: only comments for selected collections are migrated
+		// When false or undefined: all comments are migrated (backward compatibility)
+		if (scope.comments && scope.includeCommentsForContent && comments.length > 0) {
+			const beforeCount = comments.length;
 			comments = comments.filter(comment => shouldIncludeCollection(comment.collection, scope));
+			res.write(` (filtered: ${comments.length}/${beforeCount})`);
 		}
 
 		if (scope.comments) {

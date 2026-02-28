@@ -100,14 +100,21 @@ async function extractContent({
 		res.write('done\r\n\r\n');
 
 		// Files: fetch if files is selected, or content is selected (backward compatibility)
-		const shouldFetchFiles = scope.files === true || (scope.content && scope.files !== false);
+		// Issue #009: Skip if selectedFolders is an empty array (explicit skip)
+		const hasEmptyFolderSelection = Array.isArray(scope.selectedFolders) && scope.selectedFolders.length === 0;
+		const shouldFetchFiles = !hasEmptyFolderSelection && (scope.files === true || (scope.content && scope.files !== false));
 		res.write(shouldFetchFiles ? '* Fetching files' : '* Skipping files\r\n\r\n');
 
 		let files: File[] = [];
 		if (shouldFetchFiles) {
-			// Fix 6.3: Filter files based on selected collections when collection filtering is active
-			const contentCols = scope.contentCollections?.length ? scope.contentCollections
-				: (scope.selectedCollections?.length ? scope.selectedCollections : null);
+			// Fix 6.3: Filter files based on selectedCollections only (not contentCollections)
+			// contentCollections is for content-specific filtering, files should be independent
+			const contentCols = scope.selectedCollections?.length ? scope.selectedCollections : null;
+
+			// Issue #009: Build folder filter if selectedFolders is specified
+			const folderFilter = scope.selectedFolders && scope.selectedFolders.length > 0
+				? { folder: { _in: scope.selectedFolders } }
+				: { _or: [{ folder: { _neq: folder } }, { folder: { _null: true } }] };
 
 			if (contentCols && contentCols.length > 0) {
 				// Get file IDs from selected collections
@@ -120,7 +127,7 @@ async function extractContent({
 						filter: {
 							_and: [
 								{ id: { _in: Array.from(fileIds) } },
-								{ _or: [{ folder: { _neq: folder } }, { folder: { _null: true } }] },
+								folderFilter,
 							],
 						},
 						limit: -1,
@@ -128,12 +135,17 @@ async function extractContent({
 				}
 			}
 			else {
-				// No collection filtering - get all files
+				// No collection filtering - get all files (with optional folder filter)
 				files = await fileService.readByQuery({
 					fields: directusFileFields,
-					filter: { _or: [{ folder: { _neq: folder } }, { folder: { _null: true } }] },
+					filter: folderFilter,
 					limit: -1,
 				});
+			}
+
+			// Issue #009: Log folder filtering if active
+			if (scope.selectedFolders && scope.selectedFolders.length > 0) {
+				res.write(` (folder filter: ${scope.selectedFolders.length} folders)`);
 			}
 
 			res.write(' ...');

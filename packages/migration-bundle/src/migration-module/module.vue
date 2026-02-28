@@ -204,6 +204,15 @@ export default defineComponent({
 		const selectedInsights = ref<string[]>([]);
 		const isLoadingInsights = ref<boolean>(false);
 
+		// Issue #009: Files filtering
+		const filesFilterMode = ref<'all' | 'selected'>('all');
+		const availableFolders = ref<Array<{ text: string; value: string }>>([]);
+		const selectedFolders = ref<string[]>([]);
+		const isLoadingFolders = ref<boolean>(false);
+
+		// Issue #009: Comments integration into Content tab
+		const includeCommentsForContent = ref<boolean>(true);
+
 		// Tab-based UI - active tab for granular options
 		const activeTab = ref<string[]>(['schema']);
 
@@ -215,7 +224,7 @@ export default defineComponent({
 			}
 			// Check if current tab is still valid
 			const currentTab = activeTab.value[0];
-			const tabOptions = ['schema', 'content', 'users', 'flows', 'extensions', 'settings', 'translations'];
+			const tabOptions = ['schema', 'content', 'files', 'users', 'presets', 'dashboards', 'flows', 'extensions', 'settings', 'translations'];
 			if (currentTab && selections.includes(currentTab as Options)) {
 				return; // Current tab is still valid
 			}
@@ -465,6 +474,44 @@ export default defineComponent({
 			}
 		};
 
+		// Issue #009: Load available folders
+		const loadFolders = async () => {
+			isLoadingFolders.value = true;
+			try {
+				const response = await api.get('/folders', {
+					params: {
+						fields: ['id', 'name', 'parent'],
+						limit: -1,
+					},
+				});
+				const foldersData = response.data.data || [];
+
+				// Build folder tree labels with parent path
+				const folderMap = new Map<string, any>();
+				foldersData.forEach((f: any) => folderMap.set(f.id, f));
+
+				const buildLabel = (folder: any): string => {
+					if (folder.parent && folderMap.has(folder.parent)) {
+						return `${buildLabel(folderMap.get(folder.parent))} / ${folder.name}`;
+					}
+					return folder.name;
+				};
+
+				availableFolders.value = foldersData
+					.map((f: any) => ({
+						text: buildLabel(f),
+						value: String(f.id),
+					}))
+					.sort((a: any, b: any) => a.text.localeCompare(b.text));
+			}
+			catch (error) {
+				console.error('Failed to load folders:', error);
+			}
+			finally {
+				isLoadingFolders.value = false;
+			}
+		};
+
 		// Load Users tab data when tab becomes active
 		watch(activeTab, (tab) => {
 			if (tab[0] === 'users' && availableRoles.value.length === 0) {
@@ -477,6 +524,10 @@ export default defineComponent({
 			// Issue #013: Load languages when Translations tab becomes active
 			if (tab[0] === 'translations' && availableLanguages.value.length === 0) {
 				loadLanguages();
+			}
+			// Issue #009: Load folders when Files tab becomes active
+			if (tab[0] === 'files' && availableFolders.value.length === 0) {
+				loadFolders();
 			}
 			// Issue #014: Load bookmarks when Bookmarks tab becomes active
 			if (tab[0] === 'presets' && availableBookmarks.value.length === 0) {
@@ -890,6 +941,16 @@ export default defineComponent({
 				extendedScope.selectedDashboards = selectedInsights.value;
 			}
 
+			// Issue #009: Add files/folders filtering to scope
+			if (scope.files && filesFilterMode.value === 'selected') {
+				extendedScope.selectedFolders = selectedFolders.value;
+			}
+
+			// Issue #009: Add comments integration to scope
+			if (scope.comments) {
+				extendedScope.includeCommentsForContent = includeCommentsForContent.value;
+			}
+
 			// Files defaults to true if content is selected (backward compatibility)
 			if (scope.content && !migrationOptionsSelections.value?.includes('files')) {
 				extendedScope.files = true;
@@ -999,6 +1060,13 @@ export default defineComponent({
 			availableInsights,
 			selectedInsights,
 			isLoadingInsights,
+			// Issue #009: Files filtering
+			filesFilterMode,
+			availableFolders,
+			selectedFolders,
+			isLoadingFolders,
+			// Issue #009: Comments integration
+			includeCommentsForContent,
 		};
 	},
 });
@@ -1154,6 +1222,13 @@ export default defineComponent({
 								Content
 							</v-tab>
 							<v-tab
+								v-if="migrationOptionsSelections?.includes('files')"
+								value="files"
+							>
+								<v-icon name="folder" small />
+								Files
+							</v-tab>
+							<v-tab
 								v-if="migrationOptionsSelections?.includes('users')"
 								value="users"
 							>
@@ -1306,21 +1381,76 @@ export default defineComponent({
 										Please select collections in the Schema tab first.
 									</v-notice>
 
-									<div class="content-files-section">
-										<h4>Files & Folders</h4>
-										<p class="tab-hint">Configure file migration options.</p>
-										<div class="files-checkboxes">
-											<v-checkbox
-												v-model="scope.files"
-												label="Include files"
-												:disabled="lockInterface"
-											/>
-											<v-checkbox
-												v-model="scope.folders"
-												label="Include folder structure"
-												:disabled="lockInterface"
-											/>
-										</div>
+									<!-- Comments Integration -->
+									<div v-if="migrationOptionsSelections?.includes('comments')" class="comments-integration">
+										<v-divider />
+										<h4>Comments</h4>
+										<v-checkbox
+											v-model="includeCommentsForContent"
+											label="Include comments for selected collections"
+											:disabled="lockInterface"
+										/>
+										<p class="tab-hint">
+											When enabled, only comments for the selected collections will be migrated.
+											When disabled, all comments will be migrated.
+										</p>
+									</div>
+								</div>
+							</v-tab-item>
+
+							<!-- Files Tab -->
+							<v-tab-item value="files">
+								<div class="tab-panel">
+									<h4>Files & Folders Filtering</h4>
+									<p class="tab-hint">Configure which files and folders to migrate.</p>
+
+									<div class="files-filter-mode">
+										<v-radio
+											v-model="filesFilterMode"
+											value="all"
+											label="All files and folders"
+											:disabled="lockInterface"
+										/>
+										<v-radio
+											v-model="filesFilterMode"
+											value="selected"
+											label="Selected folders only"
+											:disabled="lockInterface"
+										/>
+									</div>
+
+									<v-select
+										v-if="filesFilterMode === 'selected'"
+										v-model="selectedFolders"
+										:items="availableFolders"
+										:disabled="lockInterface || isLoadingFolders"
+										:loading="isLoadingFolders"
+										:multiple-preview-threshold="3"
+										item-text="label"
+										item-value="value"
+										placeholder="Select folders to include..."
+										multiple
+										class="tab-select"
+									>
+										<template #prepend>
+											<v-icon name="folder" />
+										</template>
+									</v-select>
+
+									<v-notice v-if="filesFilterMode === 'selected' && selectedFolders.length === 0" type="warning" class="tab-notice">
+										No folders selected. Files migration will be skipped.
+									</v-notice>
+
+									<v-notice v-else-if="filesFilterMode === 'all'" type="info" class="tab-notice">
+										All files and folders will be migrated.
+									</v-notice>
+
+									<div class="files-options">
+										<v-checkbox
+											v-model="scope.folders"
+											label="Include folder structure"
+											:disabled="lockInterface"
+										/>
 									</div>
 								</div>
 							</v-tab-item>
@@ -2131,6 +2261,8 @@ h3.skipped .icon i::after {
 
 .migration-tabs {
 	border-bottom: 2px solid var(--theme--border-color);
+	display: flex;
+	flex-wrap: wrap;
 }
 
 .migration-tabs .v-tab {
@@ -2208,19 +2340,45 @@ h3.skipped .icon i::after {
 	margin: 0;
 }
 
-.content-files-section {
-	margin-top: 24px;
-	padding-top: 20px;
+/* Issue #009: Comments integration on Content tab */
+.comments-integration {
+	margin-top: 20px;
+	padding-top: 16px;
+}
+
+.comments-integration h4 {
+	margin-bottom: 8px;
+}
+
+.comments-integration .v-checkbox {
+	margin: 0;
+}
+
+.comments-integration .tab-hint {
+	margin-top: 4px;
+	font-size: 12px;
+	color: var(--theme--foreground-subdued);
+}
+
+/* Issue #009: Files tab styling */
+.files-filter-mode {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 16px;
+}
+
+.files-filter-mode .v-radio {
+	margin: 0;
+}
+
+.files-options {
+	margin-top: 16px;
+	padding-top: 16px;
 	border-top: 1px solid var(--theme--border-color);
 }
 
-.files-checkboxes {
-	display: flex;
-	gap: 24px;
-	margin-top: 12px;
-}
-
-.files-checkboxes .v-checkbox {
+.files-options .v-checkbox {
 	margin: 0;
 }
 

@@ -198,6 +198,8 @@ export interface Scope {
 	folders: boolean;
 	selectedFolders?: string[];
 	comments: boolean;
+	// Comments filtering (Issue #009)
+	includeCommentsForContent?: boolean;
 	presets: boolean;
 	// Presets filtering (Issue #014)
 	selectedPresets?: string[];
