@@ -327,9 +327,11 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		let extensions: Extension[] = scope.extensions ? await extensionService.readAll() : [];
 
 		// Filter extensions by selectedExtensions if specified
+		// Accepts extension ID, schema.name, or bundle name for flexible filtering
 		if (scope.extensions && scope.selectedExtensions && scope.selectedExtensions.length > 0) {
 			extensions = extensions.filter(e =>
-				scope.selectedExtensions!.includes(e.schema?.name || e.id) ||
+				scope.selectedExtensions!.includes(e.id) ||
+				(e.schema?.name && scope.selectedExtensions!.includes(e.schema.name)) ||
 				(e.bundle && scope.selectedExtensions!.includes(e.bundle)),
 			);
 			res.write(`  (filtered to ${extensions.length} selected extensions)\r\n`);
