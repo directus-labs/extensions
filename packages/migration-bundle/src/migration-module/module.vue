@@ -163,7 +163,9 @@ export default defineComponent({
 		// Selected flows and extensions for granular selection
 		const selectedFlows = ref<string[]>([]);
 		const selectedExtensions = ref<string[]>([]);
-		const availableFlows = ref<Array<{ id: string; name: string }>>([]);
+		// Issue #017: Full data storage for flows (unfiltered)
+		const allFlows = ref<Array<{ id: string; name: string; collection: string | null }>>([]);
+		const availableFlows = ref<Array<{ id: string; name: string; collection: string | null }>>([]);
 		const availableExtensions = ref<Array<{ name: string; bundle: string | null; source: 'registry' | 'local' }>>([]);
 
 		// Phase 6: Users tab - specific item selection
@@ -194,7 +196,9 @@ export default defineComponent({
 
 		// Issue #014: Bookmarks (Presets) filtering
 		const bookmarksFilterMode = ref<'all' | 'selected'>('all');
-		const availableBookmarks = ref<Array<{ text: string; value: string }>>([]);
+		// Issue #017: Full data storage for bookmarks (unfiltered)
+		const allBookmarks = ref<Array<{ text: string; value: string; collection: string | null }>>([]);
+		const availableBookmarks = ref<Array<{ text: string; value: string; collection: string | null }>>([]);
 		const selectedBookmarks = ref<string[]>([]);
 		const isLoadingBookmarks = ref<boolean>(false);
 
@@ -249,6 +253,27 @@ export default defineComponent({
 			}
 		}, { immediate: true });
 
+		// Issue #017: Watch collection selection changes and update available bookmarks/flows
+		watch(
+			[selectedCollections, excludedCollections, collectionFilterMode],
+			() => {
+				filterAvailableBookmarks();
+				filterAvailableFlows();
+
+				// Clear selections that are no longer available
+				const availableBookmarkIds = new Set(availableBookmarks.value.map(b => b.value));
+				selectedBookmarks.value = selectedBookmarks.value.filter(id =>
+					availableBookmarkIds.has(id),
+				);
+
+				const availableFlowIds = new Set(availableFlows.value.map(f => f.id));
+				selectedFlows.value = selectedFlows.value.filter(id =>
+					availableFlowIds.has(id),
+				);
+			},
+			{ deep: true },
+		);
+
 		// Load available collections from Directus
 		const loadCollections = async () => {
 			isLoadingCollections.value = true;
@@ -270,6 +295,41 @@ export default defineComponent({
 			finally {
 				isLoadingCollections.value = false;
 			}
+		};
+
+		// Issue #017: Helper function to check if collection should be included in GUI
+		const shouldIncludeCollectionInGUI = (collection: string | null): boolean => {
+			// If no filtering active, include all (including null)
+			if (collectionFilterMode.value === 'all') return true;
+
+			// Include mode: null collection does NOT match any selected collection
+			if (collectionFilterMode.value === 'include') {
+				if (!collection) return false; // null != selected collections
+				if (selectedCollections.value.length === 0) return true;
+				return selectedCollections.value.includes(collection);
+			}
+
+			// Exclude mode: null collection is not in excluded list, so include it
+			if (collectionFilterMode.value === 'exclude') {
+				if (!collection) return true; // null is not excluded
+				return !excludedCollections.value.includes(collection);
+			}
+
+			return true;
+		};
+
+		// Issue #017: Filter bookmarks based on collection selection
+		const filterAvailableBookmarks = () => {
+			availableBookmarks.value = allBookmarks.value.filter(bookmark =>
+				shouldIncludeCollectionInGUI(bookmark.collection),
+			);
+		};
+
+		// Issue #017: Filter flows based on collection selection
+		const filterAvailableFlows = () => {
+			availableFlows.value = allFlows.value.filter(flow =>
+				shouldIncludeCollectionInGUI(flow.collection),
+			);
 		};
 
 		// Phase 6: Load functions for Users tab items
@@ -403,6 +463,7 @@ export default defineComponent({
 		};
 
 		// Issue #014: Load available bookmarks (presets)
+		// Issue #017: Store full data with collection field for GUI filtering
 		const loadBookmarks = async () => {
 			isLoadingBookmarks.value = true;
 			try {
@@ -413,13 +474,17 @@ export default defineComponent({
 					},
 				});
 				const presetsData = response.data.data || [];
-				availableBookmarks.value = presetsData
+				// Store full data with collection field
+				allBookmarks.value = presetsData
 					.filter((p: any) => p.bookmark) // Only include named bookmarks
 					.map((p: any) => ({
 						text: p.bookmark || `Preset ${p.id}`,
 						value: String(p.id),
+						collection: p.collection || null,
 					}))
 					.sort((a: any, b: any) => a.text.localeCompare(b.text));
+				// Apply initial filter
+				filterAvailableBookmarks();
 			}
 			catch (error) {
 				console.error('Failed to load bookmarks:', error);
@@ -764,13 +829,21 @@ export default defineComponent({
 		initialize();
 
 		// Fetch available flows and extensions
+		// Issue #017: Include flow options for collection filtering in GUI
 		const fetchAvailableData = async () => {
 			try {
 				const [flowsResponse, extensionsResponse] = await Promise.all([
-					api.get('/flows', { params: { fields: ['id', 'name'], limit: -1 } }),
+					api.get('/flows', { params: { fields: ['id', 'name', 'options'], limit: -1 } }),
 					api.get('/extensions'),
 				]);
-				availableFlows.value = flowsResponse.data.data || [];
+				// Store full data with collection from options
+				allFlows.value = (flowsResponse.data.data || []).map((f: any) => ({
+					id: f.id,
+					name: f.name,
+					collection: f.options?.collection || null,
+				}));
+				// Apply initial filter
+				filterAvailableFlows();
 				availableExtensions.value = (extensionsResponse.data.data || []).map((ext: any) => ({
 					name: ext.schema?.name || ext.id,
 					bundle: ext.bundle,
@@ -1024,6 +1097,8 @@ export default defineComponent({
 			usersGranular,
 			selectedFlows,
 			selectedExtensions,
+			// Issue #017: allFlows for showing hidden count
+			allFlows,
 			availableFlows,
 			availableExtensions,
 			// Tab-based UI
@@ -1051,7 +1126,9 @@ export default defineComponent({
 			translationKeyPattern,
 			isLoadingLanguages,
 			// Issue #014: Bookmarks (Presets) filtering
+			// Issue #017: allBookmarks for showing hidden count
 			bookmarksFilterMode,
+			allBookmarks,
 			availableBookmarks,
 			selectedBookmarks,
 			isLoadingBookmarks,
@@ -1604,6 +1681,16 @@ export default defineComponent({
 										/>
 									</div>
 
+									<!-- Issue #017: Show notice when bookmarks are filtered by collection -->
+									<v-notice
+										v-if="allBookmarks.length > availableBookmarks.length"
+										type="info"
+										class="tab-notice"
+									>
+										{{ allBookmarks.length - availableBookmarks.length }} bookmark(s) hidden
+										(collection not selected for migration).
+									</v-notice>
+
 									<v-select
 										v-if="bookmarksFilterMode === 'selected'"
 										v-model="selectedBookmarks"
@@ -1703,6 +1790,16 @@ export default defineComponent({
 								<div class="tab-panel">
 									<h4>Flow Selection</h4>
 									<p class="tab-hint">Select specific flows to migrate, or leave empty for all.</p>
+
+									<!-- Issue #017: Show notice when flows are filtered by collection -->
+									<v-notice
+										v-if="allFlows.length > availableFlows.length"
+										type="info"
+										class="tab-notice"
+									>
+										{{ allFlows.length - availableFlows.length }} flow(s) hidden
+										(trigger collection not selected for migration).
+									</v-notice>
 
 									<v-select
 										v-model="selectedFlows"

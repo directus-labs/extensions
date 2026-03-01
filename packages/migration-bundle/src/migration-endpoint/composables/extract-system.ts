@@ -228,9 +228,17 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		// Filter panels by options.collection if collection filtering is active
 		if (scope.dashboards && panels.length > 0) {
 			panels = panels.filter(panel => {
-				// Panels without collection reference are always included
-				if (!panel.options?.collection) return true;
-				return shouldIncludeCollection(panel.options.collection, scope);
+				const panelCollection = panel.options?.collection;
+				// Null collection handling based on filter mode
+				if (!panelCollection) {
+					// Include mode: null does not match any selected collection
+					if (scope.selectedCollections && scope.selectedCollections.length > 0) {
+						return false;
+					}
+					// Exclude mode or no filter: null is not excluded
+					return true;
+				}
+				return shouldIncludeCollection(panelCollection, scope);
 			});
 		}
 
@@ -252,9 +260,17 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		// Also filter flows by options.collection if collection filtering is active
 		if (scope.flows && flows.length > 0) {
 			flows = flows.filter(flow => {
-				// Flows without collection reference are always included
-				if (!flow.options?.collection) return true;
-				return shouldIncludeCollection(flow.options.collection, scope);
+				const flowCollection = flow.options?.collection;
+				// Null collection handling based on filter mode
+				if (!flowCollection) {
+					// Include mode: null does not match any selected collection
+					if (scope.selectedCollections && scope.selectedCollections.length > 0) {
+						return false;
+					}
+					// Exclude mode or no filter: null is not excluded
+					return true;
+				}
+				return shouldIncludeCollection(flowCollection, scope);
 			});
 		}
 
@@ -311,8 +327,15 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		// Filter presets by collection if collection filtering is active
 		if (scope.presets && presets.length > 0) {
 			presets = presets.filter(preset => {
-				// Global presets (no collection) are always included
-				if (!preset.collection) return true;
+				// Null collection handling based on filter mode
+				if (!preset.collection) {
+					// Include mode: null does not match any selected collection
+					if (scope.selectedCollections && scope.selectedCollections.length > 0) {
+						return false;
+					}
+					// Exclude mode or no filter: null is not excluded
+					return true;
+				}
 				return shouldIncludeCollection(preset.collection, scope);
 			});
 		}
