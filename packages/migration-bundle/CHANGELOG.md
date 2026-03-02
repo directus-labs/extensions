@@ -1,5 +1,75 @@
 # Changelog
 
+## 1.3.0 - 2026-03-02
+
+> **Development Note:** This release was developed with assistance from Claude Code (Anthropic's AI coding assistant).
+
+### Features
+
+- **Tab-Based UI Redesign:** Complete redesign of the Migration Options interface with organized tabs for each category (Schema, Content, Files, Users, Flows, Extensions, Settings, Translations, Bookmarks, Insights). Addresses [Issue #294](https://github.com/directus-labs/extensions/issues/294).
+
+- **Users Granular Filtering:** Fine-grained control over user-related migrations:
+  - Roles filtering with `selectedRoles`
+  - Policies filtering with `selectedPolicies`
+  - Permissions filtering with `selectedPermissions`
+  - User accounts filtering with `selectedUsers`
+  - Access rules filtering with `selectedAccess`
+  - Dependency auto-selection (selecting a user auto-selects their role)
+
+- **Flows Granular Filtering:** Select specific flows to migrate using `selectedFlows`. Supports both flow ID (UUID) and flow name for flexible filtering.
+
+- **Extensions Granular Filtering:** Select specific extensions to migrate using `selectedExtensions`. Supports ID, schema name, and bundle name matching.
+
+- **Files/Folders Filtering:** New Files tab with folder-based filtering using `selectedFolders`. Migrate only files from selected folders.
+
+- **Settings Granular Filtering:** Select specific settings fields to migrate instead of all settings.
+
+- **Translations Granular Filtering:** Filter translations by:
+  - Selected languages with `selectedLanguages`
+  - Key pattern matching with `translationKeyPattern`
+
+- **Bookmarks Tab:** New dedicated tab for bookmark (preset) management with `selectedPresets` filtering.
+
+- **Insights Tab:** New dedicated tab for dashboard management with `selectedDashboards` filtering.
+
+- **Comments Integration:** Comments can now be migrated independently or tied to content collections using `includeCommentsForContent`.
+
+- **GUI Collection Context Filtering:** Bookmarks and Flows lists automatically filter based on selected schema collections, showing only relevant items.
+
+- **Local Extensions Warning:** UI notice when local extensions are detected, informing users they must be manually installed on the target.
+
+### Bug Fixes
+
+- **Tab Visibility Bug:** Fixed tabs permanently disappearing after deselecting all items. Root cause was Directus v-select returning `null` instead of `[]`.
+- **selectedExtensions Filter:** Now accepts both extension ID and schema.name for matching.
+- **Empty usersSelection Skip:** Migration now correctly skips empty user selection objects.
+- **Null Collection Handling:** Fixed include/exclude modes to properly handle items with null collection references.
+- **Comments Migration:** Moved comments migration outside content block to allow independent migration.
+
+### Environment Variables
+
+New environment variables for granular control:
+
+```bash
+# Flows filtering (ID or name, comma-separated)
+MIGRATION_BUNDLE_SELECTED_FLOWS=flow-uuid,My Flow Name
+
+# Extensions filtering
+MIGRATION_BUNDLE_SELECTED_EXTENSIONS=@directus-labs/field-comments
+
+# Folders filtering
+MIGRATION_BUNDLE_SELECTED_FOLDERS=folder-uuid-1,folder-uuid-2
+
+# Users granular options
+MIGRATION_BUNDLE_USERS_ROLES=true
+MIGRATION_BUNDLE_USERS_POLICIES=true
+MIGRATION_BUNDLE_USERS_PERMISSIONS=true
+MIGRATION_BUNDLE_USERS_ACCOUNTS=true
+MIGRATION_BUNDLE_USERS_ACCESS=true
+```
+
+---
+
 ## 1.2.0 - 2026-02-24
 
 > **Development Note:** This release was developed with assistance from Claude Code (Anthropic's AI coding assistant).

@@ -108,6 +108,57 @@ This approach provides:
 ![Customise the module](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/migration-bundle/docs/migration-module-customize.jpg)
 
 
+## Granular Migration Options
+
+> **New in v1.3.0** - Developed with assistance from Claude Code (Anthropic's AI coding assistant).
+
+The migration module now features a **tab-based UI** with granular control over every aspect of your migration. Each category has its own dedicated tab with filtering options.
+
+### Available Tabs
+
+| Tab | Description | Filtering Options |
+|-----|-------------|-------------------|
+| **Schema** | Database schema | Include/exclude specific collections |
+| **Content** | Collection data | Select collections for content migration |
+| **Files** | Files and folders | Filter by specific folders |
+| **Users** | User management | Roles, policies, permissions, accounts, access rules |
+| **Flows** | Automation flows | Select specific flows by ID or name |
+| **Extensions** | Installed extensions | Select specific extensions |
+| **Settings** | Project settings | Select specific setting fields |
+| **Translations** | Custom translations | Filter by language and key pattern |
+| **Bookmarks** | User bookmarks | Select specific bookmarks |
+| **Insights** | Dashboards | Select specific dashboards |
+
+### Users Granular Options
+
+Control exactly which user-related data to migrate:
+
+- **Roles** - User roles and their configurations
+- **Policies** - Access policies
+- **Permissions** - Collection permissions
+- **User Accounts** - Actual user records
+- **Access Rules** - Role-policy-user mappings
+
+Dependencies are automatically handled - selecting a user will auto-select their assigned role.
+
+### Flows and Extensions Filtering
+
+You can filter flows and extensions by:
+- **ID (UUID)** - Exact match
+- **Name** - Human-readable name matching
+
+```bash
+# Environment variable examples
+MIGRATION_BUNDLE_SELECTED_FLOWS=abc-123-uuid,My Automation Flow
+MIGRATION_BUNDLE_SELECTED_EXTENSIONS=@directus-labs/field-comments,my-custom-extension
+```
+
+### Local Extensions Notice
+
+When local extensions are detected on the source instance, a warning notice appears informing you that these must be manually installed on the target instance before migration.
+
+---
+
 ## Collection-Level Selection
 
 > **New in v1.2.0** - Developed with assistance from Claude Code (Anthropic's AI coding assistant).
