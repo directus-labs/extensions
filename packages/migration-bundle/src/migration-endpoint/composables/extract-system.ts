@@ -252,8 +252,12 @@ async function extractSystemData({ res, services, accountability, schema, scope,
 		let flows: ModifiedFlowRaw[] = scope.flows ? await flowService.readByQuery({ fields: directusFlowFields, limit: -1 }) : [];
 
 		// Filter flows by selectedFlows if specified
+		// Accepts both flow ID and flow name for flexible filtering (similar to selectedExtensions)
 		if (scope.flows && scope.selectedFlows && scope.selectedFlows.length > 0) {
-			flows = flows.filter(f => scope.selectedFlows!.includes(f.id));
+			flows = flows.filter(f =>
+				scope.selectedFlows!.includes(f.id) ||
+				scope.selectedFlows!.includes(f.name),
+			);
 			res.write(`  (filtered to ${flows.length} selected flows)\r\n`);
 		}
 
