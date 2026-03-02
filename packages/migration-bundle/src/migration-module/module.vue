@@ -274,6 +274,57 @@ export default defineComponent({
 			{ deep: true },
 		);
 
+		// Issue #019 Fix: Defensive watchers to convert null to empty arrays
+		// Directus v-select returns null instead of [] when all items are deselected
+		watch(selectedExtensions, (val) => {
+			if (val === null) selectedExtensions.value = [];
+		});
+		watch(selectedFlows, (val) => {
+			if (val === null) selectedFlows.value = [];
+		});
+		watch(selectedBookmarks, (val) => {
+			if (val === null) selectedBookmarks.value = [];
+		});
+		watch(selectedInsights, (val) => {
+			if (val === null) selectedInsights.value = [];
+		});
+		watch(selectedRoles, (val) => {
+			if (val === null) selectedRoles.value = [];
+		});
+		watch(selectedPolicies, (val) => {
+			if (val === null) selectedPolicies.value = [];
+		});
+		watch(selectedPermissions, (val) => {
+			if (val === null) selectedPermissions.value = [];
+		});
+		watch(selectedUserAccounts, (val) => {
+			if (val === null) selectedUserAccounts.value = [];
+		});
+		watch(selectedAccessRules, (val) => {
+			if (val === null) selectedAccessRules.value = [];
+		});
+		watch(selectedCollections, (val) => {
+			if (val === null) selectedCollections.value = [];
+		});
+		watch(excludedCollections, (val) => {
+			if (val === null) excludedCollections.value = [];
+		});
+		watch(contentCollections, (val) => {
+			if (val === null) contentCollections.value = [];
+		});
+		watch(selectedFolders, (val) => {
+			if (val === null) selectedFolders.value = [];
+		});
+		watch(selectedSettingsFields, (val) => {
+			if (val === null) selectedSettingsFields.value = [];
+		});
+		watch(selectedLanguages, (val) => {
+			if (val === null) selectedLanguages.value = [];
+		});
+		watch(migrationOptionsSelections, (val) => {
+			if (val === null) migrationOptionsSelections.value = [];
+		});
+
 		// Load available collections from Directus
 		const loadCollections = async () => {
 			isLoadingCollections.value = true;
@@ -305,7 +356,7 @@ export default defineComponent({
 			// Include mode: null collection does NOT match any selected collection
 			if (collectionFilterMode.value === 'include') {
 				if (!collection) return false; // null != selected collections
-				if (selectedCollections.value.length === 0) return true;
+				if (!selectedCollections.value || selectedCollections.value.length === 0) return true;
 				return selectedCollections.value.includes(collection);
 			}
 
@@ -607,7 +658,7 @@ export default defineComponent({
 		// Phase 6: Auto-select dependencies when items are selected
 		// When user account is selected, auto-select their role
 		watch(selectedUserAccounts, (userIds) => {
-			if (userIds.length === 0) return;
+			if (!userIds || userIds.length === 0) return;
 			const users = availableUsers.value.filter(u => userIds.includes(u.id));
 			const roleIds = [...new Set(users.map(u => u.role).filter(Boolean))] as string[];
 			roleIds.forEach(roleId => {
@@ -619,7 +670,7 @@ export default defineComponent({
 
 		// When access rule is selected, auto-select role and policy
 		watch(selectedAccessRules, (accessIds) => {
-			if (accessIds.length === 0) return;
+			if (!accessIds || accessIds.length === 0) return;
 			const accessItems = availableAccessRules.value.filter(a => accessIds.includes(a.id));
 			accessItems.forEach(access => {
 				if (access.role && !selectedRoles.value.includes(access.role)) {
@@ -941,15 +992,15 @@ export default defineComponent({
 			const extendedScope: Record<string, any> = { ...scope };
 
 			// Add collection-level filtering to scope
-			if (collectionFilterMode.value === 'include' && selectedCollections.value.length > 0) {
+			if (collectionFilterMode.value === 'include' && selectedCollections.value && selectedCollections.value.length > 0) {
 				extendedScope.selectedCollections = selectedCollections.value;
 			}
-			else if (collectionFilterMode.value === 'exclude' && excludedCollections.value.length > 0) {
+			else if (collectionFilterMode.value === 'exclude' && excludedCollections.value && excludedCollections.value.length > 0) {
 				extendedScope.excludedCollections = excludedCollections.value;
 			}
 
 			// Add content-specific collection selection
-			if (contentCollections.value.length > 0) {
+			if (contentCollections.value && contentCollections.value.length > 0) {
 				extendedScope.contentCollections = contentCollections.value;
 			}
 
@@ -959,19 +1010,19 @@ export default defineComponent({
 
 				// Phase 6: Add users selection options
 				const usersSelection: Record<string, any> = {};
-				if (selectedRoles.value.length > 0) {
+				if (selectedRoles.value && selectedRoles.value.length > 0) {
 					usersSelection.selectedRoles = selectedRoles.value;
 				}
-				if (selectedPolicies.value.length > 0) {
+				if (selectedPolicies.value && selectedPolicies.value.length > 0) {
 					usersSelection.selectedPolicies = selectedPolicies.value;
 				}
-				if (selectedPermissions.value.length > 0) {
+				if (selectedPermissions.value && selectedPermissions.value.length > 0) {
 					usersSelection.selectedPermissions = selectedPermissions.value;
 				}
-				if (selectedUserAccounts.value.length > 0) {
+				if (selectedUserAccounts.value && selectedUserAccounts.value.length > 0) {
 					usersSelection.selectedUsers = selectedUserAccounts.value;
 				}
-				if (selectedAccessRules.value.length > 0) {
+				if (selectedAccessRules.value && selectedAccessRules.value.length > 0) {
 					usersSelection.selectedAccess = selectedAccessRules.value;
 				}
 				if (Object.keys(usersSelection).length > 0) {
@@ -980,12 +1031,12 @@ export default defineComponent({
 			}
 
 			// Add selected flows if flows is selected and specific flows are chosen
-			if (scope.flows && selectedFlows.value.length > 0) {
+			if (scope.flows && selectedFlows.value && selectedFlows.value.length > 0) {
 				extendedScope.selectedFlows = selectedFlows.value;
 			}
 
 			// Add selected extensions if extensions is selected and specific ones are chosen
-			if (scope.extensions && selectedExtensions.value.length > 0) {
+			if (scope.extensions && selectedExtensions.value && selectedExtensions.value.length > 0) {
 				extendedScope.selectedExtensions = selectedExtensions.value;
 			}
 
@@ -996,7 +1047,7 @@ export default defineComponent({
 
 			// Issue #013: Add translations filtering to scope
 			if (scope.translations && translationsFilterMode.value === 'filtered') {
-				if (selectedLanguages.value.length > 0) {
+				if (selectedLanguages.value && selectedLanguages.value.length > 0) {
 					extendedScope.selectedLanguages = selectedLanguages.value;
 				}
 				if (translationKeyPattern.value.trim()) {
@@ -1429,7 +1480,7 @@ export default defineComponent({
 									<p class="tab-hint">Select which collections' content to migrate.</p>
 
 									<v-select
-										v-if="collectionFilterMode === 'include' && selectedCollections.length > 0"
+										v-if="collectionFilterMode === 'include' && selectedCollections && selectedCollections.length > 0"
 										v-model="contentCollections"
 										:items="availableCollections.filter(c => selectedCollections.includes(c.value))"
 										:disabled="lockInterface || isLoadingCollections"
@@ -1514,7 +1565,7 @@ export default defineComponent({
 										</template>
 									</v-select>
 
-									<v-notice v-if="filesFilterMode === 'selected' && selectedFolders.length === 0" type="warning" class="tab-notice">
+									<v-notice v-if="filesFilterMode === 'selected' && (!selectedFolders || selectedFolders.length === 0)" type="warning" class="tab-notice">
 										No folders selected. Files migration will be skipped.
 									</v-notice>
 
@@ -1546,7 +1597,7 @@ export default defineComponent({
 												label="Roles"
 												:disabled="lockInterface"
 											/>
-											<span v-if="selectedRoles.length > 0" class="selection-badge">
+											<span v-if="selectedRoles && selectedRoles.length > 0" class="selection-badge">
 												{{ selectedRoles.length }} selected
 											</span>
 										</div>
@@ -1569,7 +1620,7 @@ export default defineComponent({
 												label="Policies"
 												:disabled="lockInterface || !usersGranular.roles"
 											/>
-											<span v-if="selectedPolicies.length > 0" class="selection-badge">
+											<span v-if="selectedPolicies && selectedPolicies.length > 0" class="selection-badge">
 												{{ selectedPolicies.length }} selected
 											</span>
 										</div>
@@ -1592,7 +1643,7 @@ export default defineComponent({
 												label="Permissions"
 												:disabled="lockInterface || !usersGranular.policies"
 											/>
-											<span v-if="selectedPermissions.length > 0" class="selection-badge">
+											<span v-if="selectedPermissions && selectedPermissions.length > 0" class="selection-badge">
 												{{ selectedPermissions.length }} selected
 											</span>
 										</div>
@@ -1615,7 +1666,7 @@ export default defineComponent({
 												label="User Accounts"
 												:disabled="lockInterface || !usersGranular.roles"
 											/>
-											<span v-if="selectedUserAccounts.length > 0" class="selection-badge">
+											<span v-if="selectedUserAccounts && selectedUserAccounts.length > 0" class="selection-badge">
 												{{ selectedUserAccounts.length }} selected
 											</span>
 										</div>
@@ -1638,7 +1689,7 @@ export default defineComponent({
 												label="Access Rules"
 												:disabled="lockInterface || !usersGranular.userAccounts || !usersGranular.policies"
 											/>
-											<span v-if="selectedAccessRules.length > 0" class="selection-badge">
+											<span v-if="selectedAccessRules && selectedAccessRules.length > 0" class="selection-badge">
 												{{ selectedAccessRules.length }} selected
 											</span>
 										</div>
@@ -1709,12 +1760,12 @@ export default defineComponent({
 										</template>
 									</v-select>
 
-									<div v-if="bookmarksFilterMode === 'selected' && selectedBookmarks.length > 0" class="selection-info">
+									<div v-if="bookmarksFilterMode === 'selected' && selectedBookmarks && selectedBookmarks.length > 0" class="selection-info">
 										<v-icon name="check_circle" small />
 										<span>{{ selectedBookmarks.length }} bookmark(s) selected for migration.</span>
 									</div>
 
-									<v-notice v-if="bookmarksFilterMode === 'selected' && selectedBookmarks.length === 0 && !isLoadingBookmarks" type="warning" class="tab-notice">
+									<v-notice v-if="bookmarksFilterMode === 'selected' && (!selectedBookmarks || selectedBookmarks.length === 0) && !isLoadingBookmarks" type="warning" class="tab-notice">
 										<v-icon name="warning" small />
 										No bookmarks selected. Bookmarks migration will be skipped.
 									</v-notice>
@@ -1765,7 +1816,7 @@ export default defineComponent({
 										</template>
 									</v-select>
 
-									<div v-if="insightsFilterMode === 'selected' && selectedInsights.length > 0" class="selection-info">
+									<div v-if="insightsFilterMode === 'selected' && selectedInsights && selectedInsights.length > 0" class="selection-info">
 										<v-icon name="check_circle" small />
 										<span>
 											{{ selectedInsights.length }} dashboard(s) selected
@@ -1773,7 +1824,7 @@ export default defineComponent({
 										</span>
 									</div>
 
-									<v-notice v-if="insightsFilterMode === 'selected' && selectedInsights.length === 0 && !isLoadingInsights" type="warning" class="tab-notice">
+									<v-notice v-if="insightsFilterMode === 'selected' && (!selectedInsights || selectedInsights.length === 0) && !isLoadingInsights" type="warning" class="tab-notice">
 										<v-icon name="warning" small />
 										No dashboards selected. Insights migration will be skipped.
 									</v-notice>
@@ -1814,7 +1865,7 @@ export default defineComponent({
 										</template>
 									</v-select>
 
-									<div v-if="selectedFlows.length > 0" class="selection-info">
+									<div v-if="selectedFlows && selectedFlows.length > 0" class="selection-info">
 										<v-icon name="check_circle" small />
 										<span>{{ selectedFlows.length }} flow(s) selected. Related operations will be included automatically.</span>
 									</div>
@@ -1842,7 +1893,7 @@ export default defineComponent({
 										</template>
 									</v-select>
 
-									<div v-if="selectedExtensions.length > 0" class="selection-info">
+									<div v-if="selectedExtensions && selectedExtensions.length > 0" class="selection-info">
 										<v-icon name="check_circle" small />
 										<span>{{ selectedExtensions.length }} extension(s) selected.</span>
 									</div>
@@ -1896,12 +1947,12 @@ export default defineComponent({
 										</template>
 									</v-select>
 
-									<div v-if="settingsFilterMode === 'selected' && selectedSettingsFields.length > 0" class="selection-info">
+									<div v-if="settingsFilterMode === 'selected' && selectedSettingsFields && selectedSettingsFields.length > 0" class="selection-info">
 										<v-icon name="check_circle" small />
 										<span>{{ selectedSettingsFields.length }} setting(s) selected for migration.</span>
 									</div>
 
-									<v-notice v-if="settingsFilterMode === 'selected' && selectedSettingsFields.length === 0 && !isLoadingSettings" type="warning" class="tab-notice">
+									<v-notice v-if="settingsFilterMode === 'selected' && (!selectedSettingsFields || selectedSettingsFields.length === 0) && !isLoadingSettings" type="warning" class="tab-notice">
 										<v-icon name="warning" small />
 										No settings selected. Settings migration will be skipped.
 									</v-notice>
@@ -1971,12 +2022,12 @@ export default defineComponent({
 										</div>
 									</div>
 
-									<div v-if="translationsFilterMode === 'filtered' && selectedLanguages.length > 0" class="selection-info">
+									<div v-if="translationsFilterMode === 'filtered' && selectedLanguages && selectedLanguages.length > 0" class="selection-info">
 										<v-icon name="check_circle" small />
 										<span>{{ selectedLanguages.length }} language(s) selected.</span>
 									</div>
 
-									<v-notice v-if="translationsFilterMode === 'filtered' && selectedLanguages.length === 0 && !isLoadingLanguages" type="warning" class="tab-notice">
+									<v-notice v-if="translationsFilterMode === 'filtered' && (!selectedLanguages || selectedLanguages.length === 0) && !isLoadingLanguages" type="warning" class="tab-notice">
 										<v-icon name="warning" small />
 										No languages selected. Translations migration will be skipped.
 									</v-notice>
