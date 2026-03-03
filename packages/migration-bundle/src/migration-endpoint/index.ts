@@ -4,6 +4,7 @@ import { ForbiddenError } from '@directus/errors';
 import { defineEndpoint } from '@directus/extensions-sdk';
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { toArray } from '@directus/utils';
+import { DEFAULT_FILE_BATCH_SIZE } from '../constants';
 import notifyUser from '../utils/notify-user';
 import saveToFile from '../utils/save-file';
 import { validate_data, validate_migration, validate_system } from '../utils/validate';
@@ -172,6 +173,9 @@ export default defineEndpoint({
 			const baseURL = req.body.baseURL;
 			const token = req.body.token;
 			const scope = req.body.scope;
+			const fileBatchSize = typeof req.body.fileBatchSize === 'number' && req.body.fileBatchSize > 0
+				? req.body.fileBatchSize
+				: DEFAULT_FILE_BATCH_SIZE;
 
 			const schema = await getSchema();
 			const limiter = await initLimiter();
@@ -334,7 +338,7 @@ export default defineEndpoint({
 							// Step 2.3: Files
 							res.write(`<div class="pending"><h3>${spinner} Migrating Files</h3>\r\n\r\n`);
 							const folder_response = await migrateFolders({ res, client, folders: systemFetch.folders, dry_run: isDryRun });
-							const file_response = await migrateFiles({ res, client, service: assetService, files: dataFetch.files, dry_run: isDryRun });
+							const file_response = await migrateFiles({ res, client, service: assetService, files: dataFetch.files, dry_run: isDryRun, file_batch_size: fileBatchSize });
 
 							const fileMigrationValid = await validate_migration([
 								folder_response,
