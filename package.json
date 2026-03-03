@@ -1,12 +1,12 @@
 {
 	"name": "@directus-labs/extensions",
 	"private": true,
-	"packageManager": "pnpm@9.1.2",
+	"packageManager": "pnpm@10.27.0",
 	"license": "MIT",
 	"homepage": "https://github.com/directus-labs/extensions",
 	"engines": {
 		"node": "22",
-		"pnpm": "~9"
+		"pnpm": ">=10 <11"
 	},
 	"scripts": {
 		"premkcert": "mkcert -install",
