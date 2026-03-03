@@ -24,36 +24,39 @@ export async function validate_system({
 	if (!scope)
 		return false;
 
-	return !system_errors && (!scope.users || (
-		Array.isArray(roles) && roles.length > 0
-		&& Array.isArray(policies) && policies.length > 0
-		&& Array.isArray(permissions) && permissions.length > 0
-		&& Array.isArray(users) && users.length > 0
-		&& Array.isArray(access) && access.length > 0
+	// Get granular options for users - only validate what was requested
+	const usersGranular = scope.usersGranular || {
+		roles: true,
+		policies: true,
+		permissions: true,
+		userAccounts: true,
+		access: true,
+	};
+
+	// Users validation: check each granular option separately
+	const usersValid = !scope.users || (
+		(!usersGranular.roles || (Array.isArray(roles) && roles.length > 0))
+		&& (!usersGranular.policies || (Array.isArray(policies) && policies.length > 0))
+		&& (!usersGranular.permissions || Array.isArray(permissions))
+		&& (!usersGranular.userAccounts || Array.isArray(users))
+		&& (!usersGranular.access || Array.isArray(access))
 		&& Array.isArray(shares)
-	))
-	&& (!scope.content || (
-		Array.isArray(folders)
-	))
-	&& (!scope.dashboards || (
-		Array.isArray(dashboards)
-		&& Array.isArray(panels)
-	))
-	&& (!scope.flows || (
-		Array.isArray(flows)
-		&& Array.isArray(operations)
-	))
-	&& settings
-	&& Array.isArray(translations)
-	&& (!scope.presets || (
-		Array.isArray(presets) && presets.length > 0
-	))
-	&& (!scope.extensions || (
-		Array.isArray(extensions)
-	))
-	&& (!scope.comments || (
-		Array.isArray(comments)
-	));
+	);
+
+	// Settings and translations: only validate if scope enables them (default true for backward compatibility)
+	const shouldValidateSettings = scope.settings !== false;
+	const shouldValidateTranslations = scope.translations !== false;
+
+	return !system_errors
+		&& usersValid
+		&& (!scope.content || Array.isArray(folders))
+		&& (!scope.dashboards || (Array.isArray(dashboards) && Array.isArray(panels)))
+		&& (!scope.flows || (Array.isArray(flows) && Array.isArray(operations)))
+		&& (!shouldValidateSettings || settings !== null)
+		&& (!shouldValidateTranslations || Array.isArray(translations))
+		&& (!scope.presets || (Array.isArray(presets) && presets.length > 0))
+		&& (!scope.extensions || Array.isArray(extensions))
+		&& (!scope.comments || Array.isArray(comments));
 }
 
 export async function validate_data({

@@ -29,13 +29,23 @@ async function migrateFolders({ res, client, folders, dry_run = false }: { res: 
 
 		const existingFolderIds = new Set(existingFolders.map((folder) => folder.id));
 
-		const foldersToAdd = folders.filter((folder) => {
-			if (existingFolderIds.has(folder.id)) {
-				return false;
-			}
+		// Fix 6.5: Track skipped folders for better logging
+		const foldersToAdd: Folder[] = [];
+		const skippedFolders: Folder[] = [];
 
-			return true;
-		});
+		for (const folder of folders) {
+			if (existingFolderIds.has(folder.id)) {
+				skippedFolders.push(folder);
+			}
+			else {
+				foldersToAdd.push(folder);
+			}
+		}
+
+		// Log skipped folders
+		if (skippedFolders.length > 0) {
+			res.write(`* [Remote] Skipping ${skippedFolders.length} existing folder(s): ${skippedFolders.map(f => f.name).join(', ')}\r\n\r\n`);
+		}
 
 		res.write(foldersToAdd.length > 0 ? `* [Remote] Uploading ${foldersToAdd.length} ${foldersToAdd.length > 1 ? 'Folders' : 'Folder'} ` : '* No Folders to migrate\r\n\r\n');
 

@@ -3,17 +3,44 @@ import type { DashboardRaw, DirectusError } from '../../types/extension';
 import type { Schema } from '../api';
 import { createDashboard, readDashboards } from '@directus/sdk';
 
-async function migrateDashboards({ res, client, dashboards, dry_run = false }: { res: any; client: RestClient<Schema>; dashboards: DashboardRaw[] | null; dry_run: boolean }): Promise<{ response: string; name: string } | DirectusError> {
+async function migrateDashboards({
+	res,
+	client,
+	dashboards,
+	selectedDashboards,
+	dry_run = false,
+}: {
+	res: any;
+	client: RestClient<Schema>;
+	dashboards: DashboardRaw[] | null;
+	selectedDashboards?: string[];
+	dry_run: boolean;
+}): Promise<{ response: string; name: string } | DirectusError> {
 	if (!dashboards) {
 		res.write('* Couldn\'t read data from extract\r\n\r\n');
 		return { name: 'Directus Error', status: 404, errors: [{ message: 'No dashboards found' }] };
 	}
-	else if (dashboards.length === 0) {
+
+	// Issue #014: Handle empty selection = skip
+	if (selectedDashboards && selectedDashboards.length === 0) {
+		res.write('* Dashboards skipped (empty selection)\r\n\r\n');
+		return { response: 'Skipped', name: 'Insights' };
+	}
+
+	// Issue #014: Filter by selected dashboard IDs
+	let filteredBySelection = dashboards;
+	if (selectedDashboards && selectedDashboards.length > 0) {
+		const selectedIds = new Set(selectedDashboards);
+		filteredBySelection = dashboards.filter((dashboard) => selectedIds.has(dashboard.id));
+		res.write(`* Filtering to ${filteredBySelection.length} selected dashboards (from ${dashboards.length})\r\n\r\n`);
+	}
+
+	if (filteredBySelection.length === 0) {
 		res.write('* No dashboards to migrate\r\n\r\n');
 		return { response: 'Empty', name: 'Insights' };
 	}
 
-	res.write(`* [Local] Found ${dashboards.length} dashboards\r\n\r\n`);
+	res.write(`* [Local] Found ${filteredBySelection.length} dashboards\r\n\r\n`);
 
 	try {
 		// Fetch existing dashboards
@@ -29,7 +56,7 @@ async function migrateDashboards({ res, client, dashboards, dry_run = false }: {
 
 		const existingDashboardIds = new Set(existingDashboards.map((dashboard) => dashboard.id));
 
-		const filteredDashboards = dashboards.filter((dashboard) => {
+		const dashboardsToCreate = filteredBySelection.filter((dashboard) => {
 			if (existingDashboardIds.has(dashboard.id)) {
 				return false;
 			}
@@ -41,13 +68,15 @@ async function migrateDashboards({ res, client, dashboards, dry_run = false }: {
 			return newDash;
 		});
 
-		res.write(filteredDashboards.length > 0 ? `* [Remote] Uploading ${filteredDashboards.length} ${filteredDashboards.length > 1 ? 'Dashboards' : 'Dashboard'} ` : '* No Dashboards to migrate\r\n\r\n');
+		res.write(dashboardsToCreate.length > 0 ? `* [Remote] Uploading ${dashboardsToCreate.length} ${dashboardsToCreate.length > 1 ? 'Dashboards' : 'Dashboard'} ` : '* No Dashboards to migrate\r\n\r\n');
 
-		if (filteredDashboards.length > 0) {
-			await Promise.all(filteredDashboards.map(async (dashboard) => {
+		if (dashboardsToCreate.length > 0) {
+			for (const dashboard of dashboardsToCreate) {
 				res.write('.');
-				await client.request(createDashboard(dashboard));
-			}));
+				if (!dry_run) {
+					await client.request(createDashboard(dashboard));
+				}
+			}
 
 			res.write(dry_run ? 'skipped\r\n\r\n' : 'done\r\n\r\n');
 			res.write('* Dashboard Migration Complete\r\n\r\n');

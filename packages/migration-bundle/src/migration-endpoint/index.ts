@@ -4,6 +4,7 @@ import { ForbiddenError } from '@directus/errors';
 import { defineEndpoint } from '@directus/extensions-sdk';
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { toArray } from '@directus/utils';
+import { filterSchema } from '../utils/filter-schema';
 import notifyUser from '../utils/notify-user';
 import saveToFile from '../utils/save-file';
 import { validate_data, validate_migration, validate_system } from '../utils/validate';
@@ -61,6 +62,13 @@ export default defineEndpoint({
 					token: env.MIGRATION_BUNDLE_DEFAULT_TOKEN || '',
 					options: env.MIGRATION_BUNDLE_DEFAULT_OPTIONS
 						? String(env.MIGRATION_BUNDLE_DEFAULT_OPTIONS).split(',').map((s: string) => s.trim())
+						: [],
+					// Collection-level filtering from environment variables
+					selectedCollections: env.MIGRATION_BUNDLE_SELECTED_COLLECTIONS
+						? String(env.MIGRATION_BUNDLE_SELECTED_COLLECTIONS).split(',').map((s: string) => s.trim())
+						: [],
+					excludedCollections: env.MIGRATION_BUNDLE_EXCLUDED_COLLECTIONS
+						? String(env.MIGRATION_BUNDLE_EXCLUDED_COLLECTIONS).split(',').map((s: string) => s.trim())
 						: [],
 				};
 				res.json(defaults);
@@ -248,7 +256,9 @@ export default defineEndpoint({
 				try {
 					// Step 1.1: Schema
 					res.write(`<div class="pending"><h3>${spinner} Creating Schema Snapshot</h3>\r\n\r\n`);
-					const currentSchema = await schemaService.snapshot();
+					const fullSchema = await schemaService.snapshot();
+					// Apply collection filtering to schema if specified
+					const currentSchema = scope.schema ? filterSchema(fullSchema, scope) : fullSchema;
 					await saveToFile(currentSchema, 'schema', fileService, folder, storage);
 					res.write(`</div><h3 class="done">${Icon} Schema Snapshot Created</h3>\r\n\r\n`);
 
@@ -289,35 +299,86 @@ export default defineEndpoint({
 
 					// Step 2: Migration
 					res.write(isDryRun ? '## Checking Destination\r\n\r\n' : '## Starting Migration\r\n\r\n');
-					// Step 2.1 Schema
-					res.write(`<div class="pending"><h3>${spinner} Applying Schema</h3>\r\n\r\n`);
-					const response = await migrateSchema({ res, client, schema: currentSchema, dry_run: isDryRun, force: scope.force }); // Can be { status: 204 } if there is no change
 
-					if ('errors' in response) {
-						const message = Array.isArray(response.errors) && response.errors.length > 0 ? response.errors[0]?.message : 'Unknown';
-						await notifyUser(notificationService, accountability, response);
-						res.write(`</div><h3 class="error">${Icon} Schema Failed to Apply</h3>\r\n\r\n`);
-						res.write(`Error Occurred: ${message}\r\n\r\n`);
+					// Step 2.1 Schema (conditional)
+					let schemaMigrationOk = true;
+					if (scope.schema) {
+						res.write(`<div class="pending"><h3>${spinner} Applying Schema</h3>\r\n\r\n`);
+						const response = await migrateSchema({ res, client, schema: currentSchema, dry_run: isDryRun, force: scope.force }); // Can be { status: 204 } if there is no change
+
+						if ('errors' in response) {
+							const message = Array.isArray(response.errors) && response.errors.length > 0 ? response.errors[0]?.message : 'Unknown';
+							await notifyUser(notificationService, accountability, response);
+							res.write(`</div><h3 class="error">${Icon} Schema Failed to Apply</h3>\r\n\r\n`);
+							res.write(`Error Occurred: ${message}\r\n\r\n`);
+							schemaMigrationOk = false;
+						}
+						else {
+							res.write(`</div><h3 class="done">${Icon} Schema Applied</h3>\r\n\r\n`);
+						}
 					}
 					else {
-						res.write(`</div><h3 class="done">${Icon} Schema Applied</h3>\r\n\r\n`);
+						res.write(`<h3 class="skipped">${Icon} Schema Skipped</h3>\r\n\r\n`);
+					}
 
-						// Step 2.2: Users
+					// Continue with other migrations if schema succeeded or was skipped
+					if (schemaMigrationOk) {
+						// Step 2.2: Users (with granular options)
 						if (scope.users) {
 							res.write(`<div class="pending"><h3>${spinner} Migrating Users</h3>\r\n\r\n`);
-							const role_response = await migrateRoles({ res, client, roles: systemFetch.roles, dry_run: isDryRun });
-							const policy_response = await migratePolicies({ res, client, policies: systemFetch.policies, dry_run: isDryRun });
-							const permission_response = await migratePermissions({ res, client, permissions: systemFetch.permissions, dry_run: isDryRun });
-							const user_response = await migrateUsers({ res, client, users: systemFetch.users, roles: systemFetch.roles, dry_run: isDryRun });
-							const access_response = await migrateAccess({ res, client, access: systemFetch.access, roles: systemFetch.roles, dry_run: isDryRun });
 
-							const userMigrationValid = await validate_migration([
-								role_response,
-								policy_response,
-								permission_response,
-								user_response,
-								access_response,
-							]);
+							// Get granular options with defaults
+							const granular = scope.usersGranular || {
+								roles: true,
+								policies: true,
+								permissions: true,
+								userAccounts: true,
+								access: true,
+							};
+
+							const migrationResponses = [];
+
+							if (granular.roles) {
+								const role_response = await migrateRoles({ res, client, roles: systemFetch.roles, dry_run: isDryRun });
+								migrationResponses.push(role_response);
+							}
+							else {
+								res.write('* Skipping roles\r\n');
+							}
+
+							if (granular.policies) {
+								const policy_response = await migratePolicies({ res, client, policies: systemFetch.policies, dry_run: isDryRun });
+								migrationResponses.push(policy_response);
+							}
+							else {
+								res.write('* Skipping policies\r\n');
+							}
+
+							if (granular.permissions) {
+								const permission_response = await migratePermissions({ res, client, permissions: systemFetch.permissions, dry_run: isDryRun });
+								migrationResponses.push(permission_response);
+							}
+							else {
+								res.write('* Skipping permissions\r\n');
+							}
+
+							if (granular.userAccounts) {
+								const user_response = await migrateUsers({ res, client, users: systemFetch.users, roles: systemFetch.roles, dry_run: isDryRun });
+								migrationResponses.push(user_response);
+							}
+							else {
+								res.write('* Skipping user accounts\r\n');
+							}
+
+							if (granular.access) {
+								const access_response = await migrateAccess({ res, client, access: systemFetch.access, roles: systemFetch.roles, dry_run: isDryRun });
+								migrationResponses.push(access_response);
+							}
+							else {
+								res.write('* Skipping access rules\r\n');
+							}
+
+							const userMigrationValid = await validate_migration(migrationResponses);
 
 							res.write(userMigrationValid ? `</div><h3 class="done">${Icon} Users Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Users Migration Failed</h3>\r\n\r\n`);
 						}
@@ -325,13 +386,11 @@ export default defineEndpoint({
 							res.write(`<h3 class="skipped">${Icon} Users Skipped</h3>\r\n\r\n`);
 						}
 
-						if (scope.content) {
-							res.write(`<div class="pending"><h3>${spinner} Removing Field Requirements</h3>\r\n\r\n`);
-							const field_response = await updateRequiredFields({ res, client, service: fieldService, collections: dataFetch.collections, dry_run: isDryRun, task: 'remove' });
-							const fieldUpdateValid = await validate_migration([field_response]);
-							res.write(fieldUpdateValid ? `</div><h3 class="done">${Icon} Field Requirements Removed</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Failed to Remove Field Requirements</h3>\r\n\r\n`);
+						// Step 2.3: Files (now separate from content)
+						// For backward compatibility: if content is selected but files is not explicitly set, include files
+						const shouldMigrateFiles = scope.files === true || (scope.content && scope.files !== false);
 
-							// Step 2.3: Files
+						if (shouldMigrateFiles) {
 							res.write(`<div class="pending"><h3>${spinner} Migrating Files</h3>\r\n\r\n`);
 							const folder_response = await migrateFolders({ res, client, folders: systemFetch.folders, dry_run: isDryRun });
 							const file_response = await migrateFiles({ res, client, service: assetService, files: dataFetch.files, dry_run: isDryRun });
@@ -342,29 +401,35 @@ export default defineEndpoint({
 							]);
 
 							res.write(fileMigrationValid ? `</div><h3 class="done">${Icon} Files Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Files Migration Partially Failed</h3>\r\n\r\n`);
+						}
+						else {
+							res.write(`<h3 class="skipped">${Icon} Files Skipped</h3>\r\n\r\n`);
+						}
+
+						// Step 2.3b: Folders Only (when folders enabled but files not migrating)
+						if (scope.folders && !shouldMigrateFiles) {
+							res.write(`<div class="pending"><h3>${spinner} Migrating Folders</h3>\r\n\r\n`);
+							const folder_response = await migrateFolders({ res, client, folders: systemFetch.folders, dry_run: isDryRun });
+							const folderMigrationValid = await validate_migration([folder_response]);
+							res.write(folderMigrationValid ? `</div><h3 class="done">${Icon} Folders Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Folders Migration Failed</h3>\r\n\r\n`);
+						}
+
+						// Step 2.4: Content
+						if (scope.content) {
+							res.write(`<div class="pending"><h3>${spinner} Removing Field Requirements</h3>\r\n\r\n`);
+							const field_response = await updateRequiredFields({ res, client, service: fieldService, collections: dataFetch.collections, dry_run: isDryRun, task: 'remove' });
+							const fieldUpdateValid = await validate_migration([field_response]);
+							res.write(fieldUpdateValid ? `</div><h3 class="done">${Icon} Field Requirements Removed</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Failed to Remove Field Requirements</h3>\r\n\r\n`);
 
 							if (fieldUpdateValid) {
-								// Step 2.4: Data
+								// Step 2.5: Data
 								res.write(`<div class="pending"><h3>${spinner} Migrating Collections</h3>\r\n\r\n`);
 								const content_response = await migrateData({ res, client, fullData: dataFetch.fullData, singletons: dataFetch.singletons, dry_run: isDryRun });
 								const contentMigrationValid = await validate_migration([content_response]);
 								res.write(contentMigrationValid ? `</div><h3 class="done">${Icon} Collections Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Collections Migration Failed</h3>\r\n\r\n`);
-
-								if (contentMigrationValid) {
-									// Step 2.5: Comments
-									if (scope.comments) {
-										res.write(`<div class="pending"><h3>${spinner} Migrating Comments</h3>\r\n\r\n`);
-										const comments_response = await migrateComments({ res, client, comments: systemFetch.comments, dry_run: isDryRun });
-										const contentMigrationValid = await validate_migration([comments_response]);
-										res.write(contentMigrationValid ? `</div><h3 class="done">${Icon} Comments Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Comments Migration Failed</h3>\r\n\r\n`);
-									}
-									else {
-										res.write(`<h3 class="skipped">${Icon} Comments Skipped</h3>\r\n\r\n`);
-									}
-								}
 							}
 
-							// Step 2.6: Required Fields
+							// Step 2.7: Required Fields
 							res.write(`<div class="pending"><h3>${spinner} Updating Required Fields</h3>\r\n\r\n`);
 							const fields_response = await updateRequiredFields({ res, client, service: fieldService, collections: dataFetch.collections, dry_run: isDryRun, task: 'add' });
 							const fieldsUpdateValid = await validate_migration([fields_response]);
@@ -374,11 +439,22 @@ export default defineEndpoint({
 							res.write(`<h3 class="skipped">${Icon} Content Skipped</h3>\r\n\r\n`);
 						}
 
+						// Step 2.6: Comments (standalone - not dependent on content)
+						if (scope.comments) {
+							res.write(`<div class="pending"><h3>${spinner} Migrating Comments</h3>\r\n\r\n`);
+							const comments_response = await migrateComments({ res, client, comments: systemFetch.comments, dry_run: isDryRun });
+							const commentsMigrationValid = await validate_migration([comments_response]);
+							res.write(commentsMigrationValid ? `</div><h3 class="done">${Icon} Comments Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Comments Migration Failed</h3>\r\n\r\n`);
+						}
+						else {
+							res.write(`<h3 class="skipped">${Icon} Comments Skipped</h3>\r\n\r\n`);
+						}
+
 						// Step 2.7: Dashboards
 						if (scope.dashboards) {
 							res.write(`<div class="pending"><h3>${spinner} Migrating Insights</h3>\r\n\r\n`);
-							const dashboard_response = await migrateDashboards({ res, client, dashboards: systemFetch.dashboards, dry_run: isDryRun });
-							const panel_response = await migratePanels({ res, client, panels: systemFetch.panels, dry_run: isDryRun });
+							const dashboard_response = await migrateDashboards({ res, client, dashboards: systemFetch.dashboards, selectedDashboards: scope.selectedDashboards, dry_run: isDryRun });
+							const panel_response = await migratePanels({ res, client, panels: systemFetch.panels, selectedDashboards: scope.selectedDashboards, dry_run: isDryRun });
 							const insightsMigrationValid = await validate_migration([dashboard_response, panel_response]);
 							res.write(insightsMigrationValid ? `</div><h3 class="done">${Icon} Insights Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Insights Migration Failed</h3>\r\n\r\n`);
 						}
@@ -398,21 +474,31 @@ export default defineEndpoint({
 						}
 
 						// Step 2.9: Settings
-						res.write(`<div class="pending"><h3>${spinner} Migrating Settings</h3>\r\n\r\n`);
-						const settings_response = await migrateSettings({ res, client, settings: systemFetch.settings, dry_run: isDryRun });
-						const settingsMigrationValid = await validate_migration([settings_response]);
-						res.write(settingsMigrationValid ? `</div><h3 class="done">${Icon} Settings Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Settings Migration Failed</h3>\r\n\r\n`);
+						if (scope.settings !== false) {
+							res.write(`<div class="pending"><h3>${spinner} Migrating Settings</h3>\r\n\r\n`);
+							const settings_response = await migrateSettings({ res, client, settings: systemFetch.settings, selectedSettings: scope.selectedSettings, dry_run: isDryRun });
+							const settingsMigrationValid = await validate_migration([settings_response]);
+							res.write(settingsMigrationValid ? `</div><h3 class="done">${Icon} Settings Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Settings Migration Failed</h3>\r\n\r\n`);
+						}
+						else {
+							res.write(`<h3 class="skipped">${Icon} Settings Skipped</h3>\r\n\r\n`);
+						}
 
 						// Step 2.10: Translations
-						res.write(`<div class="pending"><h3>${spinner} Migrating Translations</h3>\r\n\r\n`);
-						const translations_response = await migrateTranslations({ res, client, translations: systemFetch.translations, dry_run: isDryRun });
-						const translationsMigrationValid = await validate_migration([translations_response]);
-						res.write(translationsMigrationValid ? `</div><h3 class="done">${Icon} Translations Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Translations Migration Failed</h3>\r\n\r\n`);
+						if (scope.translations !== false) {
+							res.write(`<div class="pending"><h3>${spinner} Migrating Translations</h3>\r\n\r\n`);
+							const translations_response = await migrateTranslations({ res, client, translations: systemFetch.translations, selectedLanguages: scope.selectedLanguages, translationKeyPattern: scope.translationKeyPattern, dry_run: isDryRun });
+							const translationsMigrationValid = await validate_migration([translations_response]);
+							res.write(translationsMigrationValid ? `</div><h3 class="done">${Icon} Translations Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Translations Migration Failed</h3>\r\n\r\n`);
+						}
+						else {
+							res.write(`<h3 class="skipped">${Icon} Translations Skipped</h3>\r\n\r\n`);
+						}
 
-						// Step 2.11: Translations
+						// Step 2.11: Presets
 						if (scope.presets) {
 							res.write(`<div class="pending"><h3>${spinner} Migrating Presets</h3>\r\n\r\n`);
-							const presets_response = await migratePresets({ res, client, presets: systemFetch.presets, dry_run: isDryRun });
+							const presets_response = await migratePresets({ res, client, presets: systemFetch.presets, selectedPresets: scope.selectedPresets, dry_run: isDryRun });
 							const presetsMigrationValid = await validate_migration([presets_response]);
 							res.write(presetsMigrationValid ? `</div><h3 class="done">${Icon} Presets Migrated</h3>\r\n\r\n` : `</div><h3 class="error">${Icon} Presets Migration Failed</h3>\r\n\r\n`);
 						}
@@ -430,7 +516,7 @@ export default defineEndpoint({
 						else {
 							res.write(`<h3 class="skipped">${Icon} Extensions Skipped</h3>\r\n\r\n`);
 						}
-					}
+					} // End of schemaMigrationOk block
 
 					res.write(`## Migration ${isDryRun ? 'Dry Run' : ''} Complete\r\n\r\n`);
 					res.write(`The files can be download from the [file library](/admin/files/folders/${folder}).\r\n\r\n`);

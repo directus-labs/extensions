@@ -171,15 +171,58 @@ export interface Translation {
 	value: string;
 }
 
+export interface UsersGranularOptions {
+	roles: boolean;
+	policies: boolean;
+	permissions: boolean;
+	userAccounts: boolean;
+	access: boolean;
+}
+
+// Phase 6: Specific item selection for Users tab
+export interface UsersSelectionOptions {
+	selectedRoles?: string[];
+	selectedPolicies?: string[];
+	selectedPermissions?: number[];
+	selectedUsers?: string[];
+	selectedAccess?: number[];
+}
+
 export interface Scope {
+	schema: boolean;
 	users: boolean;
+	usersGranular?: UsersGranularOptions;
+	usersSelection?: UsersSelectionOptions;
 	content: boolean;
+	files: boolean;
+	folders: boolean;
+	selectedFolders?: string[];
 	comments: boolean;
+	// Comments filtering (Issue #009)
+	includeCommentsForContent?: boolean;
 	presets: boolean;
+	// Presets filtering (Issue #014)
+	selectedPresets?: string[];
 	dashboards: boolean;
+	// Dashboards filtering (Issue #014)
+	selectedDashboards?: string[];
 	extensions: boolean;
+	selectedExtensions?: string[];
 	flows: boolean;
+	selectedFlows?: string[];
+	settings: boolean;
+	// Settings filtering (Issue #013)
+	selectedSettings?: string[];
+	translations: boolean;
+	// Translations filtering (Issue #013)
+	selectedLanguages?: string[];
+	translationKeyPattern?: string;
 	force: boolean;
+	// Collection-level filtering
+	selectedCollections?: string[];
+	excludedCollections?: string[];
+	// Content-specific collection selection (subset of selectedCollections)
+	contentCollections?: string[];
 }
 
 ;

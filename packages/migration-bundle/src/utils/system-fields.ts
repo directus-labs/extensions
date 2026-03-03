@@ -158,6 +158,7 @@ export const directusPolicyFields = [
 ];
 
 export const directusPresetFields = [
+	'id',
 	'bookmark',
 	'user',
 	'role',
