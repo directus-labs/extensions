@@ -4,6 +4,7 @@ import { ForbiddenError } from '@directus/errors';
 import { defineEndpoint } from '@directus/extensions-sdk';
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { toArray } from '@directus/utils';
+import { filterSchema } from '../utils/filter-schema';
 import notifyUser from '../utils/notify-user';
 import saveToFile from '../utils/save-file';
 import { validate_data, validate_migration, validate_system } from '../utils/validate';
@@ -61,6 +62,13 @@ export default defineEndpoint({
 					token: env.MIGRATION_BUNDLE_DEFAULT_TOKEN || '',
 					options: env.MIGRATION_BUNDLE_DEFAULT_OPTIONS
 						? String(env.MIGRATION_BUNDLE_DEFAULT_OPTIONS).split(',').map((s: string) => s.trim())
+						: [],
+					// Collection-level filtering from environment variables
+					selectedCollections: env.MIGRATION_BUNDLE_SELECTED_COLLECTIONS
+						? String(env.MIGRATION_BUNDLE_SELECTED_COLLECTIONS).split(',').map((s: string) => s.trim())
+						: [],
+					excludedCollections: env.MIGRATION_BUNDLE_EXCLUDED_COLLECTIONS
+						? String(env.MIGRATION_BUNDLE_EXCLUDED_COLLECTIONS).split(',').map((s: string) => s.trim())
 						: [],
 				};
 				res.json(defaults);
@@ -248,7 +256,9 @@ export default defineEndpoint({
 				try {
 					// Step 1.1: Schema
 					res.write(`<div class="pending"><h3>${spinner} Creating Schema Snapshot</h3>\r\n\r\n`);
-					const currentSchema = await schemaService.snapshot();
+					const fullSchema = await schemaService.snapshot();
+					// Apply collection filtering to schema if specified
+					const currentSchema = scope.schema ? filterSchema(fullSchema, scope) : fullSchema;
 					await saveToFile(currentSchema, 'schema', fileService, folder, storage);
 					res.write(`</div><h3 class="done">${Icon} Schema Snapshot Created</h3>\r\n\r\n`);
 
@@ -289,19 +299,30 @@ export default defineEndpoint({
 
 					// Step 2: Migration
 					res.write(isDryRun ? '## Checking Destination\r\n\r\n' : '## Starting Migration\r\n\r\n');
-					// Step 2.1 Schema
-					res.write(`<div class="pending"><h3>${spinner} Applying Schema</h3>\r\n\r\n`);
-					const response = await migrateSchema({ res, client, schema: currentSchema, dry_run: isDryRun, force: scope.force }); // Can be { status: 204 } if there is no change
 
-					if ('errors' in response) {
-						const message = Array.isArray(response.errors) && response.errors.length > 0 ? response.errors[0]?.message : 'Unknown';
-						await notifyUser(notificationService, accountability, response);
-						res.write(`</div><h3 class="error">${Icon} Schema Failed to Apply</h3>\r\n\r\n`);
-						res.write(`Error Occurred: ${message}\r\n\r\n`);
+					// Step 2.1 Schema (conditional)
+					let schemaMigrationOk = true;
+					if (scope.schema) {
+						res.write(`<div class="pending"><h3>${spinner} Applying Schema</h3>\r\n\r\n`);
+						const response = await migrateSchema({ res, client, schema: currentSchema, dry_run: isDryRun, force: scope.force }); // Can be { status: 204 } if there is no change
+
+						if ('errors' in response) {
+							const message = Array.isArray(response.errors) && response.errors.length > 0 ? response.errors[0]?.message : 'Unknown';
+							await notifyUser(notificationService, accountability, response);
+							res.write(`</div><h3 class="error">${Icon} Schema Failed to Apply</h3>\r\n\r\n`);
+							res.write(`Error Occurred: ${message}\r\n\r\n`);
+							schemaMigrationOk = false;
+						}
+						else {
+							res.write(`</div><h3 class="done">${Icon} Schema Applied</h3>\r\n\r\n`);
+						}
 					}
 					else {
-						res.write(`</div><h3 class="done">${Icon} Schema Applied</h3>\r\n\r\n`);
+						res.write(`<h3 class="skipped">${Icon} Schema Skipped</h3>\r\n\r\n`);
+					}
 
+					// Continue with other migrations if schema succeeded or was skipped
+					if (schemaMigrationOk) {
 						// Step 2.2: Users
 						if (scope.users) {
 							res.write(`<div class="pending"><h3>${spinner} Migrating Users</h3>\r\n\r\n`);
@@ -430,7 +451,7 @@ export default defineEndpoint({
 						else {
 							res.write(`<h3 class="skipped">${Icon} Extensions Skipped</h3>\r\n\r\n`);
 						}
-					}
+					} // End of schemaMigrationOk block
 
 					res.write(`## Migration ${isDryRun ? 'Dry Run' : ''} Complete\r\n\r\n`);
 					res.write(`The files can be download from the [file library](/admin/files/folders/${folder}).\r\n\r\n`);

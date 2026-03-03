@@ -2,11 +2,11 @@
 import type { AxiosProgressEvent } from 'axios';
 import type { Payload } from '../types/extension';
 import { useApi } from '@directus/extensions-sdk';
-import { defineComponent, reactive, ref, watch } from 'vue';
+import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { md } from '../utils/md';
 import SupportNavigation from './components/navigation.vue';
 
-type Options = 'content' | 'users' | 'comments' | 'presets' | 'dashboards' | 'extensions' | 'flows' | 'force';
+type Options = 'schema' | 'content' | 'users' | 'comments' | 'presets' | 'dashboards' | 'extensions' | 'flows' | 'force';
 
 export default defineComponent({
 	components: {
@@ -39,10 +39,21 @@ export default defineComponent({
 			options: [],
 		});
 
+		// Collection-level filtering
+		const availableCollections = ref<{ label: string; value: string }[]>([]);
+		const selectedCollections = ref<string[]>([]);
+		const excludedCollections = ref<string[]>([]);
+		const collectionFilterMode = ref<'all' | 'include' | 'exclude'>('all');
+		const isLoadingCollections = ref<boolean>(false);
+
 		const migrationOptions = ref<{
 			label: string;
 			value: string;
 		}[]>([
+			{
+				label: 'Schema',
+				value: 'schema',
+			},
 			{
 				label: 'Content',
 				value: 'content',
@@ -75,7 +86,8 @@ export default defineComponent({
 
 		const migrationOptionsSelections = ref<Options[] | null>(migrationOptions.value.map((o) => o.value as Options));
 
-		const scope = reactive<Record<Options, boolean>>({
+		const scope = reactive<Record<Options, boolean> & { selectedCollections?: string[]; excludedCollections?: string[]; contentCollections?: string[] }>({
+			schema: true,
 			users: false,
 			content: false,
 			comments: false,
@@ -86,7 +98,55 @@ export default defineComponent({
 			force: false,
 		});
 
+		// Content-specific collection selection (subset of schema-selected collections)
+		const contentCollections = ref<string[]>([]);
+
+		// Fix 6.1: Show Force checkbox when partial migration is selected
+		const allMigrationOptions = ['schema', 'content', 'users', 'comments', 'presets', 'dashboards', 'extensions', 'flows'];
+		const showForceCheckbox = computed(() => {
+			// Show if compatibility check suggests force
+			const forceInMessage = validationMessage.value?.message?.includes('force') || false;
+
+			// Show if partial migration (not all options selected)
+			const partialMigration = !migrationOptionsSelections.value ||
+				migrationOptionsSelections.value.length < allMigrationOptions.length;
+
+			return forceInMessage || partialMigration;
+		});
+
 		const api = useApi();
+
+		// Fix 3.3: Sync contentCollections with selectedCollections
+		// When user selects collections for schema, auto-select them for content too
+		watch(selectedCollections, (newValue) => {
+			if (newValue && newValue.length > 0) {
+				// Auto-sync: content collections = schema selected collections
+				contentCollections.value = [...newValue];
+			}
+		}, { immediate: true });
+
+		// Load available collections from Directus
+		const loadCollections = async () => {
+			isLoadingCollections.value = true;
+			try {
+				const response = await api.get('/collections');
+				const collections = response.data.data || [];
+				availableCollections.value = collections
+					.filter((c: any) => !c.collection.startsWith('directus_'))
+					.filter((c: any) => c.schema !== null)
+					.map((c: any) => ({
+						label: c.meta?.translations?.[0]?.translation || c.collection,
+						value: c.collection,
+					}))
+					.sort((a: any, b: any) => a.label.localeCompare(b.label));
+			}
+			catch (error) {
+				console.error('Failed to load collections:', error);
+			}
+			finally {
+				isLoadingCollections.value = false;
+			}
+		};
 
 		// Load ENV defaults
 		const loadEnvDefaults = async () => {
@@ -98,9 +158,24 @@ export default defineComponent({
 				if (defaults.token) token.value = defaults.token;
 
 				if (defaults.options && defaults.options.length > 0) {
-					migrationOptionsSelections.value = defaults.options.filter((opt: string) =>
+					let options = defaults.options.filter((opt: string) =>
 						migrationOptions.value.some((o) => o.value === opt),
 					) as Options[];
+					// Fix 3.2: Ensure 'schema' is always included in options
+					if (!options.includes('schema')) {
+						options = ['schema', ...options];
+					}
+					migrationOptionsSelections.value = options;
+				}
+
+				// Load collection-level filtering from ENV
+				if (defaults.selectedCollections && defaults.selectedCollections.length > 0) {
+					selectedCollections.value = defaults.selectedCollections;
+					collectionFilterMode.value = 'include';
+				}
+				else if (defaults.excludedCollections && defaults.excludedCollections.length > 0) {
+					excludedCollections.value = defaults.excludedCollections;
+					collectionFilterMode.value = 'exclude';
 				}
 			}
 			catch {
@@ -136,7 +211,12 @@ export default defineComponent({
 					: preset.layout_options;
 				baseURL.value = options.baseURL || '';
 				token.value = options.token || '';
-				migrationOptionsSelections.value = options.selectedOptions || [];
+				// Fix 3.2: Ensure 'schema' is always included in preset options
+				let selectedOptions = options.selectedOptions || [];
+				if (!selectedOptions.includes('schema')) {
+					selectedOptions = ['schema', ...selectedOptions];
+				}
+				migrationOptionsSelections.value = selectedOptions;
 
 				// Store original config
 				originalConfig.value = {
@@ -211,6 +291,9 @@ export default defineComponent({
 		// Initialize on mount
 		const initialize = async () => {
 			isLoadingConfig.value = true;
+
+			// Load available collections for filtering
+			await loadCollections();
 
 			// Load presets first
 			await loadPresets();
@@ -318,6 +401,28 @@ export default defineComponent({
 
 			scope.force = forceSchema.value;
 
+			// Add collection-level filtering to scope
+			if (collectionFilterMode.value === 'include' && selectedCollections.value.length > 0) {
+				scope.selectedCollections = selectedCollections.value;
+				delete scope.excludedCollections;
+			}
+			else if (collectionFilterMode.value === 'exclude' && excludedCollections.value.length > 0) {
+				scope.excludedCollections = excludedCollections.value;
+				delete scope.selectedCollections;
+			}
+			else {
+				delete scope.selectedCollections;
+				delete scope.excludedCollections;
+			}
+
+			// Add content-specific collection selection
+			if (contentCollections.value.length > 0) {
+				scope.contentCollections = contentCollections.value;
+			}
+			else {
+				delete scope.contentCollections;
+			}
+
 			response.value = await api.post(`/migration/${dryRun ? 'dry-run' : 'run'}`, { baseURL, token, scope }, {
 				onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
 					let eventObj: XMLHttpRequest | undefined;
@@ -373,6 +478,15 @@ export default defineComponent({
 			confirmDelete,
 			hasChanges,
 			updatePreset,
+			// Collection-level filtering
+			availableCollections,
+			selectedCollections,
+			excludedCollections,
+			collectionFilterMode,
+			isLoadingCollections,
+			contentCollections,
+			// Fix 6.1: Force checkbox visibility
+			showForceCheckbox,
 		};
 	},
 });
@@ -462,14 +576,20 @@ export default defineComponent({
 						<v-notice :icon="validationMessage.icon" :type="validationMessage.status">
 							{{ validationMessage.message }}
 						</v-notice>
+					</div>
+
+					<!-- Fix 6.1: Force checkbox - visible for partial migrations -->
+					<div v-if="showForceCheckbox && validationMessage" class="migration-force-option">
 						<v-checkbox
-							v-if="validationMessage.message.includes('force')"
 							v-model="forceSchema"
 							label="Force"
 							:disabled="lockInterface"
 						>
 							Force
 						</v-checkbox>
+						<p v-if="!validationMessage.message.includes('force')" class="force-hint">
+							Enable Force mode for partial migrations to apply correctly.
+						</p>
 					</div>
 
 					<div v-if="forceSchema || (validationMessage && validationMessage.status === 'success')" class="migration-start">
@@ -502,6 +622,82 @@ export default defineComponent({
 						<v-button :disabled="lockInterface" @click="extractSchema({ baseURL, token, dryRun })">
 							Start
 						</v-button>
+					</div>
+
+					<!-- Collection-level filtering (shown when Schema OR Content is selected) -->
+					<div v-if="(forceSchema || (validationMessage && validationMessage.status === 'success')) && (migrationOptionsSelections?.includes('schema') || migrationOptionsSelections?.includes('content'))" class="migration-collection-filter">
+						<div class="collection-filter-header">
+							<v-icon name="filter_list" />
+							<span>Schema Collection Filter</span>
+							<v-select
+								v-model="collectionFilterMode"
+								:items="[
+									{ text: 'All Collections', value: 'all' },
+									{ text: 'Include Only', value: 'include' },
+									{ text: 'Exclude', value: 'exclude' },
+								]"
+								:disabled="lockInterface || isLoadingCollections"
+								placeholder="Filter Mode"
+							/>
+						</div>
+						<div v-if="collectionFilterMode === 'include'" class="collection-select">
+							<v-select
+								v-model="selectedCollections"
+								:items="availableCollections"
+								:disabled="lockInterface || isLoadingCollections"
+								:loading="isLoadingCollections"
+								:multiple-preview-threshold="2"
+								item-text="label"
+								item-value="value"
+								placeholder="Select collections for schema migration..."
+								multiple
+							>
+								<template #prepend>
+									<v-icon name="add_circle" />
+								</template>
+							</v-select>
+						</div>
+						<div v-if="collectionFilterMode === 'exclude'" class="collection-select">
+							<v-select
+								v-model="excludedCollections"
+								:items="availableCollections"
+								:disabled="lockInterface || isLoadingCollections"
+								:loading="isLoadingCollections"
+								:multiple-preview-threshold="2"
+								item-text="label"
+								item-value="value"
+								placeholder="Select collections to exclude..."
+								multiple
+							>
+								<template #prepend>
+									<v-icon name="remove_circle" />
+								</template>
+							</v-select>
+						</div>
+
+						<!-- Content collection selection (only when Content is selected AND collections are filtered) -->
+						<div v-if="migrationOptionsSelections?.includes('content') && collectionFilterMode === 'include' && selectedCollections.length > 0" class="content-collection-select">
+							<div class="collection-filter-header">
+								<v-icon name="storage" />
+								<span>Content Data Selection</span>
+							</div>
+							<v-select
+								v-model="contentCollections"
+								:items="availableCollections.filter(c => selectedCollections.includes(c.value))"
+								:disabled="lockInterface || isLoadingCollections"
+								:loading="isLoadingCollections"
+								:multiple-preview-threshold="2"
+								item-text="label"
+								item-value="value"
+								placeholder="Select which collections should have data migrated..."
+								multiple
+							>
+								<template #prepend>
+									<v-icon name="table_rows" />
+								</template>
+							</v-select>
+							<p class="content-hint">Only data from selected collections will be migrated. Leave empty to migrate all schema-selected collections' data.</p>
+						</div>
 					</div>
 				</div>
 
@@ -863,5 +1059,54 @@ h3.skipped .icon i::after {
 .migration-preset-selector.has-changes .preset-row {
 	border-color: var(--theme--primary);
 	box-shadow: 0 0 0 1px var(--theme--primary-background);
+}
+
+/* Collection-level filtering styles */
+.migration-collection-filter {
+	margin-top: 20px;
+	padding: var(--theme--form--field--input--padding);
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
+}
+
+.collection-filter-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.collection-filter-header span {
+	flex-grow: 1;
+	font-weight: 600;
+}
+
+.collection-filter-header .v-select {
+	max-width: 180px;
+}
+
+.collection-select {
+	margin-top: 8px;
+}
+
+.collection-select .v-select {
+	width: 100%;
+}
+
+.content-collection-select {
+	margin-top: 16px;
+	padding-top: 16px;
+	border-top: 1px solid var(--theme--border-color);
+}
+
+.content-collection-select .v-select {
+	width: 100%;
+	margin-top: 8px;
+}
+
+.content-hint {
+	margin-top: 8px;
+	font-size: 12px;
+	color: var(--theme--foreground-subdued);
 }
 </style>

@@ -108,6 +108,55 @@ This approach provides:
 ![Customise the module](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/migration-bundle/docs/migration-module-customize.jpg)
 
 
+## Collection-Level Selection
+
+> **New in v1.2.0** - Developed with assistance from Claude Code (Anthropic's AI coding assistant).
+
+You can now select specific collections to migrate instead of migrating all content at once. This feature is useful for:
+- Large schemas where only specific collections need synchronization
+- Reducing migration payload size
+- Partial content migrations between instances
+
+### How to Use Collection Filtering
+
+1. Configure your migration as usual (destination URL and token)
+2. Click **Check** to validate the connection
+3. In Migration Options, check **Schema** and/or **Content**
+4. A collection selector will appear - choose which collections to migrate
+5. Start the migration
+
+**Note:** When you select child collections, their parent group collections are automatically included to maintain schema integrity.
+
+### File Filtering
+
+Files are automatically filtered based on your collection selection. Only files that are referenced by the selected collections will be migrated, significantly reducing migration time for partial migrations.
+
+### Environment Variables for Collection Filtering
+
+```bash
+# Include only specific collections (comma-separated)
+MIGRATION_BUNDLE_SELECTED_COLLECTIONS=articles,authors,categories
+
+# Exclude specific collections (used if SELECTED is not set)
+MIGRATION_BUNDLE_EXCLUDED_COLLECTIONS=logs,temp_data,analytics
+```
+
+## Important: PostgreSQL Requirement for Target Instance
+
+Due to a known Directus bug ([GitHub Issue #20428](https://github.com/directus/directus/issues/20428)), schema migrations may fail on MySQL target instances.
+
+**Technical Details:**
+- Directus automatically converts `char(36)` to `varchar(36)` in schema diffs for PostgreSQL compatibility
+- This conversion triggers MySQL foreign key constraint errors: `Cannot change column 'X': used in a foreign key constraint`
+- The issue affects any migration that includes schema changes
+
+**Recommendation:** Use **PostgreSQL** for the target (destination) Directus instance to ensure reliable schema migrations.
+
+| Target Database | Schema Migration | Recommendation |
+|-----------------|------------------|----------------|
+| PostgreSQL | ✅ Works correctly | **Recommended** |
+| MySQL | ⚠️ May fail with FK errors | Use with caution |
+
 ## Permissions
 
-This extension requires admin privilages on both instances to ensure all data is accessible and writable.
+This extension requires admin privileges on both instances to ensure all data is accessible and writable.
