@@ -199,8 +199,8 @@ async function onPlaceSelected(location: AutocompleteLocation) {
 				type: 'Point',
 			},
 			properties: {
-				placeId: selectedPlaceId.value,
 				...getProperties(placeData.place),
+				placeId: selectedPlaceId.value,
 			},
 			type: 'Feature',
 		};
