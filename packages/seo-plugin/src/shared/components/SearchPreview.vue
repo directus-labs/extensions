@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { truncate } from '../utils';
 
 defineProps<{
@@ -7,6 +8,10 @@ defineProps<{
 	metaDescription: string;
 	collection: string;
 }>();
+
+const { t } = useI18n();
+
+const hasFaviconError = ref(false);
 
 function getFavicon(): string {
 	const favicon =
@@ -37,18 +42,20 @@ function getProjectName(): string {
 
 <template>
 	<div class="field">
-		<label class="label field-label type-label">Search Preview</label>
+		<label class="label field-label type-label">{{ t('seo_plugin.ui.search_preview_label') }}</label>
 		<div class="search-container">
 			<div class="search-preview">
 				<div class="preview-url">
 					<img
+						v-if="!hasFaviconError"
 						:src="getFavicon()"
 						class="preview-url-favicon"
 						width="20"
 						height="20"
 						alt="favicon"
-						@error="($event.target as HTMLImageElement).src = '🌐'"
+						@error="hasFaviconError = true"
 					>
+					<span v-else class="preview-url-favicon fallback-icon">🌐</span>
 					<div class="preview-url-text">
 						<p class="truncate">
 							{{ getProjectName() }}
@@ -61,10 +68,10 @@ function getProjectName(): string {
 					</div>
 				</div>
 				<div class="preview-title">
-					{{ truncate(title, 60) || 'Enter a title to see preview' }}
+					{{ truncate(title, 60) || t('seo_plugin.ui.preview_title') }}
 				</div>
 				<div class="preview-description">
-					{{ truncate(metaDescription, 160) || 'Enter a meta description to see preview' }}
+					{{ truncate(metaDescription, 160) || t('seo_plugin.ui.preview_description') }}
 				</div>
 			</div>
 		</div>
@@ -106,6 +113,15 @@ function getProjectName(): string {
 
 	.preview-url-favicon {
 		margin-right: 4px;
+	}
+
+	.fallback-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 20px;
+		height: 20px;
+		font-size: 14px;
 	}
 
 	.preview-url-text {

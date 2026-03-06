@@ -2,6 +2,7 @@
 import { getRootPath } from '@directus-labs/utils';
 import { RadioGroupIndicator, RadioGroupItem, RadioGroupRoot } from 'reka-ui';
 import { computed, defineProps, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { truncate } from '../utils';
 
 const props = defineProps<{
@@ -12,6 +13,7 @@ const props = defineProps<{
 
 type Platform = 'facebook' | 'linkedin' | 'x';
 const selectedPlatform = ref<Platform>('linkedin');
+const { t } = useI18n();
 
 const imageUrlToDisplay = computed(() => {
 	if (!props.ogImage) return null;
@@ -34,7 +36,7 @@ const domain = computed(() => {
 <template>
 	<div class="seo-image-preview">
 		<div class="preview-header">
-			<label class="label field-label type-label">Social Image Preview</label>
+			<label class="label field-label type-label">{{ t('seo_plugin.preview.social_media_preview') }}</label>
 		</div>
 		<div class="preview-container">
 			<div class="og-preview-container">
@@ -55,7 +57,7 @@ const domain = computed(() => {
 					<div v-if="!props.ogImage" class="preview-content empty-content">
 						<div class="empty-state-message">
 							<p>
-								Upload an image to preview how your links will appear when shared on social media
+								{{ t('seo_plugin.ui.upload_image_preview') }}
 							</p>
 						</div>
 					</div>
@@ -64,16 +66,16 @@ const domain = computed(() => {
 							{{ domain }}
 						</div>
 						<div class="preview-title">
-							{{ truncate(title, 60) || 'Enter a title to see preview' }}
+							{{ truncate(title, 60) || t('seo_plugin.ui.preview_title') }}
 						</div>
 						<div class="preview-description">
-							{{ truncate(description, 160) || 'Enter a description to see preview' }}
+							{{ truncate(description, 160) || t('seo_plugin.ui.preview_description') }}
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="preview-info">
-				<h3>Preview how your content will look when shared on social media.</h3>
+				<h3>{{ t('seo_plugin.ui.social_preview_desc') }}</h3>
 				<div class="platform-selection">
 					<RadioGroupRoot v-model="selectedPlatform" class="platform-switcher">
 						<RadioGroupItem value="facebook" class="platform-tab">
@@ -100,7 +102,7 @@ const domain = computed(() => {
 					</RadioGroupRoot>
 				</div>
 				<div class="recommendations">
-					<h4>Recommend Image Size</h4>
+					<h4>{{ t('seo_plugin.ui.recommend_image_size') }}</h4>
 					<p>• 1200 X 630 pixels<br>• 1.91:1 aspect ratio</p>
 				</div>
 			</div>

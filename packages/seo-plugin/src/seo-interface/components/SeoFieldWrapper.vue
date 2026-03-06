@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SeoFieldState } from '../../shared/types/seo';
+import { useI18n } from 'vue-i18n';
 
 import ProgressBar from '../../shared/components/ProgressBar.vue';
 
@@ -8,6 +9,8 @@ defineProps<{
 	state: SeoFieldState;
 	rule: { minLength: number; maxLength: number };
 }>();
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -20,7 +23,7 @@ defineProps<{
 		/>
 		<small class="hint">
 			<span>{{ state.message }}</span>
-			{{ rule.minLength }}-{{ rule.maxLength }} characters recommended. (Current: {{ state.length ?? '?' }})
+			{{ t('seo_plugin.interface.character_recommendation', { min: rule.minLength, max: rule.maxLength }) }}. ({{ t('seo_plugin.interface.current_length', { length: state.length ?? '?' }) }})
 		</small>
 	</div>
 </template>
