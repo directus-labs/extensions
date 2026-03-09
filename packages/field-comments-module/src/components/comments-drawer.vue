@@ -48,7 +48,7 @@ onMounted(() => {
 	<v-drawer
 		v-model="active"
 		title="Comments"
-		icon="chat-bubble-outline"
+		icon="chat"
 		persistent
 		@cancel="toggle"
 	>
@@ -73,6 +73,5 @@ onMounted(() => {
 	background-color: var(--theme--sidebar--background);
 	min-height: 100%;
 	padding: 24px 32px 32px;
-	margin-top: -24px;
 }
 </style>

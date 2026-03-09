@@ -21,6 +21,7 @@ env:
 
 jobs:
   update-readme:
+    if: github.repository == 'directus-labs/extensions'
     name: Update & PR
     runs-on: ubuntu-latest
     steps:

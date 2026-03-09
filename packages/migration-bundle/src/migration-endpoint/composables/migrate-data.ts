@@ -29,6 +29,10 @@ async function migrateData({
 		return { response: 'Empty', name: 'Content' };
 	}
 
+	if (singletons) {
+		await loadSkeletonSingletons(res, client, singletons, dry_run);
+	}
+
 	if (fullData) {
 		await loadSkeletonRecords(res, client, fullData, dry_run);
 		await loadFullData(res, client, fullData, dry_run);
@@ -82,6 +86,7 @@ async function getExistingPrimaryKeys(res: any, client: any, collection: string,
 	const existingKeys = new Set();
 	let page = 1;
 	const limit = 100; // Adjust based on your needs and API limits
+	const sort = [primaryKeyField];
 
 	res.write(`* [Remote] Fetching ${collection} primary keys\r\n\r\n`);
 
@@ -92,6 +97,7 @@ async function getExistingPrimaryKeys(res: any, client: any, collection: string,
 				fields: [primaryKeyField],
 				limit,
 				page,
+				sort,
 			}));
 
 			if (response.length === 0)
@@ -192,6 +198,35 @@ async function loadSingletons(res: any, client: any, singleton: UserCollectionIt
 
 	res.write(dry_run ? 'skipped\r\n\r\n' : 'done\r\n\r\n');
 	res.write('* Loaded data for singleton collections\r\n\r\n');
+}
+
+async function loadSkeletonSingletons(res: any, client: any, singleton: UserCollectionItem[], dry_run: boolean) {
+	res.write('* Loading skeleton singletons\r\n\r\n');
+
+	await Promise.all(singleton.map(async (collection) => {
+		const name = collection.collection;
+
+		try {
+			if (!dry_run) {
+				// @ts-expect-error string
+				await client.request(updateSingleton(name, {}));
+			}
+		}
+		catch (error) {
+			console.error(error);
+			const errorResponse = error as DirectusError;
+			res.write('error\r\n\r\n');
+
+			if (errorResponse.errors && errorResponse.errors.length > 0) {
+				res.write(`${errorResponse.errors[0]?.message}\r\n\r\n`);
+			}
+
+			return errorResponse;
+		}
+	}));
+
+	res.write(dry_run ? 'skipped\r\n\r\n' : 'done\r\n\r\n');
+	res.write('* Loaded skeletons for singleton collections\r\n\r\n');
 }
 
 export default migrateData;

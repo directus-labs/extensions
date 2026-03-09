@@ -16,7 +16,7 @@ const config = { attributes: false, childList: true, subtree: true };
 let app: App | null = null;
 
 const observer = new MutationObserver((mutations, observer) => {
-	if (mutations.some((e) => (e.target as HTMLElement).classList[0] === 'field-name' || (e.target as HTMLElement).classList[0] === 'v-detail' || (e.target as HTMLElement).classList[0] === 'accordion-section')) {
+	if (mutations.some((e) => (e.target as HTMLElement).classList[0] === 'field-name' || (e.target as HTMLElement).classList[0] === 'field' || (e.target as HTMLElement).classList[0] === 'v-detail' || (e.target as HTMLElement).classList[0] === 'accordion-section')) {
 		observer.disconnect();
 		injectFieldLabels({ update: true });
 	}
@@ -120,9 +120,12 @@ async function injectApp(to: Record<string, any>, retry: number = 0) {
 	const api = useApi;
 
 	// Fetch Settings
-	const fieldCommentSettings = computed(
-		() => (typeof settingsStore.settings.field_comments_settings == 'string' ? JSON.parse(settingsStore.settings.field_comments_settings) : settingsStore.settings.field_comments_settings).filter((i: CommentCollectionType) => i.collection === collection),
-	);
+	const fieldCommentSettings = computed(() => {
+		const settings = settingsStore.settings.field_comments_settings;
+		if (!settings) return [];
+		const parsed = typeof settings === 'string' ? JSON.parse(settings) : settings;
+		return (parsed ?? []).filter((i: CommentCollectionType) => i.collection === collection);
+	});
 
 	// Exit if no settings found
 	if (fieldCommentSettings.value.length === 0)
@@ -168,12 +171,15 @@ async function injectApp(to: Record<string, any>, retry: number = 0) {
 				)?.data?.data
 			: [];
 
-		// Iterate over all visible fields
-		const fieldLabels = document.querySelectorAll('.field-name') ?? [];
+		// Iterate over all visible fields using data-field attributes
+		const fieldElements = document.querySelectorAll('.field[data-field]') ?? [];
 
-		fieldLabels.forEach((f: any) => {
-			const label = f.querySelector('div') ? f.querySelector('div')?.innerHTML : f.innerHTML;
-			const matches: Array<Record<string, any>> = fields.filter((i: Field) => i.name === label && (fieldCommentSettings.value[0].all_fields || fieldCommentSettings.value[0].fields.includes(i.field)));
+		fieldElements.forEach((fieldEl: HTMLElement) => {
+			const fieldKey = fieldEl.dataset.field;
+			const f = fieldEl.querySelector('.field-name'); // For icon injection
+			if (!f) return;
+
+			const matches: Array<Record<string, any>> = fields.filter((i: Field) => i.field === fieldKey && (fieldCommentSettings.value[0].all_fields || fieldCommentSettings.value[0].fields.includes(i.field)));
 			const isEnabled: boolean = matches.length > 0;
 
 			if (isEnabled) {
@@ -239,7 +245,7 @@ function injectCommentsMenuItem(packet: Packet) {
 	const v_divider = v_list?.querySelector('.v-divider')?.cloneNode(true);
 	const v_list_item = v_list?.querySelector('.v-list-item')?.cloneNode(true);
 	const v_list_item_icon = (v_list_item as HTMLElement)?.querySelector('i');
-	v_list_item_icon?.setAttribute('data-icon', 'chat_bubble_outline');
+	v_list_item_icon?.setAttribute('data-icon', 'chat');
 	const v_list_item_contet = (v_list_item as HTMLElement)?.querySelector('.v-list-item-content');
 
 	if (v_list_item_contet) {

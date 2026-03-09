@@ -3,6 +3,11 @@
 	"type": "module",
 	"version": "1.0.0",
 	"description": "Directus toggle switch interface for boolean fields.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/switch-interface"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

@@ -5,7 +5,7 @@ import { formatTitle } from '@directus/format-title';
 
 import { set } from 'lodash-es';
 import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from 'reka-ui';
-import { computed, defineEmits, defineProps, toRefs } from 'vue';
+import { computed, onMounted, toRefs } from 'vue';
 import OgImagePreview from '../shared/components/OgImagePreview.vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
 
@@ -32,26 +32,34 @@ const emit = defineEmits<(event: 'input', value: SeoValue) => void>();
 
 const { value } = toRefs(props);
 
+function getDefaultSeoValue(): SeoValue {
+	return {
+		title: '',
+		meta_description: '',
+		focus_keyphrase: '',
+		og_image: '',
+		sitemap: {
+			priority: '0.5',
+			change_frequency: 'weekly',
+		},
+		no_index: false,
+		no_follow: false,
+		additional_fields: {},
+	};
+}
+
 const internalValue = computed({
 	get() {
 		if (!value.value) {
-			// Return default structure with sitemap defaults when value is null
 			return {
-				title: '',
-				meta_description: '',
-				focus_keyphrase: '',
-				og_image: '',
+				...getDefaultSeoValue(),
 				sitemap: {
 					priority: props.defaultPriority || '0.5',
 					change_frequency: props.defaultChangeFrequency || 'weekly',
 				},
-				no_index: false,
-				no_follow: false,
-				additional_fields: {},
 			};
 		}
 
-		// For existing values, ensure sitemap defaults are merged if not present
 		return {
 			...value.value,
 			sitemap: {
@@ -64,6 +72,12 @@ const internalValue = computed({
 	set(newValue: SeoValue) {
 		value.value = newValue;
 	},
+});
+
+onMounted(() => {
+	if (!value.value) {
+		emit('input', internalValue.value);
+	}
 });
 
 function updateField(field: string, value: unknown) {

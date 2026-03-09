@@ -3,6 +3,11 @@
 	"type": "module",
 	"version": "1.0.1",
 	"description": "View treemaps for items with aggregations.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/treemap-chart-panel"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

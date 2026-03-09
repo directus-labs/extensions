@@ -8,13 +8,14 @@ import {
 	AccordionRoot,
 	AccordionTrigger,
 } from 'reka-ui';
-import { computed, nextTick, ref, toRefs } from 'vue';
+import { computed, inject, nextTick, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
 const props = withDefaults(
 	defineProps<{
 		value: Record<string, unknown>[] | null;
+		field?: string;
 		fields?: DeepPartial<Field>[];
 		template?: string;
 		addLabel?: string;
@@ -111,15 +112,104 @@ const internalValue = computed({
 });
 
 const expandedItems = ref<number[]>([]);
+const draggedItemIndex = ref<number | null>(null);
+const isDragging = ref(false);
 
 function isExpanded(index: number) {
 	return expandedItems.value.includes(index);
 }
 
+function onDragStart(evt: any) {
+	draggedItemIndex.value = evt.oldIndex;
+	isDragging.value = true;
+}
+
+function onDragEnd(evt: any) {
+	if (draggedItemIndex.value !== null && evt.newIndex !== evt.oldIndex) {
+		const oldIndex = draggedItemIndex.value;
+		const newIndex = evt.newIndex;
+
+		// Update expanded items to reflect the new positions
+		const updatedExpandedItems = expandedItems.value.map((expandedIndex) => {
+			// If the dragged item was expanded, update its index to the new position
+			if (expandedIndex === oldIndex) {
+				return newIndex;
+			}
+
+			// Adjust other expanded items that were shifted by the drag
+			if (oldIndex < newIndex) {
+				// Item moved down: shift items between oldIndex and newIndex up
+				if (expandedIndex > oldIndex && expandedIndex <= newIndex) {
+					return expandedIndex - 1;
+				}
+			}
+			else {
+				// Item moved up: shift items between newIndex and oldIndex down
+				if (expandedIndex >= newIndex && expandedIndex < oldIndex) {
+					return expandedIndex + 1;
+				}
+			}
+
+			return expandedIndex;
+		});
+
+		expandedItems.value = updatedExpandedItems;
+	}
+
+	draggedItemIndex.value = null;
+	isDragging.value = false;
+}
+
 const itemToRemove = ref<number | null>(null);
 
-// eslint-disable-next-line unused-imports/no-unused-vars
-const validationErrors = ref<any[]>([]);
+const { updateNestedValidationErrors } = inject<{
+	updateNestedValidationErrors: (field: string, errors: any[]) => void;
+}>('nestedValidation', { updateNestedValidationErrors: () => {} });
+
+const itemValidationErrors = computed<Record<number, any[]>>(() => {
+	const errorsMap: Record<number, any[]> = {};
+
+	internalValue.value?.forEach((item, index) => {
+		const errors: any[] = [];
+
+		for (const field of props.fields ?? []) {
+			if (!field.field || !field.meta?.required) continue;
+
+			const val = item[field.field];
+			const isEmpty = val === null || val === undefined || val === '' || (Array.isArray(val) && val.length === 0);
+
+			if (isEmpty) {
+				errors.push({ field: field.field, type: 'nnull' });
+			}
+		}
+
+		if (errors.length > 0) errorsMap[index] = errors;
+	});
+
+	return errorsMap;
+});
+
+watch(itemValidationErrors, (errorsMap) => {
+	if (!props.field) return;
+
+	const allErrors = Object.entries(errorsMap).flatMap(([indexStr, errors]) => {
+		const index = Number(indexStr);
+		return errors.map((error) => {
+			const fieldDef = props.fields?.find((f) => f.field === error.field);
+			return {
+				...error,
+				// Renders as: "Repeater Field Name → [index] → Sub-field Name"
+				field: `${props.field}.${index}.${error.field}`,
+				nestedNames: {
+					[String(index)]: `[${index}]`,
+					[error.field]: fieldDef?.name ?? fieldDef?.field ?? error.field,
+				},
+			};
+		});
+	});
+
+	updateNestedValidationErrors(props.field, allErrors);
+}, { immediate: true });
 
 const confirmDiscard = ref(false);
 
@@ -160,7 +250,7 @@ function addNew() {
 		// Focus the first input of the last form
 		nextTick(() => {
 			const forms = document.querySelectorAll('.list-item-form');
-			const lastForm = forms.at(-1);
+			const lastForm = Array.from(forms).at(-1);
 			const firstInput = lastForm?.querySelector('input, select, textarea');
 
 			if (firstInput instanceof HTMLElement) {
@@ -231,11 +321,14 @@ function discardAndLeave() {
 				handle=".drag-handle"
 				v-bind="{ 'force-fallback': true }"
 				class="v-list"
+				:class="{ dragging: isDragging }"
+				@start="onDragStart"
+				@end="onDragEnd"
 				@update:model-value="$emit('input', $event)"
 			>
 				<template #item="{ element, index }">
 					<AccordionItem :value="index" as-child>
-						<v-list-item block grow class="list-item" clickable>
+						<v-list-item block grow class="list-item">
 							<div class="list-item-content">
 								<AccordionTrigger as-child>
 									<button
@@ -284,7 +377,7 @@ function discardAndLeave() {
 												:direction="direction"
 												primary-key="+"
 												@update:model-value="
-													(updatedElement) => {
+													(updatedElement: Record<string, unknown>) => {
 														const updatedValue = [...internalValue]
 														updatedValue[index] = updatedElement
 														emitValue(updatedValue)
@@ -365,8 +458,11 @@ function discardAndLeave() {
 	width: 100%;
 	margin-bottom: 8px;
 
-	&:focus-within:not(:has(.list-item-form:focus-within)) {
+	&:has(.list-item-header:focus-visible):not(:has(.clear-icon:focus-visible)) {
 		border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus)) !important;
+		outline: var(--focus-ring-width) solid var(--focus-ring-color, var(--theme--primary)) !important;
+		outline-offset: var(--focus-ring-offset) !important;
+		border-radius: var(--focus-ring-radius) !important;
 	}
 }
 
@@ -379,6 +475,12 @@ function discardAndLeave() {
 	border: none;
 	background: none;
 	padding: 0;
+	transition: opacity 0.2s ease;
+
+	&:focus-visible {
+		outline: none !important;
+		border-radius: 0 !important;
+	}
 }
 
 .list-item-header-controls {

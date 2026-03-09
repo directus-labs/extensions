@@ -45,6 +45,9 @@ export async function injectCommentsApp() {
 		// @ts-ignore
 		app.__VUE_I18N_SYMBOL__ = vueI18nSymbol;
 
+		const globalProperties = directusApp._context.config.globalProperties;
+		Object.assign(app.config.globalProperties, globalProperties);
+
 		// Mount the app
 		const container = document.createElement('div');
 		container.id = ID;
