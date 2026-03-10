@@ -7,8 +7,8 @@ export const EnabledCollections = z.object({
 export type EnabledCollectionsType = z.infer<typeof EnabledCollections>;
 
 export const ModuleSettings = z.object({
-	enabled_globally: z.boolean().optional().default(true),
-	hide_current_user_avatar: z.boolean().optional().default(false),
+	enabled_globally: z.boolean().optional().prefault(true),
+	hide_current_user_avatar: z.boolean().optional().prefault(false),
 	collections: z.array(EnabledCollections),
 });
 
