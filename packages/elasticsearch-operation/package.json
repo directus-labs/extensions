@@ -5,6 +5,11 @@
 	"description": "Intergrate Directus content with Elasticsearch. ",
 	"icon": "extension",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/elasticsearch-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

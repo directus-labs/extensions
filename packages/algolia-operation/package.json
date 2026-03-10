@@ -5,6 +5,11 @@
 	"description": "Use Algolia to index your Directus data.",
 	"icon": "extension",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/algolia-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

@@ -4,6 +4,11 @@
 	"version": "1.0.6",
 	"description": "Use Deepgram's Text Intelligence API to understand the meaning behind text.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/ai-text-intelligence-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

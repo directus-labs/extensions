@@ -4,6 +4,11 @@
 	"version": "1.0.3",
 	"description": "Use OpenAI Vision models to find an image's focal points.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/ai-focal-point-detection-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

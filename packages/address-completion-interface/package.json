@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/address-completion-interface",
 	"type": "module",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Use Google Places autocomplete Data API as an Address Completion interface",
 	"author": "Directus Labs",
 	"contributors": [
@@ -11,6 +11,11 @@
 		}
 	],
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/address-completion-interface"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

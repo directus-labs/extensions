@@ -4,6 +4,11 @@
 	"version": "1.0.2",
 	"description": "Use DALLE•E 3 to generate images based on a user prompt.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/ai-image-generation-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",
