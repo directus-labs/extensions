@@ -2,8 +2,6 @@ const fs = require('node:fs');
 const { formatTitle } = require('@directus/format-title');
 const Mustache = require('mustache');
 
-const metaData = JSON.parse(fs.readFileSync('./package.json'))['directus:meta'];
-
 /* Update the packages */
 const packages = fs.readdirSync('./packages');
 
@@ -25,7 +23,6 @@ const formattedPackages = packages.map((packageDir) => {
 		name: formatTitle(removePrefix(packageJson.name)),
 		type: formatTitle(packageJson['directus:extension'].type),
 		sandboxed: (packageJson['directus:extension'].sandbox ? '✅' : 'N/A'),
-		maintained: (metaData.maintained.includes(packageDir) ? '⭐' : ''),
 		directory: packageDir,
 	};
 });

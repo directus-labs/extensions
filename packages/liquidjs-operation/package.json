@@ -4,6 +4,11 @@
 	"version": "1.2.0",
 	"description": "Render Liquid templates within Directus flows.",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/liquidjs-operation"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/tree-view-table-layout",
 	"type": "module",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "A tree view layout that allows you to nest items within a table",
 	"author": "Directus Labs",
 	"contributors": [
@@ -11,6 +11,11 @@
 		}
 	],
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/tree-view-table-layout"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",

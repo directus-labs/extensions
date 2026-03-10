@@ -3,6 +3,11 @@
 	"type": "module",
 	"version": "1.0.0",
 	"description": "Input a simple list of items with full keyboard support.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/simple-list-interface"
+	},
 	"keywords": [
 		"directus",
 		"directus-extension",
