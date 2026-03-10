@@ -3,6 +3,7 @@ import type { AxiosProgressEvent } from 'axios';
 import type { Payload } from '../types/extension';
 import { useApi } from '@directus/extensions-sdk';
 import { defineComponent, reactive, ref, watch } from 'vue';
+import { DEFAULT_FILE_BATCH_SIZE, FILE_BATCH_SIZE_OPTIONS } from '../constants';
 import { md } from '../utils/md';
 import SupportNavigation from './components/navigation.vue';
 
@@ -22,6 +23,8 @@ export default defineComponent({
 		const response = ref<Record<string, any>>({});
 		const dataChunk = ref('');
 		const dryRun = ref<boolean>(true);
+		const fileBatchSize = ref<number>(DEFAULT_FILE_BATCH_SIZE);
+		const batchSizeOptions = FILE_BATCH_SIZE_OPTIONS;
 		const forceSchema = ref<boolean>(false);
 		const isLoadingConfig = ref<boolean>(false);
 		const isSavingConfig = ref<boolean>(false);
@@ -272,7 +275,7 @@ export default defineComponent({
 				originalConfig.value = {
 					baseURL: baseURL.value,
 					token: token.value,
-					options: [...migrationOptionsSelections.value],
+					options: [...(migrationOptionsSelections.value ?? [])],
 				};
 
 				hasChanges.value = false;
@@ -318,7 +321,7 @@ export default defineComponent({
 
 			scope.force = forceSchema.value;
 
-			response.value = await api.post(`/migration/${dryRun ? 'dry-run' : 'run'}`, { baseURL, token, scope }, {
+			response.value = await api.post(`/migration/${dryRun ? 'dry-run' : 'run'}`, { baseURL, token, scope, fileBatchSize: fileBatchSize.value }, {
 				onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
 					let eventObj: XMLHttpRequest | undefined;
 
@@ -353,6 +356,8 @@ export default defineComponent({
 			extractSchema,
 			response,
 			dryRun,
+			fileBatchSize,
+			batchSizeOptions,
 			forceSchema,
 			dataChunk,
 			md,
@@ -492,16 +497,42 @@ export default defineComponent({
 								</template>
 							</v-select>
 						</div>
-						<v-checkbox
-							v-model="dryRun"
-							label="Dry Run"
-							:disabled="lockInterface"
-						>
-							Dry Run
-						</v-checkbox>
-						<v-button :disabled="lockInterface" @click="extractSchema({ baseURL, token, dryRun })">
-							Start
-						</v-button>
+						<div class="migration-controls">
+							<div v-if="migrationOptionsSelections?.includes('content')" class="batch-size-row">
+								<span class="batch-size-label">Batch size</span>
+								<div class="batch-size-input">
+									<v-select
+										v-model="fileBatchSize"
+										:items="batchSizeOptions"
+										:disabled="lockInterface"
+										item-text="label"
+										item-value="value"
+										placeholder="Batch size"
+									>
+										<template #prepend>
+											<v-icon name="file_copy" />
+										</template>
+									</v-select>
+									<v-icon
+										v-tooltip="'Controls how many files are read into memory and uploaded at once. Lower values reduce memory usage; higher values improve speed on fast connections. Recommended: 3.'"
+										name="help_outline"
+										class="batch-size-help"
+									/>
+								</div>
+							</div>
+							<div class="migration-actions">
+								<v-checkbox
+									v-model="dryRun"
+									label="Dry Run"
+									:disabled="lockInterface"
+								>
+									Dry Run
+								</v-checkbox>
+								<v-button :disabled="lockInterface" @click="extractSchema({ baseURL, token, dryRun })">
+									Start
+								</v-button>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -642,21 +673,49 @@ export default defineComponent({
 
 .migration-start {
 	display: flex;
-	justify-content: end;
-}
-
-.migration-start .v-input {
-	max-width: 300px;
+	flex-direction: column;
+	gap: 12px;
 }
 
 .migration-options {
-	flex-grow: 1;
+	width: 100%;
 }
 
-.migration-start .v-checkbox {
-	padding-left: 12px;
-	padding-right: var(--theme--form--field--input--padding);
-	margin-right: 20px;
+.migration-controls {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.migration-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-left: auto;
+}
+
+.batch-size-row {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.batch-size-label {
+	color: var(--theme--foreground);
+	font-size: 14px;
+	white-space: nowrap;
+}
+
+.batch-size-input {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.batch-size-help {
+	color: var(--theme--foreground-subdued);
+	cursor: default;
+	flex-shrink: 0;
 }
 
 @media (max-width: 700px) {
@@ -664,13 +723,9 @@ export default defineComponent({
 		grid-template-columns: 1fr;
 	}
 
-	.migration-start {
+	.migration-controls {
 		flex-wrap: wrap;
-	}
-
-	.migration-start .v-input {
-		max-width: auto;
-		margin-bottom: 20px;
+		justify-content: flex-start;
 	}
 }
 

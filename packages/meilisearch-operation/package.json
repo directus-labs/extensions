@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/meilisearch-operation",
 	"type": "module",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Intergrate Directus content with Meilisearch. ",
 	"author": "Directus Labs",
 	"contributors": [
