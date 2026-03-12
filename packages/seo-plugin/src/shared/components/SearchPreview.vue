@@ -21,6 +21,7 @@ function getFavicon(): string {
 	return favicon;
 }
 
+const showFavicon = ref(true);
 const websiteUrl = ref('');
 
 onMounted(() => {
@@ -42,13 +43,15 @@ function getProjectName(): string {
 			<div class="search-preview">
 				<div class="preview-url">
 					<img
+						v-if="showFavicon"
 						:src="getFavicon()"
 						class="preview-url-favicon"
 						width="20"
 						height="20"
 						alt="favicon"
-						@error="($event.target as HTMLImageElement).src = '🌐'"
+						@error="showFavicon = false"
 					>
+					<v-icon v-else name="public" small class="preview-url-favicon" />
 					<div class="preview-url-text">
 						<p class="truncate">
 							{{ getProjectName() }}
