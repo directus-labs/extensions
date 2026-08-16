@@ -8,7 +8,7 @@ withDefaults(
 		value?: string;
 		keywords?: string[];
 		forceMount?: boolean;
-		as: ComponentType;
+		as?: ComponentType;
 	}>(),
 	{
 		as: () => CommandItem,
@@ -51,9 +51,10 @@ defineEmits<{
 
 	display: flex;
 	align-items: center;
-	padding: 6px 12px 6px 8px;
-	border-radius: 6px;
-	min-height: 40px;
+	padding: 0.1875rem 0.75rem 0.1875rem 0.5rem;
+	border-radius: 0.375rem;
+	min-block-size: 2.125rem;
+	cursor: pointer;
 
 	&[data-selected='true'] {
 		background-color: var(--theme--background-subdued);
@@ -69,17 +70,27 @@ defineEmits<{
 	}
 
 	.icon {
-		margin-right: 12px;
-		width: 24px;
-		height: 24px;
+		--v-icon-size: 1.25rem;
+
+		display: flex;
+		flex: 0 0 1.25rem;
+		align-items: center;
+		justify-content: center;
+		margin-inline-end: 0.625rem;
+		inline-size: 1.25rem;
+		block-size: 1.25rem;
 	}
 
 	.content {
 		flex: 1;
+		min-inline-size: 0;
 	}
 
 	.title {
 		color: var(--theme--foreground);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.description {

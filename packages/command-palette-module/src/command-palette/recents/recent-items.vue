@@ -2,11 +2,11 @@
 import type { CommandConfig, GroupConfig } from '../registry';
 import { computed } from 'vue';
 import CommandGroup from '../components/group.vue';
-import { useRecentCommands } from '../composables/use-recent-commands';
 import RecentItem from './recent-item.vue';
 
 const props = defineProps<{
 	availableCommands: CommandConfig[];
+	commandIds: readonly string[];
 	groups: GroupConfig[];
 }>();
 
@@ -14,12 +14,10 @@ defineEmits<{
 	select: [id: string];
 }>();
 
-const { commands: commandIds } = useRecentCommands();
-
 const commands = computed(() =>
-	commandIds.value
-		.map((id) => props.availableCommands.find((cmd) => cmd.id === id))
-		.filter(Boolean),
+	props.commandIds
+		.map((id) => props.availableCommands.find((command) => command.id === id))
+		.filter((command): command is CommandConfig => command !== undefined),
 );
 </script>
 

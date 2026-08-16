@@ -1,196 +1,272 @@
 import type { Ref } from 'vue';
-import type { CollectionSearchResult } from '../types';
-import {
-	getFieldsFromTemplate,
-	useApi,
-	useStores,
-} from '@directus/extensions-sdk';
-import { mergeFilters } from '@directus/utils';
-import { useDebounceFn } from '@vueuse/core';
-import { reactive, ref, unref, watch } from 'vue';
+import type { CollectionSearchResult, SearchCollectionType } from '../types';
+import { getFieldsFromTemplate, useApi, useStores } from '@directus/extensions-sdk';
+import { getEndpoint, mergeFilters } from '@directus/utils';
+import { isPlainObject } from 'lodash-es';
+import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { createDeepObject } from '../utils/create-deep-object';
+import { getItemRoute } from '../utils/get-item-route';
+import { getRouteQueryValue } from '../utils/get-route-query-value';
+import { isItemRouteAvailable } from '../utils/is-item-route-available';
 import { useSettings } from './use-settings';
+import { useUnexpectedError } from './use-unexpected-error';
+
+const DEFAULT_RESULT_LIMIT = 5;
+const MAX_PALETTE_RESULT_LIMIT = 25;
+const MAX_PALETTE_COLLECTIONS = 20;
+const SEARCH_CONCURRENCY = 5;
+const DEFAULT_TRIGGER_RATE = 150;
 
 interface GlobalSearchOptions {
 	syncWithQuery?: boolean;
+	query?: Ref<string | null>;
+	globallyAvailableOnly?: boolean;
+	minimumQueryLength?: number;
+	searchAsYouType?: boolean;
 }
 
-export function useGlobalSearch(options?: GlobalSearchOptions) {
+export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 	const route = useRoute();
 	const router = useRouter();
-
 	const api = useApi();
-	const { settings, collections, valid } = useSettings();
-
-	// If there's a query for search in the url, set it as the query
-	const query: Ref<string | null> = ref(
-		options?.syncWithQuery ? (route.query?.search as string) ?? null : null,
-	);
-
-	const results: Ref<CollectionSearchResult[]> = ref([]);
+	const stores = useStores();
+	const unexpectedError = useUnexpectedError({ stores, i18n: useI18n() });
+	const fieldsStore = stores.useFieldsStore();
+	const permissionsStore = stores.usePermissionsStore();
+	const { settings, collections: configuredCollections, valid } = useSettings(stores);
+	const query = options.query ?? ref(options.syncWithQuery ? getRouteQueryValue(route.query.search) ?? null : null);
+	const results = ref<CollectionSearchResult[]>([]);
 	const loading = ref(false);
-	const { useFieldsStore } = useStores();
-	const fieldsStore = useFieldsStore();
+	const completedSearch = ref<{ query: string; requestId: number } | null>(null);
+	const info = reactive({ query: '', hits: 0, time: 0 });
+	const collections = computed(() => {
+		const readable = configuredCollections.value.filter((config) => {
+			if (!permissionsStore.hasPermission(config.collection, 'read')) return false;
 
-	const info = reactive({
-		query: '',
-		hits: 0,
-		time: 0,
+			const itemRoute = getItemRoute(config.collection, '__command-palette-route-check__');
+			return isItemRouteAvailable(router, itemRoute);
+		});
+
+		if (!options.globallyAvailableOnly) return readable;
+
+		return readable
+			.filter(({ availableGlobally }) => availableGlobally)
+			.slice(0, MAX_PALETTE_COLLECTIONS);
+	});
+	let requestId = 0;
+	let searchTimeout: ReturnType<typeof setTimeout> | undefined;
+	let activeController: AbortController | undefined;
+	let activeSearch: Promise<void> = Promise.resolve();
+
+	watch(query, (value) => {
+		if (searchTimeout) clearTimeout(searchTimeout);
+		activeController?.abort();
+
+		const normalized = value?.trim() ?? '';
+		const currentRequest = ++requestId;
+
+		results.value = [];
+		info.query = '';
+		info.hits = 0;
+		info.time = 0;
+
+		if (normalized.length < (options.minimumQueryLength ?? 1)) {
+			loading.value = false;
+			if (!normalized && options.syncWithQuery) void removeSearchQuery().catch(unexpectedError);
+			return;
+		}
+
+		const asYouType = options.searchAsYouType ?? settings.value?.searchMode === 'as_you_type';
+
+		if (!asYouType) {
+			loading.value = false;
+			return;
+		}
+
+		loading.value = true;
+
+		searchTimeout = setTimeout(() => {
+			searchTimeout = undefined;
+			void search(normalized, currentRequest);
+		}, getTriggerRate(settings.value?.triggerRate));
 	});
 
-	const debouncedSearch = useDebounceFn(
-		() => {
-			if (query.value) {
-				search(query.value);
-			}
-			else {
-				loading.value = false;
-			}
-		},
-		unref(settings)?.triggerRate ?? 100,
-		{
-			maxWait: unref(settings)?.triggerRate ?? 100,
-		},
-	);
+	onBeforeUnmount(() => {
+		requestId++;
+		if (searchTimeout) clearTimeout(searchTimeout);
+		activeController?.abort();
+		loading.value = false;
+	});
 
-	async function search(value: string) {
-		try {
-			// Initial search state so we don't show any results before a user has searched
-			info.query = value;
+	if (query.value) void search(query.value);
 
-			loading.value = true;
+	async function search(value: string | null, existingRequestId?: number) {
+		const normalized = value?.trim() ?? '';
+		if (normalized.length < (options.minimumQueryLength ?? 1)) return;
+		if (existingRequestId !== undefined && existingRequestId !== requestId) return;
 
-			if (options?.syncWithQuery) {
-				// Set the query in the url for history purposes, but use replace to avoid adding a million entries to the history
-				router.replace({ query: { search: value } });
-			}
+		if (existingRequestId === undefined && searchTimeout) {
+			clearTimeout(searchTimeout);
+			searchTimeout = undefined;
+		}
 
-			// We're tracking the time it takes to search and the number of hits
-			const startedAt = Date.now();
+		const currentRequest = existingRequestId ?? ++requestId;
+		activeController?.abort();
+		loading.value = true;
+		results.value = [];
+		info.query = normalized;
+		info.hits = 0;
+		info.time = 0;
 
-			const searchPromises = unref(collections).map(async (index) => {
-				try {
-					const {
-						collection,
-						displayTemplate,
-						descriptionField,
-						fields,
-						filter,
-						sort,
-						limit,
-					} = index;
+		const previousSearch = activeSearch;
+		const nextSearch = previousSearch.then(async () => {
+			if (currentRequest !== requestId) return;
 
-					const displayFields = getFieldsFromTemplate(displayTemplate) || [];
+			const controller = new AbortController();
+			activeController = controller;
 
-					const primaryKeyField =
-            fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field || 'id';
-
-					// Use the mergeFilters utility to combine the existing query filter with the search filter
-					const paramsFilter = mergeFilters(filter ?? null, {
-						_or: fields.map((field) =>
-							createDeepObject(field, {
-								_icontains: unref(query),
-							}),
-						),
-					});
-
-					const params = {
-						limit: limit ?? 5,
-						sort: sort ?? [primaryKeyField],
-						filter: paramsFilter,
-						fields: [primaryKeyField, descriptionField, ...displayFields],
-					};
-
-					// Update the url if the collection is a directus system collection
-					const url = collection.startsWith('directus_')
-						? collection.replace('directus_', '')
-						: `/items/${collection}`;
-
-					const { data } = await api.get(url, { params });
-
-					if (data.data.length > 0) {
-						return {
-							collection,
-							hits: data.data,
-							displayTemplate,
-							descriptionField,
-							primaryKeyField,
-						};
-					}
-				}
-				catch (error) {
-					console.error(error);
+			try {
+				if (options.syncWithQuery) {
+					await router.replace({ query: { ...route.query, search: normalized } });
 				}
 
-				return null;
-			});
+				if (currentRequest !== requestId || controller.signal.aborted) return;
 
-			// Wait for all searchPromises to resolve
-			results.value = (await Promise.allSettled(searchPromises))
-				.filter(
-					<T>(
-						result: PromiseSettledResult<T>,
-					): result is PromiseFulfilledResult<T> =>
-						result.status === 'fulfilled',
-				)
-				.map((result) => result.value)
-				.filter(<T>(value: T | null): value is T => value !== null);
+				const startedAt = Date.now();
+				const settled = await mapWithConcurrency(
+					collections.value,
+					SEARCH_CONCURRENCY,
+					(config) => searchCollection(config, normalized, controller.signal),
+					controller.signal,
+				);
 
-			// Add additional context for the user about the search
-			info.hits = results.value
-				.map(({ hits }) => hits.length)
-				.reduce((a, b) => a + b, 0);
+				if (currentRequest !== requestId || controller.signal.aborted) return;
 
-			info.time = Date.now() - startedAt;
-			loading.value = false;
-		}
-		catch (error) {
-			console.error(error);
-			loading.value = false;
-		}
+				const failure = settled.find(
+					(result): result is PromiseRejectedResult => result.status === 'rejected',
+				);
+				if (failure) unexpectedError(failure.reason);
+
+				results.value = settled.flatMap((result) =>
+					result.status === 'fulfilled' && result.value ? [result.value] : [],
+				);
+
+				info.hits = results.value.reduce((total, result) => total + result.hits.length, 0);
+				info.time = Date.now() - startedAt;
+				completedSearch.value = { query: normalized, requestId: currentRequest };
+			}
+			catch (error) {
+				if (!controller.signal.aborted && currentRequest === requestId) unexpectedError(error);
+			}
+			finally {
+				if (currentRequest === requestId) loading.value = false;
+				if (activeController === controller) activeController = undefined;
+			}
+		});
+
+		activeSearch = nextSearch;
+		await nextSearch;
+	}
+
+	async function searchCollection(
+		config: SearchCollectionType,
+		value: string,
+		signal: AbortSignal,
+	): Promise<CollectionSearchResult | null> {
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(config.collection)?.field ?? 'id';
+		const displayFields = getFieldsFromTemplate(config.displayTemplate) ?? [];
+		const filter = mergeFilters(config.filter ?? null, {
+			_or: config.fields.map((field) => createDeepObject(field, { _icontains: value })),
+		});
+		const response = await api.get(getEndpoint(config.collection), {
+			signal,
+			params: {
+				limit: options.globallyAvailableOnly
+					? getPaletteResultLimit(config.limit)
+					: config.limit ?? DEFAULT_RESULT_LIMIT,
+				sort: config.sort ?? [primaryKeyField],
+				filter,
+				fields: [primaryKeyField, config.descriptionField, ...displayFields].filter(Boolean),
+			},
+		});
+		const data: unknown = response.data.data;
+		const hits = Array.isArray(data)
+			? data
+					.filter((item: unknown): item is Record<string, any> => isPlainObject(item))
+					.filter((item) => item[primaryKeyField] !== null && item[primaryKeyField] !== undefined)
+			: [];
+
+		if (hits.length === 0) return null;
+
+		return {
+			collection: config.collection,
+			hits,
+			primaryKeyField,
+			...(config.displayTemplate ? { displayTemplate: config.displayTemplate } : {}),
+			...(config.descriptionField ? { descriptionField: config.descriptionField } : {}),
+		};
 	}
 
 	function clear() {
+		requestId++;
+		if (searchTimeout) clearTimeout(searchTimeout);
+		activeController?.abort();
 		query.value = null;
 		info.query = '';
+		info.hits = 0;
+		info.time = 0;
 		results.value = [];
-		router.replace({ query: {} });
+		loading.value = false;
 	}
 
-	// If there's a search query in the url, go ahead and search immediately.
-	if (query.value) {
-		search(query.value);
+	async function removeSearchQuery() {
+		const nextQuery = { ...route.query };
+		delete nextQuery.search;
+		await router.replace({ query: nextQuery });
 	}
 
-	// **Watchers**
-	watch(query, (value, prevQuery) => {
-		if (!value) {
-			clear();
-		}
-		else if (unref(settings)?.searchMode === 'as_you_type') {
-			// give some feedback to the user
-			loading.value = true;
+	return { query, results, settings, settingsValid: valid, loading, completedSearch, info, collections, clear, search };
+}
 
-			if (!prevQuery) {
-				// perform immediate search if the previous query is empty (this might be the first search)
-				search(value);
-			}
-			else {
-				debouncedSearch();
-			}
-		}
-	});
+function getPaletteResultLimit(limit: number | null | undefined) {
+	if (limit === -1) return MAX_PALETTE_RESULT_LIMIT;
+	if (typeof limit !== 'number' || !Number.isFinite(limit)) return DEFAULT_RESULT_LIMIT;
+	return Math.min(MAX_PALETTE_RESULT_LIMIT, Math.max(1, limit));
+}
 
-	return {
-		query,
-		results,
-		settings,
-		settingsValid: valid,
-		loading,
-		info,
-		collections,
-		clear,
-		search,
-	};
+function getTriggerRate(value: number | undefined) {
+	return typeof value === 'number' && Number.isFinite(value) && value >= 0
+		? value
+		: DEFAULT_TRIGGER_RATE;
+}
+
+async function mapWithConcurrency<T, R>(
+	items: T[],
+	concurrency: number,
+	callback: (item: T) => Promise<R>,
+	signal?: AbortSignal,
+): Promise<PromiseSettledResult<R>[]> {
+	const results: PromiseSettledResult<R>[] = [];
+	let nextIndex = 0;
+
+	await Promise.all(
+		Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+			while (nextIndex < items.length && !signal?.aborted) {
+				const index = nextIndex++;
+				const item = items[index];
+				if (item === undefined) continue;
+
+				try {
+					results[index] = { status: 'fulfilled', value: await callback(item) };
+				}
+				catch (error) {
+					results[index] = { status: 'rejected', reason: error };
+				}
+			}
+		}),
+	);
+
+	return results;
 }

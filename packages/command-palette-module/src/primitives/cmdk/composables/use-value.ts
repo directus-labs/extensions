@@ -9,9 +9,9 @@ export function useValue(
 	id: string,
 	elementRef: Ref<HTMLElement | null>,
 	deps: (
-		| MaybeRef<string>
+		| MaybeRef<string | undefined>
 		| Ref<HTMLElement | null>
-		| Ref<VNode[]>
+		| Ref<VNode[] | undefined>
 		| undefined
 	)[],
 	aliases?: MaybeRef<string[] | undefined>,

@@ -1,6 +1,6 @@
 import type { useApi, useStores } from '@directus/extensions-sdk';
 import type { Component, VNode } from 'vue';
-import type { VueI18n } from 'vue-i18n';
+import type { useI18n } from 'vue-i18n';
 import type { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 import type { _CommandRouteProps } from '../router/types';
 
@@ -10,72 +10,52 @@ interface CommandConfigCommon {
 	icon: string | (() => VNode);
 	render?: () => VNode | VNode[];
 	description?: string;
+	endLabel?: string;
 	group?: string;
 	keywords?: string[];
+	priority?: number;
 }
 
-type CommandConfigBefore = CommandConfigCommon & {
-	before: string;
-	after?: never;
-};
+type Position =
+	| { before: string; after?: never }
+	| { before?: never; after: string }
+	| { before?: never; after?: never };
 
-type CommandConfigAfter = CommandConfigCommon & {
-	before?: never;
-	after: string;
-};
-
-type CommandConfigBase =
-	| CommandConfigCommon
-	| CommandConfigBefore
-	| CommandConfigAfter;
+type CommandConfigBase = CommandConfigCommon & Position;
 
 export interface CommandActionContext {
 	router: Router;
 }
 
 export type CommandConfigWithAction = CommandConfigBase & {
-	action: (
-		context: CommandActionContext,
-	) => Promise<boolean | undefined> | boolean | undefined;
-
+	action: (context: CommandActionContext) => unknown;
 	component?: never;
 	props?: never;
 };
 
 export type CommandConfigWithView = CommandConfigBase & {
 	action?: never;
-
 	component: Component;
 	props?: _CommandRouteProps;
 };
 
 export type CommandConfig = CommandConfigWithAction | CommandConfigWithView;
 
-interface GroupConfigBase {
+interface GroupConfigCommon {
 	id: string;
 	name: string;
+	icon?: string;
 }
 
-type GroupConfigBefore = GroupConfigBase & {
-	before: string;
-	after?: never;
-};
+export type GroupConfig = GroupConfigCommon & Position;
 
-type GroupConfigAfter = GroupConfigBase & {
-	before?: never;
-	after: string;
-};
-
-export type GroupConfig =
-	| GroupConfigBase
-	| GroupConfigBefore
-	| GroupConfigAfter;
+export type CommandI18n = Pick<ReturnType<typeof useI18n>, 't' | 'te'>;
 
 export interface CommandAvailableContext {
 	route: RouteLocationNormalizedLoaded;
 	stores: ReturnType<typeof useStores>;
 	api: ReturnType<typeof useApi>;
-	i18n: VueI18n;
+	i18n: CommandI18n;
 	search: string;
 }
 
@@ -88,6 +68,6 @@ export type GroupsAvailableCallback = (
 
 export function isCommandConfigBefore(
 	config: CommandConfigBase,
-): config is CommandConfigBefore {
-	return 'before' in config;
+): config is CommandConfigBase & { before: string; after?: never } {
+	return typeof config.before === 'string';
 }

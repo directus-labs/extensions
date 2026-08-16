@@ -1,49 +1,62 @@
 <script setup lang="ts">
-import type { Ref } from 'vue';
 import { useCollection } from '@directus/extensions-sdk';
-import { computed, unref } from 'vue';
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { getItemRoute } from '../utils/get-item-route';
+import { isItemRouteAvailable } from '../utils/is-item-route-available';
 import Highlights from './highlights.vue';
 
 const props = defineProps<{
 	collection: string;
-	query: Ref<string>;
-	displayTemplate: string;
-	descriptionField: string;
-	hits: any[];
-	size: 'small' | 'medium' | 'large';
+	query: string;
+	displayTemplate?: string | null;
+	descriptionField?: string | null;
+	hits: Record<string, any>[];
 }>();
 
-const { info, primaryKeyField } = useCollection(unref(props.collection));
+const router = useRouter();
+const { info, primaryKeyField } = useCollection(props.collection);
+const collectionInfo = computed(() => info.value);
+const primaryKeyFieldName = computed(() => primaryKeyField.value?.field ?? 'id');
+const displayTemplate = computed(() =>
+	props.displayTemplate ?? collectionInfo.value?.meta?.display_template ?? `{{${primaryKeyFieldName.value}}}`,
+);
 
-const displayTemplate = computed(() => {
-	return (
-		props.displayTemplate ?? info.value?.meta?.display_template ?? '{{title}}'
+function getHitRoute(hit: Record<string, any>) {
+	const primaryKey = hit[primaryKeyFieldName.value];
+	if (primaryKey === null || primaryKey === undefined) return;
+
+	const singleton = collectionInfo.value?.meta?.singleton === true;
+	const itemRoute = getItemRoute(
+		props.collection,
+		String(primaryKey),
+		singleton ? { singleton: true } : undefined,
 	);
-});
+
+	return isItemRouteAvailable(router, itemRoute) ? itemRoute : undefined;
+}
 </script>
 
 <template>
-	<v-detail :label="info.name" start-open>
+	<v-detail :label="collectionInfo?.name" start-open>
 		<v-list-item
 			v-for="hit in hits"
-			:key="`${collection}-${hit[primaryKeyField.field]}`"
+			:key="JSON.stringify([collection, hit[primaryKeyFieldName]])"
 			block
 			clickable
 			:query="query"
-			:title="hit.name"
-			:to="`/content/${collection}/${hit[primaryKeyField.field]}`"
+			:to="getHitRoute(hit)"
 		>
-			<v-icon :name="info.icon" left />
+			<v-icon :name="collectionInfo?.meta?.icon ?? 'box'" left />
 			<div>
 				<render-template
-					:collection="info.collection"
+					:collection="collection"
 					:item="hit"
 					:template="displayTemplate"
-					:fields
 				/>
 				<Highlights
-					v-if="hit[descriptionField]"
-					:text="hit[descriptionField]"
+					v-if="descriptionField && hit[descriptionField]"
+					:text="String(hit[descriptionField])"
 					:query="query"
 					class="hit-description"
 				/>

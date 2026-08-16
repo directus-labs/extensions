@@ -6,10 +6,10 @@ import {
 	onMounted,
 	ref,
 	toRefs,
+	useId,
 	useSlots,
 } from 'vue';
 import { useCommandMenu } from '../composables/use-command-menu';
-import { useId } from '../composables/use-id';
 import { useValue } from '../composables/use-value';
 import { SELECT_EVENT } from '../constants';
 import { injectCommandRootContext, injectState } from './command.vue';
@@ -32,7 +32,7 @@ const id = useId();
 const currentRef = ref<HTMLDivElement | null>(null);
 
 const slots = useSlots();
-const defaultSlot = computed(() => slots.default());
+const defaultSlot = computed(() => slots.default?.());
 const state = injectState();
 const context = injectCommandRootContext();
 const groupContext = injectCommandGroupContext(null);
@@ -45,7 +45,7 @@ const internalValue = useValue(
 );
 
 const forceMount = computed(
-	() => props.forceMount ?? groupContext?.forceMount.value,
+	() => props.forceMount ?? groupContext?.forceMount.value ?? false,
 );
 
 const selected = useCommandMenu(
@@ -59,7 +59,7 @@ const render = useCommandMenu((state) =>
 			? true
 			: !state.search
 					? true
-					: state.filtered.items.get(id) > 0,
+					: (state.filtered.items.get(id) ?? 0) > 0,
 );
 
 useEventListener(currentRef, SELECT_EVENT, onSelect);
@@ -73,7 +73,7 @@ function select() {
 	state.value = internalValue.value;
 }
 
-let unregister: () => null = null;
+let unregister: (() => void) | undefined;
 
 onMounted(() => {
 	if (!forceMount.value) {
@@ -91,10 +91,10 @@ onBeforeUnmount(() => unregister?.());
 		ref="currentRef"
 		cmdk-item
 		role="option"
-		:aria-disabled="String(disabled)"
-		:aria-selected="String(selected)"
-		:data-disabled="String(disabled)"
-		:data-selected="String(selected)"
+		:aria-disabled="disabled ?? false"
+		:aria-selected="selected"
+		:data-disabled="disabled ?? false"
+		:data-selected="selected"
 		:data-value="value"
 		@pointermove="
 			!disabled && !context.disablePointerSelection.value && select()

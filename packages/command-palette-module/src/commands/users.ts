@@ -1,53 +1,68 @@
-import type {
-	CommandActionContext,
-	CommandConfig,
-} from '../command-palette';
-import {
-	defineCommands,
-} from '../command-palette';
+import type { useStores } from '@directus/extensions-sdk';
+import type { CommandActionContext, CommandConfig } from '../command-palette';
+import { defineCommands } from '../command-palette';
 import { isAdminFromStores } from '../utils/is-admin';
+import SearchCollectionCommand from './search/search-collection-command.vue';
 
 export const usersCommands = defineCommands({
-	groups: [
-		{
-			id: 'collection:directus_users',
-			name: 'Users',
-		},
-	],
-	commands({ stores }): CommandConfig[] {
-		const { usePermissionsStore } = stores;
-		const permissionsStore = usePermissionsStore();
+	groups: ({ stores }) => {
+		if (!canReadUsers(stores)) return [];
+
+		return [{ id: 'collection:directus_users', name: 'Users', icon: 'people_alt' }];
+	},
+	commands({ stores, route }): CommandConfig[] {
+		if (!canReadUsers(stores)) return [];
+
 		const isAdmin = isAdminFromStores(stores);
+		const commands: CommandConfig[] = [
+			{
+				id: 'search-users',
+				name: 'Search Users',
+				icon: 'search',
+				group: 'collection:directus_users',
+				keywords: ['search', 'find', 'people'],
+				priority: route.path.startsWith('/users') ? 41 : 40,
+				component: SearchCollectionCommand,
+				props: {
+					collection: 'directus_users',
+					collectionName: 'Users',
+					collectionIcon: 'people_alt',
+					displayTemplate: '{{first_name}} {{last_name}}',
+				},
+			},
+		];
 
-		const hasUserReadPermissions =
-      isAdmin || permissionsStore.hasPermission('directus_users', 'read');
+		if (route.path !== '/users') {
+			commands.push({
+				id: 'view-users',
+				name: 'View Users',
+				icon: 'arrow_right_alt',
+				group: 'collection:directus_users',
+				priority: 30,
+				action: ({ router }: CommandActionContext) => {
+					router.push('/users');
+				},
+			});
+		}
 
-		if (!hasUserReadPermissions)
-			return [];
+		if (isAdmin && route.path !== '/users/+') {
+			commands.push({
+				id: 'create-user',
+				name: 'Create User',
+				icon: 'add',
+				group: 'collection:directus_users',
+				priority: 20,
+				action: ({ router }: CommandActionContext) => {
+					router.push('/users/+');
+				},
+			});
+		}
 
-		return [
-			hasUserReadPermissions
-				? {
-						id: 'view-users',
-						name: 'View Users',
-						icon: 'arrow_right_alt',
-						group: 'collection:directus_users',
-						action: ({ router }: CommandActionContext) => {
-							router.push('/users');
-						},
-					}
-				: null,
-			isAdmin
-				? {
-						id: 'create-user',
-						name: 'Create User',
-						icon: 'add',
-						group: 'collection:directus_users',
-						action: ({ router }: CommandActionContext) => {
-							router.push('/users/+');
-						},
-					}
-				: null,
-		].filter((cmd) => cmd !== null) as CommandConfig[];
+		return commands;
 	},
 });
+
+function canReadUsers(stores: ReturnType<typeof useStores>) {
+	const permissionsStore = stores.usePermissionsStore();
+	return isAdminFromStores(stores) || permissionsStore.hasPermission('directus_users', 'read');
+}

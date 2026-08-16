@@ -4,21 +4,21 @@ import GroupHeading from './group-heading.vue';
 
 defineProps<{
 	heading?: string;
+	icon?: string;
 	forceMount?: boolean;
 }>();
 </script>
 
 <template>
-	<CommandGroup :force-moun="forceMount">
+	<CommandGroup :force-mount="forceMount">
 		<template #heading>
 			<slot name="heading">
-				<GroupHeading>{{ heading }}</GroupHeading>
+				<GroupHeading>
+					<v-icon v-if="icon" :name="icon" />
+					{{ heading }}
+				</GroupHeading>
 			</slot>
 		</template>
 		<slot />
 	</CommandGroup>
 </template>
-
-<style scoped lang="scss">
-[cmdk-group] {}
-</style>

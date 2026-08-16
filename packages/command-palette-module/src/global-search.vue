@@ -1,15 +1,19 @@
 <script setup lang="ts">
+import { useStores } from '@directus/extensions-sdk';
+import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CollectionResults from './components/collection-results.vue';
-
 import SearchNavigation from './components/navigation.vue';
 import RecentSearches from './components/recent-searches.vue';
 import { useGlobalSearch } from './composables/use-global-search';
 import { useIsAdmin } from './composables/use-is-admin';
+import { useRecentSearches } from './composables/use-recent-searches';
 
 const { t } = useI18n();
-
+const stores = useStores();
 const isAdmin = useIsAdmin();
+const currentUserId = stores.useUserStore().currentUser?.id;
+const recentSearches = useRecentSearches(currentUserId);
 
 const {
 	query,
@@ -19,11 +23,21 @@ const {
 	search,
 	clear,
 	collections,
+	completedSearch,
 	info,
 	loading,
 } = useGlobalSearch({
 	syncWithQuery: true,
 });
+
+watch(completedSearch, (completed) => {
+	if (completed) recentSearches.add(completed.query);
+});
+
+function selectRecentSearch(value: string) {
+	query.value = value;
+	if (settings.value?.searchMode === 'on_submit') void search(value);
+}
 </script>
 
 <template>
@@ -72,7 +86,7 @@ const {
 							/>
 						</template>
 					</v-input>
-					<v-button v-if="settings.searchMode === 'form_submit'" type="submit">
+					<v-button v-if="settings?.searchMode === 'on_submit'" type="submit">
 						Search
 					</v-button>
 				</form>
@@ -129,7 +143,7 @@ const {
 							v-if="hits.length > 0"
 							:collection="collection"
 							:hits="hits"
-							:query="query"
+							:query="query ?? ''"
 							:display-template="displayTemplate"
 							:description-field="descriptionField"
 						/>
@@ -166,16 +180,14 @@ const {
 			<sidebar-detail icon="history" title="Recent Searches" start-open>
 				<div
 					v-md="
-						`Recent searches are only stored locally on your browser and not in the database.`
+						`Recent searches are stored locally for the current Directus project and user.`
 					"
 					class="page-description"
 				/>
 				<RecentSearches
-					@update-query="
-						(value: SearchHistoryItem) => {
-							query = value.query;
-						}
-					"
+					:searches="recentSearches.searches.value"
+					@select="selectRecentSearch"
+					@clear="recentSearches.clear"
 				/>
 			</sidebar-detail>
 		</template>

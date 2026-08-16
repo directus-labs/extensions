@@ -10,11 +10,19 @@ import { isModuleEnabled } from './is-module-enabled';
 const ID = 'global-search-bar';
 
 let app: App | null = null;
+let removeRouterHook: (() => void) | undefined;
+let retryTimeout: ReturnType<typeof setTimeout> | undefined;
 
 export function injectSearchBar() {
 	const router = getDirectusRouter();
+	if (!router) return;
 
-	router.afterEach(async (to) => {
+	removeRouterHook?.();
+	if (retryTimeout) clearTimeout(retryTimeout);
+
+	removeRouterHook = router.afterEach(async (to) => {
+		if (retryTimeout) clearTimeout(retryTimeout);
+
 		if (to.name !== 'global-search-index') {
 			if (!checkEnabled())
 				return;
@@ -65,7 +73,7 @@ function injectApp(retry = 0) {
 			if (!container) {
 				// This is needed for the initial page load, as things might be slow to set up
 				if (retry < 3) {
-					setTimeout(() => injectApp(retry + 1), 100);
+					retryTimeout = setTimeout(() => injectApp(retry + 1), 100);
 				}
 
 				return;

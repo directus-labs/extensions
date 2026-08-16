@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Ref } from 'vue';
-import { computed, onBeforeUnmount, onMounted, ref, toRefs, useSlots } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, toRefs, useId, useSlots } from 'vue';
 import { createContext } from '../utils/create-context';
 import { injectCommandRootContext } from './command.vue';
 
@@ -15,7 +15,6 @@ export const [injectCommandGroupContext, provideCommandGroupContext] =
 
 <script setup lang="ts">
 import { useCommandMenu } from '../composables/use-command-menu';
-import { useId } from '../composables/use-id';
 import { useValue } from '../composables/use-value';
 
 const props = withDefaults(
@@ -51,7 +50,7 @@ provideCommandGroupContext({
 	forceMount,
 });
 
-let unregister: () => void;
+let unregister: (() => void) | undefined;
 
 onMounted(() => {
 	unregister = context.group(id);
@@ -60,7 +59,7 @@ onMounted(() => {
 onBeforeUnmount(() => unregister?.());
 
 const slots = useSlots();
-const defaultSlot = computed(() => slots.default());
+const defaultSlot = computed(() => slots.default?.());
 useValue(id, currentRef, [value, headingRef, defaultSlot]);
 </script>
 

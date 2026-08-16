@@ -2,22 +2,15 @@ import type { InjectionKey } from 'vue';
 import { inject, provide } from 'vue';
 
 export function createContext<ContextValue>(name: string) {
-	const injectionKey: InjectionKey<ContextValue | null> = Symbol(
-		`${name}Context`,
-	);
+	const injectionKey: InjectionKey<ContextValue | null> = Symbol(`${name}Context`);
 
-	return [injectContext, provideContext] as const;
+	function injectContext(): ContextValue;
+	function injectContext(fallback: null): ContextValue | null;
 
-	function injectContext<
-		T extends ContextValue | null | undefined = ContextValue,
-	>(fallback?: T): T extends null ? ContextValue | null : ContextValue {
-		const context = inject(injectionKey, fallback);
-		if (context)
-			return context;
-
-		if (context === null)
-			return context as any;
-
+	function injectContext(fallback: null | undefined = undefined): ContextValue | null {
+		const context = inject(injectionKey);
+		if (context) return context;
+		if (fallback === null) return null;
 		throw new Error(`${name} not provided`);
 	}
 
@@ -25,4 +18,6 @@ export function createContext<ContextValue>(name: string) {
 		provide(injectionKey, context);
 		return context;
 	}
+
+	return [injectContext, provideContext] as const;
 }

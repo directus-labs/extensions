@@ -3,8 +3,12 @@ import { registerCommands } from './command-palette';
 import { contentCommands } from './commands/content';
 import { copyApiUrlCommands } from './commands/copy-api-url';
 import { dataModelCommands } from './commands/data-model';
+import { deploymentsCommands } from './commands/deployments';
+import { filesCommands } from './commands/files';
 import { collectionItemFlowCommands, flowCommands } from './commands/flows';
+import { insightsCommands } from './commands/insights';
 import { searchCommands } from './commands/search';
+import { settingsCommands } from './commands/settings';
 import { usersCommands } from './commands/users';
 import GlobalSearch from './global-search.vue';
 import Settings from './settings.vue';
@@ -17,7 +21,11 @@ registerCommands(
 	copyApiUrlCommands,
 	contentCommands,
 	usersCommands,
+	filesCommands,
+	insightsCommands,
 	dataModelCommands,
+	settingsCommands,
+	deploymentsCommands,
 	flowCommands,
 );
 

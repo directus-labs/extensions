@@ -4,3 +4,4 @@ import { ref } from 'vue';
 
 export const groups: Ref<GroupsAvailableCallback[]> = ref([]);
 export const commands: Ref<Raw<CommandsAvailableCallback>[]> = ref([]);
+export const registryRefresh = ref(0);

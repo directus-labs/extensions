@@ -1,18 +1,10 @@
 <!-- eslint-disable vue/prop-name-casing -->
 <script lang="ts">
 import type { ComputedRef, Ref } from 'vue';
-import { computed, nextTick, reactive, ref, watch, watchEffect } from 'vue';
+import { computed, nextTick, reactive, ref, useId, watch, watchEffect } from 'vue';
 import { createContext } from '../utils/create-context';
 
-export interface CommandEmits {
-	'update:modelValue': [value: string];
-	'update:open': [value: boolean];
-	'update:search': [value: string];
-}
-
 export interface CommandProps {
-	'modelValue'?: string;
-	'modelValue:search'?: string;
 	'label'?: string;
 	'aria-label'?: string;
 	'shouldFilter'?: boolean;
@@ -20,7 +12,7 @@ export interface CommandProps {
 	'disabledPointerSelection'?: boolean;
 	'loop'?: boolean;
 	'vimBindings'?: boolean;
-	'filter': (value: string, search: string, keywords: string[]) => number;
+	'filter'?: (value: string, search: string, keywords: string[]) => number;
 }
 
 export interface CommandRootContext {
@@ -28,7 +20,7 @@ export interface CommandRootContext {
 	item: (id: string, groupId?: string) => () => void;
 	group: (id: string) => () => void;
 	filter: ComputedRef<boolean>;
-	label: ComputedRef<string>;
+	label: ComputedRef<string | undefined>;
 	disablePointerSelection: ComputedRef<boolean>;
 	// Ids
 	listId: string;
@@ -56,7 +48,6 @@ export const [injectState, provideState] =
 </script>
 
 <script setup lang="ts">
-import { useId } from '../composables/use-id';
 import {
 	GROUP_HEADING_SELECTOR,
 	GROUP_ITEMS_SELECTOR,
@@ -74,14 +65,10 @@ const props = withDefaults(defineProps<CommandProps>(), {
 	disabledPointerSelection: false,
 });
 
-defineEmits<CommandEmits>();
-
 const value = defineModel<string>();
-// eslint-disable-next-line unused-imports/no-unused-vars
-const open = defineModel<boolean>('open');
 const search = defineModel<string>('search', { default: '' });
 
-const defaultFilter: CommandProps['filter'] = (value, search, keywords) =>
+const defaultFilter: NonNullable<CommandProps['filter']> = (value, search, keywords) =>
 	commandScore(value, search, keywords);
 
 const state = provideState(
@@ -127,7 +114,7 @@ const context = provideCommandRootContext({
 				allGroups.value.set(groupId, new Set([id]));
 			}
 			else {
-				allGroups.value.get(groupId)!.add(id);
+				allGroups.value.get(groupId)?.add(id);
 			}
 		}
 
@@ -185,7 +172,7 @@ watch(
 
 watch(
 	() => state.filtered.count,
-	(newCount, oldCount) => {
+	(_newCount, oldCount) => {
 		if (oldCount === 0) {
 			selectFirstItem();
 		}
@@ -205,7 +192,7 @@ watch(
 
 function score(value: string, keywords?: string[]) {
 	const filter = props.filter ?? defaultFilter;
-	return value ? filter(value, state.search, keywords) : 0;
+	return value ? filter(value, state.search, keywords ?? []) : 0;
 }
 
 function sort() {
@@ -220,12 +207,12 @@ function sort() {
 
 	for (const value of state.filtered.groups) {
 		const items = allGroups.value.get(value);
+		if (!items) continue;
 
-		// Get the maximum score of the group's items
 		let max = 0;
 
 		for (const item of items) {
-			const score = scores.get(item);
+			const score = scores.get(item) ?? 0;
 			max = Math.max(score, max);
 		}
 
@@ -240,29 +227,19 @@ function sort() {
 	// Sort the items
 	for (const item of getValidItems()
 		.sort((a, b) => {
-			const valueA = a.getAttribute('id')!;
-			const valueB = b.getAttribute('id')!;
+			const valueA = a.id;
+			const valueB = b.id;
 			return (scores.get(valueB) ?? 0) - (scores.get(valueA) ?? 0);
 		})) {
-		const group = item.closest(GROUP_ITEMS_SELECTOR);
+		const group = item.closest<HTMLElement>(GROUP_ITEMS_SELECTOR);
+		const target = item.parentElement === (group ?? listInsertionElement)
+			? item
+			: item.closest<HTMLElement>(`${GROUP_ITEMS_SELECTOR} > *`);
 
-		if (group) {
-			group.append(
-				item.parentElement === group
-					? item
-					: item.closest(`${GROUP_ITEMS_SELECTOR} > *`),
-			);
-		}
-		else {
-			listInsertionElement?.append(
-				item.parentElement === listInsertionElement
-					? item
-					: item.closest(`${GROUP_ITEMS_SELECTOR} > *`),
-			);
-		}
+		if (target) (group ?? listInsertionElement)?.append(target);
 	}
 
-	for (const [id, _] of groups
+	for (const [id] of groups
 		.sort((a, b) => b[1] - a[1])) {
 		const element = listInnerRef.value?.querySelector(
 			`#${id.replaceAll(':', String.raw`\:`)}`,
@@ -277,7 +254,7 @@ function selectFirstItem() {
 		(item) => item.getAttribute('aria-disabled') !== 'true',
 	);
 
-	const value = item?.getAttribute(VALUE_ATTR);
+	const value = item?.getAttribute(VALUE_ATTR) ?? undefined;
 	state.value = value;
 }
 
@@ -333,27 +310,31 @@ function scrollSelectedIntoView() {
 	}
 }
 
+defineExpose({ selectFirstItem });
+
 function getSelectedItem() {
-	return listInnerRef.value?.querySelector(
+	return listInnerRef.value?.querySelector<HTMLElement>(
 		`${ITEM_SELECTOR}[aria-selected="true"]`,
 	);
 }
 
 function getValidItems() {
-	return [...listInnerRef.value?.querySelectorAll(VALID_ITEM_SELECTOR) || []];
+	return Array.from(
+		listInnerRef.value?.querySelectorAll<HTMLElement>(VALID_ITEM_SELECTOR) ?? [],
+	);
 }
 
 function updateSelectedToIndex(index: number) {
 	const items = getValidItems();
 	const item = items[index];
 	if (item)
-		state.value = item.getAttribute(VALUE_ATTR);
+		state.value = item.getAttribute(VALUE_ATTR) ?? undefined;
 }
 
 function updateSelectedByItem(change: 1 | -1) {
 	const selected = getSelectedItem();
 	const items = getValidItems();
-	const index = items.indexOf(selected);
+	const index = selected ? items.indexOf(selected) : -1;
 
 	// Get item at this index
 	let newSelected = items[index + change];
@@ -362,19 +343,19 @@ function updateSelectedByItem(change: 1 | -1) {
 		newSelected =
 			index + change < 0
 				? items.at(-1)
-				: index + change === items.length
-					? items[0]
-					: items[index + change];
+				: (index + change === items.length
+						? items[0]
+						: items[index + change]);
 	}
 
 	if (newSelected)
-		state.value = newSelected.getAttribute(VALUE_ATTR);
+		state.value = newSelected.getAttribute(VALUE_ATTR) ?? undefined;
 }
 
 function updateSelectedByGroup(change: 1 | -1) {
 	const selected = getSelectedItem();
 	let group = selected?.closest(GROUP_SELECTOR);
-	let item: HTMLElement;
+	let item: HTMLElement | null = null;
 
 	while (group && !item) {
 		group =
@@ -382,11 +363,11 @@ function updateSelectedByGroup(change: 1 | -1) {
 				? findNextSibling(group, GROUP_SELECTOR)
 				: findPreviousSibling(group, GROUP_SELECTOR);
 
-		item = group?.querySelector(VALID_ITEM_SELECTOR);
+		item = group?.querySelector<HTMLElement>(VALID_ITEM_SELECTOR) ?? null;
 	}
 
 	if (item) {
-		state.value = item.getAttribute(VALUE_ATTR);
+		state.value = item.getAttribute(VALUE_ATTR) ?? undefined;
 	}
 	else {
 		updateSelectedByItem(change);
@@ -395,7 +376,7 @@ function updateSelectedByGroup(change: 1 | -1) {
 
 const last = () => updateSelectedToIndex(getValidItems().length - 1);
 
-function next(e: React.KeyboardEvent) {
+function next(e: KeyboardEvent) {
 	e.preventDefault();
 
 	if (e.metaKey) {
@@ -412,7 +393,7 @@ function next(e: React.KeyboardEvent) {
 	}
 }
 
-function prev(e: React.KeyboardEvent) {
+function prev(e: KeyboardEvent) {
 	e.preventDefault();
 
 	if (e.metaKey) {
@@ -485,7 +466,7 @@ function handleKeyDown(e: KeyboardEvent) {
 				// This prevents unwanted triggering while user is still inputting text with IME
 				// e.keyCode === 229 is for the Japanese IME and Safari.
 				// isComposing does not work with Japanese IME and Safari combination.
-				if (!e.nativeEvent?.isComposing && e.keyCode !== 229) {
+				if (!e.isComposing && e.keyCode !== 229) {
 					// Trigger item onSelect
 					e.preventDefault();
 					const item = getSelectedItem();

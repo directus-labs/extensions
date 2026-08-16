@@ -5,7 +5,7 @@ import type {
 	GroupsAvailableCallback,
 } from './types';
 import { markRaw } from 'vue';
-import { commands, groups } from './registry';
+import { commands, groups, registryRefresh } from './registry';
 
 export interface RegisterCommandsOptions {
 	groups?: GroupConfig[] | GroupsAvailableCallback;
@@ -16,6 +16,10 @@ export function defineCommands(
 	options: RegisterCommandsOptions,
 ): RegisterCommandsOptions {
 	return options;
+}
+
+export function refreshRegisteredCommands() {
+	registryRefresh.value++;
 }
 
 export function registerCommands(...options: RegisterCommandsOptions[]) {

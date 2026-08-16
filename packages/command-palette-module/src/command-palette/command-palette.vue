@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onClickOutside, useEventListener } from '@vueuse/core';
-import { ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { Command } from '../primitives/cmdk';
 import { commandScore } from '../primitives/cmdk/utils/command-score';
 import Overlay from './components/overlay.vue';
@@ -11,7 +11,11 @@ import { provideCommandRouter } from './router/router';
 
 const active = defineModel<boolean>('active');
 
-const commandPalette = ref<InstanceType<typeof Command> | null>(null);
+const commandPalette = ref<{
+	$el: HTMLElement;
+	selectFirstItem: () => void;
+} | null>(null);
+const commandPaletteElement = computed(() => commandPalette.value?.$el);
 const search = ref('');
 
 const commandRouter = createCommandRouter({
@@ -28,7 +32,7 @@ const context = provideGlobalCommandContext({
 	clearSearch: clear,
 });
 
-useEventListener(commandPalette, 'keydown', (e) => {
+useEventListener(commandPaletteElement, 'keydown', (e: KeyboardEvent) => {
 	if (e.defaultPrevented)
 		return;
 
@@ -36,14 +40,23 @@ useEventListener(commandPalette, 'keydown', (e) => {
 });
 
 // Ignore click events from the dialog and menu outlets
-onClickOutside(commandPalette, close, {
+onClickOutside(commandPaletteElement, close, {
 	ignore: ['#dialog-outlet', '#menu-outlet'],
 });
 
-watch(active, (active) => {
-	if (!active) {
+watch(active, (isActive) => {
+	if (isActive) {
+		highlightFirst();
+	}
+	else {
 		close();
 	}
+});
+
+watch(search, highlightFirst);
+
+watch(context.loading, (isLoading) => {
+	if (!isLoading) highlightFirst();
 });
 
 function close() {
@@ -57,22 +70,29 @@ function clear() {
 }
 
 function customFilter(value: string, search: string, keywords: string[]) {
+	const root = commandPalette.value?.$el;
+	const element = Array.from(
+		root?.querySelectorAll<HTMLElement>('[data-value]') ?? [],
+	).find((element) => element.dataset.value === value);
+
 	if (!search) {
-		// Ensure a consistent item order if no search query is given
-		const el = commandPalette.value?.$el.querySelector(
-			`[data-value="${value}"]`,
-		);
-
-		const sort = el?.dataset.sort;
-
-		return sort !== undefined ? 1 / (sort + 1) : 1 / Number.MAX_SAFE_INTEGER;
+		const sort = element?.dataset.sort;
+		return sort !== undefined ? 1 / (Number(sort) + 1) : 1 / Number.MAX_SAFE_INTEGER;
 	}
-	else {
-		return commandScore(value, search, keywords);
-	}
+
+	const score = commandScore(value, search, keywords);
+	if (score <= 0.1) return 0;
+
+	const priority = Number(element?.dataset.priority ?? 0) * 0.01;
+	return score + priority;
+}
+
+function highlightFirst() {
+	nextTick(() => commandPalette.value?.selectFirstItem());
 }
 
 watch(commandRouter.currentCommand, () => {
+	highlightFirst();
 	if (!commandPalette.value?.$el)
 		return;
 
@@ -105,11 +125,15 @@ watch(commandRouter.currentCommand, () => {
 .command-palette {
 	position: relative;
 	margin: 10vh auto auto;
-	max-width: 560px;
+	max-width: 35rem;
 	background-color: var(--theme--background);
-	border-radius: 8px;
+	border-radius: 0.5rem;
 	box-shadow: var(--theme--shadow);
 	padding: var(--theme--spacing);
+}
+
+.pop {
+	animation: pop 200ms ease;
 }
 
 @keyframes pop {

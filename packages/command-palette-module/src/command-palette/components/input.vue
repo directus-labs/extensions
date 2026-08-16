@@ -14,12 +14,12 @@ defineEmits<{
 
 const search = defineModel<string | null>();
 
-const input = ref<HTMLInputElement | null>(null);
+const input = ref<{ $el: HTMLInputElement } | null>(null);
 
 watch(
 	input,
 	() => {
-		input.value.$el.focus();
+		input.value?.$el.focus();
 	},
 	{ once: true },
 );
@@ -47,23 +47,24 @@ watch(
 	display: flex;
 	position: relative;
 	align-items: center;
-	padding: 8px 12px;
-	height: 54px;
-	border-bottom: 1px solid var(--theme--primary);
+	padding: 0.5rem 0.75rem;
+	block-size: 3.375rem;
+	border-block-end: 0.0625rem solid var(--theme--primary);
 
 	.back,
 	.back-placeholder {
-		margin-right: 10px;
+		margin-inline-end: 0.625rem;
 	}
 
 	.back {
-		--v-icon-size: 18px;
+		--v-icon-size: 1.125rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 3px;
+		padding: 0.1875rem;
 		background: var(--theme--background-normal);
-		border-radius: 4px;
+		border-radius: 0.25rem;
+		cursor: pointer;
 	}
 
 	input {
@@ -72,17 +73,17 @@ watch(
 		border: none;
 		color: var(--theme--foreground);
 		outline: none;
-		padding: 20px 20px 20px 0px;
+		padding: 1.25rem 1.25rem 1.25rem 0;
 		margin: 0;
-		width: 100%;
-		height: 100%;
-		line-height: 48px;
-		font-size: var(--global-search--search-bar-font-size, 18px);
+		inline-size: 100%;
+		block-size: 100%;
+		line-height: 3rem;
+		font-size: var(--global-search--search-bar-font-size, 1.125rem);
 	}
 
 	.v-progress-circular {
 		position: absolute;
-		right: 12px;
+		inset-inline-end: 0.75rem;
 	}
 }
 </style>

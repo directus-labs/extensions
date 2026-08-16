@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { toArray } from '@directus/utils';
 import { remove as removeDiacritics } from 'diacritics';
-import { flatten } from 'lodash-es';
 import { computed } from 'vue';
 
 interface HighlightPart {
 	text: string;
 	highlighted: boolean;
 }
+
+type Match = [start: number, end: number];
 
 interface Props {
 	query?: string | string[] | null;
@@ -21,75 +22,44 @@ const props = withDefaults(defineProps<Props>(), {
 
 const parts = computed<HighlightPart[]>(() => {
 	const normalizedText = removeDiacritics(props.text).toLowerCase();
-	const queries = toArray(props.query);
+	const matches = toArray(props.query).flatMap((query): Match[] => {
+		if (!query) return [];
 
-	if (queries.length === 0) {
-		return [
-			{
-				highlighted: false,
-				text: props.text,
-			},
-		];
-	}
+		const normalizedQuery = removeDiacritics(query).toLowerCase();
+		const indices: Match[] = [];
+		let index = normalizedText.indexOf(normalizedQuery);
 
-	const matches = flatten(
-		queries.reduce<number[][][]>((acc, query) => {
-			if (!query)
-				return acc;
+		while (index !== -1) {
+			const end = index + normalizedQuery.length;
+			indices.push([index, end]);
+			index = normalizedText.indexOf(normalizedQuery, index + 1);
+		}
 
-			const normalizedQuery = removeDiacritics(query).toLowerCase();
-			const indices = [];
-
-			let startIndex = 0;
-			let index = normalizedText.indexOf(normalizedQuery, startIndex);
-
-			while (index > -1) {
-				startIndex = index + normalizedQuery.length;
-				indices.push([index, startIndex]);
-				index = normalizedText.indexOf(normalizedQuery, index + 1);
-			}
-
-			acc.push(indices);
-
-			return acc;
-		}, []),
-	);
-
-	matches.sort((a: any, b: any) => {
-		if (a[0] !== b[0])
-			return a[0] - b[0];
-		return a[1] - b[1];
+		return indices;
 	});
 
-	if (matches.length === 0) {
-		return [
-			{
-				highlighted: false,
-				text: props.text,
-			},
-		];
-	}
+	matches.sort(([startA, endA], [startB, endB]) => startA - startB || endA - endB);
 
-	const mergedMatches = [];
-	let curStart = matches[0] ? matches[0][0] : 0;
-	let curEnd = matches[0] ? matches[0][1] : 0;
+	const firstMatch = matches[0];
+	if (!firstMatch) return [{ highlighted: false, text: props.text }];
 
-	matches.shift();
+	const mergedMatches: Match[] = [];
+	let [currentStart, currentEnd] = firstMatch;
 
-	for (const [start, end] of matches) {
-		if (start && curEnd && start >= curEnd) {
-			mergedMatches.push([curStart, curEnd]);
-			curStart = start;
-			curEnd = end;
+	for (const [start, end] of matches.slice(1)) {
+		if (start >= currentEnd) {
+			mergedMatches.push([currentStart, currentEnd]);
+			currentStart = start;
+			currentEnd = end;
 		}
-		else if (end && curEnd && end > curEnd) {
-			curEnd = end;
+		else if (end > currentEnd) {
+			currentEnd = end;
 		}
 	}
 
-	mergedMatches.push([curStart, curEnd]);
+	mergedMatches.push([currentStart, currentEnd]);
 
-	const parts: HighlightPart[] = [];
+	const result: HighlightPart[] = [];
 
 	for (const [index, [start, end]] of mergedMatches.entries()) {
 		const precedingText = props.text
@@ -98,64 +68,42 @@ const parts = computed<HighlightPart[]>(() => {
 			.slice(-3)
 			.join(' ')
 			.trim();
-
 		const followingText = props.text
 			.slice(end)
 			.split(' ')
 			.slice(0, 3)
 			.join(' ')
 			.trim();
-
 		const highlightedText = props.text.slice(start, end).trim();
 
-		if (index > 0) {
-			parts.push({
-				highlighted: false,
-				text: '...',
-			});
-		}
+		if (index > 0) result.push({ highlighted: false, text: '...' });
 
 		if (precedingText) {
-			parts.push({
+			result.push({
 				highlighted: false,
-				text: (/\s$/.test(precedingText) ? '...' : '... ') + precedingText,
+				text: (precedingText.endsWith(' ') ? '...' : '... ') + precedingText,
 			});
 		}
 		else if (start > 0) {
-			parts.push({
-				highlighted: false,
-				text: '...',
-			});
+			result.push({ highlighted: false, text: '...' });
 		}
 
-		parts.push({
-			highlighted: true,
-			text: highlightedText,
-		});
+		result.push({ highlighted: true, text: highlightedText });
 
 		if (followingText) {
-			if (end + followingText.length < normalizedText.length) {
-				parts.push({
-					highlighted: false,
-					text: followingText + (/^\s/.test(followingText) ? '...' : ' ...'),
-				});
-			}
-			else {
-				parts.push({
-					highlighted: false,
-					text: followingText,
-				});
-			}
+			result.push({
+				highlighted: false,
+				text: end + followingText.length < normalizedText.length
+					? followingText + (followingText.startsWith(' ') ? '...' : ' ...')
+					: followingText,
+			});
 		}
 		else if (end < normalizedText.length) {
-			parts.push({
-				highlighted: false,
-				text: '...',
-			});
+			result.push({ highlighted: false, text: '...' });
 		}
 	}
 
-	return parts;
+	return result;
 });
 </script>
 

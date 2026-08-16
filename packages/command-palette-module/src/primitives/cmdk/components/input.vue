@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import { useCommandMenu } from '../composables/use-command-menu';
-import { ITEM_SELECTOR, VALUE_ATTR } from '../constants';
+import { ITEM_SELECTOR } from '../constants';
 import { useForwardExpose } from '../utils/use-forward-expose';
 import { injectCommandRootContext, injectState } from './command.vue';
 
@@ -14,7 +14,7 @@ const props = withDefaults(
 	},
 );
 
-defineEmits<{
+const emit = defineEmits<{
 	change: [value: string | null];
 }>();
 
@@ -26,12 +26,20 @@ const state = injectState();
 const context = injectCommandRootContext();
 
 const selectedItemId = computed(() => {
-	const item = context.listInnerRef.value?.querySelector(
-		`${ITEM_SELECTOR}[${VALUE_ATTR}="${encodeURIComponent(internalValue)}"]`,
-	);
+	const value = internalValue.value;
+	const item = Array.from(
+		context.listInnerRef.value?.querySelectorAll<HTMLElement>(ITEM_SELECTOR) ?? [],
+	).find((item) => item.dataset.value === value);
 
-	return item?.getAttribute('id') ?? undefined;
+	return item?.id || undefined;
 });
+
+function onInput(event: Event) {
+	if (!(event.target instanceof HTMLInputElement)) return;
+
+	if (!isControlled.value) state.search = event.target.value;
+	emit('change', event.target.value);
+}
 
 watch(
 	() => props.value,
@@ -46,7 +54,7 @@ watch(
 <template>
 	<input
 		:id="context.inputId"
-		ref="forwardRef"
+		:ref="forwardRef"
 		cmdk-input
 		autocomplete="off"
 		autocorrect="off"
@@ -59,14 +67,6 @@ watch(
 		:aria-activedescendant="selectedItemId"
 		type="text"
 		:value="isControlled ? props.value : search"
-		@input="
-			(e) => {
-				if (!isControlled) {
-					state.search = e.target.value;
-				}
-
-				$emit('change', e.target.value);
-			}
-		"
+		@input="onInput"
 	>
 </template>
