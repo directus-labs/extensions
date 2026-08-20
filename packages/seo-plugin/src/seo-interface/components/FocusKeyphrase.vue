@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onClickOutside, onKeyStroke } from '@vueuse/core';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	modelValue: string;
@@ -18,6 +19,8 @@ const value = computed({
 
 const inputRef = ref<HTMLElement | null>(null);
 const isEditing = ref<boolean>(!props.modelValue && !props.disabled);
+
+const { t } = useI18n();
 
 function enableEdit() {
 	if (props.disabled) return;
@@ -45,30 +48,30 @@ onKeyStroke('Enter', (e) => {
 <template>
 	<div class="field focus-keyphrase-container">
 		<div class="field-input-group">
-			<label class="label field-label type-label">Focus Keyphrase</label>
+			<label class="label field-label type-label">{{ t('seo_plugin.ui.focus_keyphrase') }}</label>
 			<template v-if="isEditing && !disabled">
 				<v-input
 					ref="inputRef"
 					v-model="value"
 					autofocus
-					placeholder="Enter the main keyword or phrase"
+					:placeholder="t('seo_plugin.ui.keyphrase_placeholder')"
 					@blur="disableEdit"
 				/>
 			</template>
 			<div v-else :class="{ disabled }" class="keyphrase-display">
-				<div v-tooltip="disabled ? null : 'Click to edit'" class="keyphrase-text" :class="{ 'not-clickable': disabled }" @click="enableEdit">
+				<div v-tooltip="disabled ? null : t('seo_plugin.ui.click_to_edit')" class="keyphrase-text" :class="{ 'not-clickable': disabled }" @click="enableEdit">
 					<v-chip v-if="value">
 						{{ value }}
 					</v-chip>
-					<span v-else class="keyphrase-placeholder">Enter the main keyword or phrase</span>
+					<span v-else class="keyphrase-placeholder">{{ t('seo_plugin.ui.keyphrase_placeholder') }}</span>
 				</div>
-				<v-button v-if="!disabled" v-tooltip="'Edit'" small secondary icon @click.stop="enableEdit">
+				<v-button v-if="!disabled" v-tooltip="t('seo_plugin.actions.edit_item')" small secondary icon @click.stop="enableEdit">
 					<v-icon name="edit" />
 				</v-button>
-				<v-icon v-else v-tooltip="'Input disabled'" name="lock" small class="lock-icon" />
+				<v-icon v-else v-tooltip="t('seo_plugin.ui.input_disabled')" name="lock" small class="lock-icon" />
 			</div>
 			<div class="hint">
-				The main phrase you want this content to rank for in search engines.
+				{{ t('seo_plugin.ui.keyphrase_hint') }}
 			</div>
 		</div>
 	</div>
