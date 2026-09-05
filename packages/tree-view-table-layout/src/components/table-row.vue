@@ -262,7 +262,9 @@ function usePreventClickAfterDragging({ mouseDownHandler, clickHandler }) {
 
 		&.children-collapsed {
 			--v-icon-color: var(--theme--foreground);
-			transform: rotate(90deg);
+			/* expand_more points down; collapsed must point RIGHT (the universal "expand me"),
+			   so rotate -90deg (CCW). +90 would point it left, which reads backwards. */
+			transform: rotate(-90deg);
 		}
 	}
 
