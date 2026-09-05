@@ -52,7 +52,9 @@
 					"urls": [
 						"https://api.openai.com/v1/**",
 						"https://api.anthropic.com/v1/**",
-						"https://api.replicate.com/v1/**"
+						"https://api.replicate.com/v1/**",
+						"https://**/v1/**",
+						"http://**/v1/**"
 					]
 				},
 				"sleep": {}
