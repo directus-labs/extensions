@@ -74,6 +74,6 @@ aside[data-callout='danger'] {
 
 - `src/callout.ts` defines the Tiptap node and its `toggleCallout` command. It imports `@tiptap/core` directly. The extensions SDK does not bundle it, so the extension uses the Data Studio's copy of Tiptap.
 - `parseHTML` reads back exactly the markup that `renderHTML` writes. If they differ, every save of the field warns the user that saving alters the content.
-- The attribute is named `calloutType`, not `type`, so it cannot clash with attributes of other extensions.
+- Do not name an attribute after one that the core editor keeps on every element, such as `class`, `id`, or `title`. Directus does not load an extension that does.
 - `src/styles.css` scopes every rule under `.richtext-content`, so the styles apply in edit mode, read-only mode, and the comparison view.
 - The `host` range in `package.json` is a caret range on the first Directus version with rich text extensions. A new Tiptap major version ships only in a new Directus major version, and the range stops there.

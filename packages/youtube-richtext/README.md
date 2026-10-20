@@ -1,6 +1,6 @@
 # YouTube Rich Text Extension
 
-Embed YouTube videos in the WYSIWYG interface. The extension wraps the official [Tiptap YouTube extension](https://tiptap.dev/docs/editor/extensions/nodes/youtube) with no changes to its code, and embeds videos from the privacy-enhanced `youtube-nocookie.com` domain.
+Embed YouTube videos in the WYSIWYG interface. The extension wraps the official [Tiptap YouTube extension](https://tiptap.dev/docs/editor/extensions/nodes/youtube). It changes only the parse priority and one option, so videos embed from the privacy-enhanced `youtube-nocookie.com` domain.
 
 This extension is also a reference for how to [wrap an existing Tiptap package](https://directus.com/docs/guides/extensions/app-extensions/richtext#wrap-an-existing-tiptap-package) in a rich text extension.
 
@@ -23,11 +23,27 @@ In the editor, click the button and paste a YouTube URL.
 
 ## Stored HTML
 
-The field saves each video as an `iframe` inside a `div` with a `data-youtube-video` attribute.
+The field saves each video as an `iframe` inside a `div` with a `data-youtube-video` attribute. The iframe also stores the player options of the Tiptap extension.
 
 ```html
 <div data-youtube-video="">
-	<iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=1" width="640" height="480" allowfullscreen="true"></iframe>
+	<iframe
+		width="640"
+		height="480"
+		allowfullscreen="true"
+		autoplay="false"
+		disablekbcontrols="false"
+		enableiframeapi="false"
+		endtime="0"
+		ivloadpolicy="0"
+		loop="false"
+		modestbranding="false"
+		origin=""
+		playlist=""
+		rel="1"
+		src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=1"
+		start="0"
+	></iframe>
 </div>
 ```
 
