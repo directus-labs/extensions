@@ -22,7 +22,7 @@ const commands = computed(() =>
 </script>
 
 <template>
-	<CommandGroup v-if="commands.length > 0" heading="Recents" force-mount>
+	<CommandGroup v-if="commands.length > 0" heading="Recents">
 		<RecentItem
 			v-for="command in commands"
 			:key="command.id"

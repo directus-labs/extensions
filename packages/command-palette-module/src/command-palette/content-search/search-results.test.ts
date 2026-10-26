@@ -1,9 +1,9 @@
 // @vitest-environment happy-dom
 
 import { mount } from '@vue/test-utils';
+import { ListboxContent, ListboxRoot } from 'reka-ui';
 import { describe, expect, it, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
-import { Command, CommandInput } from '../../primitives/cmdk';
 import SearchResults from './search-results.vue';
 
 vi.mock('@directus/extensions-sdk', () => ({
@@ -15,12 +15,11 @@ vi.mock('@directus/extensions-sdk', () => ({
 }));
 
 describe('SearchResults', () => {
-	it('keeps server results visible during filtering and emits the selected item', async () => {
+	it('renders server results in a group and emits the selected item', async () => {
 		const select = vi.fn();
 		const wrapper = mount(
 			defineComponent(() => () =>
-				h(Command, { filter: () => 0, forceSort: true }, () => [
-					h(CommandInput),
+				h(ListboxRoot, { modelValue: '' }, () => h(ListboxContent, () =>
 					h(SearchResults, {
 						query: 'article',
 						results: [{
@@ -30,8 +29,7 @@ describe('SearchResults', () => {
 							displayTemplate: '{{title}}',
 						}],
 						onSelect: select,
-					}),
-				]),
+					}))),
 			),
 			{
 				global: {
@@ -43,10 +41,9 @@ describe('SearchResults', () => {
 			},
 		);
 
-		await wrapper.get('input').setValue('no-match');
-		expect(wrapper.find('[cmdk-group]').exists()).toBe(true);
+		expect(wrapper.get('[role="group"]').text()).toContain('Articles');
 
-		await wrapper.get('[cmdk-item]').trigger('click');
+		await wrapper.get('[role="option"]').trigger('click');
 
 		expect(select).toHaveBeenCalledWith({
 			collection: 'articles',

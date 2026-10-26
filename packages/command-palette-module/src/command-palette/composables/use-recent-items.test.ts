@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 
 import { beforeEach, describe, expect, it } from 'vitest';
+import { effectScope, nextTick } from 'vue';
 import { getUserStorageKey } from '../../utils/get-user-storage-key';
 import { useRecentItems } from './use-recent-items';
 
@@ -48,5 +49,15 @@ describe('useRecentItems', () => {
 
 		expect(secondProject.items.value).toEqual([]);
 		expect(secondUser.items.value).toEqual([]);
+	});
+
+	it('saves an item even when its view unmounts in the same tick', async () => {
+		const scope = effectScope();
+		scope.run(() => useRecentItems('user-3', 'articles'))!.add({ collection: 'articles', pk: '3' });
+		scope.stop();
+		await nextTick();
+
+		expect(JSON.parse(localStorage.getItem(getUserStorageKey('command-palette:recent-items', 'user-3'))!))
+			.toEqual([{ collection: 'articles', pk: '3' }]);
 	});
 });

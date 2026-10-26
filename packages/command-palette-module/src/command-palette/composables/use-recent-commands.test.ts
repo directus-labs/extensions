@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ref } from 'vue';
+import { effectScope, nextTick, ref } from 'vue';
 import { getUserStorageKey } from '../../utils/get-user-storage-key';
 import { useRecentCommands } from './use-recent-commands';
 
@@ -32,5 +32,15 @@ describe('useRecentCommands', () => {
 		recent.add('third');
 
 		expect(recent.commands.value).toEqual(['third', 'first']);
+	});
+
+	it('saves an entry even when its view unmounts in the same tick', async () => {
+		const scope = effectScope();
+		scope.run(() => useRecentCommands('user-3'))!.add('search-articles');
+		scope.stop();
+		await nextTick();
+
+		expect(JSON.parse(localStorage.getItem(getUserStorageKey('command-palette:recent-commands', 'user-3'))!))
+			.toEqual(['search-articles']);
 	});
 });

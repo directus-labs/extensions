@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { CommandList } from '../../primitives/cmdk';
+import { ListboxContent } from 'reka-ui';
+import { computed, useId } from 'vue';
 import { useCommandContext } from '../composables/use-global-command-state';
 import CommandInput from './input.vue';
 
@@ -15,6 +15,7 @@ withDefaults(
 
 const { loading, search, router } = useCommandContext();
 const showBack = computed(() => router.stack.value.length > 1);
+const listId = `command-palette-list-${useId()}`;
 </script>
 
 <template>
@@ -22,11 +23,15 @@ const showBack = computed(() => router.stack.value.length > 1);
 		v-model="search"
 		:loading="loading"
 		:placeholder="searchBarPlaceholder"
+		:list-id="listId"
 		:show-back="showBack"
+		@back="router.pop()"
 	/>
-	<CommandList>
-		<slot />
-	</CommandList>
+	<ListboxContent :id="listId" class="command-list" aria-label="Suggestions">
+		<div class="command-list-viewport">
+			<slot />
+		</div>
+	</ListboxContent>
 	<div class="command-footer">
 		<span>
 			<v-icon name="sync_alt" />
@@ -44,14 +49,12 @@ const showBack = computed(() => router.stack.value.length > 1);
 </template>
 
 <style scoped lang="scss">
-[cmdk-list] {
+.command-list {
 	max-height: 50vh;
 	overflow-y: scroll;
-	height: var(--cmdk-list-height);
-	/* transition: height 100ms ease; */
 }
 
-:deep([cmdk-list-sizer]) {
+.command-list-viewport {
 	padding: 0.25rem;
 }
 

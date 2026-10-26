@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { onClickOutside, useEventListener } from '@vueuse/core';
+import { ListboxRoot } from 'reka-ui';
 import { computed, nextTick, ref, watch } from 'vue';
-import { Command } from '../primitives/cmdk';
-import { commandScore } from '../primitives/cmdk/utils/command-score';
 import Overlay from './components/overlay.vue';
 import { provideGlobalCommandContext } from './composables/use-global-command-state';
 import RootCommands from './root-commands.vue';
@@ -13,7 +12,10 @@ const active = defineModel<boolean>('active');
 
 const commandPalette = ref<{
 	$el: HTMLElement;
-	selectFirstItem: () => void;
+	highlightedElement: HTMLElement | null;
+	getItems: () => { ref: HTMLElement; value: string }[];
+	highlightItem: (value: string) => void;
+	highlightFirstItem: () => void;
 } | null>(null);
 const commandPaletteElement = computed(() => commandPalette.value?.$el);
 const search = ref('');
@@ -39,6 +41,32 @@ useEventListener(commandPaletteElement, 'keydown', (e: KeyboardEvent) => {
 	if (e.key === 'Backspace' && search.value === '' && commandRouter.pop()) e.preventDefault();
 });
 
+// Reka stops at the ends of the list and has no group jumps. Wrap around at the ends, let Cmd+Arrow jump to either
+// end, and Alt+Arrow to the first item of the next or previous group.
+useEventListener(commandPaletteElement, 'keydown', (e: KeyboardEvent) => {
+	if ((e.key !== 'ArrowDown' && e.key !== 'ArrowUp') || !commandPalette.value) return;
+
+	const down = e.key === 'ArrowDown';
+	const items = commandPalette.value.getItems();
+	const highlighted = commandPalette.value.highlightedElement;
+	const [start, end] = down ? [items[0], items.at(-1)] : [items.at(-1), items[0]];
+
+	let target: (typeof items)[number] | undefined;
+	if (e.altKey) target = getGroupJumpTarget(items, highlighted, down);
+	else if (e.metaKey) target = end;
+	else if (highlighted === end?.ref) target = start;
+	if (!target) return;
+
+	e.preventDefault();
+	e.stopPropagation();
+	commandPalette.value.highlightItem(target.value);
+}, { capture: true });
+
+// Reka clears the highlight when the pointer leaves the list. Keep it, so Enter still picks the highlighted item.
+useEventListener(commandPaletteElement, 'pointerleave', (e: PointerEvent) => {
+	e.stopImmediatePropagation();
+}, { capture: true });
+
 // Ignore click events from the dialog and menu outlets
 onClickOutside(commandPaletteElement, close, {
 	ignore: ['#dialog-outlet', '#menu-outlet'],
@@ -59,6 +87,11 @@ watch(context.loading, (isLoading) => {
 	if (!isLoading) highlightFirst();
 });
 
+// Reka registers items a tick after they mount, and some arrive later still (async commands, results).
+watch(() => commandPalette.value?.getItems().length, (count) => {
+	if (count && !commandPalette.value?.highlightedElement?.isConnected) highlightFirst();
+});
+
 function close() {
 	active.value = false;
 	clear();
@@ -69,26 +102,32 @@ function clear() {
 	context.search.value = '';
 }
 
-function customFilter(value: string, search: string, keywords: string[]) {
-	const root = commandPalette.value?.$el;
-	const element = Array.from(
-		root?.querySelectorAll<HTMLElement>('[data-value]') ?? [],
-	).find((element) => element.dataset.value === value);
+function getGroupJumpTarget<T extends { ref: HTMLElement }>(items: T[], highlighted: HTMLElement | null, down: boolean) {
+	const groupOf = (element: HTMLElement | null) => element?.closest('[role="group"]') ?? null;
+	const current = groupOf(highlighted);
+	if (!current) return;
 
-	if (!search) {
-		const sort = element?.dataset.sort;
-		return sort !== undefined ? 1 / (Number(sort) + 1) : 1 / Number.MAX_SAFE_INTEGER;
-	}
+	const index = items.findIndex(({ ref }) => ref === highlighted);
+	const candidates = down ? items.slice(index + 1) : items.slice(0, index).reverse();
+	const group = candidates.map(({ ref }) => groupOf(ref)).find((candidate) => candidate && candidate !== current);
 
-	const score = commandScore(value, search, keywords);
-	if (score <= 0.1) return 0;
-
-	const priority = Number(element?.dataset.priority ?? 0) * 0.01;
-	return score + priority;
+	return group ? items.find(({ ref }) => groupOf(ref) === group) : undefined;
 }
 
 function highlightFirst() {
-	nextTick(() => commandPalette.value?.selectFirstItem());
+	nextTick(() => commandPalette.value?.highlightFirstItem());
+}
+
+// Keep a group's heading in view when keyboard navigation lands on its first item.
+function onHighlight(item?: { ref: HTMLElement }) {
+	const element = item?.ref;
+	if (!element || element.matches(':hover')) return;
+
+	const group = element.closest('[role="group"]');
+	if (group?.querySelector('[role="option"]') !== element) return;
+
+	group.firstElementChild?.scrollIntoView({ block: 'nearest' });
+	element.scrollIntoView({ block: 'nearest' });
 }
 
 watch(commandRouter.currentCommand, () => {
@@ -109,15 +148,15 @@ watch(commandRouter.currentCommand, () => {
 
 <template>
 	<Overlay v-model:active="active">
-		<Command
+		<ListboxRoot
 			ref="commandPalette"
 			class="command-palette"
-			label="Command Menu"
-			:filter="customFilter"
-			force-sort
+			model-value=""
+			highlight-on-hover
+			@highlight="onHighlight"
 		>
 			<CommandRouterView />
-		</Command>
+		</ListboxRoot>
 	</Overlay>
 </template>
 

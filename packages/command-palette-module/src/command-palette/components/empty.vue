@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { CommandEmpty } from '../../primitives/cmdk';
 import Item from './item.vue';
 
-defineProps<{
+// Without the explicit undefined default, Vue casts a missing boolean prop to false.
+withDefaults(defineProps<{
 	show?: boolean;
-}>();
+}>(), {
+	show: undefined,
+});
 </script>
 
 <template>
-	<Item v-if="show === undefined" :as="CommandEmpty" icon="search">
+	<Item v-if="show === undefined" as="div" icon="search">
 		<slot>No results found</slot>
 	</Item>
 	<div v-else-if="show" class="empty-state">

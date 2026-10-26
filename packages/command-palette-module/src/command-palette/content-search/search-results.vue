@@ -46,15 +46,12 @@ function select(group: (typeof groups.value)[number], hit: Record<string, any>) 
 		:key="group.collection"
 		:heading="group.name"
 		:icon="group.icon"
-		force-mount
 	>
 		<Item
 			v-for="hit in group.hits"
 			:key="JSON.stringify([group.collection, hit[group.primaryKeyField]])"
 			:value="JSON.stringify([group.collection, hit[group.primaryKeyField]])"
-			:keywords="[query]"
 			:icon="group.icon"
-			force-mount
 			@select="select(group, hit)"
 		>
 			<render-template :collection="group.collection" :item="hit" :template="group.displayTemplate" />

@@ -25,9 +25,10 @@ export function useRecentItems(
 	userId: PrimaryKey | null | undefined,
 	collection?: string,
 ) {
+	// Write right away: picking an entry often unmounts this view in the same tick, which drops a queued write.
 	const stored = userId === null || userId === undefined
 		? ref<unknown>([])
-		: useLocalStorage<unknown>(getUserStorageKey(STORAGE_KEY, userId), []);
+		: useLocalStorage<unknown>(getUserStorageKey(STORAGE_KEY, userId), [], { flush: 'sync' });
 	const allItems = computed(() => parseRecentItems(stored.value));
 	const items = computed(() => {
 		if (!collection) return allItems.value;

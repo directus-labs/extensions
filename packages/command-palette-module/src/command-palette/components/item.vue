@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import type { Component as ComponentType } from 'vue';
-import { CommandItem } from '../../primitives/cmdk';
+import { ListboxItem } from 'reka-ui';
 
 withDefaults(
 	defineProps<{
 		icon?: string;
 		value?: string;
-		keywords?: string[];
-		forceMount?: boolean;
-		as?: ComponentType;
+		as?: ComponentType | string;
 	}>(),
 	{
-		as: () => CommandItem,
+		as: () => ListboxItem,
 	},
 );
 
@@ -25,9 +23,7 @@ defineEmits<{
 		:is="as"
 		class="result-item"
 		:value="value"
-		:keywords="keywords"
-		:force-mount="forceMount"
-		@select="$emit('select')"
+		@select.prevent="$emit('select')"
 	>
 		<span class="icon">
 			<slot name="icon">
@@ -56,7 +52,7 @@ defineEmits<{
 	min-block-size: 2.125rem;
 	cursor: pointer;
 
-	&[data-selected='true'] {
+	&[data-highlighted] {
 		background-color: var(--theme--background-subdued);
 		--v-icon-color: var(--theme--foreground);
 

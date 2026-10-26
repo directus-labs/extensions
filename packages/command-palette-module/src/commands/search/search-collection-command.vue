@@ -307,13 +307,12 @@ function itemValue(item: { pk: string; versionKey?: string; versionId?: string }
 			Type to search {{ collectionName }}
 		</Empty>
 		<Empty :show="isEmpty" />
-		<Group v-if="results.length > 0" force-mount>
+		<Group v-if="results.length > 0">
 			<Item
 				v-for="result in results"
 				:key="itemValue(result)"
 				:value="itemValue(result)"
 				:icon="collectionIcon"
-				force-mount
 				@select="selectItem(result)"
 			>
 				<render-template :collection="props.collection" :item="result.item" :template="itemTemplate" />

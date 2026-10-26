@@ -5,13 +5,14 @@ import formatTitle from '@directus/format-title';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { Empty, Item, List, useCommandContext } from '../../command-palette';
+import { rankItems } from '../../command-palette/utils/rank-items';
 
 const { useCollectionsStore } = useStores();
 const collectionsStore = useCollectionsStore();
 const router = useRouter();
 const { search, close } = useCommandContext();
 
-const collections = computed(() =>
+const collections = computed<{ id: string; name: string; icon: string }[]>(() =>
 	collectionsStore.allCollections
 		.filter(({ type }: Collection & { type?: string }) => type !== 'alias')
 		.map(({ collection, meta }: Collection) => ({
@@ -19,6 +20,13 @@ const collections = computed(() =>
 			name: formatTitle(collection),
 			icon: (meta?.icon ?? 'box') as string,
 		})),
+);
+
+const filteredCollections = computed(() =>
+	rankItems(collections.value, search.value, (collection) => ({
+		value: collection.name,
+		keywords: [collection.id],
+	})).map(({ item }) => item),
 );
 
 function goToDataModel(collection?: string) {
@@ -29,15 +37,14 @@ function goToDataModel(collection?: string) {
 
 <template>
 	<List search-bar-placeholder="Data Model...">
-		<Item v-if="!search" value="Data Model" icon="arrow_forward" @select="goToDataModel()">
+		<Item v-if="!search" value="$data-model" icon="arrow_forward" @select="goToDataModel()">
 			Go to Data Model
 		</Item>
-		<Empty />
+		<Empty v-if="search && filteredCollections.length === 0" />
 		<Item
-			v-for="collection in collections"
+			v-for="collection in filteredCollections"
 			:key="collection.id"
-			:value="collection.name"
-			:keywords="[collection.id]"
+			:value="collection.id"
 			:icon="collection.icon"
 			@select="goToDataModel(collection.id)"
 		>

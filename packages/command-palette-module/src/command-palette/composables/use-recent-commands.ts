@@ -10,9 +10,10 @@ const RecentCommands = z.array(z.string());
 
 export function useRecentCommands(userId: PrimaryKey | null | undefined) {
 	const { settings } = useSettings();
+	// Write right away: picking an entry often unmounts this view in the same tick, which drops a queued write.
 	const stored = userId === null || userId === undefined
 		? ref<unknown>([])
-		: useLocalStorage<unknown>(getUserStorageKey(STORAGE_KEY, userId), []);
+		: useLocalStorage<unknown>(getUserStorageKey(STORAGE_KEY, userId), [], { flush: 'sync' });
 	const commands = computed(() => {
 		const result = RecentCommands.safeParse(stored.value);
 		return result.success ? result.data : [];

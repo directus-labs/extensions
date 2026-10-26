@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { CommandInput } from '../../primitives/cmdk';
+import { ListboxFilter } from 'reka-ui';
 
 defineProps<{
+	listId: string;
 	loading?: boolean;
 	placeholder?: string;
 	showBack?: boolean;
@@ -12,30 +12,33 @@ defineEmits<{
 	back: [];
 }>();
 
-const search = defineModel<string | null>();
+const search = defineModel<string>({ default: '' });
 
-const input = ref<{ $el: HTMLInputElement } | null>(null);
-
-watch(
-	input,
-	() => {
-		input.value?.$el.focus();
-	},
-	{ once: true },
-);
+// Reka only checks its own composition flag. Safari sends the Enter that ends an IME composition
+// after compositionend, as keyCode 229, so stop it before Reka selects an item.
+function onKeydown(event: KeyboardEvent) {
+	if (event.key === 'Enter' && (event.isComposing || event.keyCode === 229)) event.stopPropagation();
+}
 </script>
 
 <template>
-	<div class="search-input">
+	<div class="search-input" @keydown.capture="onKeydown">
 		<span v-if="showBack" class="back" @click="$emit('back')">
 			<v-icon name="keyboard_backspace" />
 		</span>
 		<span v-else class="back-placeholder" />
-		<CommandInput
-			ref="input"
-			:value="search"
+		<ListboxFilter
+			v-model="search"
 			:placeholder="placeholder"
-			@change="search = $event"
+			auto-focus
+			role="combobox"
+			aria-label="Command Menu"
+			aria-autocomplete="list"
+			aria-expanded="true"
+			:aria-controls="listId"
+			autocomplete="off"
+			autocorrect="off"
+			spellcheck="false"
 		/>
 		<v-progress-circular v-if="loading === true" indeterminate />
 		<v-icon v-else-if="search" clickable name="close" @click="search = ''" />

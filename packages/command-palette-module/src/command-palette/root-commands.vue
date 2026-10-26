@@ -18,6 +18,7 @@ import SearchResults from './content-search/search-results.vue';
 import RecentItems from './recents/recent-items.vue';
 import { useRegisteredCommands } from './registry';
 import { useCommandRouter } from './router/router';
+import { rankItems } from './utils/rank-items';
 
 const stores = useStores();
 const router = useRouter();
@@ -54,25 +55,45 @@ watch(globalSearch.loading, (loading) => {
 
 const { groups, commands } = useRegisteredCommands(commandContext);
 
+const rankedCommands = computed(() =>
+	rankItems(commands.value, search.value, (command) => ({
+		value: command.id,
+		keywords: [command.name, command.description ?? '', ...(command.keywords ?? [])],
+		priority: command.priority,
+	})),
+);
+
 const positionedCommands = computed(() => {
 	const groupIds = new Set(groups.value.map(({ id }) => id));
 	const grouped: Record<string, CommandConfig[]> = {};
+	const groupScores = new Map<string, number>();
 	const ungrouped: CommandConfig[] = [];
 
-	for (const command of commands.value) {
+	for (const { item: command, score } of rankedCommands.value) {
 		if (!command.group || !groupIds.has(command.group)) {
 			ungrouped.push(command);
 			continue;
 		}
 
 		(grouped[command.group] ??= []).push(command);
+		if (!groupScores.has(command.group)) groupScores.set(command.group, score);
 	}
 
-	return { grouped, ungrouped };
+	return { grouped, groupScores, ungrouped };
 });
 
-const groupsWithCommands = computed(() =>
-	groups.value.filter(({ id }) => positionedCommands.value.grouped[id]),
+// Groups follow their best match, so the strongest results stay on top.
+const groupsWithCommands = computed(() => {
+	const { groupScores } = positionedCommands.value;
+
+	return groups.value
+		.filter(({ id }) => groupScores.has(id))
+		.sort((a, b) => groupScores.get(b.id)! - groupScores.get(a.id)!);
+});
+
+// Loading covers the debounce too, so content hits don't flash "No results found" before they arrive.
+const isEmpty = computed(() =>
+	rankedCommands.value.length === 0 && !hasGlobalSearchResults.value && !globalSearch.loading.value,
 );
 
 function navigateToItem(item: { collection: string; pk: string }) {
@@ -113,13 +134,25 @@ async function onSelect(command: CommandConfig) {
 
 <template>
 	<List>
-		<Empty v-if="!hasGlobalSearchResults" />
+		<Empty v-if="isEmpty" />
 		<RecentItems
 			v-if="!search"
 			:available-commands="commands"
 			:command-ids="recentCommandIds"
 			:groups="groups"
 			@select="selectRecentCommand"
+		/>
+		<SearchResults
+			v-if="search && hasGlobalSearchResults"
+			:results="globalSearch.results.value"
+			:query="search"
+			@select="navigateToItem"
+		/>
+		<CommandItem
+			v-for="command in positionedCommands.ungrouped"
+			:key="command.id"
+			:command="command"
+			@select="onSelect(command)"
 		/>
 		<Group
 			v-for="group in groupsWithCommands"
@@ -128,26 +161,12 @@ async function onSelect(command: CommandConfig) {
 			:icon="group.icon"
 		>
 			<CommandItem
-				v-for="(command, index) in positionedCommands.grouped[group.id]"
+				v-for="command in positionedCommands.grouped[group.id]"
 				:key="command.id"
 				:command="command"
-				:sort="index"
 				icon-placement="start"
 				@select="onSelect(command)"
 			/>
 		</Group>
-		<CommandItem
-			v-for="(command, index) in positionedCommands.ungrouped"
-			:key="command.id"
-			:command="command"
-			:sort="index"
-			@select="onSelect(command)"
-		/>
-		<SearchResults
-			v-if="search && hasGlobalSearchResults"
-			:results="globalSearch.results.value"
-			:query="search"
-			@select="navigateToItem"
-		/>
 	</List>
 </template>

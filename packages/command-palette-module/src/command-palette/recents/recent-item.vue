@@ -17,8 +17,7 @@ const RenderedCommand = computed(() => command.value.render);
 <template>
 	<Item
 		:key="command.id"
-		:keywords="command.keywords"
-		force-mount
+		:value="`recent:${command.id}`"
 		icon="history"
 	>
 		<div class="title-wrapper">

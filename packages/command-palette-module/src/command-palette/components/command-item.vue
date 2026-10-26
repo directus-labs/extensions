@@ -7,7 +7,6 @@ const props = withDefaults(
 	defineProps<{
 		command: CommandConfig;
 		iconPlacement?: 'start' | 'end' | 'none';
-		sort?: number;
 	}>(),
 	{
 		iconPlacement: 'end',
@@ -29,9 +28,6 @@ const showStartIconSlot = computed(() => props.iconPlacement === 'start' && type
 <template>
 	<Item
 		:value="command.id"
-		:keywords="[command.name, command.description ?? '', ...(command.keywords ?? [])]"
-		:data-priority="command.priority ?? 0"
-		:data-sort="sort"
 		:icon="startIcon"
 		@select="$emit('select')"
 	>
