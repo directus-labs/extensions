@@ -1,5 +1,7 @@
 import type { useStores } from '@directus/extensions-sdk';
 import type { RouteLocationRaw } from 'vue-router';
+import { getDirectusRouter } from '../../utils/get-directus-router';
+import { getFlowsPath } from '../../utils/get-flows-path';
 
 export interface SettingsSection {
 	id: string;
@@ -9,7 +11,6 @@ export interface SettingsSection {
 }
 
 const baseSections: SettingsSection[] = [
-	{ id: 'flows', name: 'Flows', icon: 'bolt', to: '/settings/flows' },
 	{ id: 'roles', name: 'Roles & Policies', icon: 'group', to: '/settings/roles' },
 	{ id: 'permissions', name: 'Access Policies', icon: 'admin_panel_settings', to: '/settings/policies' },
 	{ id: 'project', name: 'Project Settings', icon: 'tune', to: '/settings/project' },
@@ -21,7 +22,10 @@ const baseSections: SettingsSection[] = [
 
 export function getSettingsSections(stores: ReturnType<typeof useStores>): SettingsSection[] {
 	const serverInfo = stores.useServerStore?.().info;
-	const sections = [...baseSections];
+	const sections = [
+		{ id: 'flows', name: 'Flows', icon: 'bolt', to: getFlowsPath(getDirectusRouter()) },
+		...baseSections,
+	];
 
 	if (serverInfo?.ai_enabled || serverInfo?.mcp_enabled) {
 		sections.push({ id: 'ai', name: 'AI', icon: 'smart_toy', to: '/settings/ai' });

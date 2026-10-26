@@ -2,17 +2,21 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
+import { getUserStorageKey } from '../../utils/get-user-storage-key';
 import { useRecentCommands } from './use-recent-commands';
 
 vi.mock('../../composables/use-settings', () => ({
 	useSettings: () => ({ settings: ref({ recentSearchLimit: 2 }) }),
 }));
 
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+	localStorage.clear();
+	window.history.replaceState({}, '', '/admin');
+});
 
 describe('useRecentCommands', () => {
 	it('ignores malformed storage and replaces it with validated command IDs', () => {
-		localStorage.setItem('command-palette:recent-commands:user-1', JSON.stringify({ invalid: true }));
+		localStorage.setItem(getUserStorageKey('command-palette:recent-commands', 'user-1'), JSON.stringify({ invalid: true }));
 		const recent = useRecentCommands('user-1');
 
 		expect(recent.commands.value).toEqual([]);

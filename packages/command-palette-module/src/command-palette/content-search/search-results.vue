@@ -26,7 +26,6 @@ const groups = computed(() =>
 			...result,
 			name: String(collection?.name ?? formatTitle(result.collection)),
 			icon: typeof icon === 'string' ? icon : 'box',
-			template: result.displayTemplate ?? collection?.meta?.display_template ?? `{{${result.primaryKeyField}}}`,
 		};
 	}),
 );
@@ -58,7 +57,7 @@ function select(group: (typeof groups.value)[number], hit: Record<string, any>) 
 			force-mount
 			@select="select(group, hit)"
 		>
-			<render-template :collection="group.collection" :item="hit" :template="group.template" />
+			<render-template :collection="group.collection" :item="hit" :template="group.displayTemplate" />
 			<template v-if="group.descriptionField && hit[group.descriptionField]" #description>
 				<Highlights :text="String(hit[group.descriptionField])" :query="query" />
 			</template>

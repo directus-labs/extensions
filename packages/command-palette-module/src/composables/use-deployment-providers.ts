@@ -30,13 +30,21 @@ let requestId = 0;
 let currentUserId: string | undefined;
 let failedAt: number | undefined;
 let loadedAt: number | undefined;
+let errorReported = false;
 
 export function useDeploymentProviders(api: ApiClient, options: DeploymentProviderOptions) {
 	const userId = options.userId === null || options.userId === undefined ? undefined : String(options.userId);
 	const userChanged = currentUserId !== userId;
 	const cacheExpired = loadedAt !== undefined && Date.now() - loadedAt >= CACHE_TTL;
 
-	if (userChanged || cacheExpired) reset(userId);
+	if (userChanged) {
+		reset(userId);
+	}
+	else if (cacheExpired) {
+		// Keep showing the stale providers until the refresh lands.
+		loaded.value = false;
+		loadedAt = undefined;
+	}
 
 	async function fetch() {
 		if (loaded.value) return true;
@@ -73,7 +81,9 @@ async function fetchProviders(
 	catch (error) {
 		if (currentRequest === requestId) {
 			failedAt = Date.now();
-			onError(error);
+			// Retries run silently so a down endpoint doesn't pop a dialog on every keystroke.
+			if (!errorReported) onError(error);
+			errorReported = true;
 		}
 
 		return false;
@@ -95,4 +105,5 @@ function reset(userId: string | undefined) {
 	fetchPromise = null;
 	failedAt = undefined;
 	loadedAt = undefined;
+	errorReported = false;
 }

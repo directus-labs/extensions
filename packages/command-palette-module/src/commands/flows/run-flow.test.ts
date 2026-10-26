@@ -2,7 +2,7 @@
 
 import type { Flow } from '@directus/types';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { defineComponent } from 'vue';
 import RunFlow from './run-flow.vue';
 
@@ -11,13 +11,14 @@ const mocks = vi.hoisted(() => ({
 	close: vi.fn(),
 	goBack: vi.fn(),
 	notify: vi.fn(),
+	refreshUnreadCount: vi.fn(),
 	unexpectedError: vi.fn(),
 }));
 
 vi.mock('@directus/extensions-sdk', () => ({
 	useApi: () => ({ post: mocks.apiPost }),
 	useStores: () => ({
-		useNotificationsStore: () => ({ add: mocks.notify }),
+		useNotificationsStore: () => ({ add: mocks.notify, refreshUnreadCount: mocks.refreshUnreadCount }),
 	}),
 }));
 
@@ -63,6 +64,27 @@ function flow(): Flow {
 	};
 }
 
+function mountRunFlow() {
+	return mount(RunFlow, {
+		props: { flow: flow(), location: 'item' },
+		global: {
+			stubs: {
+				'v-button': ButtonStub,
+				'v-card': passthrough,
+				'v-card-actions': passthrough,
+				'v-card-text': passthrough,
+				'v-card-title': passthrough,
+				'v-dialog': passthrough,
+				'v-form': passthrough,
+			},
+		},
+	});
+}
+
+beforeEach(() => {
+	for (const mock of Object.values(mocks)) mock.mockReset();
+});
+
 describe('RunFlow', () => {
 	it('submits a confirmation flow only once while the request is pending', async () => {
 		let resolveRequest: (() => void) | undefined;
@@ -71,20 +93,7 @@ describe('RunFlow', () => {
 			resolveRequest = resolve;
 		}));
 
-		const wrapper = mount(RunFlow, {
-			props: { flow: flow(), location: 'item' },
-			global: {
-				stubs: {
-					'v-button': ButtonStub,
-					'v-card': passthrough,
-					'v-card-actions': passthrough,
-					'v-card-text': passthrough,
-					'v-card-title': passthrough,
-					'v-dialog': passthrough,
-					'v-form': passthrough,
-				},
-			},
-		});
+		const wrapper = mountRunFlow();
 		const runButton = wrapper.findAll('button')[1];
 		if (!runButton) throw new Error('Run button did not render');
 
@@ -94,5 +103,18 @@ describe('RunFlow', () => {
 
 		resolveRequest?.();
 		await vi.waitFor(() => expect(mocks.close).toHaveBeenCalledOnce());
+	});
+
+	it('closes after the flow runs even when the unread count refresh fails', async () => {
+		mocks.apiPost.mockResolvedValue({});
+		mocks.refreshUnreadCount.mockRejectedValue(new Error('offline'));
+
+		const runButton = mountRunFlow().findAll('button')[1];
+		if (!runButton) throw new Error('Run button did not render');
+
+		await runButton.trigger('click');
+		await vi.waitFor(() => expect(mocks.close).toHaveBeenCalledOnce());
+		await vi.waitFor(() => expect(mocks.unexpectedError).toHaveBeenCalledOnce());
+		expect(mocks.apiPost).toHaveBeenCalledOnce();
 	});
 });

@@ -10,6 +10,8 @@ import { useGlobalSearch } from './use-global-search';
 
 const mocks = vi.hoisted(() => ({
 	apiGet: vi.fn(),
+	getCollection: vi.fn(),
+	getField: vi.fn(),
 	hasPermission: vi.fn(),
 	notificationsAdd: vi.fn(),
 	replace: vi.fn(),
@@ -19,10 +21,10 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock('@directus/extensions-sdk', () => ({
-	getFieldsFromTemplate: () => [],
 	useApi: () => ({ get: mocks.apiGet }),
 	useStores: () => ({
-		useFieldsStore: () => ({ getPrimaryKeyFieldForCollection: () => ({ field: 'id' }) }),
+		useCollectionsStore: () => ({ getCollection: mocks.getCollection }),
+		useFieldsStore: () => ({ getField: mocks.getField, getPrimaryKeyFieldForCollection: () => ({ field: 'id' }) }),
 		useNotificationsStore: () => ({ add: mocks.notificationsAdd }),
 		usePermissionsStore: () => ({ hasPermission: mocks.hasPermission }),
 	}),
@@ -66,6 +68,8 @@ function mountSearch(options: Parameters<typeof useGlobalSearch>[0] = {}): Mount
 beforeEach(() => {
 	vi.useFakeTimers();
 	mocks.apiGet.mockReset();
+	mocks.getCollection.mockReset().mockReturnValue(null);
+	mocks.getField.mockReset().mockReturnValue({});
 	mocks.hasPermission.mockReset().mockReturnValue(true);
 	mocks.notificationsAdd.mockReset();
 	mocks.replace.mockReset().mockImplementation(async () => {});
@@ -280,6 +284,52 @@ describe('useGlobalSearch', () => {
 
 		expect(state.query.value).toBe('first');
 		expect(mocks.replace).toHaveBeenCalledWith({ query: { search: 'first' } });
+		wrapper.unmount();
+	});
+
+	it('falls back to the collection display template and fetches its fields', async () => {
+		mocks.getCollection.mockReturnValue({ meta: { display_template: '{{title}} by {{author.name}}' } });
+		mocks.apiGet.mockResolvedValue({ data: { data: [{ id: 1, title: 'Article' }] } });
+
+		const { state, wrapper } = mountSearch();
+		await state.search('article');
+
+		expect(mocks.apiGet.mock.calls[0]?.[1].params.fields).toEqual(['id', 'title', 'author.name']);
+		expect(state.results.value[0]?.displayTemplate).toBe('{{title}} by {{author.name}}');
+		wrapper.unmount();
+	});
+
+	it('falls back to the primary key when no display template exists', async () => {
+		mocks.apiGet.mockResolvedValue({ data: { data: [{ id: 1 }] } });
+
+		const { state, wrapper } = mountSearch();
+		await state.search('article');
+
+		expect(mocks.apiGet.mock.calls[0]?.[1].params.fields).toEqual(['id', 'id']);
+		expect(state.results.value[0]?.displayTemplate).toBe('{{id}}');
+		wrapper.unmount();
+	});
+
+	it('drops template fields the user cannot read', async () => {
+		mocks.getCollection.mockReturnValue({ meta: { display_template: '{{title}} by {{author.name}}' } });
+		mocks.getField.mockImplementation((_collection: string, field: string) => (field === 'title' ? {} : null));
+		mocks.apiGet.mockResolvedValue({ data: { data: [{ id: 1, title: 'Article' }] } });
+
+		const { state, wrapper } = mountSearch();
+		await state.search('article');
+
+		expect(mocks.apiGet.mock.calls[0]?.[1].params.fields).toEqual(['id', 'title']);
+		wrapper.unmount();
+	});
+
+	it('skips collections whose search fields the user cannot read', async () => {
+		mocks.getField.mockReturnValue(null);
+
+		const { state, wrapper } = mountSearch();
+		await state.search('article');
+
+		expect(mocks.apiGet).not.toHaveBeenCalled();
+		expect(state.results.value).toEqual([]);
 		wrapper.unmount();
 	});
 });

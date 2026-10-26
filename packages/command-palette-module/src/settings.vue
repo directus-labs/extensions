@@ -3,7 +3,7 @@ import type { ValidationError } from '@directus/types';
 import type { Ref } from 'vue';
 import type { RouteLocationRaw } from 'vue-router';
 import type { SearchConfigType } from './types';
-import { useStores } from '@directus/extensions-sdk';
+import { useApi, useStores } from '@directus/extensions-sdk';
 import { useMagicKeys } from '@vueuse/core';
 import { clone, mergeWith } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
@@ -11,21 +11,23 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, useRouter } from 'vue-router';
 import { ZodError } from 'zod';
 import SearchNavigation from './components/navigation.vue';
-import { useIsAdmin } from './composables/use-is-admin';
 import { useUnexpectedError } from './composables/use-unexpected-error';
 import { fields } from './settings-fields';
 import { defaultSettings, ModuleSettings } from './types';
 import { zodErrorToValidationErrors } from './utils/errors';
+import { isAdminFromStores } from './utils/is-admin';
 import { parsePersistedSettings } from './utils/parse-persisted-settings';
 
 const i18n = useI18n();
 const { t } = i18n;
 const router = useRouter();
+const api = useApi();
 const stores = useStores();
-const { useSettingsStore, useFieldsStore } = stores;
+const { useSettingsStore, useFieldsStore, useNotificationsStore } = stores;
 const fieldsStore = useFieldsStore();
 const settingsStore = useSettingsStore();
-const isAdmin = useIsAdmin();
+const notificationsStore = useNotificationsStore();
+const isAdmin = computed(() => isAdminFromStores(stores));
 const unexpectedError = useUnexpectedError({ stores, i18n });
 const globalSearchSettings = computed(() => settingsStore.settings.command_palette_settings);
 const parsedSettings = computed(() => parsePersistedSettings(globalSearchSettings.value));
@@ -38,9 +40,11 @@ const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value)
 const saving = ref(false);
 const validationErrors = ref<ValidationError[]>([]);
 
+// settingsStore.updateSettings swallows request errors, so a failed save would look successful and drop edits.
 async function persistSettings(value: SearchConfigType) {
-	await settingsStore.updateSettings({ command_palette_settings: value });
+	await api.patch('/settings', { command_palette_settings: value });
 	await settingsStore.hydrate();
+	notificationsStore.add({ title: t('settings_update_success') });
 	initialValues.value = clone(settingsStore.settings.command_palette_settings);
 }
 
@@ -130,7 +134,8 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view title="Settings">
+	<private-view title="Settings" show-back back-to="/global-search">
+		<!-- Header icon fallback for hosts before 11.14, which lack the show-back prop -->
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="search" />
@@ -139,14 +144,6 @@ function discardAndLeave() {
 
 		<template #navigation>
 			<SearchNavigation />
-		</template>
-
-		<template #headline>
-			<v-breadcrumb
-				:items="[
-					{ name: 'Global Search', to: { name: 'global-search-index' } },
-				]"
-			/>
 		</template>
 
 		<template v-if="isAdmin" #actions>

@@ -1,3 +1,6 @@
+import { getDirectusRouter } from './get-directus-router';
+import { getFlowsPath } from './get-flows-path';
+
 type VersionOptions =
 	| { versionKey: string; versionId?: string }
 	| { versionKey?: never; versionId?: never };
@@ -16,7 +19,9 @@ const systemCollectionRoutes = {
 	directus_collections: { path: '/settings/data-model' },
 	directus_dashboards: { path: '/insights' },
 	directus_files: { path: '/files' },
-	directus_flows: { path: '/settings/flows' },
+	get directus_flows() {
+		return { path: getFlowsPath(getDirectusRouter()) };
+	},
 	directus_oauth_clients: { path: '/settings/mcp-oauth-clients' },
 	directus_presets: { path: '/settings/presets' },
 	directus_roles: { path: '/settings/roles' },

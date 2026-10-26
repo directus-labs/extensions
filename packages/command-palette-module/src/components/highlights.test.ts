@@ -16,4 +16,16 @@ describe('Highlights', () => {
 		expect(wrapper.findAll('mark').map((mark) => mark.text())).toEqual(['Article']);
 		expect(wrapper.text()).toContain('archive');
 	});
+
+	it('maps matches back to the original text when normalization expands characters', () => {
+		const wrapper = mount(Highlights, {
+			props: {
+				query: 'strasse',
+				text: 'Æble straße',
+			},
+		});
+
+		expect(wrapper.findAll('mark').map((mark) => mark.text())).toEqual(['straße']);
+		expect(wrapper.text()).toContain('Æble');
+	});
 });

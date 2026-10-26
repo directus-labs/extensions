@@ -7,7 +7,6 @@ export const SearchCollection = z.object({
 	collection: z.string(),
 	displayTemplate: z.string().optional().nullable(),
 	descriptionField: z.string().optional().nullable(),
-	thumbnailField: z.string().optional().nullable(),
 	fields: z.array(z.string().min(1, 'field name cannot be empty')),
 	filter: SearchFilter.optional().nullable(),
 	sort: z.string().optional().nullable(),
@@ -27,7 +26,7 @@ export const ModuleSettings = z.object({
 
 interface CollectionSearchInfo {
 	collection: string;
-	displayTemplate?: string;
+	displayTemplate: string;
 	descriptionField?: string;
 	primaryKeyField: string;
 }

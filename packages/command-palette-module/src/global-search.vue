@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { useStores } from '@directus/extensions-sdk';
-import { watch } from 'vue';
+import { watchDebounced } from '@vueuse/core';
+import { computed, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CollectionResults from './components/collection-results.vue';
 import SearchNavigation from './components/navigation.vue';
 import RecentSearches from './components/recent-searches.vue';
 import { useGlobalSearch } from './composables/use-global-search';
-import { useIsAdmin } from './composables/use-is-admin';
 import { useRecentSearches } from './composables/use-recent-searches';
+import { isAdminFromStores } from './utils/is-admin';
 
 const { t } = useI18n();
 const stores = useStores();
-const isAdmin = useIsAdmin();
+const isAdmin = computed(() => isAdminFromStores(stores));
 const currentUserId = stores.useUserStore().currentUser?.id;
 const recentSearches = useRecentSearches(currentUserId);
 
@@ -30,19 +31,24 @@ const {
 	syncWithQuery: true,
 });
 
-watch(completedSearch, (completed) => {
+// Only keep a search once typing settles, so as-you-type doesn't save every prefix.
+watchDebounced(completedSearch, (completed) => {
 	if (completed) recentSearches.add(completed.query);
-});
+}, { debounce: 1000 });
 
-function selectRecentSearch(value: string) {
+async function selectRecentSearch(value: string) {
 	query.value = value;
-	if (settings.value?.searchMode === 'on_submit') void search(value);
+	if (settings.value?.searchMode !== 'on_submit') return;
+
+	// Let the query watcher run first; it cancels any request started before it.
+	await nextTick();
+	void search(value);
 }
 </script>
 
 <template>
-	<private-view title="Search">
-		<!-- Header Icon -->
+	<private-view title="Search" icon="search">
+		<!-- Header icon fallback for hosts before 11.14, which lack the icon prop -->
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="search" />
@@ -52,14 +58,6 @@ function selectRecentSearch(value: string) {
 		<!-- Navigation -->
 		<template #navigation>
 			<SearchNavigation />
-		</template>
-
-		<template #headline>
-			<v-breadcrumb
-				:items="[
-					{ name: 'Global Search', to: { name: 'global-search-index' } },
-				]"
-			/>
 		</template>
 
 		<!-- Main Content -->

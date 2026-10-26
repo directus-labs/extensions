@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RecentItem } from '../../command-palette/composables/use-recent-items';
 import { useApi, useStores } from '@directus/extensions-sdk';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { getEndpoint, mergeFilters } from '@directus/utils';
 import { isPlainObject } from 'lodash-es';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -9,9 +9,12 @@ import { useRoute, useRouter } from 'vue-router';
 import { Empty, Group, Item, List, useCommandContext } from '../../command-palette';
 import { useRecentItems } from '../../command-palette/composables/use-recent-items';
 import Highlights from '../../components/highlights.vue';
+import { getPaletteResultLimit } from '../../composables/use-global-search';
 import { useSettings } from '../../composables/use-settings';
 import { useUnexpectedError } from '../../composables/use-unexpected-error';
+import { createDeepObject } from '../../utils/create-deep-object';
 import { getItemRoute } from '../../utils/get-item-route';
+import { getReadableDisplayTemplate, getReadableFields } from '../../utils/get-readable-display-template';
 import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
 import { getRouteVersionContext } from '../../utils/get-route-version-context';
 import { isItemRouteAvailable } from '../../utils/is-item-route-available';
@@ -60,14 +63,20 @@ const collectionIcon = computed(() => {
 	return props.collectionIcon || (typeof icon === 'string' ? icon : 'search');
 });
 const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field ?? 'id');
-const displayTemplate = computed(
-	() => props.displayTemplate || collectionConfig.value?.displayTemplate || collection.value?.meta?.display_template || `{{${primaryKeyField.value}}}`,
+const readableDisplayTemplate = computed(() => getReadableDisplayTemplate(
+	fieldsStore,
+	props.collection,
+	props.displayTemplate || collectionConfig.value?.displayTemplate || collection.value?.meta?.display_template,
+	primaryKeyField.value,
+));
+const itemTemplate = computed(() => readableDisplayTemplate.value.template);
+const descriptionField = computed(() =>
+	getReadableFields(fieldsStore, props.collection, [collectionConfig.value?.descriptionField ?? ''])[0] ?? null,
 );
-const descriptionField = computed(() => collectionConfig.value?.descriptionField ?? null);
 const fields = computed(() => [
 	primaryKeyField.value,
 	descriptionField.value,
-	...(getFieldsFromTemplate(displayTemplate.value) ?? []),
+	...readableDisplayTemplate.value.fields,
 ].filter(Boolean));
 const versionContext = computed(() => getRouteVersionContext(route));
 const searchVersionKey = computed(() =>
@@ -128,9 +137,8 @@ async function fetchItems(query: string, currentRequest: number) {
 		const response = await api.get(getEndpoint(props.collection), {
 			signal: controller.signal,
 			params: {
-				search: query,
+				...getSearchParams(query),
 				fields: fields.value,
-				limit: 25,
 				...(searchVersionKey.value ? { version: searchVersionKey.value } : {}),
 			},
 		});
@@ -142,14 +150,16 @@ async function fetchItems(query: string, currentRequest: number) {
 		results.value = items.flatMap((item) => {
 			const rawPrimaryKey = item[primaryKeyField.value];
 			const versionId = item.$meta?.version_id;
-			const itemlessDraft = searchVersionKey.value !== undefined && rawPrimaryKey === null && versionId != null;
+			// Hosts before v12 ignore `version` on list requests and return main items without $meta.
+			const versionKey = versionId != null ? searchVersionKey.value : undefined;
+			const itemlessDraft = versionKey !== undefined && rawPrimaryKey === null;
 
 			if (rawPrimaryKey === undefined || (rawPrimaryKey === null && !itemlessDraft)) return [];
 
 			const result: SearchResult = {
 				item,
 				pk: itemlessDraft ? '+' : String(rawPrimaryKey),
-				...(searchVersionKey.value ? { versionKey: searchVersionKey.value } : {}),
+				...(versionKey ? { versionKey } : {}),
 				...(itemlessDraft ? { versionId: String(versionId) } : {}),
 			};
 
@@ -166,6 +176,22 @@ async function fetchItems(query: string, currentRequest: number) {
 		if (currentRequest === requestId) loading.value = false;
 		if (activeController === controller) activeController = undefined;
 	}
+}
+
+// Configured collections keep their search fields, filter, sort and limit. Unconfigured ones, or ones whose
+// search fields the user can't read, use full-text search.
+function getSearchParams(query: string) {
+	const config = collectionConfig.value;
+	const searchFields = config ? getReadableFields(fieldsStore, props.collection, config.fields) : [];
+	if (!config || searchFields.length === 0) return { search: query, limit: 25 };
+
+	return {
+		filter: mergeFilters(config.filter ?? null, {
+			_or: searchFields.map((field) => createDeepObject(field, { _icontains: query })),
+		}),
+		sort: config.sort ?? [primaryKeyField.value],
+		limit: getPaletteResultLimit(config.limit),
+	};
 }
 
 async function loadRecentItems() {
@@ -274,7 +300,7 @@ function itemValue(item: { pk: string; versionKey?: string; versionId?: string }
 				:icon="collectionIcon"
 				@select="selectItem(item)"
 			>
-				<render-template :collection="props.collection" :item="item.item" :template="displayTemplate" />
+				<render-template :collection="props.collection" :item="item.item" :template="itemTemplate" />
 			</Item>
 		</Group>
 		<Empty :show="showHint">
@@ -290,7 +316,7 @@ function itemValue(item: { pk: string; versionKey?: string; versionId?: string }
 				force-mount
 				@select="selectItem(result)"
 			>
-				<render-template :collection="props.collection" :item="result.item" :template="displayTemplate" />
+				<render-template :collection="props.collection" :item="result.item" :template="itemTemplate" />
 				<template v-if="descriptionField && result.item[descriptionField]" #description>
 					<Highlights :text="String(result.item[descriptionField])" :query="search" />
 				</template>

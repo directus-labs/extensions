@@ -21,17 +21,19 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const parts = computed<HighlightPart[]>(() => {
-	const normalizedText = removeDiacritics(props.text).toLowerCase();
+	const { normalizedText, starts, ends } = normalize(props.text);
 	const matches = toArray(props.query).flatMap((query): Match[] => {
 		if (!query) return [];
 
 		const normalizedQuery = removeDiacritics(query).toLowerCase();
+		if (!normalizedQuery) return [];
+
 		const indices: Match[] = [];
 		let index = normalizedText.indexOf(normalizedQuery);
 
 		while (index !== -1) {
 			const end = index + normalizedQuery.length;
-			indices.push([index, end]);
+			indices.push([starts[index]!, ends[end - 1]!]);
 			index = normalizedText.indexOf(normalizedQuery, index + 1);
 		}
 
@@ -93,18 +95,40 @@ const parts = computed<HighlightPart[]>(() => {
 		if (followingText) {
 			result.push({
 				highlighted: false,
-				text: end + followingText.length < normalizedText.length
+				text: end + followingText.length < props.text.length
 					? followingText + (followingText.startsWith(' ') ? '...' : ' ...')
 					: followingText,
 			});
 		}
-		else if (end < normalizedText.length) {
+		else if (end < props.text.length) {
 			result.push({ highlighted: false, text: '...' });
 		}
 	}
 
 	return result;
 });
+
+// Characters like "æ" or "ß" expand when normalized, so keep each normalized char's span in the original text.
+function normalize(text: string) {
+	let normalizedText = '';
+	const starts: number[] = [];
+	const ends: number[] = [];
+	let offset = 0;
+
+	for (const char of text) {
+		const normalizedChar = removeDiacritics(char).toLowerCase();
+		normalizedText += normalizedChar;
+
+		for (let index = 0; index < normalizedChar.length; index++) {
+			starts.push(offset);
+			ends.push(offset + char.length);
+		}
+
+		offset += char.length;
+	}
+
+	return { normalizedText, starts, ends };
+}
 </script>
 
 <template>

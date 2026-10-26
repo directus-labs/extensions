@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSettings } from '../composables/use-settings';
-import { OPEN_COMMAND_PALETTE_EVENT, OPEN_SEARCH_EVENT } from '../constants';
+import { OPEN_SEARCH_EVENT } from '../constants';
 import { isMacOS } from '../utils/is-mac-os';
 
 const settings = useSettings();
@@ -15,7 +15,6 @@ const commandPaletteEnabled = computed(
 function onClick() {
 	if (commandPaletteEnabled.value) {
 		window.dispatchEvent(new CustomEvent(OPEN_SEARCH_EVENT));
-		window.dispatchEvent(new CustomEvent(OPEN_COMMAND_PALETTE_EVENT));
 	}
 	else {
 		router.push({ name: 'global-search-index' });

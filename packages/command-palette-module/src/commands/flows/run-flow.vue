@@ -55,17 +55,19 @@ async function runFlow() {
 		await (props.location === 'item'
 			? triggerManualFlow({ ...options, location: props.location, primaryKey })
 			: triggerManualFlow({ ...options, location: props.location }));
-
-		notificationsStore.add({ title: t('run_flow_success', { flow: props.flow.name }) });
-		await notificationsStore.refreshUnreadCount?.();
-		close();
 	}
 	catch (error) {
 		unexpectedError(error);
+		return;
 	}
 	finally {
 		running.value = false;
 	}
+
+	notificationsStore.add({ title: t('trigger_flow_success', { flow: props.flow.name }) });
+	// The flow already ran, so a failed refresh must not keep the dialog open for a retry.
+	void Promise.resolve(notificationsStore.refreshUnreadCount?.()).catch(unexpectedError);
+	close();
 }
 </script>
 

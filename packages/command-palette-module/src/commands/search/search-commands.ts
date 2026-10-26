@@ -11,8 +11,9 @@ import SearchCollectionCommand from './search-collection-command.vue';
 export const searchCommands = defineCommands({
 	commands: ({ stores, route }) => {
 		const router = getDirectusRouter();
-		const collections = getPermittedCollections(stores, 'read').filter(({ collection, type }) => {
-			if (type === 'alias') return false;
+		const collections = getPermittedCollections(stores, 'read').filter(({ collection, type, meta }) => {
+			// Singleton endpoints return an object, not a list to search through.
+			if (type === 'alias' || meta?.singleton) return false;
 
 			const itemRoute = getItemRoute(collection, '__command-palette-route-check__');
 			return router !== undefined && isItemRouteAvailable(router, itemRoute);

@@ -2,6 +2,7 @@ import type { useStores } from '@directus/extensions-sdk';
 import type { CommandActionContext, CommandConfig } from '../command-palette';
 import { defineCommands } from '../command-palette';
 import { isAdminFromStores } from '../utils/is-admin';
+import { isModuleEnabled } from '../utils/is-module-enabled';
 import SearchCollectionCommand from './search/search-collection-command.vue';
 
 export const usersCommands = defineCommands({
@@ -64,5 +65,6 @@ export const usersCommands = defineCommands({
 
 function canReadUsers(stores: ReturnType<typeof useStores>) {
 	const permissionsStore = stores.usePermissionsStore();
-	return isAdminFromStores(stores) || permissionsStore.hasPermission('directus_users', 'read');
+	return isModuleEnabled(stores, 'users')
+		&& (isAdminFromStores(stores) || permissionsStore.hasPermission('directus_users', 'read'));
 }

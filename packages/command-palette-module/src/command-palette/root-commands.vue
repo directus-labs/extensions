@@ -47,9 +47,10 @@ const globalSearch = useGlobalSearch({
 });
 const hasGlobalSearchResults = computed(() => globalSearch.results.value.length > 0);
 
+// Sync so the reset in useGlobalSearch's unmount hook still lands when a sub-view replaces this one mid-search.
 watch(globalSearch.loading, (loading) => {
 	context.loading.value = loading;
-}, { immediate: true });
+}, { immediate: true, flush: 'sync' });
 
 const { groups, commands } = useRegisteredCommands(commandContext);
 

@@ -3,18 +3,17 @@ import type { CommandActionContext, CommandConfig } from '../../command-palette'
 import { ref } from 'vue';
 import { defineCommands } from '../../command-palette';
 import { useUnexpectedError } from '../../composables/use-unexpected-error';
+import { getFlowsPath } from '../../utils/get-flows-path';
 import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
 import { getRouteVersionContext } from '../../utils/get-route-version-context';
+import { isAdminFromStores } from '../../utils/is-admin';
 import { canRunManualFlowFromCommandPalette, triggerManualFlow } from './manual-flow';
 import RunFlow from './run-flow.vue';
 
 export const flowCommands = defineCommands({
 	groups: [{ id: 'flows', name: 'Flows', icon: 'bolt' }],
 	commands: ({ stores }) => {
-		const userStore = stores.useUserStore();
-		const isAdmin = userStore.currentUser?.admin_access ?? userStore.currentUser?.role?.admin_access ?? false;
-
-		if (!isAdmin) return [];
+		if (!isAdminFromStores(stores)) return [];
 
 		return [
 			{
@@ -24,7 +23,7 @@ export const flowCommands = defineCommands({
 				group: 'flows',
 				keywords: ['context'],
 				action: ({ router }: CommandActionContext) => {
-					router.push('/settings/flows');
+					router.push(getFlowsPath(router));
 				},
 			},
 		];
@@ -38,6 +37,8 @@ export const collectionItemFlowCommands = defineCommands({
 		const primaryKey = getRoutePrimaryKey(route.params.primaryKey);
 
 		if (!collection || !route.path.startsWith(`/content/${collection}`)) return [];
+		// Studio hides flows while creating an item; there's nothing to run them on yet.
+		if (route.params.primaryKey === '+') return [];
 		if (getRouteVersionContext(route).versionKey) return [];
 
 		const activeCollection = collection;
@@ -90,15 +91,16 @@ export const collectionItemFlowCommands = defineCommands({
 									primaryKey: ref<PrimaryKey | null>(primaryKey),
 								})
 							: triggerManualFlow({ ...options, location: 'collection' }));
-
-						notificationsStore.add({ title: i18n.t('run_flow_success', { flow: flow.name }) });
-						await notificationsStore.refreshUnreadCount?.();
-						return true;
 					}
 					catch (error) {
 						unexpectedError(error);
 						return false;
 					}
+
+					notificationsStore.add({ title: i18n.t('trigger_flow_success', { flow: flow.name }) });
+					// The flow already ran, so a failed refresh must not keep the palette open for a retry.
+					void Promise.resolve(notificationsStore.refreshUnreadCount?.()).catch(unexpectedError);
+					return true;
 				},
 			};
 		}

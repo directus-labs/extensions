@@ -4,7 +4,7 @@ import { useDeploymentProviders } from './use-deployment-providers';
 afterEach(() => vi.useRealTimers());
 
 describe('useDeploymentProviders', () => {
-	it('bounds retries, expires successful data, validates responses, and resets on user changes', async () => {
+	it('bounds retries, refreshes expired data in place, validates responses, and resets on user changes', async () => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
 		const onError = vi.fn();
@@ -28,7 +28,7 @@ describe('useDeploymentProviders', () => {
 
 		vi.advanceTimersByTime(60_000);
 		const expired = useDeploymentProviders(api, { userId: 'user-2', onError });
-		expect(expired.providers.value).toEqual([]);
+		expect(expired.providers.value).toEqual([{ provider: 'github' }]);
 		await expect(expired.fetch()).resolves.toBe(true);
 		expect(expired.providers.value).toEqual([{ provider: 'gitlab' }]);
 
@@ -37,5 +37,19 @@ describe('useDeploymentProviders', () => {
 		expect(malformed.loaded.value).toBe(false);
 		expect(malformed.providers.value).toEqual([]);
 		expect(onError).toHaveBeenCalledTimes(2);
+	});
+
+	it('reports a failing endpoint once per user while retries continue', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-02-01T00:00:00Z'));
+		const onError = vi.fn();
+		const api = { get: vi.fn().mockRejectedValue(new Error('offline')) };
+
+		await useDeploymentProviders(api, { userId: 'user-4', onError }).fetch();
+		vi.advanceTimersByTime(30_000);
+		await useDeploymentProviders(api, { userId: 'user-4', onError }).fetch();
+
+		expect(api.get).toHaveBeenCalledTimes(2);
+		expect(onError).toHaveBeenCalledOnce();
 	});
 });

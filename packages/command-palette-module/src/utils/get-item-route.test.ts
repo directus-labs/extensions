@@ -1,5 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { getItemRoute } from './get-item-route';
+
+const mocks = vi.hoisted(() => ({ hasFlowsModule: false }));
+
+vi.mock('./get-directus-router', () => ({
+	getDirectusRouter: () => ({ hasRoute: (name: string) => name === 'flows-collection' && mocks.hasFlowsModule }),
+}));
 
 describe('getItemRoute', () => {
 	it.each<[string, string, string]>([
@@ -15,6 +21,12 @@ describe('getItemRoute', () => {
 		['directus_users', 'user-1', '/users/user-1'],
 	])('uses the Studio route for %s', (collection, primaryKey, path) => {
 		expect(getItemRoute(collection, primaryKey)).toEqual({ path });
+	});
+
+	it('uses the v12 flows module route when the host has it', () => {
+		mocks.hasFlowsModule = true;
+		expect(getItemRoute('directus_flows', 'flow-1')).toEqual({ path: '/flows/flow-1' });
+		mocks.hasFlowsModule = false;
 	});
 
 	it('uses the singleton route without appending a primary key', () => {

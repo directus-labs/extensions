@@ -1,6 +1,6 @@
 import type { Ref } from 'vue';
 import type { CollectionSearchResult, SearchCollectionType } from '../types';
-import { getFieldsFromTemplate, useApi, useStores } from '@directus/extensions-sdk';
+import { useApi, useStores } from '@directus/extensions-sdk';
 import { getEndpoint, mergeFilters } from '@directus/utils';
 import { isPlainObject } from 'lodash-es';
 import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { createDeepObject } from '../utils/create-deep-object';
 import { getItemRoute } from '../utils/get-item-route';
+import { getReadableDisplayTemplate, getReadableFields } from '../utils/get-readable-display-template';
 import { getRouteQueryValue } from '../utils/get-route-query-value';
 import { isItemRouteAvailable } from '../utils/is-item-route-available';
 import { useSettings } from './use-settings';
@@ -34,6 +35,7 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 	const stores = useStores();
 	const unexpectedError = useUnexpectedError({ stores, i18n: useI18n() });
 	const fieldsStore = stores.useFieldsStore();
+	const collectionsStore = stores.useCollectionsStore();
 	const permissionsStore = stores.usePermissionsStore();
 	const { settings, collections: configuredCollections, valid } = useSettings(stores);
 	const query = options.query ?? ref(options.syncWithQuery ? getRouteQueryValue(route.query.search) ?? null : null);
@@ -176,9 +178,18 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 		signal: AbortSignal,
 	): Promise<CollectionSearchResult | null> {
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(config.collection)?.field ?? 'id';
-		const displayFields = getFieldsFromTemplate(config.displayTemplate) ?? [];
+		const { template: displayTemplate, fields: displayFields } = getReadableDisplayTemplate(
+			fieldsStore,
+			config.collection,
+			config.displayTemplate || collectionsStore.getCollection(config.collection)?.meta?.display_template,
+			primaryKeyField,
+		);
+		const searchFields = getReadableFields(fieldsStore, config.collection, config.fields);
+		if (searchFields.length === 0) return null;
+
+		const [descriptionField] = getReadableFields(fieldsStore, config.collection, [config.descriptionField ?? '']);
 		const filter = mergeFilters(config.filter ?? null, {
-			_or: config.fields.map((field) => createDeepObject(field, { _icontains: value })),
+			_or: searchFields.map((field) => createDeepObject(field, { _icontains: value })),
 		});
 		const response = await api.get(getEndpoint(config.collection), {
 			signal,
@@ -188,7 +199,7 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 					: config.limit ?? DEFAULT_RESULT_LIMIT,
 				sort: config.sort ?? [primaryKeyField],
 				filter,
-				fields: [primaryKeyField, config.descriptionField, ...displayFields].filter(Boolean),
+				fields: [primaryKeyField, descriptionField, ...displayFields].filter(Boolean),
 			},
 		});
 		const data: unknown = response.data.data;
@@ -204,8 +215,8 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 			collection: config.collection,
 			hits,
 			primaryKeyField,
-			...(config.displayTemplate ? { displayTemplate: config.displayTemplate } : {}),
-			...(config.descriptionField ? { descriptionField: config.descriptionField } : {}),
+			displayTemplate,
+			...(descriptionField ? { descriptionField } : {}),
 		};
 	}
 
@@ -230,7 +241,7 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 	return { query, results, settings, settingsValid: valid, loading, completedSearch, info, collections, clear, search };
 }
 
-function getPaletteResultLimit(limit: number | null | undefined) {
+export function getPaletteResultLimit(limit: number | null | undefined) {
 	if (limit === -1) return MAX_PALETTE_RESULT_LIMIT;
 	if (typeof limit !== 'number' || !Number.isFinite(limit)) return DEFAULT_RESULT_LIMIT;
 	return Math.min(MAX_PALETTE_RESULT_LIMIT, Math.max(1, limit));

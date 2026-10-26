@@ -69,4 +69,12 @@ describe('command permissions', () => {
 		expect(commands.map(({ id }) => id)).toContain('search-files');
 		expect(commands.map(({ id }) => id)).not.toContain('upload-file');
 	});
+
+	it('hides user commands when the users module is disabled', async () => {
+		const ids = async (modules: string[]) =>
+			(await availableCommands(usersCommands, stores({ admin: true, modules }))).map(({ id }) => id);
+
+		expect(await ids([])).toEqual([]);
+		expect(await ids(['users'])).toContain('search-users');
+	});
 });
