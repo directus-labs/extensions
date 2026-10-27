@@ -279,49 +279,51 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 @use '../shared/styles/shared.scss' as *;
 
 .tabs-list {
-	position: relative;
 	display: flex;
-	flex-shrink: 0;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color);
-	color: var(--header-color, var(--theme--foreground));
-	margin-bottom: 16px;
+	gap: 0 0.5rem;
+	padding: 0.25rem;
+	margin-bottom: var(--theme--form--row-gap);
+	border-radius: var(--theme--border-radius);
+	background-color: var(--theme--background-subdued);
+	flex-wrap: wrap;
 }
 
+/* Matches core's group-tabs interface (app/src/interfaces/group-tabs/tab-trigger.vue) */
 .tab-trigger {
-	background-color: transparent;
-	padding: 10px 16px;
-	min-width: fit-content;
-	display: flex;
+	position: relative;
+	display: inline-flex;
 	align-items: center;
-	justify-content: center;
-	font-size: 15px;
-	color: var(--theme--foreground-normal);
-	user-select: none;
-	border: none;
-	border-radius: var(--theme--border-radius, 4px) var(--theme--border-radius, 4px) 0 0;
+	padding: 0.25rem 0.625rem;
+	border: var(--theme--border-width) solid transparent;
+	border-radius: var(--theme--border-radius);
+	background-color: transparent;
+	color: var(--theme--foreground-subdued);
+	font: inherit;
+	font-weight: 600;
 	cursor: pointer;
-	outline: none;
-	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+	transition:
+		color var(--fast) var(--transition),
+		background-color var(--fast) var(--transition),
+		border-color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--theme--primary);
-		background-color: var(--theme--background-subdued);
+		color: var(--theme--foreground-accent);
 	}
 
 	&[data-state='active'] {
-		color: var(--theme--primary);
-		box-shadow: inset 0 -2px 0 var(--theme--primary);
+		border-color: var(--theme--background-accent);
+		background-color: var(--theme--background-accent);
+		color: var(--theme--foreground-accent);
 	}
 
 	&:focus-visible {
-		position: relative;
-		box-shadow: 0 0 0 var(--theme--border-width) var(--theme--primary);
+		outline: var(--theme--border-width) solid var(--theme--primary);
+		outline-offset: 1px;
 	}
 }
 
 .tab-content {
 	flex-grow: 1;
-	outline: none;
 }
 
 .mb-8 {
