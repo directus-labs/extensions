@@ -33,6 +33,7 @@ body:
         - API Metric Panel
         - Audio Player Interface
         - Calculated Fields Bundle
+        - Callout Richtext
         - Card Select Interfaces
         - Choropleth Map Panel
         - Command Palette Module
@@ -73,6 +74,7 @@ body:
         - Whereby Embedded Interface
         - Whiteboard Interface
         - YouTube Embed Interface
+        - YouTube Richtext
         - Something else
     validations:
       required: true

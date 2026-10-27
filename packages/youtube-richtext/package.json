@@ -1,0 +1,41 @@
+{
+	"name": "@directus-labs/youtube-richtext",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "Embed YouTube videos in the WYSIWYG interface with the official Tiptap YouTube extension",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/youtube-richtext"
+	},
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-richtext"
+	],
+	"icon": "smart_display",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "richtext",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^12.6.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
+	},
+	"dependencies": {
+		"@tiptap/extension-youtube": "3.31.3"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "18.1.0",
+		"@tiptap/core": "^3.31.3",
+		"typescript": "^5.9.3"
+	}
+}
