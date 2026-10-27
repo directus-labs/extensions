@@ -37,7 +37,41 @@ describe('Highlights', () => {
 			},
 		});
 
-		expect(wrapper.text()).toBe('... three fourmatchfive six ...');
+		expect(wrapper.text()).toBe('... three four match five six ...');
+	});
+
+	it('keeps the spaces around a match and only adds an ellipsis for cut text', () => {
+		const wrapper = mount(Highlights, {
+			props: {
+				query: 'release',
+				text: 'Writes the release notes',
+			},
+		});
+
+		expect(wrapper.find('mark').text()).toBe('release');
+		expect(wrapper.text()).toBe('Writes the release notes');
+	});
+
+	it('keeps a space typed after the query', () => {
+		const wrapper = mount(Highlights, {
+			props: {
+				query: 'release ',
+				text: 'Writes the release notes',
+			},
+		});
+
+		expect(wrapper.text()).toBe('Writes the release notes');
+	});
+
+	it('does not add a space inside a word', () => {
+		const wrapper = mount(Highlights, {
+			props: {
+				query: 'release',
+				text: 'A prerelease build',
+			},
+		});
+
+		expect(wrapper.text()).toBe('A prerelease build');
 	});
 
 	it.each([

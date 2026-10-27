@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => ({
 	addRecentItem: vi.fn(),
 	apiGet: vi.fn().mockResolvedValue({ data: { data: [{ id: 1, title: 'Existing article' }] } }),
 	close: vi.fn(),
+	fieldMeta: {} as Record<string, unknown>,
 	collections: [] as Record<string, unknown>[],
 	push: vi.fn(),
 	readableFields: ['id', 'title'],
@@ -25,7 +26,7 @@ vi.mock('@directus/extensions-sdk', () => ({
 			getCollection: () => ({ name: 'Articles', meta: { display_template: '{{title}}', icon: 'article' } }),
 		}),
 		useFieldsStore: () => ({
-			getField: (_collection: string, field: string) => mocks.readableFields.includes(field) || null,
+			getField: (_collection: string, field: string) => mocks.fieldMeta[field] ?? (mocks.readableFields.includes(field) || null),
 			getPrimaryKeyFieldForCollection: () => ({ field: 'id' }),
 		}),
 		useUserStore: () => ({ currentUser: { id: 'user-1' } }),
@@ -48,7 +49,7 @@ vi.mock('../../command-palette', async () => {
 	const Group = defineComponent({ template: '<section><slot /></section>' });
 	const Item = defineComponent({
 		emits: ['select'],
-		template: '<button class="item" @click="$emit(\'select\')"><slot /></button>',
+		template: '<button class="item" @click="$emit(\'select\')"><slot /><slot name="description" /></button>',
 	});
 	const List = defineComponent({ template: '<div><slot /></div>' });
 
@@ -93,6 +94,12 @@ function mountCommand() {
 				},
 				'v-icon': true,
 			},
+			components: {
+				'display-labels': {
+					props: ['value', 'choices', 'field'],
+					template: '<span class="display-labels" :data-field="field">{{ value }}</span>',
+				},
+			},
 		},
 	});
 }
@@ -114,6 +121,7 @@ beforeEach(() => {
 	mocks.close.mockClear();
 	mocks.collections.splice(0, mocks.collections.length, { collection: 'articles', fields: ['title'] });
 	mocks.readableFields = ['id', 'title'];
+	mocks.fieldMeta = {};
 	mocks.recentItems = [{ collection: 'articles', pk: '1' }];
 	mocks.route.query = {};
 	if (mocks.search) mocks.search.value = '';
@@ -182,6 +190,35 @@ describe('SearchCollectionCommand', () => {
 
 		expect(params.fields).toEqual(['id', 'id']);
 		await vi.waitFor(() => expect(wrapper.find('[data-template="{{id}}"]').exists()).toBe(true));
+	});
+
+	it('renders a description with a display through the display component', async () => {
+		mocks.collections.splice(0, 1, { collection: 'articles', fields: ['title'], descriptionField: 'status' });
+		mocks.fieldMeta = { status: { type: 'string', meta: { display: 'labels' } } };
+		mocks.recentItems = [];
+		const wrapper = mountCommand();
+		mocks.apiGet.mockResolvedValueOnce({ data: { data: [{ id: 2, title: 'Draft one', status: 'draft' }] } });
+
+		const params = await searchFor('draft');
+
+		expect(params.fields).toEqual(['id', 'status', 'title']);
+		await vi.waitFor(() => expect(wrapper.find('.display-labels').text()).toBe('draft'));
+		expect(wrapper.get('.display-labels').attributes('data-field')).toBe('status');
+		expect(wrapper.find('mark').exists()).toBe(false);
+	});
+
+	it('renders a plain description as highlighted text', async () => {
+		mocks.collections.splice(0, 1, { collection: 'articles', fields: ['title'], descriptionField: 'summary' });
+		mocks.readableFields = ['id', 'title', 'summary'];
+		mocks.recentItems = [];
+		const wrapper = mountCommand();
+		mocks.apiGet.mockResolvedValueOnce({ data: { data: [{ id: 2, title: 'One', summary: 'A draft summary' }] } });
+
+		const params = await searchFor('draft');
+
+		expect(params.fields).toEqual(['id', 'summary', 'title']);
+		await vi.waitFor(() => expect(wrapper.find('mark').text()).toBe('draft'));
+		expect(wrapper.find('.display-labels').exists()).toBe(false);
 	});
 
 	it('only tags results with a version when the host returns version metadata', async () => {

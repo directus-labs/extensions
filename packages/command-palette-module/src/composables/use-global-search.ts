@@ -6,6 +6,7 @@ import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { createDeepObject } from '../utils/create-deep-object';
+import { getDescriptionDisplay } from '../utils/get-description-display';
 import { getEndpoint } from '../utils/get-endpoint';
 import { getItemRoute } from '../utils/get-item-route';
 import { getReadableDisplayTemplate, getReadableFields } from '../utils/get-readable-display-template';
@@ -189,6 +190,9 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 		if (searchFields.length === 0) return null;
 
 		const [descriptionField] = getReadableFields(fieldsStore, config.collection, [config.descriptionField ?? '']);
+		const descriptionDisplay = descriptionField
+			? getDescriptionDisplay(fieldsStore, config.collection, descriptionField)
+			: null;
 		const filter = mergeFilters(config.filter ?? null, {
 			_or: searchFields.map((field) => createDeepObject(field, { _icontains: value })),
 		});
@@ -218,6 +222,7 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 			primaryKeyField,
 			displayTemplate,
 			...(descriptionField ? { descriptionField } : {}),
+			...(descriptionDisplay ? { descriptionDisplay } : {}),
 		};
 	}
 

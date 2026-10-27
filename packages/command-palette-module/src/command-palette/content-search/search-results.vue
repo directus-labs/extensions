@@ -3,7 +3,9 @@ import type { CollectionSearchResult } from '../../types';
 import { useStores } from '@directus/extensions-sdk';
 import formatTitle from '@directus/format-title';
 import { computed } from 'vue';
+import DescriptionBoundary from '../../components/description-boundary.vue';
 import Highlights from '../../components/highlights.vue';
+import { hasDescriptionValue } from '../../utils/get-description-display';
 import Group from '../components/group.vue';
 import Item from '../components/item.vue';
 
@@ -26,6 +28,7 @@ const groups = computed(() =>
 			...result,
 			name: String(collection?.name ?? formatTitle(result.collection)),
 			icon: typeof icon === 'string' ? icon : 'box',
+			rows: result.hits.map((hit) => ({ hit, key: JSON.stringify([result.collection, hit[result.primaryKeyField]]) })),
 		};
 	}),
 );
@@ -41,23 +44,32 @@ function select(group: (typeof groups.value)[number], hit: Record<string, any>) 
 </script>
 
 <template>
-	<Group
-		v-for="group in groups"
-		:key="group.collection"
-		:heading="group.name"
-		:icon="group.icon"
-	>
-		<Item
-			v-for="hit in group.hits"
-			:key="JSON.stringify([group.collection, hit[group.primaryKeyField]])"
-			:value="JSON.stringify([group.collection, hit[group.primaryKeyField]])"
+	<DescriptionBoundary v-slot="{ failed }" :results="results">
+		<Group
+			v-for="group in groups"
+			:key="group.collection"
+			:heading="group.name"
 			:icon="group.icon"
-			@select="select(group, hit)"
 		>
-			<render-template :collection="group.collection" :item="hit" :template="group.displayTemplate" />
-			<template v-if="group.descriptionField && hit[group.descriptionField]" #description>
-				<Highlights :text="String(hit[group.descriptionField])" :query="query" />
-			</template>
-		</Item>
-	</Group>
+			<Item
+				v-for="{ hit, key } in group.rows"
+				:key="key"
+				:value="key"
+				:icon="group.icon"
+				@select="select(group, hit)"
+			>
+				<render-template :collection="group.collection" :item="hit" :template="group.displayTemplate" />
+				<template v-if="group.descriptionField && hasDescriptionValue(hit[group.descriptionField])" #description>
+					<component
+						:is="group.descriptionDisplay.component"
+						v-if="group.descriptionDisplay && !failed.has(key)"
+						v-bind="group.descriptionDisplay.props"
+						:value="hit[group.descriptionField]"
+						:data-description-key="key"
+					/>
+					<Highlights v-else :text="String(hit[group.descriptionField])" :query="query" />
+				</template>
+			</Item>
+		</Group>
+	</DescriptionBoundary>
 </template>

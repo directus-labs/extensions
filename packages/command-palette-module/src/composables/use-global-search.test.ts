@@ -314,6 +314,49 @@ describe('useGlobalSearch', () => {
 		wrapper.unmount();
 	});
 
+	it('marks descriptions with a simple display', async () => {
+		mocks.useSettings.mockReturnValue({
+			settings: ref({ searchMode: 'as_you_type', collections: [], triggerRate: 0 }),
+			collections: ref([{ ...collection('articles'), descriptionField: 'status' }]),
+			valid: ref(true),
+		});
+
+		mocks.getField.mockImplementation((_collection: string, field: string) => field === 'status'
+			? { type: 'string', meta: { display: 'labels' } }
+			: {});
+
+		mocks.apiGet.mockResolvedValue({ data: { data: [{ id: 1, status: 'draft' }] } });
+
+		const { state, wrapper } = mountSearch();
+		await state.search('article');
+
+		expect(mocks.apiGet.mock.calls[0]?.[1].params.fields).toEqual(['id', 'status', 'id']);
+
+		expect(state.results.value[0]).toMatchObject({
+			descriptionField: 'status',
+			descriptionDisplay: { component: 'display-labels', props: { collection: 'articles', field: 'status', type: 'string' } },
+		});
+
+		wrapper.unmount();
+	});
+
+	it('requests a plain description field as is', async () => {
+		mocks.useSettings.mockReturnValue({
+			settings: ref({ searchMode: 'as_you_type', collections: [], triggerRate: 0 }),
+			collections: ref([{ ...collection('articles'), descriptionField: 'bio' }]),
+			valid: ref(true),
+		});
+
+		mocks.apiGet.mockResolvedValue({ data: { data: [{ id: 1, bio: 'Text' }] } });
+
+		const { state, wrapper } = mountSearch();
+		await state.search('article');
+
+		expect(mocks.apiGet.mock.calls[0]?.[1].params.fields).toEqual(['id', 'bio', 'id']);
+		expect(state.results.value[0]).not.toHaveProperty('descriptionDisplay');
+		wrapper.unmount();
+	});
+
 	it('falls back to the primary key when no display template exists', async () => {
 		mocks.apiGet.mockResolvedValue({ data: { data: [{ id: 1 }] } });
 

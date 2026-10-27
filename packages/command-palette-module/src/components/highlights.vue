@@ -70,16 +70,17 @@ const parts = computed<HighlightPart[]>(() => {
 	const result: HighlightPart[] = [];
 
 	for (const [index, [start, end]] of mergedMatches.slice(0, MAX_SNIPPETS).entries()) {
-		const precedingText = getPrecedingWords(props.text, start).trim();
-		const followingText = getFollowingWords(props.text, end).trim();
-		const highlightedText = props.text.slice(start, end).trim();
+		// Keep the whitespace touching the match, so "the release" doesn't render as "therelease".
+		const precedingText = getPrecedingWords(props.text, start).trimStart();
+		const followingText = getFollowingWords(props.text, end).trimEnd();
+		const highlightedText = props.text.slice(start, end);
 
 		if (index > 0) result.push({ highlighted: false, text: '...' });
 
-		if (precedingText) {
+		if (precedingText.trim()) {
 			result.push({
 				highlighted: false,
-				text: (precedingText.endsWith(' ') ? '...' : '... ') + precedingText,
+				text: (start > precedingText.length ? '... ' : '') + precedingText,
 			});
 		}
 		else if (start > 0) {
@@ -88,12 +89,10 @@ const parts = computed<HighlightPart[]>(() => {
 
 		result.push({ highlighted: true, text: highlightedText });
 
-		if (followingText) {
+		if (followingText.trim()) {
 			result.push({
 				highlighted: false,
-				text: end + followingText.length < props.text.length
-					? followingText + (followingText.startsWith(' ') ? '...' : ' ...')
-					: followingText,
+				text: end + followingText.length < props.text.length ? `${followingText} ...` : followingText,
 			});
 		}
 		else if (end < props.text.length) {

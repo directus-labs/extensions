@@ -7,11 +7,13 @@ import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { Empty, Group, Item, List, useCommandContext } from '../../command-palette';
 import { useRecentItems } from '../../command-palette/composables/use-recent-items';
+import DescriptionBoundary from '../../components/description-boundary.vue';
 import Highlights from '../../components/highlights.vue';
 import { getPaletteResultLimit } from '../../composables/use-global-search';
 import { useSettings } from '../../composables/use-settings';
 import { useUnexpectedError } from '../../composables/use-unexpected-error';
 import { createDeepObject } from '../../utils/create-deep-object';
+import { getDescriptionDisplay, hasDescriptionValue } from '../../utils/get-description-display';
 import { getEndpoint } from '../../utils/get-endpoint';
 import { getItemRoute } from '../../utils/get-item-route';
 import { getReadableDisplayTemplate, getReadableFields } from '../../utils/get-readable-display-template';
@@ -73,6 +75,9 @@ const readableDisplayTemplate = computed(() => getReadableDisplayTemplate(
 const itemTemplate = computed(() => readableDisplayTemplate.value.template);
 const descriptionField = computed(() =>
 	getReadableFields(fieldsStore, props.collection, [collectionConfig.value?.descriptionField ?? ''])[0] ?? null,
+);
+const descriptionDisplay = computed(() =>
+	descriptionField.value ? getDescriptionDisplay(fieldsStore, props.collection, descriptionField.value) : null,
 );
 const fields = computed(() => [
 	primaryKeyField.value,
@@ -308,19 +313,28 @@ function itemValue(item: { pk: string; versionKey?: string; versionId?: string }
 			Type to search {{ collectionName }}
 		</Empty>
 		<Empty :show="isEmpty" />
-		<Group v-if="results.length > 0">
-			<Item
-				v-for="result in results"
-				:key="itemValue(result)"
-				:value="itemValue(result)"
-				:icon="collectionIcon"
-				@select="selectItem(result)"
-			>
-				<render-template :collection="props.collection" :item="result.item" :template="itemTemplate" />
-				<template v-if="descriptionField && result.item[descriptionField]" #description>
-					<Highlights :text="String(result.item[descriptionField])" :query="search" />
-				</template>
-			</Item>
-		</Group>
+		<DescriptionBoundary v-slot="{ failed }" :results="results">
+			<Group v-if="results.length > 0">
+				<Item
+					v-for="result in results"
+					:key="itemValue(result)"
+					:value="itemValue(result)"
+					:icon="collectionIcon"
+					@select="selectItem(result)"
+				>
+					<render-template :collection="props.collection" :item="result.item" :template="itemTemplate" />
+					<template v-if="descriptionField && hasDescriptionValue(result.item[descriptionField])" #description>
+						<component
+							:is="descriptionDisplay.component"
+							v-if="descriptionDisplay && !failed.has(itemValue(result))"
+							v-bind="descriptionDisplay.props"
+							:value="result.item[descriptionField]"
+							:data-description-key="itemValue(result)"
+						/>
+						<Highlights v-else :text="String(result.item[descriptionField])" :query="search" />
+					</template>
+				</Item>
+			</Group>
+		</DescriptionBoundary>
 	</List>
 </template>

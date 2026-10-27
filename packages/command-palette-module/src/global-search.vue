@@ -134,6 +134,7 @@ async function selectRecentSearch(value: string) {
 							hits,
 							displayTemplate,
 							descriptionField,
+							descriptionDisplay,
 						} in results"
 						:key="collection"
 					>
@@ -144,6 +145,7 @@ async function selectRecentSearch(value: string) {
 							:query="query ?? ''"
 							:display-template="displayTemplate"
 							:description-field="descriptionField"
+							:description-display="descriptionDisplay"
 						/>
 					</template>
 				</v-list>

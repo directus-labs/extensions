@@ -28,7 +28,13 @@ interface CollectionSearchInfo {
 	collection: string;
 	displayTemplate: string;
 	descriptionField?: string;
+	descriptionDisplay?: DescriptionDisplay;
 	primaryKeyField: string;
+}
+
+export interface DescriptionDisplay {
+	component: string;
+	props: Record<string, unknown>;
 }
 
 export type CollectionSearchResult = CollectionSearchInfo & {
