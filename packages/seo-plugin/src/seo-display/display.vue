@@ -2,6 +2,7 @@
 import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 import { computed } from 'vue';
 import SeoStatus from './SeoStatus.vue';
+import TranslationsStatus from './TranslationsStatus.vue';
 
 const props = defineProps<{
 	value: SeoValue | Record<string, unknown>[];
@@ -11,11 +12,10 @@ const props = defineProps<{
 	showSearchPreview?: boolean;
 }>();
 
-// A column like `translations.seo` passes one entry per translation instead of a single value:
-// rows (`{ seo: {...} }`) on Directus 11+, the SEO values themselves on 10.
-// Entries without SEO data are kept (scored as missing) so gaps stay visible.
-const values = computed<SeoValue[]>(() => {
-	if (!Array.isArray(props.value)) return [props.value];
+// A column like `translations.seo` passes one entry per translation: rows (`{ seo: {...} }`) or the
+// SEO values themselves, depending on the Directus version. Entries without SEO data count as missing.
+const translationValues = computed<SeoValue[] | null>(() => {
+	if (!Array.isArray(props.value)) return null;
 
 	const key = props.field.split('.').at(-1)!;
 	return props.value.map((entry) => ((entry && key in entry ? entry[key] : entry) ?? {}) as SeoValue);
@@ -24,10 +24,10 @@ const values = computed<SeoValue[]>(() => {
 
 <template>
 	<div class="seo-display">
+		<TranslationsStatus v-if="translationValues" :values="translationValues" :interface-options="interfaceOptions" />
 		<SeoStatus
-			v-for="(seo, index) in values"
-			:key="index"
-			:value="seo"
+			v-else
+			:value="value as SeoValue"
 			:collection="collection"
 			:interface-options="interfaceOptions"
 			:show-search-preview="showSearchPreview"
@@ -36,8 +36,9 @@ const values = computed<SeoValue[]>(() => {
 </template>
 
 <style scoped>
+/* Inline so it fits core's one-line template renderer (e.g. inside the Translations display) */
 .seo-display {
-	display: flex;
-	gap: 4px;
+	display: inline-flex;
+	vertical-align: middle;
 }
 </style>

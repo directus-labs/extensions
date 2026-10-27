@@ -179,6 +179,15 @@ The interface can be configured with the following options:
    - Disabled by default
    - Fields marked **Required** show an asterisk, an error icon on the Custom Fields tab while empty, and an error in the SEO display. They don't block saving, because the values live inside one JSON field. To enforce them, use a blocking Flow on `items.create` / `items.update` that checks `seo.additional_fields`.
 
+### Translated content
+
+To keep SEO per language, add the SEO field to your translations collection (the one the Translations interface creates, e.g. `articles_translations`). Templates, the keyphrase analysis, and the slug check then use that language's fields.
+
+To see SEO status per language in a list:
+
+- **Recommended:** on the translations field, choose the core **Translations** display and add the SEO field to its template (e.g. `{{seo}}`). The cell shows the status for the default or user language, and hovering lists every language with its status.
+- A `translations.seo` column also works. It shows one chip with the worst status across translations; hovering lists each translation's status. It can't show language names, because displays don't receive the language field for that column.
+
 ### Translations
 
 The interface and display follow each user's Directus language. Included: English, German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Portuguese (Brazil), Vietnamese, and Chinese (Simplified). Regional variants like `es-MX`, `fr-CA`, and `pt-PT` use the closest one. To add or fix a language, edit or add a file in `src/lang/` with the same keys as `en-US.ts` and register it in `src/lang/index.ts`. Missing keys fall back to English.

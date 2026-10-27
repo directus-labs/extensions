@@ -66,6 +66,8 @@ export default {
 			upload_image_preview: "Importez une image pour prévisualiser l'apparence de vos liens partagés sur les réseaux sociaux",
 			social_preview_desc: "Prévisualisez l'apparence de votre contenu lorsqu'il est partagé sur les réseaux sociaux.",
 			recommend_image_size: "Taille d'image recommandée",
+			translation_number: 'Traduction {number}',
+			translations_display_hint: 'Pour voir le nom des langues, utilisez l’affichage Traductions sur le champ de traductions et ajoutez le champ SEO à son modèle.',
 		},
 		frequencies: {
 			always: 'Toujours',

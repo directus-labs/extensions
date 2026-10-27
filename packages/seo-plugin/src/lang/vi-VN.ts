@@ -66,6 +66,8 @@ export default {
 			upload_image_preview: 'Tải ảnh lên để xem trước liên kết của bạn sẽ hiển thị như thế nào khi chia sẻ trên mạng xã hội',
 			social_preview_desc: 'Xem trước nội dung của bạn sẽ hiển thị như thế nào khi chia sẻ trên mạng xã hội.',
 			recommend_image_size: 'Kích thước ảnh khuyến nghị',
+			translation_number: 'Bản dịch {number}',
+			translations_display_hint: 'Để xem tên ngôn ngữ, hãy dùng kiểu hiển thị Bản dịch trên trường bản dịch và thêm trường SEO vào mẫu của nó.',
 		},
 		frequencies: {
 			always: 'Luôn luôn',

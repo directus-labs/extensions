@@ -7,6 +7,7 @@ import { useSeoI18n } from '../lang/use-seo-i18n';
 import SearchPreview from '../shared/components/SearchPreview.vue';
 import { useSeoField } from '../shared/composables/useSeoField';
 import { seoRules } from '../shared/rulesets';
+import { getSeoStatus } from '../shared/seo-status';
 import { isEmptyValue } from '../shared/utils';
 
 interface Props {
@@ -55,49 +56,7 @@ const additionalFieldsStatus = computed(() => {
 			};
 });
 
-// Calculate the status of the SEO display.
-const status = computed(() => {
-	if (props.value?.no_index) {
-		return {
-			icon: 'visibility_off',
-			color: 'neutral',
-		};
-	}
-
-	if (!props.value?.title || !props.value?.meta_description) {
-		return {
-			icon: 'error',
-			color: 'error',
-		};
-	}
-
-	if (additionalFieldsStatus.value?.class === 'error') {
-		return {
-			icon: 'error',
-			color: 'error',
-		};
-	}
-
-	if (titleState.value?.status !== 'ideal' || descriptionState.value?.status !== 'ideal') {
-		return {
-			icon: 'warning',
-			color: 'warning',
-		};
-	}
-
-	// Check for OG image if enabled
-	if (props.interfaceOptions?.showOgImage && !props.value?.og_image) {
-		return {
-			icon: 'warning',
-			color: 'warning',
-		};
-	}
-
-	return {
-		icon: 'check',
-		color: 'success',
-	};
-});
+const status = computed(() => getSeoStatus(props.value, props.interfaceOptions));
 </script>
 
 <template>
@@ -206,64 +165,10 @@ const status = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+@use '../shared/styles/status.scss' as *;
+
 .seo-status {
 	display: flex;
-}
-
-.neutral {
-	--v-icon-color: var(--theme--foreground-subdued);
-}
-
-.warning {
-	--v-icon-color: var(--theme--warning);
-}
-.success {
-	--v-icon-color: var(--theme--success);
-}
-.error {
-	--v-icon-color: var(--theme--danger);
-}
-
-.header-label {
-	display: flex;
-	align-items: center;
-	gap: 4px;
-}
-
-.preview-box {
-	display: flex;
-	flex-direction: column;
-	min-width: 300px;
-	padding: 12px;
-	max-width: 400px;
-	width: 100%;
-	gap: 12px;
-	align-items: flex-start;
-
-	&-item {
-		display: flex;
-		justify-content: space-between;
-		width: 100%;
-		gap: 4px;
-
-		.left {
-			display: flex;
-			align-items: center;
-			gap: 4px;
-		}
-
-		&-progress {
-			width: 50px;
-		}
-
-		&.border-top {
-			border-top: 1px dashed var(--theme--border-color);
-		}
-
-		&.border-bottom-dash {
-			border-bottom: 1px dashed var(--theme--border-color);
-		}
-	}
 }
 
 .full-width {

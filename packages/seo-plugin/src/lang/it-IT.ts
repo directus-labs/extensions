@@ -66,6 +66,8 @@ export default {
 			upload_image_preview: "Carica un'immagine per vedere come appariranno i tuoi link quando condivisi sui social",
 			social_preview_desc: 'Guarda come apparirà il tuo contenuto quando viene condiviso sui social.',
 			recommend_image_size: 'Dimensione immagine consigliata',
+			translation_number: 'Traduzione {number}',
+			translations_display_hint: 'Per vedere i nomi delle lingue, usa la visualizzazione Traduzioni sul campo delle traduzioni e aggiungi il campo SEO al suo modello.',
 		},
 		frequencies: {
 			always: 'Sempre',

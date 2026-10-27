@@ -66,6 +66,8 @@ export default {
 			upload_image_preview: 'Prześlij obraz, aby zobaczyć, jak Twoje linki będą wyglądać po udostępnieniu w mediach społecznościowych',
 			social_preview_desc: 'Zobacz, jak Twoja treść będzie wyglądać po udostępnieniu w mediach społecznościowych.',
 			recommend_image_size: 'Zalecany rozmiar obrazu',
+			translation_number: 'Tłumaczenie {number}',
+			translations_display_hint: 'Aby zobaczyć nazwy języków, użyj wyświetlania Tłumaczenia w polu tłumaczeń i dodaj pole SEO do jego szablonu.',
 		},
 		frequencies: {
 			always: 'Zawsze',

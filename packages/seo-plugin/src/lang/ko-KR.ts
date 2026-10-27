@@ -66,6 +66,8 @@ export default {
 			upload_image_preview: '이미지를 업로드하면 소셜 미디어에 공유될 때 링크가 어떻게 표시되는지 미리 볼 수 있습니다',
 			social_preview_desc: '콘텐츠가 소셜 미디어에 공유될 때 어떻게 표시되는지 미리 봅니다.',
 			recommend_image_size: '권장 이미지 크기',
+			translation_number: '번역 {number}',
+			translations_display_hint: '언어 이름을 보려면 번역 필드에서 번역 표시를 사용하고 템플릿에 SEO 필드를 추가하세요.',
 		},
 		frequencies: {
 			always: '항상',

@@ -66,6 +66,8 @@ export default {
 			upload_image_preview: '画像をアップロードすると、ソーシャルメディアで共有されたときのリンクの表示をプレビューできます',
 			social_preview_desc: 'ソーシャルメディアで共有されたときのコンテンツの表示をプレビューします。',
 			recommend_image_size: '推奨画像サイズ',
+			translation_number: '翻訳 {number}',
+			translations_display_hint: '言語名を表示するには、翻訳フィールドで「翻訳」表示を使用し、そのテンプレートにSEOフィールドを追加してください。',
 		},
 		frequencies: {
 			always: '常時',

@@ -66,6 +66,8 @@ export default {
 			upload_image_preview: 'Laden Sie ein Bild hoch, um zu sehen, wie Ihre Links beim Teilen in sozialen Medien aussehen',
 			social_preview_desc: 'Vorschau, wie Ihr Inhalt beim Teilen in sozialen Medien aussieht.',
 			recommend_image_size: 'Empfohlene Bildgröße',
+			translation_number: 'Übersetzung {number}',
+			translations_display_hint: 'Um Sprachnamen zu sehen, verwenden Sie die Anzeige „Übersetzungen“ im Übersetzungsfeld und fügen Sie das SEO-Feld zu deren Vorlage hinzu.',
 		},
 		frequencies: {
 			always: 'Immer',

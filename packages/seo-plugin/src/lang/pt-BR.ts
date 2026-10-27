@@ -66,6 +66,8 @@ export default {
 			upload_image_preview: 'Envie uma imagem para ver como seus links vão aparecer quando compartilhados nas redes sociais',
 			social_preview_desc: 'Veja como seu conteúdo vai aparecer quando compartilhado nas redes sociais.',
 			recommend_image_size: 'Tamanho de imagem recomendado',
+			translation_number: 'Tradução {number}',
+			translations_display_hint: 'Para ver os nomes dos idiomas, use a exibição Traduções no campo de traduções e adicione o campo SEO ao modelo.',
 		},
 		frequencies: {
 			always: 'Sempre',

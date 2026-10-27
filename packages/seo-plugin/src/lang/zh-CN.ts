@@ -66,6 +66,8 @@ export default {
 			upload_image_preview: '上传图片，预览您的链接在社交媒体上分享时的显示效果',
 			social_preview_desc: '预览您的内容在社交媒体上分享时的显示效果。',
 			recommend_image_size: '推荐图片尺寸',
+			translation_number: '翻译 {number}',
+			translations_display_hint: '要查看语言名称，请在翻译字段上使用“翻译”显示，并将 SEO 字段添加到其模板中。',
 		},
 		frequencies: {
 			always: '始终',
