@@ -1,0 +1,38 @@
+{
+	"name": "@directus-labs/callout-richtext",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "Add info, success, warning, and danger callout blocks to the WYSIWYG interface",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus-labs/extensions.git",
+		"directory": "packages/callout-richtext"
+	},
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-richtext"
+	],
+	"icon": "info",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "richtext",
+		"path": "dist/index.js",
+		"source": "src/index.ts",
+		"host": "^12.6.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "18.1.0",
+		"@tiptap/core": "^3.31.3",
+		"typescript": "^5.9.3"
+	}
+}
