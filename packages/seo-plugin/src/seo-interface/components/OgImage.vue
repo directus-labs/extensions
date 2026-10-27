@@ -75,25 +75,24 @@ function addTokenToURL(api: ReturnType<typeof useApi>, url: string, token?: stri
 	return addQueryToPath(url, { access_token: accessToken });
 }
 
-const src = computed(() => {
+// Relative to the API root, so it works with both api.get() and <img src> on subpath installs
+const assetPath = computed(() => {
 	if (!image.value?.type)
 		return null;
 
 	if (image.value.type.includes('svg')) {
-		return addTokenToURL(api, `${getRootPath()}assets/${image.value.id}`);
+		return `assets/${image.value.id}`;
 	}
 
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-
-		const url =
-			`${getRootPath()}assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
-
-		return addTokenToURL(api, url);
+		return `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
 	}
 
 	return null;
 });
+
+const src = computed(() => (assetPath.value ? addTokenToURL(api, `${getRootPath()}${assetPath.value}`) : null));
 
 const meta = computed(() => {
 	if (!image.value)
@@ -117,16 +116,17 @@ const edits = computed(() => {
 
 async function fetchImage() {
 	loading.value = true;
+	imageError.value = null;
+	isImage.value = true;
+
+	// Stored as filename_disk ("<uuid>.png") or a bare UUID. The API reads the first 36 chars the same way.
+	const id = (typeof props.value === 'string' ? props.value : props.value?.id as string | undefined)?.slice(0, 36);
 
 	try {
-		let id = typeof props.value === 'string' ? props.value : props.value?.id as string;
-
 		if (id) {
-			id = id.split('.').slice(0, -1).join('.');
-
 			const response = await api.get(`/files/${id}`, {
 				params: {
-					fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
+					fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download', 'modified_on'],
 				},
 			});
 
@@ -138,27 +138,32 @@ async function fetchImage() {
 				: response.data.data;
 		}
 	}
+	catch (error: unknown) {
+		// Deleted file or no read access: keep the value and show an error with a deselect action
+		image.value = { id } as Image;
+		imageError.value = getErrorCode(error);
+	}
 	finally {
 		loading.value = false;
 	}
 }
 
+function getErrorCode(error: unknown): string {
+	const err = error as { response?: { data?: { errors?: Array<{ extensions?: { code?: string } }> } } };
+	const code = err.response?.data?.errors?.[0]?.extensions?.code;
+	return code && te(`errors.${code}`) ? code : 'UNKNOWN';
+}
+
 async function imageErrorHandler() {
 	isImage.value = false;
-	if (!src.value)
+	if (!assetPath.value)
 		return;
 
 	try {
-		await api.get(src.value);
+		await api.get(`/${assetPath.value}`);
 	}
 	catch (error: unknown) {
-		const err = error as { response?: { data?: { errors?: Array<{ extensions?: { code?: string } }> } } };
-		const errorCode = err.response?.data?.errors?.[0]?.extensions?.code;
-		imageError.value = errorCode || 'UNKNOWN';
-
-		if (!te(`errors.${imageError.value}`)) {
-			imageError.value = 'UNKNOWN';
-		}
+		imageError.value = getErrorCode(error);
 	}
 }
 
@@ -211,7 +216,7 @@ watch(
 			<div v-if="imageError || !src" class="image-error">
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 				<span class="message">
-					{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
+					{{ imageError ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 			<img
