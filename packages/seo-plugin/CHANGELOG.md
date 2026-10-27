@@ -10,7 +10,8 @@
 
 ### Features
 
--   **Translations:** The interface and display follow the user's Directus language, with English and Vietnamese included. Ported from #301 by @khuepm.
+-   **Translations:** The interface and display follow the user's Directus language. Included: English, German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Portuguese (Brazil), Vietnamese, and Chinese (Simplified). UI translation work started in #301 by @khuepm.
+-   Keyphrase analysis now works for Japanese, Chinese, Korean, and Thai content.
 -   **Required custom fields:** The Custom Fields tab shows an error icon while required fields are empty (#288).
 -   Replaced the removed `rounded` button prop and CSS variables that no longer exist in v12.
 

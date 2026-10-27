@@ -180,7 +180,7 @@ The interface can be configured with the following options:
 
 ### Translations
 
-The interface and display follow each user's Directus language. English and Vietnamese are included. To add a language, add an entry to `src/lang/index.ts` with the same keys as `en-US`. Missing keys fall back to English.
+The interface and display follow each user's Directus language. Included: English, German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Portuguese (Brazil), Vietnamese, and Chinese (Simplified). Regional variants like `es-MX`, `fr-CA`, and `pt-PT` use the closest one. To add or fix a language, edit or add a file in `src/lang/` with the same keys as `en-US.ts` and register it in `src/lang/index.ts`. Missing keys fall back to English.
 
 ### Display Options
 
