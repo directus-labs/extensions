@@ -1,17 +1,8 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
 import type { AnalysisResult } from '../../analysis/types';
-import { useDebounceFn } from '@vueuse/core';
-
-import { get } from 'lodash-es';
-import {
-	AccordionContent,
-	AccordionHeader,
-	AccordionItem,
-	AccordionRoot,
-	AccordionTrigger,
-} from 'reka-ui';
-import { computed, inject, ref, watch } from 'vue';
+import { computed, inject, onBeforeUnmount, ref, watch } from 'vue';
+import { getPath } from '../../../shared/utils';
 import {
 	analyzeContent,
 	analyzeDescription,
@@ -22,7 +13,7 @@ import {
 } from '../../analysis/utils';
 import AnalysisResultComponent from './AnalysisResult.vue';
 
-type SectionId = 'problems' | 'improvements' | 'goodResults';
+type SectionId = 'problems' | 'improvements' | 'good';
 
 const props = defineProps<{
 	focusKeyphrase: string;
@@ -44,7 +35,7 @@ const contentData = computed(() => {
 	const fieldsToExtract = Array.isArray(props.contentFields) ? props.contentFields : [props.contentFields];
 
 	return fieldsToExtract.reduce((acc, fieldName) => {
-		const content = get(values.value, fieldName);
+		const content = getPath(values.value, fieldName);
 
 		if (content !== undefined && content !== null) {
 			acc[fieldName] = content;
@@ -91,7 +82,16 @@ const analysisInput = computed(() => ({
 	combinedContent: contentString.value,
 }));
 
-const runAnalysis = useDebounceFn(() => {
+let analysisTimer: ReturnType<typeof setTimeout> | undefined;
+
+function runAnalysis() {
+	clearTimeout(analysisTimer);
+	analysisTimer = setTimeout(analyze, 500);
+}
+
+onBeforeUnmount(() => clearTimeout(analysisTimer));
+
+function analyze() {
 	if (!props.focusKeyphrase) {
 		analysisResults.value = [];
 		return;
@@ -111,7 +111,7 @@ const runAnalysis = useDebounceFn(() => {
 				]
 			: []),
 	];
-}, 500);
+}
 
 watch(
 	[
@@ -169,6 +169,12 @@ function collapseAllSections() {
 	openSectionIds.value = [];
 }
 
+function toggleSection(id: SectionId) {
+	openSectionIds.value = openSectionIds.value.includes(id)
+		? openSectionIds.value.filter((openId) => openId !== id)
+		: [...openSectionIds.value, id];
+}
+
 const hasOnlyNeutralResults = computed(() => {
 	return allAnalyses.value.length > 0 && availableSectionIds.value.length === 0;
 });
@@ -213,38 +219,34 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 		</div>
 
 		<template v-else>
-			<AccordionRoot
-				v-model="openSectionIds"
-				type="multiple"
-				collapsible
-				class="analysis-accordion"
-				:unmount-on-hide="false"
-			>
+			<div class="analysis-accordion">
 				<template v-for="section in sections" :key="section.id">
-					<AccordionItem
-						v-if="section.results.length > 0"
-						:value="section.id"
-						class="accordion-item"
-					>
-						<AccordionHeader class="accordion-header">
-							<AccordionTrigger class="accordion-trigger">
+					<div v-if="section.results.length > 0" class="accordion-item">
+						<h3 class="accordion-header">
+							<button
+								type="button"
+								class="accordion-trigger"
+								:aria-expanded="openSectionIds.includes(section.id)"
+								:data-state="openSectionIds.includes(section.id) ? 'open' : 'closed'"
+								@click="toggleSection(section.id)"
+							>
 								<div class="section-title" :class="section.id">
 									<v-icon :name="section.icon" :class="section.iconClass" />
 									{{ section.title }} ({{ section.results.length }})
 								</div>
 								<v-icon name="chevron_right" class="section-icon" />
-							</AccordionTrigger>
-						</AccordionHeader>
-						<AccordionContent class="accordion-content">
+							</button>
+						</h3>
+						<div v-if="openSectionIds.includes(section.id)" class="accordion-content">
 							<AnalysisResultComponent
 								v-for="result in section.results"
 								:key="result.id"
 								:result="result"
 							/>
-						</AccordionContent>
-					</AccordionItem>
+						</div>
+					</div>
 				</template>
-			</AccordionRoot>
+			</div>
 
 			<div v-if="hasOnlyNeutralResults" class="all-neutral-state">
 				We found nothing to report! This might happen if content is missing or too short.
@@ -378,37 +380,8 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 			overflow: hidden;
 			background-color: var(--theme--background);
 
-			&[data-state='open'] {
-				padding: 8px 8px 16px 8px;
-				animation: slideDown 150ms ease-out;
-				height: auto;
-			}
-			&[data-state='closed'] {
-				padding-top: 0;
-				padding-bottom: 0;
-				padding-left: 8px;
-				padding-right: 8px;
-				animation: slideUp 150ms ease-out forwards;
-			}
+			padding: 8px 8px 16px 8px;
 		}
-	}
-}
-
-@keyframes slideDown {
-	from {
-		height: 0;
-	}
-	to {
-		height: var(--reka-accordion-content-height);
-	}
-}
-
-@keyframes slideUp {
-	from {
-		height: var(--reka-accordion-content-height);
-	}
-	to {
-		height: 0;
 	}
 }
 </style>

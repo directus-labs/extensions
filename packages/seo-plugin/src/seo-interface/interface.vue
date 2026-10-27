@@ -3,9 +3,7 @@ import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 // @ts-expect-error - types missing
 import { formatTitle } from '@directus/format-title';
 
-import { set } from 'lodash-es';
-import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from 'reka-ui';
-import { computed, onMounted, toRefs } from 'vue';
+import { computed, onMounted, ref, toRefs } from 'vue';
 import OgImagePreview from '../shared/components/OgImagePreview.vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
 
@@ -83,8 +81,9 @@ onMounted(() => {
 });
 
 function updateField(field: string, value: unknown) {
-	const updatedValue = { ...internalValue.value };
-	set(updatedValue, field, value);
+	const [key, subKey] = field.split('.') as [keyof SeoValue, string?];
+	const updatedValue: Record<string, unknown> = { ...internalValue.value };
+	updatedValue[key] = subKey ? { ...(updatedValue[key] as object), [subKey]: value } : value;
 	emit('input', updatedValue as SeoValue);
 }
 
@@ -116,33 +115,37 @@ const showAdvancedTab = computed(() => props.showSitemap || props.showSearchCont
 const showCustomFieldsTab = computed(() => additionalFields.value?.length > 0);
 const showAnalysisTab = computed(() => value.value && props.showFocusKeyphrase);
 
-const showTabsUi = computed(() => {
-	// Show tabs UI if any of the optional tabs are rendered
-	return showAdvancedTab.value || showCustomFieldsTab.value || showAnalysisTab.value;
-});
+const tabs = computed(() => [
+	{ value: 'metadata', label: 'Basic', show: true },
+	{ value: 'advanced-settings', label: 'Advanced', show: showAdvancedTab.value },
+	{ value: 'custom-fields', label: 'Custom Fields', show: showCustomFieldsTab.value },
+	{ value: 'analysis', label: 'Keyphrase', show: !!showAnalysisTab.value },
+].filter((tab) => tab.show));
+
+const activeTab = ref('metadata');
+// Fall back to Basic if the active tab disappears (e.g. its option is turned off)
+const currentTab = computed(() => (tabs.value.some((tab) => tab.value === activeTab.value) ? activeTab.value : 'metadata'));
 </script>
 
 <template>
-	<TabsRoot class="seo-tabs" default-value="metadata" :unmount-on-hide="false">
-		<TabsList v-if="showTabsUi" class="tabs-list" aria-label="SEO Configuration">
-			<TabsIndicator class="tabs-indicator">
-				<div class="indicator-bar" />
-			</TabsIndicator>
-			<TabsTrigger class="tab-trigger" value="metadata">
-				<span>Basic</span>
-			</TabsTrigger>
-			<TabsTrigger v-if="showAdvancedTab" class="tab-trigger" value="advanced-settings">
-				<span>Advanced</span>
-			</TabsTrigger>
-			<TabsTrigger v-if="showCustomFieldsTab" class="tab-trigger" value="custom-fields">
-				<span>Custom Fields</span>
-			</TabsTrigger>
-			<TabsTrigger v-if="showAnalysisTab" class="tab-trigger" value="analysis">
-				<span>Keyphrase</span>
-			</TabsTrigger>
-		</TabsList>
+	<div class="seo-tabs">
+		<div v-if="tabs.length > 1" class="tabs-list" role="tablist" aria-label="SEO Configuration">
+			<button
+				v-for="tab in tabs"
+				:key="tab.value"
+				type="button"
+				role="tab"
+				class="tab-trigger"
+				:aria-selected="currentTab === tab.value"
+				:data-state="currentTab === tab.value ? 'active' : 'inactive'"
+				@click="activeTab = tab.value"
+			>
+				<span>{{ tab.label }}</span>
+			</button>
+		</div>
 
-		<TabsContent value="metadata" class="tab-content form-grid">
+		<!-- v-if, not v-show: interfaces like the code editor measure their size on mount (#292) -->
+		<div v-if="currentTab === 'metadata'" role="tabpanel" class="tab-content form-grid">
 			<!-- Title -->
 			<TitleField
 				:model-value="internalValue.title"
@@ -186,10 +189,9 @@ const showTabsUi = computed(() => {
 					@input="updateField('og_image', $event)"
 				/>
 			</OgImagePreview>
-		</TabsContent>
+		</div>
 
-		<!-- Use new computed prop for condition -->
-		<TabsContent v-if="showAdvancedTab" value="advanced-settings" class="tab-content form-grid">
+		<div v-else-if="currentTab === 'advanced-settings'" role="tabpanel" class="tab-content form-grid">
 			<!-- Sitemap Fields -->
 			<div v-if="props.showSitemap" class="field">
 				<label class="label field-label type-label">
@@ -245,8 +247,9 @@ const showTabsUi = computed(() => {
 					</v-notice>
 				</div>
 			</div>
-		</TabsContent>
-		<TabsContent v-if="showCustomFieldsTab" value="custom-fields" class="tab-content form-grid">
+		</div>
+
+		<div v-else-if="currentTab === 'custom-fields'" role="tabpanel" class="tab-content form-grid">
 			<!-- Custom Fields -->
 			<div class="field">
 				<v-form
@@ -256,9 +259,9 @@ const showTabsUi = computed(() => {
 					@update:model-value="updateField('additional_fields', $event)"
 				/>
 			</div>
-		</TabsContent>
+		</div>
 
-		<TabsContent v-if="showAnalysisTab" value="analysis" class="tab-content">
+		<div v-else-if="currentTab === 'analysis'" role="tabpanel" class="tab-content">
 			<!-- Focus Keyphrase -->
 			<FocusKeyphrase
 				v-if="showFocusKeyphrase"
@@ -275,8 +278,8 @@ const showTabsUi = computed(() => {
 				:slug-field="slugField"
 				:content-fields="contentFields"
 			/>
-		</TabsContent>
-	</TabsRoot>
+		</div>
+	</div>
 </template>
 
 <style lang="scss" scoped>
@@ -289,24 +292,6 @@ const showTabsUi = computed(() => {
 	border-bottom: var(--theme--border-width) solid var(--theme--border-color);
 	color: var(--header-color, var(--theme--foreground));
 	margin-bottom: 16px;
-}
-
-.tabs-indicator {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	height: 2px;
-	width: var(--reka-tabs-indicator-size);
-	transform: translateX(var(--reka-tabs-indicator-position)) translateY(1px);
-	transition: width 0.3s ease, transform 0.3s ease;
-	will-change: width, transform;
-
-	.indicator-bar {
-		background-color: var(--theme--primary);
-		width: 100%;
-		height: 100%;
-		border-radius: 9999px;
-	}
 }
 
 .tab-trigger {
@@ -332,6 +317,7 @@ const showTabsUi = computed(() => {
 
 	&[data-state='active'] {
 		color: var(--theme--primary);
+		box-shadow: inset 0 -2px 0 var(--theme--primary);
 	}
 
 	&:focus-visible {
@@ -343,10 +329,6 @@ const showTabsUi = computed(() => {
 .tab-content {
 	flex-grow: 1;
 	outline: none;
-
-	&[data-state='inactive'] {
-		display: none;
-	}
 }
 
 .mb-8 {

@@ -6,6 +6,7 @@ import {
 	extractSubheadings,
 	normalizeContent,
 	normalizeSlug,
+	renderTemplate,
 	stripHtml,
 	stripMarkdown,
 } from './utils';
@@ -65,5 +66,20 @@ describe('extractImageAltText', () => {
 describe('extractSubheadings', () => {
 	it('reads headings that span multiple lines', () => {
 		expect(extractSubheadings('<h2>\n  Multi line\n</h2>')).toEqual(['Multi line']);
+	});
+});
+
+describe('renderTemplate', () => {
+	const values = { title: 'Hello', author: { name: 'Ann' }, tags: ['a', 'b'], n: 0, nil: null };
+
+	it('renders paths like micromustache did', () => {
+		expect(renderTemplate('{{title}} | Acme', values)).toBe('Hello | Acme');
+		expect(renderTemplate('{{ author.name }}', values)).toBe('Ann');
+		expect(renderTemplate('{{tags[1]}} {{tags.0}}', values)).toBe('b a');
+		expect(renderTemplate('{{n}}', values)).toBe('0');
+	});
+
+	it('renders missing and null values as empty', () => {
+		expect(renderTemplate('{{nil}}{{missing}}{{ missing.deep }}', values)).toBe('');
 	});
 });

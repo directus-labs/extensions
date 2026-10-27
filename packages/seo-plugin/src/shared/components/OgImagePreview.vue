@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { getRootPath } from '@directus-labs/utils';
-import { RadioGroupIndicator, RadioGroupItem, RadioGroupRoot } from 'reka-ui';
-import { computed, defineProps, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { truncate } from '../utils';
 
 const props = defineProps<{
@@ -12,6 +11,12 @@ const props = defineProps<{
 
 type Platform = 'facebook' | 'linkedin' | 'x';
 const selectedPlatform = ref<Platform>('linkedin');
+
+const platforms: { value: Platform; label: string; icon: string }[] = [
+	{ value: 'facebook', label: 'Facebook', icon: 'facebook' },
+	{ value: 'linkedin', label: 'LinkedIn', icon: 'linkedin' },
+	{ value: 'x', label: 'X', icon: 'x_twitter' },
+];
 
 const imageUrlToDisplay = computed(() => {
 	if (!props.ogImage) return null;
@@ -75,29 +80,24 @@ const domain = computed(() => {
 			<div class="preview-info">
 				<h3>Preview how your content will look when shared on social media.</h3>
 				<div class="platform-selection">
-					<RadioGroupRoot v-model="selectedPlatform" class="platform-switcher">
-						<RadioGroupItem value="facebook" class="platform-tab">
-							<v-icon name="facebook" small />
-							<span>Facebook</span>
-							<RadioGroupIndicator class="platform-indicator">
+					<div class="platform-switcher" role="radiogroup" aria-label="Social platform">
+						<button
+							v-for="platform in platforms"
+							:key="platform.value"
+							type="button"
+							role="radio"
+							class="platform-tab"
+							:aria-checked="selectedPlatform === platform.value"
+							:data-state="selectedPlatform === platform.value ? 'checked' : 'unchecked'"
+							@click="selectedPlatform = platform.value"
+						>
+							<v-icon :name="platform.icon" small />
+							<span>{{ platform.label }}</span>
+							<div v-if="selectedPlatform === platform.value" class="platform-indicator">
 								<div class="indicator-bar" />
-							</RadioGroupIndicator>
-						</RadioGroupItem>
-						<RadioGroupItem value="linkedin" class="platform-tab">
-							<v-icon name="linkedin" small />
-							<span>LinkedIn</span>
-							<RadioGroupIndicator class="platform-indicator">
-								<div class="indicator-bar" />
-							</RadioGroupIndicator>
-						</RadioGroupItem>
-						<RadioGroupItem value="x" class="platform-tab">
-							<v-icon name="x_twitter" small />
-							<span>X</span>
-							<RadioGroupIndicator class="platform-indicator">
-								<div class="indicator-bar" />
-							</RadioGroupIndicator>
-						</RadioGroupItem>
-					</RadioGroupRoot>
+							</div>
+						</button>
+					</div>
 				</div>
 				<div class="recommendations">
 					<h4>Recommend Image Size</h4>

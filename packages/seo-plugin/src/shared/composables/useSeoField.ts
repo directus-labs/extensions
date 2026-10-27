@@ -1,7 +1,7 @@
 import type { Ref } from 'vue';
 import type { SeoFieldRule, SeoFieldState, SeoFieldStatus } from '../types/seo';
-import { render } from 'micromustache';
 import { computed, ref } from 'vue';
+import { renderTemplate } from '../utils';
 
 export interface SeoFieldStateWithIcon extends SeoFieldState {
 	icon: {
@@ -68,18 +68,11 @@ export function useSeoField(
 		};
 	});
 
-	/* Helper function to render the value with the values using micromustache. */
 	function transform(value: string) {
 		if (!value)
 			return '';
 
-		try {
-			return render(value, values.value);
-		}
-		catch (error) {
-			console.warn('Template rendering error:', error);
-			return value;
-		}
+		return renderTemplate(value, values.value);
 	}
 
 	return {

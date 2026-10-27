@@ -172,3 +172,23 @@ export function truncate(text: string | undefined | null, maxLength: number): st
 	if (!text) return '';
 	return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 }
+
+/**
+ * Reads a dot or bracket path (`author.name`, `tags[0]`) from an object
+ */
+export function getPath(source: unknown, path: string): unknown {
+	return path
+		.split(/[.[\]]/)
+		.filter(Boolean)
+		.reduce<any>((value, key) => value?.[key], source);
+}
+
+/**
+ * Replaces `{{ path }}` placeholders with values. Missing and null values render empty.
+ */
+export function renderTemplate(template: string, values: Record<string, unknown>): string {
+	return template.replaceAll(/\{\{([^{}]+)\}\}/g, (_, path: string) => {
+		const value = getPath(values, path.trim());
+		return value === null || value === undefined ? '' : String(value);
+	});
+}

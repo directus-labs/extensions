@@ -991,28 +991,13 @@ importers:
       '@directus/format-title':
         specifier: ^12.0.0
         version: 12.0.1
-      '@vueuse/core':
-        specifier: ^12.5.0
-        version: 12.8.2(typescript@5.8.3)
-      lodash-es:
-        specifier: ^4.17.21
-        version: 4.17.21
-      micromustache:
-        specifier: ^8.0.3
-        version: 8.0.3
-      reka-ui:
-        specifier: ^2.2.0
-        version: 2.2.1(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))
       vue-i18n:
         specifier: ^10.0.5
         version: 10.0.7(vue@3.5.13(typescript@5.8.3))
     devDependencies:
       '@directus/extensions-sdk':
         specifier: 16.0.2
-        version: 16.0.2(@types/node@24.7.2)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(express@5.1.0)(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.87.0)(terser@5.39.2)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(yaml@2.7.1)
-      '@types/lodash-es':
-        specifier: ^4.17.12
-        version: 4.17.12
+        version: 16.0.2(@types/node@24.7.2)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.87.0)(terser@5.39.2)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(yaml@2.7.1)
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
@@ -8043,11 +8028,6 @@ packages:
     peerDependencies:
       vue: '>= 3.2.0'
 
-  reka-ui@2.2.1:
-    resolution: {integrity: sha512-oLHiyBn6gTIQGnTnv8G5LQuFp9j8HuUNl0qdnW3XPhFb/07hrxzFpjo2kt/jxOZive+n/XWDbOjSj2h9Hih3qA==}
-    peerDependencies:
-      vue: '>= 3.2.0'
-
   reka-ui@2.5.0:
     resolution: {integrity: sha512-81aMAmJeVCy2k0E6x7n1kypDY6aM1ldLis5+zcdV1/JtoAlSDck5OBsyLRJU9CfgbrQp1ImnRnBSmC4fZ2fkZQ==}
     peerDependencies:
@@ -11069,13 +11049,13 @@ snapshots:
       - typescript
       - vue-router
 
-  '@directus/extensions-sdk@16.0.2(@types/node@24.7.2)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(express@5.1.0)(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.87.0)(terser@5.39.2)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(yaml@2.7.1)':
+  '@directus/extensions-sdk@16.0.2(@types/node@24.7.2)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.87.0)(terser@5.39.2)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(yaml@2.7.1)':
     dependencies:
       '@directus/composables': 11.2.3(vue@3.5.18(typescript@5.8.3))
       '@directus/constants': 13.0.3
-      '@directus/extensions': 3.0.11(express@5.1.0)(knex@3.1.0)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
+      '@directus/extensions': 3.0.11(knex@3.1.0)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
       '@directus/themes': 1.1.5(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
-      '@directus/types': 13.2.3(express@5.1.0)(knex@3.1.0)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
+      '@directus/types': 13.2.3(knex@3.1.0)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
       '@directus/utils': 13.0.10(vue@3.5.18(typescript@5.8.3))
       '@rollup/plugin-commonjs': 28.0.6(rollup@4.46.2)
       '@rollup/plugin-json': 6.1.0(rollup@4.46.2)
@@ -11711,36 +11691,6 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/extensions@3.0.11(express@5.1.0)(knex@3.1.0)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))':
-    dependencies:
-      '@directus/constants': 13.0.3
-      '@directus/types': 13.2.3(express@5.1.0)(knex@3.1.0)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
-      '@directus/utils': 13.0.10(vue@3.5.18(typescript@5.8.3))
-      '@types/express': 4.17.21
-      fs-extra: 11.3.0
-      lodash-es: 4.17.21
-      zod: 4.0.14
-    optionalDependencies:
-      knex: 3.1.0
-      vue: 3.5.18(typescript@5.8.3)
-      vue-router: 4.5.1(vue@3.5.13(typescript@5.8.3))
-    transitivePeerDependencies:
-      - better-sqlite3
-      - deep-diff
-      - express
-      - graphql
-      - mysql
-      - mysql2
-      - nodemailer
-      - openapi3-ts
-      - pg
-      - pg-native
-      - sharp
-      - sqlite3
-      - supports-color
-      - tedious
-      - ws
-
   '@directus/extensions@3.0.11(express@5.1.0)(knex@3.1.0)(vue-router@4.5.1(vue@3.5.18(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))':
     dependencies:
       '@directus/constants': 13.0.3
@@ -11844,6 +11794,36 @@ snapshots:
       knex: 3.1.0
       vue: 3.5.22(typescript@5.9.3)
       vue-router: 4.5.1(vue@3.5.22(typescript@5.9.3))
+    transitivePeerDependencies:
+      - better-sqlite3
+      - deep-diff
+      - express
+      - graphql
+      - mysql
+      - mysql2
+      - nodemailer
+      - openapi3-ts
+      - pg
+      - pg-native
+      - sharp
+      - sqlite3
+      - supports-color
+      - tedious
+      - ws
+
+  '@directus/extensions@3.0.11(knex@3.1.0)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))':
+    dependencies:
+      '@directus/constants': 13.0.3
+      '@directus/types': 13.2.3(knex@3.1.0)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
+      '@directus/utils': 13.0.10(vue@3.5.18(typescript@5.8.3))
+      '@types/express': 4.17.21
+      fs-extra: 11.3.0
+      lodash-es: 4.17.21
+      zod: 4.0.14
+    optionalDependencies:
+      knex: 3.1.0
+      vue: 3.5.18(typescript@5.8.3)
+      vue-router: 4.5.1(vue@3.5.13(typescript@5.8.3))
     transitivePeerDependencies:
       - better-sqlite3
       - deep-diff
@@ -12683,30 +12663,6 @@ snapshots:
       - supports-color
       - tedious
 
-  '@directus/types@13.2.3(express@5.1.0)(knex@3.1.0)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))':
-    dependencies:
-      '@directus/constants': 13.0.3
-      '@directus/schema': 13.0.3
-      '@sinclair/typebox': 0.34.38
-      '@types/express': 4.17.21
-      '@types/geojson': 7946.0.16
-      '@types/nodemailer': 6.4.17
-      '@types/ws': 8.18.1
-    optionalDependencies:
-      express: 5.1.0
-      knex: 3.1.0
-      vue: 3.5.18(typescript@5.8.3)
-      vue-router: 4.5.1(vue@3.5.13(typescript@5.8.3))
-    transitivePeerDependencies:
-      - better-sqlite3
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - sqlite3
-      - supports-color
-      - tedious
-
   '@directus/types@13.2.3(express@5.1.0)(knex@3.1.0)(vue-router@4.5.1(vue@3.5.18(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))':
     dependencies:
       '@directus/constants': 13.0.3
@@ -12793,6 +12749,29 @@ snapshots:
       knex: 3.1.0
       vue: 3.5.22(typescript@5.9.3)
       vue-router: 4.5.1(vue@3.5.22(typescript@5.9.3))
+    transitivePeerDependencies:
+      - better-sqlite3
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - sqlite3
+      - supports-color
+      - tedious
+
+  '@directus/types@13.2.3(knex@3.1.0)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))':
+    dependencies:
+      '@directus/constants': 13.0.3
+      '@directus/schema': 13.0.3
+      '@sinclair/typebox': 0.34.38
+      '@types/express': 4.17.21
+      '@types/geojson': 7946.0.16
+      '@types/nodemailer': 6.4.17
+      '@types/ws': 8.18.1
+    optionalDependencies:
+      knex: 3.1.0
+      vue: 3.5.18(typescript@5.8.3)
+      vue-router: 4.5.1(vue@3.5.13(typescript@5.8.3))
     transitivePeerDependencies:
       - better-sqlite3
       - mysql
@@ -20239,23 +20218,6 @@ snapshots:
       aria-hidden: 1.2.4
       defu: 6.1.4
       ohash: 1.1.6
-      vue: 3.5.13(typescript@5.8.3)
-    transitivePeerDependencies:
-      - '@vue/composition-api'
-      - typescript
-
-  reka-ui@2.2.1(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)):
-    dependencies:
-      '@floating-ui/dom': 1.7.0
-      '@floating-ui/vue': 1.1.6(vue@3.5.13(typescript@5.8.3))
-      '@internationalized/date': 3.8.0
-      '@internationalized/number': 3.6.1
-      '@tanstack/vue-virtual': 3.13.8(vue@3.5.13(typescript@5.8.3))
-      '@vueuse/core': 12.8.2(typescript@5.8.3)
-      '@vueuse/shared': 12.8.2(typescript@5.8.3)
-      aria-hidden: 1.2.4
-      defu: 6.1.4
-      ohash: 2.0.11
       vue: 3.5.13(typescript@5.8.3)
     transitivePeerDependencies:
       - '@vue/composition-api'
