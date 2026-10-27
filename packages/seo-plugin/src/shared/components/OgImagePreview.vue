@@ -408,6 +408,11 @@ const domain = computed(() => {
 		background-color: transparent;
 	}
 
+	/* The image's hover details sit where the badge is */
+	.preview-image-container:hover .preview-domain-badge {
+		opacity: 0;
+	}
+
 	.preview-domain-badge {
 		position: absolute;
 		bottom: 8px;

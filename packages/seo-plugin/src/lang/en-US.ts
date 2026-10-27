@@ -45,6 +45,7 @@ export default {
 				label: 'SEO configuration',
 			},
 			platforms_label: 'Social platform',
+			no_file_access: 'You don\'t have access to files',
 			focus_keyphrase: 'Focus Keyphrase',
 			page_title: 'Page Title',
 			meta_description: 'Meta Description',
@@ -67,7 +68,7 @@ export default {
 			optional_count: '{count} optional',
 			upload_image_preview: 'Upload an image to preview how your links will appear when shared on social media',
 			social_preview_desc: 'Preview how your content will look when shared on social media.',
-			recommend_image_size: 'Recommend Image Size',
+			recommend_image_size: 'Recommended Image Size',
 		},
 		frequencies: {
 			always: 'Always',

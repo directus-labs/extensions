@@ -64,14 +64,10 @@ const { state } = useSeoField(modelValue, seoRules.meta_description);
 	color: var(--theme--foreground-subdued);
 }
 
-.textarea-wrapper {
-	position: relative;
-}
-
+/* Core's textarea puts the append slot below the text */
 .template-button {
-	position: absolute;
-	z-index: 10;
-	right: 8px;
-	top: 8px;
+	display: flex;
+	inline-size: fit-content;
+	margin: 0 8px 8px auto;
 }
 </style>

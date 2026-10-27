@@ -3,7 +3,7 @@ import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 // @ts-expect-error - types missing
 import { formatTitle } from '@directus/format-title';
 
-import { computed, onMounted, ref, toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useSeoI18n } from '../lang/use-seo-i18n';
 import OgImagePreview from '../shared/components/OgImagePreview.vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
@@ -20,7 +20,6 @@ import { searchControls, sitemapFields } from './fields';
 interface Props extends SeoInterfaceOptions {
 	collection: string;
 	field: string;
-	primaryKey?: string | number | null;
 	value: SeoValue | null;
 	disabled?: boolean;
 	values: Record<string, unknown>;
@@ -69,13 +68,6 @@ const internalValue = computed<SeoValue>(() => {
 			...value.value.sitemap,
 		},
 	};
-});
-
-// Seed defaults on new items so the display has something to score. On existing items this would mark the form dirty on open.
-onMounted(() => {
-	if (!value.value && props.primaryKey === '+') {
-		emit('input', internalValue.value);
-	}
 });
 
 function updateField(field: string, value: unknown) {

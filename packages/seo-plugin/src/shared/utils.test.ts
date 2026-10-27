@@ -5,6 +5,7 @@ import {
 	countWords,
 	extractImageAltText,
 	extractSubheadings,
+	formatFilesize,
 	nextRovingValue,
 	normalizeContent,
 	normalizeSlug,
@@ -123,5 +124,13 @@ describe('nextRovingValue', () => {
 
 	it('ignores other keys', () => {
 		expect(nextRovingValue('Enter', values, 'a')).toBeUndefined();
+	});
+});
+
+describe('formatFilesize', () => {
+	it('formats bytes like the Directus file details', () => {
+		expect(formatFilesize(65_348)).toBe('65.3 kB');
+		expect(formatFilesize(1_200_000)).toBe('1.2 MB');
+		expect(formatFilesize(512)).toBe('512 B');
 	});
 });

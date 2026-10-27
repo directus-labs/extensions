@@ -183,8 +183,8 @@ const hasOnlyNeutralResults = computed(() => {
 	return allAnalyses.value.length > 0 && availableSectionIds.value.length === 0;
 });
 
-const canCollapseAll = computed(() => openSectionIds.value.length > 0);
-const canExpandAll = computed(() => openSectionIds.value.length < availableSectionIds.value.length);
+const canCollapseAll = computed(() => availableSectionIds.value.some((id) => openSectionIds.value.includes(id)));
+const canExpandAll = computed(() => availableSectionIds.value.some((id) => !openSectionIds.value.includes(id)));
 </script>
 
 <template>

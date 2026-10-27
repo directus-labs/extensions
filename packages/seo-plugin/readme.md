@@ -57,13 +57,13 @@ A powerful SEO management extension that helps you optimize your content for sea
 
 SEO data is stored as JSON for simplicity and flexibility.
 
-OG Image stores the UUID of the uploaded image. You'll want to make sure your frontend is configured to display the image correctly.
+OG Image stores the file's `filename_disk` (`<uuid>.<ext>`). Both that and a bare UUID work with `/assets/<value>`, since the assets endpoint reads the first 36 characters as the file ID.
 
 ```json
 {
 	"title": "This is the Directus SEO Plugin.",
 	"meta_description": "A powerful SEO management extension that helps you optimize your content for search engines and social media sharing, right within Directus. It includes a comprehensive interface for managing metadata and a display component for monitoring SEO status.",
-	"og_image": "f5d20d13-e86a-4aaa-ab1c-241925b89ea3",
+	"og_image": "f5d20d13-e86a-4aaa-ab1c-241925b89ea3.jpg",
 	"focus_keyphrase": "Directus SEO",
 	"additional_fields": {
 		"canonical_url": "https://directus.io/",

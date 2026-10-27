@@ -232,3 +232,10 @@ export function nextRovingValue<T>(key: string, values: T[], current: T): T | un
 			return undefined;
 	}
 }
+
+export function formatFilesize(bytes: number | undefined): string {
+	if (!bytes) return '';
+	const units = ['B', 'kB', 'MB', 'GB'];
+	const exponent = Math.min(Math.floor(Math.log(bytes) / Math.log(1000)), units.length - 1);
+	return `${Number((bytes / 1000 ** exponent).toFixed(1))} ${units[exponent]}`;
+}

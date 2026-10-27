@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { getRootPath } from '@directus-labs/utils';
-import { useApi } from '@directus/extensions-sdk';
+import { useApi, useStores } from '@directus/extensions-sdk';
 import { computed, ref, watch } from 'vue';
 
-import { useI18n } from 'vue-i18n';
+import { useSeoI18n } from '../../lang/use-seo-i18n';
+import { formatFilesize } from '../../shared/utils';
 
 interface Image {
 	id: string;
@@ -50,7 +51,10 @@ const imageError = ref<string | null>(null);
 const isImage = ref(true);
 
 const api = useApi();
-const { t, te } = useI18n();
+const { useCollectionsStore } = useStores();
+// The collections store only holds collections the user can read. Core's uploader and file drawer crash without it.
+const canReadFiles = computed(() => !!useCollectionsStore().getCollection('directus_files'));
+const { t, te } = useSeoI18n();
 
 function addQueryToPath(path: string, query: Record<string, string>): string {
 	const queryParams: string[] = [];
@@ -92,6 +96,7 @@ const assetPath = computed(() => {
 });
 
 const src = computed(() => (assetPath.value ? addTokenToURL(api, `${getRootPath()}${assetPath.value}`) : null));
+const downloadUrl = computed(() => (image.value ? addTokenToURL(api, `${getRootPath()}assets/${image.value.id}?download`) : null));
 
 const meta = computed(() => {
 	if (!image.value)
@@ -99,10 +104,10 @@ const meta = computed(() => {
 	const { filesize, width, height, type } = image.value;
 
 	if (width && height) {
-		return `${width}x${height} • ${filesize} • ${type}`;
+		return `${width}x${height} • ${formatFilesize(filesize)} • ${type}`;
 	}
 
-	return `${filesize} • ${type}`;
+	return `${formatFilesize(filesize)} • ${type}`;
 });
 
 const edits = computed(() => {
@@ -192,7 +197,7 @@ watch(
 		if (newValue === oldValue)
 			return;
 
-		if (newValue) {
+		if (newValue && canReadFiles.value) {
 			fetchImage();
 		}
 
@@ -207,6 +212,9 @@ watch(
 <template>
 	<div class="image" :class="[width, { crop, 'og-preview-mode': inOgPreview }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
+		<v-notice v-else-if="!canReadFiles" class="disabled-placeholder" center icon="hide_image">
+			{{ t('seo_plugin.ui.no_file_access') }}
+		</v-notice>
 		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="hide_image">
 			{{ t('no_image_selected') }}
 		</v-notice>
@@ -231,7 +239,7 @@ watch(
 			<div class="shadow" />
 			<div v-if="!disabled" class="actions">
 				<template v-if="!imageError">
-					<v-button v-tooltip="t('download')" icon small :href="src" :download="image.filename_download">
+					<v-button v-tooltip="t('download')" icon small :href="downloadUrl" :download="image.filename_download">
 						<v-icon name="download" />
 					</v-button>
 					<v-button v-tooltip="t('edit_item')" icon small @click="editDrawerActive = true">
@@ -242,7 +250,7 @@ watch(
 					<v-icon name="close" />
 				</v-button>
 			</div>
-			<div class="info">
+			<div v-if="!imageError" class="info">
 				<div class="title">
 					{{ image.title }}
 				</div>
@@ -251,7 +259,7 @@ watch(
 				</div>
 			</div>
 			<drawer-item
-				v-if="!disabled && image"
+				v-if="!disabled && image && !imageError"
 				v-model:active="editDrawerActive"
 				collection="directus_files"
 				:primary-key="image.id"
