@@ -4,7 +4,7 @@ import { inject, toRefs } from 'vue';
 import { useSeoI18n } from '../../lang/use-seo-i18n';
 import { useSeoField } from '../../shared/composables/useSeoField';
 import { seoRules } from '../../shared/rulesets';
-import { renderTemplate } from '../../shared/utils';
+import { renderTemplate, stripHtml } from '../../shared/utils';
 import SeoFieldWrapper from './SeoFieldWrapper.vue';
 
 const props = withDefaults(defineProps<{
@@ -45,7 +45,7 @@ function onInput(newVal: string | null) {
 					secondary
 					icon
 					class="template-button"
-					@click="onInput(renderTemplate(template, values))"
+					@click="onInput(stripHtml(renderTemplate(template, values)))"
 				>
 					<v-icon name="auto_fix_high" />
 				</v-button>

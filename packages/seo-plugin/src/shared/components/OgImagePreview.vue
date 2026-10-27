@@ -15,10 +15,11 @@ const { t } = useSeoI18n();
 type Platform = 'facebook' | 'linkedin' | 'x';
 const selectedPlatform = ref<Platform>('linkedin');
 
-const platforms: { value: Platform; label: string; icon: string }[] = [
+// Directus 10 has no X icon, so X uses an inline logo
+const platforms: { value: Platform; label: string; icon?: string }[] = [
 	{ value: 'facebook', label: 'Facebook', icon: 'facebook' },
 	{ value: 'linkedin', label: 'LinkedIn', icon: 'linkedin' },
-	{ value: 'x', label: 'X', icon: 'x_twitter' },
+	{ value: 'x', label: 'X' },
 ];
 
 function onPlatformKeydown(event: KeyboardEvent) {
@@ -65,7 +66,7 @@ const domain = computed(() => {
 								alt="OG Image Preview"
 							>
 						</slot>
-						<div v-if="selectedPlatform === 'x'" class="preview-domain-badge">
+						<div v-if="selectedPlatform === 'x' && props.ogImage" class="preview-domain-badge">
 							{{ domain }}
 						</div>
 					</div>
@@ -105,7 +106,10 @@ const domain = computed(() => {
 							:data-state="selectedPlatform === platform.value ? 'checked' : 'unchecked'"
 							@click="selectedPlatform = platform.value"
 						>
-							<v-icon :name="platform.icon" small />
+							<v-icon v-if="platform.icon" :name="platform.icon" small />
+							<svg v-else class="x-logo" viewBox="0 0 24 24" aria-hidden="true">
+								<path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+							</svg>
 							<span>{{ platform.label }}</span>
 							<div v-if="selectedPlatform === platform.value" class="platform-indicator">
 								<div class="indicator-bar" />
@@ -336,6 +340,11 @@ const domain = computed(() => {
 	&[data-state='checked'] {
 		color: var(--theme--primary);
 	}
+}
+
+.x-logo {
+	width: 16px;
+	height: 16px;
 }
 
 .platform-indicator {
