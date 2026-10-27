@@ -15,15 +15,11 @@ export default {
 		interface: {
 			sitemap_settings: 'サイトマップ設定',
 			search_controls: '検索エンジン設定',
-			character_recommendation: '推奨: {min}〜{max}文字',
-			current_length: '現在: {length}',
+			length_hint: '推奨: {min}〜{max}文字（現在: {length}）',
 			generate_from_template: 'テンプレートから生成',
 			hidden_from_search: 'このページは検索エンジンに表示されません',
 			links_not_followed_warning: 'このページのリンクは検索エンジンにたどられません',
 			hidden_and_not_followed: 'このページは検索結果に表示されず、リンクもたどられません',
-		},
-		actions: {
-			edit_item: 'アイテムを編集',
 		},
 		tooltips: {
 			sitemap_settings: '検索エンジンによるサイトのクロールとインデックスの方法を設定します',
@@ -63,7 +59,6 @@ export default {
 			hidden_from_search_chip: '検索に非表示',
 			links_not_followed_chip: 'リンクをたどらない',
 			title_label: 'タイトル',
-			meta_description_label: 'メタディスクリプション',
 			og_image_label: 'OG画像',
 			additional_fields_label: '追加フィールド',
 			required_count: '{count}件 必須',

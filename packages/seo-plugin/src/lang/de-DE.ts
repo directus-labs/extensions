@@ -15,15 +15,11 @@ export default {
 		interface: {
 			sitemap_settings: 'Sitemap-Einstellungen',
 			search_controls: 'Suchmaschinen-Steuerung',
-			character_recommendation: '{min}-{max} Zeichen empfohlen',
-			current_length: 'Aktuell: {length}',
+			length_hint: '{min}-{max} Zeichen empfohlen. (Aktuell: {length})',
 			generate_from_template: 'Aus Vorlage generieren',
 			hidden_from_search: 'Diese Seite wird vor Suchmaschinen verborgen',
 			links_not_followed_warning: 'Suchmaschinen folgen den Links auf dieser Seite nicht',
 			hidden_and_not_followed: 'Diese Seite wird verborgen und Links werden nicht verfolgt',
-		},
-		actions: {
-			edit_item: 'Element bearbeiten',
 		},
 		tooltips: {
 			sitemap_settings: 'Legt fest, wie Suchmaschinen Ihre Website crawlen und indexieren',
@@ -63,7 +59,6 @@ export default {
 			hidden_from_search_chip: 'Vor Suche verborgen',
 			links_not_followed_chip: 'Links nicht verfolgt',
 			title_label: 'Titel',
-			meta_description_label: 'Meta-Beschreibung',
 			og_image_label: 'OG-Bild',
 			additional_fields_label: 'Zusätzliche Felder',
 			required_count: '{count} erforderlich',

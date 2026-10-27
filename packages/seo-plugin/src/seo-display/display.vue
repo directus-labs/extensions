@@ -7,6 +7,7 @@ import { useSeoI18n } from '../lang/use-seo-i18n';
 import SearchPreview from '../shared/components/SearchPreview.vue';
 import { useSeoField } from '../shared/composables/useSeoField';
 import { seoRules } from '../shared/rulesets';
+import { isEmptyValue } from '../shared/utils';
 
 interface Props {
 	value: SeoValue;
@@ -31,11 +32,9 @@ const additionalFieldsStatus = computed(() => {
 	if (!fields?.length)
 		return null;
 
-	const fieldValues = props.value?.additional_fields;
+	const fieldValues = props.value.additional_fields;
 
-	const isFieldFilled = (field: any) =>
-		fieldValues?.[field.field] != null
-		&& fieldValues[field.field] !== '';
+	const isFieldFilled = (field: any) => !isEmptyValue(fieldValues?.[field.field]);
 
 	const totalFields = fields.length;
 	const filledFields = fields.filter(isFieldFilled).length;
@@ -75,14 +74,7 @@ const status = computed(() => {
 		};
 	}
 
-	// Check for missing required additional fields
-	const hasRequiredFields = props.interfaceOptions?.additionalFields?.some(
-		(field: any) => field.required
-			&& (!props.value?.additional_fields?.[field.field]
-				|| props.value?.additional_fields[field.field] === ''),
-	);
-
-	if (hasRequiredFields) {
+	if (additionalFieldsStatus.value?.class === 'error') {
 		return {
 			icon: 'error',
 			color: 'error',
@@ -160,7 +152,7 @@ const status = computed(() => {
 				</div>
 				<div class="preview-box-item border-bottom-dash">
 					<div class="left">
-						<h3>{{ t('seo_plugin.ui.meta_description_label') }}</h3>
+						<h3>{{ t('seo_plugin.ui.meta_description') }}</h3>
 					</div>
 					<div>
 						<v-chip small label>

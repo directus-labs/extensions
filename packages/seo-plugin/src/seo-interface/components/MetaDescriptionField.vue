@@ -4,6 +4,7 @@ import { inject, toRefs } from 'vue';
 import { useSeoI18n } from '../../lang/use-seo-i18n';
 import { useSeoField } from '../../shared/composables/useSeoField';
 import { seoRules } from '../../shared/rulesets';
+import { renderTemplate } from '../../shared/utils';
 import SeoFieldWrapper from './SeoFieldWrapper.vue';
 
 const props = defineProps<{
@@ -18,14 +19,7 @@ const values = inject('values') as Ref<Record<string, any>>;
 
 const { modelValue } = toRefs(props);
 
-const {
-	state,
-	transform,
-} = useSeoField(modelValue, seoRules.meta_description, values);
-
-function onInput(newVal: string) {
-	emit('update:modelValue', newVal);
-}
+const { state } = useSeoField(modelValue, seoRules.meta_description);
 </script>
 
 <template>
@@ -38,7 +32,7 @@ function onInput(newVal: string) {
 			:model-value="modelValue"
 			:disabled="disabled"
 			:placeholder="t('seo_plugin.placeholders.enter_description')"
-			@update:model-value="onInput"
+			@update:model-value="emit('update:modelValue', $event)"
 		>
 			<template v-if="template && !disabled" #append>
 				<v-button
@@ -47,7 +41,7 @@ function onInput(newVal: string) {
 					secondary
 					icon
 					class="template-button"
-					@click="onInput(transform(template))"
+					@click="emit('update:modelValue', renderTemplate(template, values))"
 				>
 					<v-icon name="auto_fix_high" />
 				</v-button>

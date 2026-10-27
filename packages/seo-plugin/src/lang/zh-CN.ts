@@ -15,15 +15,11 @@ export default {
 		interface: {
 			sitemap_settings: '站点地图设置',
 			search_controls: '搜索引擎控制',
-			character_recommendation: '建议 {min}-{max} 个字符',
-			current_length: '当前：{length}',
+			length_hint: '建议 {min}-{max} 个字符（当前：{length}）',
 			generate_from_template: '从模板生成',
 			hidden_from_search: '此页面将对搜索引擎隐藏',
 			links_not_followed_warning: '搜索引擎将不会跟踪此页面上的链接',
 			hidden_and_not_followed: '此页面将被隐藏，且其中的链接不会被跟踪',
-		},
-		actions: {
-			edit_item: '编辑条目',
 		},
 		tooltips: {
 			sitemap_settings: '控制搜索引擎如何抓取和索引您的网站',
@@ -63,7 +59,6 @@ export default {
 			hidden_from_search_chip: '对搜索隐藏',
 			links_not_followed_chip: '不跟踪链接',
 			title_label: '标题',
-			meta_description_label: '元描述',
 			og_image_label: 'OG 图片',
 			additional_fields_label: '附加字段',
 			required_count: '{count} 个必填',

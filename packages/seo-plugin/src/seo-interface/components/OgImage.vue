@@ -230,12 +230,14 @@ watch(
 			</div>
 			<div class="shadow" />
 			<div v-if="!disabled" class="actions">
-				<v-button v-tooltip="t('download')" icon small :href="src" :download="image.filename_download">
-					<v-icon name="download" />
-				</v-button>
-				<v-button v-tooltip="t('edit_item')" icon small @click="editDrawerActive = true">
-					<v-icon name="open_in_new" />
-				</v-button>
+				<template v-if="!imageError">
+					<v-button v-tooltip="t('download')" icon small :href="src" :download="image.filename_download">
+						<v-icon name="download" />
+					</v-button>
+					<v-button v-tooltip="t('edit_item')" icon small @click="editDrawerActive = true">
+						<v-icon name="open_in_new" />
+					</v-button>
+				</template>
 				<v-button v-tooltip="t('deselect')" icon small @click="deselect">
 					<v-icon name="close" />
 				</v-button>

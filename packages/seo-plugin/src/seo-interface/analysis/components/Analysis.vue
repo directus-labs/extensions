@@ -124,11 +124,12 @@ watch(
 		() => slugValue.value,
 		() => contentData.value,
 	],
-	() => {
-		runAnalysis();
-	},
-	{ deep: true, immediate: true },
+	runAnalysis,
+	{ deep: true },
 );
+
+// Panels mount on tab switch, so analyze right away instead of after the debounce
+analyze();
 
 const allAnalyses = computed(() => analysisResults.value);
 

@@ -2,7 +2,7 @@
 import { getRootPath } from '@directus-labs/utils';
 import { computed, ref } from 'vue';
 import { useSeoI18n } from '../../lang/use-seo-i18n';
-import { truncate } from '../utils';
+import { nextRovingValue, truncate } from '../utils';
 
 const props = defineProps<{
 	title: string;
@@ -20,6 +20,15 @@ const platforms: { value: Platform; label: string; icon: string }[] = [
 	{ value: 'linkedin', label: 'LinkedIn', icon: 'linkedin' },
 	{ value: 'x', label: 'X', icon: 'x_twitter' },
 ];
+
+function onPlatformKeydown(event: KeyboardEvent) {
+	const next = nextRovingValue(event.key, platforms.map((platform) => platform.value), selectedPlatform.value);
+	if (!next) return;
+
+	event.preventDefault();
+	selectedPlatform.value = next;
+	(event.currentTarget as HTMLElement).querySelector<HTMLElement>(`[data-platform="${next}"]`)?.focus();
+}
 
 const imageUrlToDisplay = computed(() => {
 	if (!props.ogImage) return null;
@@ -83,13 +92,15 @@ const domain = computed(() => {
 			<div class="preview-info">
 				<h3>{{ t('seo_plugin.ui.social_preview_desc') }}</h3>
 				<div class="platform-selection">
-					<div class="platform-switcher" role="radiogroup" aria-label="Social platform">
+					<div class="platform-switcher" role="radiogroup" :aria-label="t('seo_plugin.ui.platforms_label')" @keydown="onPlatformKeydown">
 						<button
 							v-for="platform in platforms"
 							:key="platform.value"
 							type="button"
 							role="radio"
 							class="platform-tab"
+							:data-platform="platform.value"
+							:tabindex="selectedPlatform === platform.value ? 0 : -1"
 							:aria-checked="selectedPlatform === platform.value"
 							:data-state="selectedPlatform === platform.value ? 'checked' : 'unchecked'"
 							@click="selectedPlatform = platform.value"

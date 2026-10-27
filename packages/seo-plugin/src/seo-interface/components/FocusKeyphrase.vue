@@ -50,7 +50,7 @@ function disableEdit() {
 					</v-chip>
 					<span v-else class="keyphrase-placeholder">{{ t('seo_plugin.ui.keyphrase_placeholder') }}</span>
 				</div>
-				<v-button v-if="!disabled" v-tooltip="t('seo_plugin.actions.edit_item')" small secondary icon @click.stop="enableEdit">
+				<v-button v-if="!disabled" v-tooltip="t('edit')" small secondary icon @click.stop="enableEdit">
 					<v-icon name="edit" />
 				</v-button>
 				<v-icon v-else v-tooltip="t('seo_plugin.ui.input_disabled')" name="lock" small class="lock-icon" />

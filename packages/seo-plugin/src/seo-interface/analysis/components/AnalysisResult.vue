@@ -102,7 +102,7 @@ const densityMeterStatus = computed((): SeoFieldStatus => {
 				<div v-else-if="detailComponent.type === 'content'">
 					{{ t('seo_plugin.analysis.details.word_count', { count: detailComponent.data.wordCount }) }}
 					<template v-if="detailComponent.data.occurrences && detailComponent.data.occurrences > 0 && typeof detailComponent.data.density === 'number'">
-						<br>{{ t('seo_plugin.analysis.details.occurrences', { count: detailComponent.data.occurrences }) }}
+						<br>{{ t('seo_plugin.analysis.details.occurrences', { count: detailComponent.data.occurrences }, detailComponent.data.occurrences) }}
 						<br>{{ t('seo_plugin.analysis.details.density', { density: detailComponent.data.density.toFixed(1) }) }}
 						<ProgressBar
 							:progress="densityMeterProgress"
@@ -114,7 +114,7 @@ const densityMeterStatus = computed((): SeoFieldStatus => {
 
 				<!-- Image alt text details -->
 				<div v-else-if="detailComponent.type === 'image'">
-					{{ t(result.status === 'good' ? 'seo_plugin.analysis.details.images_found_good' : 'seo_plugin.analysis.details.images_found', { count: detailComponent.data.imageCount }) }}
+					{{ t(result.status === 'good' ? 'seo_plugin.analysis.details.images_found_good' : 'seo_plugin.analysis.details.images_found', { count: detailComponent.data.imageCount }, detailComponent.data.imageCount ?? 0) }}
 					<ul v-if="detailComponent.data.altTexts && detailComponent.data.altTexts.length > 0">
 						<li v-for="(alt, index) in detailComponent.data.altTexts" :key="index">
 							"{{ alt }}"
@@ -124,7 +124,7 @@ const densityMeterStatus = computed((): SeoFieldStatus => {
 
 				<!-- Subheadings details -->
 				<div v-else-if="detailComponent.type === 'subheadings'">
-					{{ t('seo_plugin.analysis.details.subheadings_found', { count: detailComponent.data.subheadingCount }) }}
+					{{ t('seo_plugin.analysis.details.subheadings_found', { count: detailComponent.data.subheadingCount }, detailComponent.data.subheadingCount) }}
 					<ul v-if="detailComponent.data.subheadings && detailComponent.data.subheadings.length > 0">
 						<li v-for="(heading, index) in detailComponent.data.subheadings" :key="index">
 							"{{ heading }}"

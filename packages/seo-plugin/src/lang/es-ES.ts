@@ -15,15 +15,11 @@ export default {
 		interface: {
 			sitemap_settings: 'Ajustes del sitemap',
 			search_controls: 'Controles de motores de búsqueda',
-			character_recommendation: 'Se recomiendan {min}-{max} caracteres',
-			current_length: 'Actual: {length}',
+			length_hint: 'Se recomiendan {min}-{max} caracteres. (Actual: {length})',
 			generate_from_template: 'Generar desde plantilla',
 			hidden_from_search: 'Esta página se ocultará de los motores de búsqueda',
 			links_not_followed_warning: 'Los motores de búsqueda no seguirán los enlaces de esta página',
 			hidden_and_not_followed: 'Esta página se ocultará y sus enlaces no se seguirán',
-		},
-		actions: {
-			edit_item: 'Editar Ítem',
 		},
 		tooltips: {
 			sitemap_settings: 'Controla cómo los motores de búsqueda rastrean e indexan tu sitio',
@@ -63,7 +59,6 @@ export default {
 			hidden_from_search_chip: 'Oculto en buscadores',
 			links_not_followed_chip: 'Enlaces no seguidos',
 			title_label: 'Título',
-			meta_description_label: 'Meta descripción',
 			og_image_label: 'Imagen OG',
 			additional_fields_label: 'Campos adicionales',
 			required_count: '{count} requeridos',

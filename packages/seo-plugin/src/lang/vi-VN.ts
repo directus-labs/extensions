@@ -15,15 +15,11 @@ export default {
 		interface: {
 			sitemap_settings: 'Cài đặt Sơ đồ trang',
 			search_controls: 'Điều khiển công cụ tìm kiếm',
-			character_recommendation: 'Khuyến nghị {min}-{max} ký tự',
-			current_length: 'Hiện tại: {length}',
+			length_hint: 'Khuyến nghị {min}-{max} ký tự. (Hiện tại: {length})',
 			generate_from_template: 'Tạo từ mẫu',
 			hidden_from_search: 'Trang này sẽ bị ẩn khỏi công cụ tìm kiếm',
 			links_not_followed_warning: 'Các liên kết trên trang này sẽ không được công cụ tìm kiếm theo dõi',
 			hidden_and_not_followed: 'Trang này sẽ bị ẩn và các liên kết sẽ không được theo dõi',
-		},
-		actions: {
-			edit_item: 'Chỉnh sửa',
 		},
 		tooltips: {
 			sitemap_settings: 'Kiểm soát cách công cụ tìm kiếm thu thập và lập chỉ mục trang của bạn',
@@ -63,7 +59,6 @@ export default {
 			hidden_from_search_chip: 'Ẩn khỏi tìm kiếm',
 			links_not_followed_chip: 'Liên kết không được theo dõi',
 			title_label: 'Tiêu đề',
-			meta_description_label: 'Mô tả Meta',
 			og_image_label: 'Ảnh OG',
 			additional_fields_label: 'Các trường bổ sung',
 			required_count: '{count} trường bắt buộc',

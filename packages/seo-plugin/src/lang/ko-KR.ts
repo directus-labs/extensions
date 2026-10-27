@@ -15,15 +15,11 @@ export default {
 		interface: {
 			sitemap_settings: '사이트맵 설정',
 			search_controls: '검색 엔진 제어',
-			character_recommendation: '{min}-{max}자 권장',
-			current_length: '현재: {length}',
+			length_hint: '{min}-{max}자 권장. (현재: {length})',
 			generate_from_template: '템플릿에서 생성',
 			hidden_from_search: '이 페이지는 검색 엔진에서 숨겨집니다',
 			links_not_followed_warning: '검색 엔진이 이 페이지의 링크를 따라가지 않습니다',
 			hidden_and_not_followed: '이 페이지는 숨겨지며 링크도 따라가지 않습니다',
-		},
-		actions: {
-			edit_item: '항목 편집',
 		},
 		tooltips: {
 			sitemap_settings: '검색 엔진이 사이트를 크롤링하고 색인하는 방식을 제어합니다',
@@ -63,7 +59,6 @@ export default {
 			hidden_from_search_chip: '검색에서 숨김',
 			links_not_followed_chip: '링크 따라가지 않음',
 			title_label: '제목',
-			meta_description_label: '메타 설명',
 			og_image_label: 'OG 이미지',
 			additional_fields_label: '추가 필드',
 			required_count: '필수 {count}개',

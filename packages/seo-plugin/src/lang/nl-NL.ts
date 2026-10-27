@@ -15,15 +15,11 @@ export default {
 		interface: {
 			sitemap_settings: 'Sitemapinstellingen',
 			search_controls: 'Zoekmachine-instellingen',
-			character_recommendation: '{min}-{max} tekens aanbevolen',
-			current_length: 'Huidig: {length}',
+			length_hint: '{min}-{max} tekens aanbevolen. (Huidig: {length})',
 			generate_from_template: 'Genereren vanuit sjabloon',
 			hidden_from_search: 'Deze pagina wordt verborgen voor zoekmachines',
 			links_not_followed_warning: 'Links op deze pagina worden niet gevolgd door zoekmachines',
 			hidden_and_not_followed: 'Deze pagina wordt verborgen en links worden niet gevolgd',
-		},
-		actions: {
-			edit_item: 'Bewerk item',
 		},
 		tooltips: {
 			sitemap_settings: 'Bepaal hoe zoekmachines je site crawlen en indexeren',
@@ -63,7 +59,6 @@ export default {
 			hidden_from_search_chip: 'Verborgen voor zoekmachines',
 			links_not_followed_chip: 'Links niet gevolgd',
 			title_label: 'Titel',
-			meta_description_label: 'Metabeschrijving',
 			og_image_label: 'OG-afbeelding',
 			additional_fields_label: 'Extra velden',
 			required_count: '{count} vereist',

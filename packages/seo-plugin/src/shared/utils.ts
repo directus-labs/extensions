@@ -76,7 +76,7 @@ export function countOccurrences(text: string, phrase: string): number {
 	// Lookarounds instead of \b, which only understands ASCII letters
 	const pattern = NO_WORD_BOUNDARY_SCRIPTS.test(normalizedPhrase)
 		? new RegExp(escaped, 'giu')
-		: new RegExp(String.raw`(?<![\p{L}\p{N}])${escaped}(?![\p{L}\p{N}])`, 'giu');
+		: new RegExp(String.raw`(?<![\p{L}\p{M}\p{N}])${escaped}(?![\p{L}\p{M}\p{N}])`, 'giu');
 
 	return text.normalize('NFC').match(pattern)?.length ?? 0;
 }
@@ -94,7 +94,7 @@ export function normalizeSlug(slug: string): string {
 		.normalize('NFD')
 		.replaceAll(/\p{M}/gu, '') // Fold accents, slugs are usually written without them
 		.toLowerCase()
-		.replaceAll(/[^\p{L}\p{N}\s-]/gu, '') // Remove special characters
+		.replaceAll(/[^\p{L}\p{N}\s_-]/gu, '') // Remove special characters
 		.replaceAll(/[\s_]+/g, '-') // Replace spaces and underscores with hyphens
 		.replaceAll(/-+/g, '-'); // Remove duplicate hyphens
 }
@@ -189,7 +189,7 @@ export function truncate(text: string | undefined | null, maxLength: number): st
  */
 export function getPath(source: unknown, path: string): unknown {
 	return path
-		.split(/[.[\]]/)
+		.split(/[.[\]'"]/)
 		.filter(Boolean)
 		.reduce<any>((value, key) => value?.[key], source);
 }
@@ -202,4 +202,33 @@ export function renderTemplate(template: string, values: Record<string, unknown>
 		const value = getPath(values, path.trim());
 		return value === null || value === undefined ? '' : String(value);
 	});
+}
+
+/**
+ * How required custom SEO fields decide "not filled in". `false` and `0` count as filled.
+ */
+export function isEmptyValue(value: unknown): boolean {
+	return value === undefined || value === null || value === '';
+}
+
+/**
+ * Next value for arrow-key navigation in a tablist or radiogroup, or undefined for other keys.
+ */
+export function nextRovingValue<T>(key: string, values: T[], current: T): T | undefined {
+	const index = values.indexOf(current);
+
+	switch (key) {
+		case 'ArrowRight':
+		case 'ArrowDown':
+			return values[(index + 1) % values.length];
+		case 'ArrowLeft':
+		case 'ArrowUp':
+			return values[(index - 1 + values.length) % values.length];
+		case 'Home':
+			return values[0];
+		case 'End':
+			return values.at(-1);
+		default:
+			return undefined;
+	}
 }

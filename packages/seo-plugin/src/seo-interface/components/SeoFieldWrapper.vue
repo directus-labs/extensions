@@ -23,7 +23,7 @@ const { t } = useSeoI18n();
 		/>
 		<small class="hint">
 			<span>{{ t(state.message) }}</span>
-			{{ t('seo_plugin.interface.character_recommendation', { min: rule.minLength, max: rule.maxLength }) }}. ({{ t('seo_plugin.interface.current_length', { length: state.length ?? '?' }) }})
+			{{ t('seo_plugin.interface.length_hint', { min: rule.minLength, max: rule.maxLength, length: state.length ?? '?' }) }}
 		</small>
 	</div>
 </template>

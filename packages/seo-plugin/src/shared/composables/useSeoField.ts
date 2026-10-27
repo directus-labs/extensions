@@ -1,7 +1,6 @@
 import type { Ref } from 'vue';
 import type { SeoFieldRule, SeoFieldState, SeoFieldStatus } from '../types/seo';
-import { computed, ref } from 'vue';
-import { renderTemplate } from '../utils';
+import { computed } from 'vue';
 
 export interface SeoFieldStateWithIcon extends SeoFieldState {
 	icon: {
@@ -32,7 +31,6 @@ export const STATUS_CONFIG = {
 export function useSeoField(
 	modelValue: Ref<string | undefined | null>,
 	rule: SeoFieldRule | undefined,
-	values: Ref<Record<string, any>> = ref({}),
 ) {
 	const length = computed(() => modelValue.value?.length ?? 0);
 
@@ -65,15 +63,7 @@ export function useSeoField(
 		};
 	});
 
-	function transform(value: string) {
-		if (!value)
-			return '';
-
-		return renderTemplate(value, values.value);
-	}
-
 	return {
 		state,
-		transform,
 	};
 }

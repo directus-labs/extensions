@@ -7,6 +7,7 @@ import { computed, onMounted, ref, toRefs } from 'vue';
 import { useSeoI18n } from '../lang/use-seo-i18n';
 import OgImagePreview from '../shared/components/OgImagePreview.vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
+import { isEmptyValue, nextRovingValue } from '../shared/utils';
 
 import Analysis from './analysis/components/Analysis.vue';
 import FocusKeyphrase from './components/FocusKeyphrase.vue';
@@ -110,38 +111,49 @@ const additionalFields = computed(() => {
 
 const showAdvancedTab = computed(() => props.showSitemap || props.showSearchControls);
 const showCustomFieldsTab = computed(() => additionalFields.value?.length > 0);
-const showAnalysisTab = computed(() => value.value && props.showFocusKeyphrase);
+const showAnalysisTab = computed(() => !!props.showFocusKeyphrase);
 
 const missingRequiredCount = computed(() => {
 	const values = internalValue.value.additional_fields ?? {};
-	return (props.additionalFields ?? []).filter((field) => {
-		const value = values[String(field?.field)];
-		return field?.required && (value === undefined || value === null || value === '');
-	}).length;
+	return (props.additionalFields ?? []).filter((field) => field?.required && isEmptyValue(values[String(field.field)])).length;
 });
 
 const tabs = computed(() => [
 	{ value: 'metadata', label: t('seo_plugin.ui.tabs.basic'), show: true },
 	{ value: 'advanced-settings', label: t('seo_plugin.ui.tabs.advanced'), show: showAdvancedTab.value },
 	{ value: 'custom-fields', label: t('seo_plugin.ui.tabs.custom_fields'), show: showCustomFieldsTab.value, missingRequired: missingRequiredCount.value },
-	{ value: 'analysis', label: t('seo_plugin.ui.tabs.analysis'), show: !!showAnalysisTab.value },
+	{ value: 'analysis', label: t('seo_plugin.ui.tabs.analysis'), show: showAnalysisTab.value },
 ].filter((tab) => tab.show));
 
 const activeTab = ref('metadata');
 // Fall back to Basic if the active tab disappears (e.g. its option is turned off)
 const currentTab = computed(() => (tabs.value.some((tab) => tab.value === activeTab.value) ? activeTab.value : 'metadata'));
+
+const idPrefix = `seo-${Math.random().toString(36).slice(2, 8)}`;
+
+function onTabKeydown(event: KeyboardEvent) {
+	const next = nextRovingValue(event.key, tabs.value.map((tab) => tab.value), currentTab.value);
+	if (!next) return;
+
+	event.preventDefault();
+	activeTab.value = next;
+	(event.currentTarget as HTMLElement).querySelector<HTMLElement>(`#${idPrefix}-tab-${next}`)?.focus();
+}
 </script>
 
 <template>
 	<div class="seo-tabs">
-		<div v-if="tabs.length > 1" class="tabs-list" role="tablist" aria-label="SEO Configuration">
+		<div v-if="tabs.length > 1" class="tabs-list" role="tablist" :aria-label="t('seo_plugin.ui.tabs.label')" @keydown="onTabKeydown">
 			<button
 				v-for="tab in tabs"
+				:id="`${idPrefix}-tab-${tab.value}`"
 				:key="tab.value"
 				type="button"
 				role="tab"
 				class="tab-trigger"
+				:tabindex="currentTab === tab.value ? 0 : -1"
 				:aria-selected="currentTab === tab.value"
+				:aria-controls="`${idPrefix}-panel`"
 				:data-state="currentTab === tab.value ? 'active' : 'inactive'"
 				@click="activeTab = tab.value"
 			>
@@ -149,7 +161,7 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 				<v-icon
 					v-if="tab.missingRequired"
 					v-tooltip="t('seo_plugin.ui.required_count', { count: tab.missingRequired })"
-					class="tab-warning"
+					class="warning"
 					name="error"
 					small
 				/>
@@ -157,7 +169,7 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 		</div>
 
 		<!-- v-if, not v-show: interfaces like the code editor measure their size on mount (#292) -->
-		<div v-if="currentTab === 'metadata'" role="tabpanel" class="tab-content form-grid">
+		<div v-if="currentTab === 'metadata'" :id="`${idPrefix}-panel`" role="tabpanel" :aria-labelledby="`${idPrefix}-tab-metadata`" class="tab-content form-grid">
 			<!-- Title -->
 			<TitleField
 				:model-value="internalValue.title"
@@ -202,7 +214,7 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 			</OgImagePreview>
 		</div>
 
-		<div v-else-if="currentTab === 'advanced-settings'" role="tabpanel" class="tab-content form-grid">
+		<div v-else-if="currentTab === 'advanced-settings'" :id="`${idPrefix}-panel`" role="tabpanel" :aria-labelledby="`${idPrefix}-tab-advanced-settings`" class="tab-content form-grid">
 			<!-- Sitemap Fields -->
 			<div v-if="props.showSitemap" class="field">
 				<label class="label field-label type-label">
@@ -260,7 +272,7 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 			</div>
 		</div>
 
-		<div v-else-if="currentTab === 'custom-fields'" role="tabpanel" class="tab-content form-grid">
+		<div v-else-if="currentTab === 'custom-fields'" :id="`${idPrefix}-panel`" role="tabpanel" :aria-labelledby="`${idPrefix}-tab-custom-fields`" class="tab-content form-grid">
 			<!-- Custom Fields -->
 			<div class="field">
 				<v-form
@@ -272,7 +284,7 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 			</div>
 		</div>
 
-		<div v-else-if="currentTab === 'analysis'" role="tabpanel" class="tab-content">
+		<div v-else-if="currentTab === 'analysis'" :id="`${idPrefix}-panel`" role="tabpanel" :aria-labelledby="`${idPrefix}-tab-analysis`" class="tab-content">
 			<!-- Focus Keyphrase -->
 			<FocusKeyphrase
 				v-if="showFocusKeyphrase"
@@ -340,10 +352,9 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 	}
 }
 
-.tab-warning {
-	--v-icon-color: var(--theme--danger);
-
-	margin-inline-start: 0.25rem;
+.tab-trigger .warning {
+	margin-inline-start: 0.5rem;
+	color: var(--theme--danger);
 }
 
 .tab-content {

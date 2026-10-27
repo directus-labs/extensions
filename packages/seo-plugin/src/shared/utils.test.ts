@@ -5,6 +5,7 @@ import {
 	countWords,
 	extractImageAltText,
 	extractSubheadings,
+	nextRovingValue,
 	normalizeContent,
 	normalizeSlug,
 	renderTemplate,
@@ -48,6 +49,10 @@ describe('countOccurrences', () => {
 		expect(countOccurrences('서울 여행을 계획하세요', '여행')).toBe(1);
 	});
 
+	it('does not match inside words that use combining marks', () => {
+		expect(countOccurrences('की', 'क')).toBe(0);
+	});
+
 	it('escapes regex characters in the keyphrase', () => {
 		expect(countOccurrences('learn c++ today', 'c++')).toBe(1);
 	});
@@ -57,6 +62,10 @@ describe('normalizeSlug', () => {
 	it('folds accents and keeps non-Latin letters', () => {
 		expect(normalizeSlug('Café Crème')).toBe('cafe-creme');
 		expect(normalizeSlug('東京 案内')).toBe('東京-案内');
+	});
+
+	it('treats underscores as separators', () => {
+		expect(normalizeSlug('seo_guide')).toBe('seo-guide');
 	});
 
 	it('handles non-string input', () => {
@@ -84,6 +93,7 @@ describe('renderTemplate', () => {
 		expect(renderTemplate('{{ author.name }}', values)).toBe('Ann');
 		expect(renderTemplate('{{tags[1]}} {{tags.0}}', values)).toBe('b a');
 		expect(renderTemplate('{{n}}', values)).toBe('0');
+		expect(renderTemplate(`{{ author["name"] }} {{ author['name'] }}`, values)).toBe('Ann Ann');
 	});
 
 	it('renders missing and null values as empty', () => {
@@ -98,5 +108,20 @@ describe('countWords', () => {
 
 	it('counts words in languages written without spaces', () => {
 		expect(countWords('私は東京に住んでいます')).toBeGreaterThan(3);
+	});
+});
+
+describe('nextRovingValue', () => {
+	const values = ['a', 'b', 'c'];
+
+	it('wraps with arrow keys and jumps with Home/End', () => {
+		expect(nextRovingValue('ArrowRight', values, 'c')).toBe('a');
+		expect(nextRovingValue('ArrowLeft', values, 'a')).toBe('c');
+		expect(nextRovingValue('Home', values, 'b')).toBe('a');
+		expect(nextRovingValue('End', values, 'a')).toBe('c');
+	});
+
+	it('ignores other keys', () => {
+		expect(nextRovingValue('Enter', values, 'a')).toBeUndefined();
 	});
 });

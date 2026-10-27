@@ -15,15 +15,11 @@ export default {
 		interface: {
 			sitemap_settings: 'Ustawienia mapy witryny',
 			search_controls: 'Ustawienia wyszukiwarek',
-			character_recommendation: 'Zalecane {min}-{max} znaków',
-			current_length: 'Obecnie: {length}',
+			length_hint: 'Zalecane {min}-{max} znaków. (Obecnie: {length})',
 			generate_from_template: 'Generuj z szablonu',
 			hidden_from_search: 'Ta strona będzie ukryta przed wyszukiwarkami',
 			links_not_followed_warning: 'Wyszukiwarki nie będą podążać za linkami na tej stronie',
 			hidden_and_not_followed: 'Ta strona będzie ukryta, a wyszukiwarki nie będą podążać za linkami',
-		},
-		actions: {
-			edit_item: 'Edytuj element',
 		},
 		tooltips: {
 			sitemap_settings: 'Określ, jak wyszukiwarki indeksują Twoją witrynę',
@@ -63,7 +59,6 @@ export default {
 			hidden_from_search_chip: 'Ukryta przed wyszukiwarkami',
 			links_not_followed_chip: 'Linki nofollow',
 			title_label: 'Tytuł',
-			meta_description_label: 'Meta opis',
 			og_image_label: 'Obraz OG',
 			additional_fields_label: 'Dodatkowe pola',
 			required_count: 'Wymagane: {count}',

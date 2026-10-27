@@ -4,6 +4,7 @@ import { inject, toRefs } from 'vue';
 import { useSeoI18n } from '../../lang/use-seo-i18n';
 import { useSeoField } from '../../shared/composables/useSeoField';
 import { seoRules } from '../../shared/rulesets';
+import { renderTemplate } from '../../shared/utils';
 import SeoFieldWrapper from './SeoFieldWrapper.vue';
 
 const props = withDefaults(defineProps<{
@@ -18,14 +19,7 @@ const values = inject('values') as Ref<Record<string, any>>;
 
 const { modelValue } = toRefs(props);
 
-const {
-	state,
-	transform,
-} = useSeoField(
-	modelValue,
-	seoRules.title,
-	values,
-);
+const { state } = useSeoField(modelValue, seoRules.title);
 
 function onInput(newVal: string | null) {
 	emit('update:modelValue', newVal || '');
@@ -51,7 +45,7 @@ function onInput(newVal: string | null) {
 					secondary
 					icon
 					class="template-button"
-					@click="onInput(transform(template))"
+					@click="onInput(renderTemplate(template, values))"
 				>
 					<v-icon name="auto_fix_high" />
 				</v-button>
