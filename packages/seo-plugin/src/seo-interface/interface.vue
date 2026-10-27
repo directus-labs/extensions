@@ -22,7 +22,6 @@ interface Props extends SeoInterfaceOptions {
 	value: SeoValue | null;
 	disabled?: boolean;
 	values: Record<string, unknown>;
-	canonicalUrl?: string;
 }
 
 const props = defineProps<Props>();
@@ -47,30 +46,25 @@ function getDefaultSeoValue(): SeoValue {
 	};
 }
 
-const internalValue = computed({
-	get() {
-		if (!value.value) {
-			return {
-				...getDefaultSeoValue(),
-				sitemap: {
-					priority: props.defaultPriority || '0.5',
-					change_frequency: props.defaultChangeFrequency || 'weekly',
-				},
-			};
-		}
-
+const internalValue = computed<SeoValue>(() => {
+	if (!value.value) {
 		return {
-			...value.value,
+			...getDefaultSeoValue(),
 			sitemap: {
 				priority: props.defaultPriority || '0.5',
 				change_frequency: props.defaultChangeFrequency || 'weekly',
-				...value.value.sitemap,
 			},
 		};
-	},
-	set(newValue: SeoValue) {
-		value.value = newValue;
-	},
+	}
+
+	return {
+		...value.value,
+		sitemap: {
+			priority: props.defaultPriority || '0.5',
+			change_frequency: props.defaultChangeFrequency || 'weekly',
+			...value.value.sitemap,
+		},
+	};
 });
 
 // Seed defaults on new items so the display has something to score. On existing items this would mark the form dirty on open.
@@ -87,7 +81,7 @@ function updateField(field: string, value: unknown) {
 	emit('input', updatedValue as SeoValue);
 }
 
-/* Transform additional fields to proper format to use v-form within CustomFields component */
+/* Transform additional fields to the format v-form expects */
 const additionalFields = computed(() => {
 	return (
 		props.additionalFields
@@ -177,7 +171,6 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 				:title="internalValue.title"
 				:description="internalValue.meta_description"
 				:og-image="internalValue.og_image"
-				:url="props.canonicalUrl"
 				class="field"
 			>
 				<OgImage

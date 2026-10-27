@@ -17,8 +17,6 @@ const values = inject('values') as Ref<Record<string, any>>;
 const { modelValue } = toRefs(props);
 
 const {
-	isTouched,
-	isTemplateUpdate,
 	state,
 	transform,
 } = useSeoField(
@@ -28,12 +26,7 @@ const {
 );
 
 function onInput(newVal: string | null) {
-	if (!isTemplateUpdate.value) {
-		isTouched.value = true;
-	}
-
 	emit('update:modelValue', newVal || '');
-	isTemplateUpdate.value = false;
 }
 </script>
 

@@ -45,7 +45,6 @@ const emit = defineEmits<{
 
 const loading = ref(false);
 const image = ref<Image | null>(null);
-// const lightboxActive = ref(false);
 const editDrawerActive = ref(false);
 const imageError = ref<string | null>(null);
 const isImage = ref(true);
@@ -177,7 +176,6 @@ function deselect() {
 	emit('input', null);
 	loading.value = false;
 	image.value = null;
-	// lightboxActive.value = false;
 	editDrawerActive.value = false;
 }
 
@@ -232,9 +230,6 @@ watch(
 			</div>
 			<div class="shadow" />
 			<div v-if="!disabled" class="actions">
-				<!-- <v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
-						<v-icon name="zoom_in" />
-					</v-button> -->
 				<v-button v-tooltip="t('download')" icon small :href="src" :download="image.filename_download">
 					<v-icon name="download" />
 				</v-button>
@@ -261,13 +256,6 @@ watch(
 				:edits="edits"
 				@input="stageEdits"
 			/>
-			<!-- TODO: Add lightbox functionality -->
-			<!-- <file-lightbox
-					v-if="image"
-					v-model="lightboxActive"
-					:id="image.id"
-					:title="image.title"
-				/> -->
 		</div>
 		<v-upload v-else from-library from-url :folder="folder" @input="setImage" />
 	</div>

@@ -34,9 +34,6 @@ export function useSeoField(
 	rule: SeoFieldRule | undefined,
 	values: Ref<Record<string, any>> = ref({}),
 ) {
-	const isTouched = ref(false);
-	const isTemplateUpdate = ref(false);
-
 	const length = computed(() => modelValue.value?.length ?? 0);
 
 	const progress = computed(() => {
@@ -76,8 +73,6 @@ export function useSeoField(
 	}
 
 	return {
-		isTouched,
-		isTemplateUpdate,
 		state,
 		transform,
 	};
