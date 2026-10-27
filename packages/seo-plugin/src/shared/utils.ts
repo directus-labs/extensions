@@ -1,3 +1,5 @@
+import { render } from 'micromustache';
+
 /**
  * Utility functions for SEO analysis
  */
@@ -189,7 +191,7 @@ export function truncate(text: string | undefined | null, maxLength: number): st
  */
 export function getPath(source: unknown, path: string): unknown {
 	return path
-		.split(/[.[\]'"]/)
+		.split(/[.[\]]/)
 		.filter(Boolean)
 		.reduce<any>((value, key) => value?.[key], source);
 }
@@ -198,10 +200,13 @@ export function getPath(source: unknown, path: string): unknown {
  * Replaces `{{ path }}` placeholders with values. Missing and null values render empty.
  */
 export function renderTemplate(template: string, values: Record<string, unknown>): string {
-	return template.replaceAll(/\{\{([^{}]+)\}\}/g, (_, path: string) => {
-		const value = getPath(values, path.trim());
-		return value === null || value === undefined ? '' : String(value);
-	});
+	try {
+		return render(template, values);
+	}
+	catch {
+		// Malformed template (e.g. an unclosed tag): leave it as typed
+		return template;
+	}
 }
 
 /**
@@ -233,9 +238,21 @@ export function nextRovingValue<T>(key: string, values: T[], current: T): T | un
 	}
 }
 
-export function formatFilesize(bytes: number | undefined): string {
-	if (!bytes) return '';
-	const units = ['B', 'kB', 'MB', 'GB'];
-	const exponent = Math.min(Math.floor(Math.log(bytes) / Math.log(1000)), units.length - 1);
-	return `${Number((bytes / 1000 ** exponent).toFixed(1))} ${units[exponent]}`;
+/**
+ * Same output as core's app/src/utils/format-filesize.ts (decimal units)
+ */
+export function formatFilesize(bytes = 0): string {
+	if (!bytes) return '--';
+	if (Math.abs(bytes) < 1000) return `${bytes} B`;
+
+	const units = ['kB', 'MB', 'GB', 'TB'];
+	let unitIndex = -1;
+	let remaining = bytes;
+
+	do {
+		remaining /= 1000;
+		unitIndex += 1;
+	} while (Math.abs(remaining) >= 1000 && unitIndex < units.length - 1);
+
+	return `${remaining.toFixed(1)} ${units[unitIndex]}`;
 }

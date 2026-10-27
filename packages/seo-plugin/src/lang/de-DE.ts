@@ -110,9 +110,9 @@ export default {
 				word_count: 'Wortanzahl: {count}',
 				occurrences: 'Vorkommen: {count}-mal',
 				density: 'Dichte: {density}%',
-				images_found: '{count} Bilder gefunden',
-				images_found_good: '{count} Bilder mit passendem Alt-Text gefunden',
-				subheadings_found: '{count} Zwischenüberschriften gefunden',
+				images_found: '{count} Bild gefunden | {count} Bilder gefunden',
+				images_found_good: '{count} Bild mit passendem Alt-Text gefunden | {count} Bilder mit passendem Alt-Text gefunden',
+				subheadings_found: '{count} Zwischenüberschrift gefunden | {count} Zwischenüberschriften gefunden',
 			},
 			messages: {
 				add_keyphrase_first: 'Fügen Sie zuerst eine Fokus-Keyphrase hinzu',

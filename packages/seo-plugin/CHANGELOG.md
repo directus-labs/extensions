@@ -17,7 +17,9 @@
 
 ### Fixes
 
--   Opening an existing item with empty SEO data no longer marks the form as changed. Defaults are only filled in on new items.
+-   Opening an item no longer writes default SEO values or marks the form as changed. Inside a translations field this used to create an empty translation for every language you viewed. The SEO field stays empty (shown as `--` in lists) until someone edits it.
+-   Users without access to files see a notice instead of a crash.
+-   A `translations.seo` column shows one status per translation.
 -   Changing one sitemap setting no longer drops the other.
 -   Fixed an infinite request loop when the site favicon fails to load (#299).
 -   Keyphrases with accents now match WYSIWYG content that stores them as HTML entities like `&eacute;` (#323).

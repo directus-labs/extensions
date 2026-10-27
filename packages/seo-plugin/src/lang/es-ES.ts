@@ -108,11 +108,11 @@ export default {
 			details: {
 				length: 'Longitud: {length} caracteres',
 				word_count: 'Número de palabras: {count}',
-				occurrences: 'Apariciones: {count} veces',
+				occurrences: 'Apariciones: {count} vez | Apariciones: {count} veces',
 				density: 'Densidad: {density}%',
-				images_found: 'Se encontraron {count} imágenes',
-				images_found_good: 'Se encontraron {count} imágenes con texto alternativo adecuado',
-				subheadings_found: 'Se encontraron {count} subtítulos',
+				images_found: 'Se encontró {count} imagen | Se encontraron {count} imágenes',
+				images_found_good: 'Se encontró {count} imagen con texto alternativo adecuado | Se encontraron {count} imágenes con texto alternativo adecuado',
+				subheadings_found: 'Se encontró {count} subtítulo | Se encontraron {count} subtítulos',
 			},
 			messages: {
 				add_keyphrase_first: 'Primero añade una frase clave objetivo',

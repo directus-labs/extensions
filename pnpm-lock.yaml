@@ -991,6 +991,9 @@ importers:
       '@directus/format-title':
         specifier: ^12.0.0
         version: 12.0.1
+      micromustache:
+        specifier: ^8.0.3
+        version: 8.0.3
       vue-i18n:
         specifier: ^10.0.5
         version: 10.0.7(vue@3.5.13(typescript@5.8.3))
@@ -16794,7 +16797,7 @@ snapshots:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
-      semver: 7.7.2
+      semver: 7.7.3
       ts-api-utils: 2.1.0(typescript@5.9.3)
       typescript: 5.9.3
     transitivePeerDependencies:

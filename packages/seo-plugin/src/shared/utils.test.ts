@@ -94,7 +94,12 @@ describe('renderTemplate', () => {
 		expect(renderTemplate('{{ author.name }}', values)).toBe('Ann');
 		expect(renderTemplate('{{tags[1]}} {{tags.0}}', values)).toBe('b a');
 		expect(renderTemplate('{{n}}', values)).toBe('0');
-		expect(renderTemplate(`{{ author["name"] }} {{ author['name'] }}`, values)).toBe('Ann Ann');
+		expect(renderTemplate(`{{ author["name"] }} {{ author['name'] }} {{ author[ "name" ] }}`, values)).toBe('Ann Ann Ann');
+		expect(renderTemplate('{{ author["first.name"] }}', { author: { 'first.name': 'Bob' } })).toBe('Bob');
+	});
+
+	it('leaves a malformed template as typed', () => {
+		expect(renderTemplate('{{ title', values)).toBe('{{ title');
 	});
 
 	it('renders missing and null values as empty', () => {
@@ -130,7 +135,8 @@ describe('nextRovingValue', () => {
 describe('formatFilesize', () => {
 	it('formats bytes like the Directus file details', () => {
 		expect(formatFilesize(65_348)).toBe('65.3 kB');
-		expect(formatFilesize(1_200_000)).toBe('1.2 MB');
+		expect(formatFilesize(1_000_000)).toBe('1.0 MB');
 		expect(formatFilesize(512)).toBe('512 B');
+		expect(formatFilesize(0)).toBe('--');
 	});
 });

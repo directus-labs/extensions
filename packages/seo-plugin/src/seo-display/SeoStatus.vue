@@ -14,8 +14,6 @@ interface Props {
 	collection: string;
 	interfaceOptions: SeoInterfaceOptions;
 	showSearchPreview?: boolean;
-	/** Language code when the value comes from a translations field */
-	language?: string;
 }
 
 const props = defineProps<Props>();
@@ -103,17 +101,16 @@ const status = computed(() => {
 </script>
 
 <template>
-	<div class="seo-display">
+	<div class="seo-status">
 		<v-menu trigger="hover" :delay="300" show-arrow>
 			<template #activator>
 				<v-chip outlined>
 					<v-icon :name="status.icon" :class="status.color" />
-					<span v-if="language" class="language">{{ language }}</span>
 				</v-chip>
 			</template>
 			<div class="preview-box">
 				<label class="header-label field-label type-label">
-					<span>{{ t('seo_plugin.ui.seo_status') }}<template v-if="language"> · {{ language }}</template></span>
+					<span>{{ t('seo_plugin.ui.seo_status') }}</span>
 					<v-icon v-tooltip="t('seo_plugin.ui.seo_status_tooltip')" name="info" small class="info-icon neutral" />
 				</label>
 
@@ -209,12 +206,7 @@ const status = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-.language {
-	margin-inline-start: 4px;
-	font-size: 12px;
-}
-
-.seo-display {
+.seo-status {
 	display: flex;
 }
 

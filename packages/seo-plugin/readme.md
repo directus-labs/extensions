@@ -171,6 +171,7 @@ The interface can be configured with the following options:
    - When enabled, includes:
      - Default change frequency (preset to 'weekly')
      - Default priority (preset to '0.5')
+   - Defaults are saved with the item once the SEO field is edited. Items whose SEO field was never touched store `null`, so apply the same defaults in your frontend.
    - Disabled by default
 
 7. **Custom SEO Fields**

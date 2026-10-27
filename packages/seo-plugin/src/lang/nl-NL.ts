@@ -110,9 +110,9 @@ export default {
 				word_count: 'Aantal woorden: {count}',
 				occurrences: 'Komt {count} keer voor',
 				density: 'Dichtheid: {density}%',
-				images_found: '{count} afbeeldingen gevonden',
-				images_found_good: '{count} afbeeldingen met goede alt-tekst gevonden',
-				subheadings_found: '{count} tussenkoppen gevonden',
+				images_found: '{count} afbeelding gevonden | {count} afbeeldingen gevonden',
+				images_found_good: '{count} afbeelding met goede alt-tekst gevonden | {count} afbeeldingen met goede alt-tekst gevonden',
+				subheadings_found: '{count} tussenkop gevonden | {count} tussenkoppen gevonden',
 			},
 			messages: {
 				add_keyphrase_first: 'Voeg eerst een focuszoekwoord toe',

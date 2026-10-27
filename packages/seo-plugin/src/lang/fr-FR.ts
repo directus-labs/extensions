@@ -110,9 +110,9 @@ export default {
 				word_count: 'Nombre de mots : {count}',
 				occurrences: 'Occurrences : {count} fois',
 				density: 'Densité : {density}%',
-				images_found: '{count} images trouvées',
-				images_found_good: '{count} images trouvées avec un texte alternatif correct',
-				subheadings_found: '{count} sous-titres trouvés',
+				images_found: '{count} image trouvée | {count} images trouvées',
+				images_found_good: '{count} image trouvée avec un texte alternatif correct | {count} images trouvées avec un texte alternatif correct',
+				subheadings_found: '{count} sous-titre trouvé | {count} sous-titres trouvés',
 			},
 			messages: {
 				add_keyphrase_first: "Ajoutez d'abord une expression clé principale",

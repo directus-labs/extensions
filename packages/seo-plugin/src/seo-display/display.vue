@@ -11,25 +11,22 @@ const props = defineProps<{
 	showSearchPreview?: boolean;
 }>();
 
-// A column like `translations.seo` passes one row per language instead of a single value
-const entries = computed(() => {
-	if (!Array.isArray(props.value)) return [{ value: props.value, language: undefined }];
+// A column like `translations.seo` passes one row per translation instead of a single value.
+// Rows without SEO data are kept (scored as missing) so gaps stay visible.
+const values = computed<SeoValue[]>(() => {
+	if (!Array.isArray(props.value)) return [props.value];
 
 	const key = props.field.split('.').at(-1)!;
-
-	return props.value
-		.filter((row) => row?.[key])
-		.map((row) => ({ value: row[key] as SeoValue, language: row.languages_code as string | undefined }));
+	return props.value.map((row) => (row?.[key] ?? {}) as SeoValue);
 });
 </script>
 
 <template>
 	<div class="seo-display">
 		<SeoStatus
-			v-for="(entry, index) in entries"
-			:key="entry.language ?? index"
-			:value="entry.value"
-			:language="entry.language"
+			v-for="(seo, index) in values"
+			:key="index"
+			:value="seo"
 			:collection="collection"
 			:interface-options="interfaceOptions"
 			:show-search-preview="showSearchPreview"
