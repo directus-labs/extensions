@@ -319,7 +319,8 @@ watch(
 		width: 100%;
 		height: 100%;
 
-		.image-preview {
+		.image-preview,
+		.disabled-placeholder {
 			height: 100%;
 			border-radius: 0;
 		}
