@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
 import { inject, toRefs } from 'vue';
+import { useSeoI18n } from '../../lang/use-seo-i18n';
 import { useSeoField } from '../../shared/composables/useSeoField';
 import { seoRules } from '../../shared/rulesets';
 import SeoFieldWrapper from './SeoFieldWrapper.vue';
@@ -12,6 +13,7 @@ const props = withDefaults(defineProps<{
 }>(), {});
 
 const emit = defineEmits(['update:modelValue']);
+const { t } = useSeoI18n();
 const values = inject('values') as Ref<Record<string, any>>;
 
 const { modelValue } = toRefs(props);
@@ -32,19 +34,19 @@ function onInput(newVal: string | null) {
 
 <template>
 	<SeoFieldWrapper
-		label="Page Title"
+		:label="t('seo_plugin.ui.page_title')"
 		:state="state"
 		:rule="seoRules.title"
 	>
 		<v-input
 			:model-value="modelValue"
 			:disabled="disabled"
-			placeholder="Enter your SEO title"
+			:placeholder="t('seo_plugin.placeholders.enter_title')"
 			@update:model-value="onInput"
 		>
 			<template v-if="template && !disabled" #append>
 				<v-button
-					v-tooltip="'Generate from template'"
+					v-tooltip="t('seo_plugin.interface.generate_from_template')"
 					x-small
 					secondary
 					icon

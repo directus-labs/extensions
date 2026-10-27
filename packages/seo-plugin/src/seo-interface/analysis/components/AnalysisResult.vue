@@ -2,11 +2,14 @@
 import type { SeoFieldStatus } from '../../../shared/types/seo';
 import type { AnalysisResult, AnalysisResultDetails } from '../types';
 import { computed } from 'vue';
+import { useSeoI18n } from '../../../lang/use-seo-i18n';
 import ProgressBar from '../../../shared/components/ProgressBar.vue';
 
 const props = defineProps<{
 	result: AnalysisResult;
 }>();
+
+const { t } = useSeoI18n();
 
 type DetailComponentType = 'length' | 'content' | 'image' | 'subheadings';
 
@@ -77,17 +80,17 @@ const densityMeterStatus = computed((): SeoFieldStatus => {
 		<div class="analysis-text">
 			<p class="analysis-title">
 				<span class="analysis-title-text">
-					{{ result.title }}
+					{{ t(result.title) }}
 				</span>
 				<span class="analysis-title-subtext">
-					{{ result.message }}
+					{{ t(result.message, result.messageParams ?? {}) }}
 				</span>
 			</p>
 
 			<div v-if="detailComponent" class="analysis-details">
 				<!-- Title & Description details -->
 				<div v-if="detailComponent.type === 'length'">
-					Length: {{ detailComponent.data.length }} characters
+					{{ t('seo_plugin.analysis.details.length', { length: detailComponent.data.length }) }}
 					<ProgressBar
 						:progress="lengthMeterProgress"
 						:status="lengthMeterStatus"
@@ -97,10 +100,10 @@ const densityMeterStatus = computed((): SeoFieldStatus => {
 
 				<!-- Content details -->
 				<div v-else-if="detailComponent.type === 'content'">
-					Word count: {{ detailComponent.data.wordCount }}
+					{{ t('seo_plugin.analysis.details.word_count', { count: detailComponent.data.wordCount }) }}
 					<template v-if="detailComponent.data.occurrences && detailComponent.data.occurrences > 0 && typeof detailComponent.data.density === 'number'">
-						<br>Occurrences: {{ detailComponent.data.occurrences }} times
-						<br>Density: {{ detailComponent.data.density.toFixed(1) }}%
+						<br>{{ t('seo_plugin.analysis.details.occurrences', { count: detailComponent.data.occurrences }) }}
+						<br>{{ t('seo_plugin.analysis.details.density', { density: detailComponent.data.density.toFixed(1) }) }}
 						<ProgressBar
 							:progress="densityMeterProgress"
 							:status="densityMeterStatus"
@@ -111,7 +114,7 @@ const densityMeterStatus = computed((): SeoFieldStatus => {
 
 				<!-- Image alt text details -->
 				<div v-else-if="detailComponent.type === 'image'">
-					Found {{ detailComponent.data.imageCount }} images{{ result.status === 'good' ? ' with proper alt text' : '' }}
+					{{ t(result.status === 'good' ? 'seo_plugin.analysis.details.images_found_good' : 'seo_plugin.analysis.details.images_found', { count: detailComponent.data.imageCount }) }}
 					<ul v-if="detailComponent.data.altTexts && detailComponent.data.altTexts.length > 0">
 						<li v-for="(alt, index) in detailComponent.data.altTexts" :key="index">
 							"{{ alt }}"
@@ -121,7 +124,7 @@ const densityMeterStatus = computed((): SeoFieldStatus => {
 
 				<!-- Subheadings details -->
 				<div v-else-if="detailComponent.type === 'subheadings'">
-					Found {{ detailComponent.data.subheadingCount }} subheadings
+					{{ t('seo_plugin.analysis.details.subheadings_found', { count: detailComponent.data.subheadingCount }) }}
 					<ul v-if="detailComponent.data.subheadings && detailComponent.data.subheadings.length > 0">
 						<li v-for="(heading, index) in detailComponent.data.subheadings" :key="index">
 							"{{ heading }}"

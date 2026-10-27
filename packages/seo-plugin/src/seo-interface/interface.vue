@@ -4,6 +4,7 @@ import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 import { formatTitle } from '@directus/format-title';
 
 import { computed, onMounted, ref, toRefs } from 'vue';
+import { useSeoI18n } from '../lang/use-seo-i18n';
 import OgImagePreview from '../shared/components/OgImagePreview.vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
 
@@ -27,6 +28,8 @@ interface Props extends SeoInterfaceOptions {
 const props = defineProps<Props>();
 
 const emit = defineEmits<(event: 'input', value: SeoValue) => void>();
+
+const { t } = useSeoI18n();
 
 const { value } = toRefs(props);
 
@@ -110,10 +113,10 @@ const showCustomFieldsTab = computed(() => additionalFields.value?.length > 0);
 const showAnalysisTab = computed(() => value.value && props.showFocusKeyphrase);
 
 const tabs = computed(() => [
-	{ value: 'metadata', label: 'Basic', show: true },
-	{ value: 'advanced-settings', label: 'Advanced', show: showAdvancedTab.value },
-	{ value: 'custom-fields', label: 'Custom Fields', show: showCustomFieldsTab.value },
-	{ value: 'analysis', label: 'Keyphrase', show: !!showAnalysisTab.value },
+	{ value: 'metadata', label: t('seo_plugin.ui.tabs.basic'), show: true },
+	{ value: 'advanced-settings', label: t('seo_plugin.ui.tabs.advanced'), show: showAdvancedTab.value },
+	{ value: 'custom-fields', label: t('seo_plugin.ui.tabs.custom_fields'), show: showCustomFieldsTab.value },
+	{ value: 'analysis', label: t('seo_plugin.ui.tabs.analysis'), show: !!showAnalysisTab.value },
 ].filter((tab) => tab.show));
 
 const activeTab = ref('metadata');
@@ -188,23 +191,23 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 			<!-- Sitemap Fields -->
 			<div v-if="props.showSitemap" class="field">
 				<label class="label field-label type-label">
-					Sitemap Settings
-					<v-icon v-tooltip="'Control how search engines crawl and index your site'" name="info" small class="info-icon" />
+					{{ t('seo_plugin.interface.sitemap_settings') }}
+					<v-icon v-tooltip="t('seo_plugin.tooltips.sitemap_settings')" name="info" small class="info-icon" />
 				</label>
 				<div class="form-grid">
 					<div v-for="sitemapField in sitemapFields" :key="sitemapField.key" class="field half">
 						<v-select
 							:model-value="internalValue.sitemap?.[sitemapField.key as keyof SeoValue['sitemap']] || ''"
-							:items="sitemapField.options"
+							:items="sitemapField.options.map((option) => ({ ...option, text: t(option.text) }))"
 							:disabled="props.disabled"
-							:placeholder="sitemapField.label"
+							:placeholder="t(sitemapField.label)"
 							@update:model-value="updateField(`sitemap.${sitemapField.key}` as 'sitemap.priority' | 'sitemap.change_frequency', $event)"
 						>
 							<template #prepend>
 								<v-icon :name="sitemapField.icon" />
 							</template>
 						</v-select>
-						<small v-if="sitemapField.tooltip" class="hint">{{ sitemapField.tooltip }}</small>
+						<small v-if="sitemapField.tooltip" class="hint">{{ t(sitemapField.tooltip) }}</small>
 					</div>
 				</div>
 			</div>
@@ -212,8 +215,8 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 			<!-- Search Engine Controls -->
 			<div v-if="props.showSearchControls" class="field">
 				<label class="label field-label type-label">
-					Search Engine Controls
-					<v-icon v-tooltip="'Control how search engines interact with this page'" name="info" small class="info-icon" />
+					{{ t('seo_plugin.interface.search_controls') }}
+					<v-icon v-tooltip="t('seo_plugin.tooltips.search_controls')" name="info" small class="info-icon" />
 				</label>
 				<div class="form-grid">
 					<interface-boolean
@@ -222,7 +225,7 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 						class="field half"
 						:value="internalValue[control.key as 'no_index' | 'no_follow']"
 						:disabled="props.disabled"
-						:label="control.label"
+						:label="t(control.label)"
 						@input="updateField(control.key as keyof SeoValue, $event)"
 					/>
 
@@ -231,10 +234,10 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 						<span>
 							{{
 								internalValue.no_index && internalValue.no_follow
-									? "This page will be hidden from search engines and its links won't be followed"
+									? t('seo_plugin.interface.hidden_and_not_followed')
 									: internalValue.no_index
-										? 'This page will be hidden from search engines'
-										: "Links on this page won't be followed by search engines"
+										? t('seo_plugin.interface.hidden_from_search')
+										: t('seo_plugin.interface.links_not_followed_warning')
 							}}
 						</span>
 					</v-notice>

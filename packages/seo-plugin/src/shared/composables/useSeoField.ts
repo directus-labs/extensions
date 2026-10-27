@@ -13,19 +13,19 @@ export interface SeoFieldStateWithIcon extends SeoFieldState {
 export const STATUS_CONFIG = {
 	'missing': {
 		icon: { name: 'error', class: 'error' },
-		message: 'Missing',
+		message: 'seo_plugin.status.missing',
 	},
 	'too-long': {
 		icon: { name: 'warning', class: 'warning' },
-		message: 'Too long',
+		message: 'seo_plugin.status.too_long',
 	},
 	'too-short': {
 		icon: { name: 'warning', class: 'warning' },
-		message: 'Too short',
+		message: 'seo_plugin.status.too_short',
 	},
 	'ideal': {
 		icon: { name: 'check', class: 'success' },
-		message: 'Ideal length',
+		message: 'seo_plugin.status.ideal',
 	},
 };
 

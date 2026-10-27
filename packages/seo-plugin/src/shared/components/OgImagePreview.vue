@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getRootPath } from '@directus-labs/utils';
 import { computed, ref } from 'vue';
+import { useSeoI18n } from '../../lang/use-seo-i18n';
 import { truncate } from '../utils';
 
 const props = defineProps<{
@@ -8,6 +9,8 @@ const props = defineProps<{
 	description: string;
 	ogImage?: string | null;
 }>();
+
+const { t } = useSeoI18n();
 
 type Platform = 'facebook' | 'linkedin' | 'x';
 const selectedPlatform = ref<Platform>('linkedin');
@@ -39,7 +42,7 @@ const domain = computed(() => {
 <template>
 	<div class="seo-image-preview">
 		<div class="preview-header">
-			<label class="label field-label type-label">Social Image Preview</label>
+			<label class="label field-label type-label">{{ t('seo_plugin.preview.social_media_preview') }}</label>
 		</div>
 		<div class="preview-container">
 			<div class="og-preview-container">
@@ -60,7 +63,7 @@ const domain = computed(() => {
 					<div v-if="!props.ogImage" class="preview-content empty-content">
 						<div class="empty-state-message">
 							<p>
-								Upload an image to preview how your links will appear when shared on social media
+								{{ t('seo_plugin.ui.upload_image_preview') }}
 							</p>
 						</div>
 					</div>
@@ -69,16 +72,16 @@ const domain = computed(() => {
 							{{ domain }}
 						</div>
 						<div class="preview-title">
-							{{ truncate(title, 60) || 'Enter a title to see preview' }}
+							{{ truncate(title, 60) || t('seo_plugin.ui.preview_title') }}
 						</div>
 						<div class="preview-description">
-							{{ truncate(description, 160) || 'Enter a description to see preview' }}
+							{{ truncate(description, 160) || t('seo_plugin.ui.preview_description') }}
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="preview-info">
-				<h3>Preview how your content will look when shared on social media.</h3>
+				<h3>{{ t('seo_plugin.ui.social_preview_desc') }}</h3>
 				<div class="platform-selection">
 					<div class="platform-switcher" role="radiogroup" aria-label="Social platform">
 						<button
@@ -100,8 +103,8 @@ const domain = computed(() => {
 					</div>
 				</div>
 				<div class="recommendations">
-					<h4>Recommend Image Size</h4>
-					<p>• 1200 X 630 pixels<br>• 1.91:1 aspect ratio</p>
+					<h4>{{ t('seo_plugin.ui.recommend_image_size') }}</h4>
+					<p>• {{ t('seo_plugin.image_size.pixels') }}<br>• {{ t('seo_plugin.image_size.ratio') }}</p>
 				</div>
 			</div>
 		</div>

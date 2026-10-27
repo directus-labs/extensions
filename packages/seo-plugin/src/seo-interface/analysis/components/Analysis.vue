@@ -2,6 +2,7 @@
 import type { Ref } from 'vue';
 import type { AnalysisResult } from '../../analysis/types';
 import { computed, inject, onBeforeUnmount, ref, watch } from 'vue';
+import { useSeoI18n } from '../../../lang/use-seo-i18n';
 import { getPath } from '../../../shared/utils';
 import {
 	analyzeContent,
@@ -22,6 +23,8 @@ const props = defineProps<{
 	slugField: string | null | undefined;
 	contentFields: string[] | string | undefined;
 }>();
+
+const { t } = useSeoI18n();
 
 const values = inject('values') as Ref<Record<string, any>>;
 
@@ -138,21 +141,21 @@ const openSectionIds = ref<SectionId[]>(['problems', 'improvements']);
 const sections = computed(() => [
 	{
 		id: 'problems' as SectionId,
-		title: 'Problems',
+		title: 'seo_plugin.analysis.problems',
 		icon: 'error',
 		iconClass: 'error',
 		results: problemResults.value,
 	},
 	{
 		id: 'improvements' as SectionId,
-		title: 'Improvements',
+		title: 'seo_plugin.analysis.improvements',
 		icon: 'warning',
 		iconClass: 'warning',
 		results: improvementResults.value,
 	},
 	{
 		id: 'good' as SectionId,
-		title: 'Good results',
+		title: 'seo_plugin.analysis.good_results',
 		icon: 'check_circle',
 		iconClass: 'good',
 		results: goodResults.value,
@@ -186,27 +189,27 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 <template>
 	<div class="seo-analysis-container field">
 		<div class="header">
-			<label class="label field-label type-label">Analysis</label>
+			<label class="label field-label type-label">{{ t('seo_plugin.analysis.label') }}</label>
 			<div class="action-bar">
 				<v-button
-					v-tooltip="'Collapse all'"
+					v-tooltip="t('seo_plugin.analysis.collapse_all')"
 					:disabled="!canCollapseAll"
 					icon
 					small
 					secondary
-					title="Collapse all"
+					:title="t('seo_plugin.analysis.collapse_all')"
 					@click="collapseAllSections"
 				>
 					<v-icon name="unfold_less" />
 				</v-button>
 
 				<v-button
-					v-tooltip="'Expand all'"
+					v-tooltip="t('seo_plugin.analysis.expand_all')"
 					:disabled="!canExpandAll"
 					icon
 					small
 					secondary
-					title="Expand all"
+					:title="t('seo_plugin.analysis.expand_all')"
 					@click="expandAllSections"
 				>
 					<v-icon name="unfold_more" />
@@ -215,7 +218,7 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 		</div>
 
 		<div v-if="!focusKeyphrase" class="empty-state">
-			Enter a focus keyphrase to analyze your content.
+			{{ t('seo_plugin.analysis.empty') }}
 		</div>
 
 		<template v-else>
@@ -232,7 +235,7 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 							>
 								<div class="section-title" :class="section.id">
 									<v-icon :name="section.icon" :class="section.iconClass" />
-									{{ section.title }} ({{ section.results.length }})
+									{{ t(section.title) }} ({{ section.results.length }})
 								</div>
 								<v-icon name="chevron_right" class="section-icon" />
 							</button>
@@ -249,10 +252,10 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 			</div>
 
 			<div v-if="hasOnlyNeutralResults" class="all-neutral-state">
-				We found nothing to report! This might happen if content is missing or too short.
+				{{ t('seo_plugin.analysis.all_neutral') }}
 			</div>
 			<div v-else-if="allAnalyses.length === 0 && focusKeyphrase" class="no-results-state">
-				Could not generate analysis results. Check configuration and content fields.
+				{{ t('seo_plugin.analysis.no_results') }}
 			</div>
 		</template>
 	</div>

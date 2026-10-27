@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
 import { inject, toRefs } from 'vue';
+import { useSeoI18n } from '../../lang/use-seo-i18n';
 import { useSeoField } from '../../shared/composables/useSeoField';
 import { seoRules } from '../../shared/rulesets';
 import SeoFieldWrapper from './SeoFieldWrapper.vue';
@@ -12,6 +13,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['update:modelValue']);
+const { t } = useSeoI18n();
 const values = inject('values') as Ref<Record<string, any>>;
 
 const { modelValue } = toRefs(props);
@@ -28,19 +30,19 @@ function onInput(newVal: string) {
 
 <template>
 	<SeoFieldWrapper
-		label="Meta Description"
+		:label="t('seo_plugin.ui.meta_description')"
 		:state="state"
 		:rule="seoRules.meta_description"
 	>
 		<v-textarea
 			:model-value="modelValue"
 			:disabled="disabled"
-			placeholder="Enter your meta description"
+			:placeholder="t('seo_plugin.placeholders.enter_description')"
 			@update:model-value="onInput"
 		>
 			<template v-if="template && !disabled" #append>
 				<v-button
-					v-tooltip="'Generate from template'"
+					v-tooltip="t('seo_plugin.interface.generate_from_template')"
 					x-small
 					secondary
 					icon
