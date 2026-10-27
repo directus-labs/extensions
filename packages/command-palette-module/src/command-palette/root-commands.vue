@@ -11,7 +11,9 @@ import { isItemRouteAvailable } from '../utils/is-item-route-available';
 import CommandItem from './components/command-item.vue';
 import Empty from './components/empty.vue';
 import Group from './components/group.vue';
+import Item from './components/item.vue';
 import List from './components/list.vue';
+import { useAskAi } from './composables/use-ask-ai';
 import { useCommandContext } from './composables/use-global-command-state';
 import { useRecentCommands } from './composables/use-recent-commands';
 import SearchResults from './content-search/search-results.vue';
@@ -30,7 +32,6 @@ const unexpectedError = useUnexpectedError({ stores, i18n });
 
 const commandContext = computed<CommandAvailableContext>(() => ({
 	route: router.currentRoute.value,
-	search: context.search.value,
 	stores,
 	i18n,
 	api,
@@ -91,9 +92,14 @@ const groupsWithCommands = computed(() => {
 		.sort((a, b) => groupScores.get(b.id)! - groupScores.get(a.id)!);
 });
 
+const { visible: showAskAi, askAi } = useAskAi();
+
 // Loading covers the debounce too, so content hits don't flash "No results found" before they arrive.
 const isEmpty = computed(() =>
-	rankedCommands.value.length === 0 && !hasGlobalSearchResults.value && !globalSearch.loading.value,
+	rankedCommands.value.length === 0
+	&& !hasGlobalSearchResults.value
+	&& !globalSearch.loading.value
+	&& !showAskAi.value,
 );
 
 function navigateToItem(item: { collection: string; pk: string }) {
@@ -167,6 +173,11 @@ async function onSelect(command: CommandConfig) {
 				icon-placement="start"
 				@select="onSelect(command)"
 			/>
+		</Group>
+		<Group v-if="showAskAi" heading="AI Assistant">
+			<Item value="$ask-ai" icon="auto_awesome" @select="askAi">
+				Ask AI: {{ search.trim() }}
+			</Item>
 		</Group>
 	</List>
 </template>

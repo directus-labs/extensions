@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onClickOutside, useEventListener } from '@vueuse/core';
+import { onClickOutside, useEventListener, useMutationObserver } from '@vueuse/core';
 import { ListboxRoot } from 'reka-ui';
 import { computed, nextTick, ref, watch } from 'vue';
 import Overlay from './components/overlay.vue';
@@ -8,14 +8,14 @@ import RootCommands from './root-commands.vue';
 import { CommandRouterView, createCommandRouter } from './router';
 import { provideCommandRouter } from './router/router';
 
+const OPTION = '[role="option"]';
+const ENABLED_OPTION = `${OPTION}:not([data-disabled])`;
+
 const active = defineModel<boolean>('active');
 
 const commandPalette = ref<{
 	$el: HTMLElement;
 	highlightedElement: HTMLElement | null;
-	getItems: () => { ref: HTMLElement; value: string }[];
-	highlightItem: (value: string) => void;
-	highlightFirstItem: () => void;
 } | null>(null);
 const commandPaletteElement = computed(() => commandPalette.value?.$el);
 const search = ref('');
@@ -42,25 +42,37 @@ useEventListener(commandPaletteElement, 'keydown', (e: KeyboardEvent) => {
 });
 
 // Reka stops at the ends of the list and has no group jumps. Wrap around at the ends, let Cmd+Arrow jump to either
-// end, and Alt+Arrow to the first item of the next or previous group.
+// end, and Alt+Arrow to the first item of the next or previous group. Reka re-reads and sorts its whole collection
+// several times per highlight, so arrows are handled here from one read of the options.
 useEventListener(commandPaletteElement, 'keydown', (e: KeyboardEvent) => {
 	if ((e.key !== 'ArrowDown' && e.key !== 'ArrowUp') || !commandPalette.value) return;
 
-	const down = e.key === 'ArrowDown';
-	const items = commandPalette.value.getItems();
-	const highlighted = commandPalette.value.highlightedElement;
-	const [start, end] = down ? [items[0], items.at(-1)] : [items.at(-1), items[0]];
-
-	let target: (typeof items)[number] | undefined;
-	if (e.altKey) target = getGroupJumpTarget(items, highlighted, down);
-	else if (e.metaKey) target = end;
-	else if (highlighted === end?.ref) target = start;
-	if (!target) return;
-
 	e.preventDefault();
 	e.stopPropagation();
-	commandPalette.value.highlightItem(target.value);
+
+	const down = e.key === 'ArrowDown';
+	const options = getOptions();
+	const highlighted = commandPalette.value.highlightedElement;
+	const index = highlighted ? options.indexOf(highlighted) : -1;
+	const next = index === -1 ? (down ? 0 : options.length - 1) : index + (down ? 1 : -1);
+
+	let target: HTMLElement | undefined;
+	if (e.altKey) target = getGroupJumpTarget(options, highlighted, down) ?? options[next];
+	else if (e.metaKey) target = down ? options.at(-1) : options[0];
+	else target = options[(next + options.length) % options.length];
+	if (target) highlight(target);
 }, { capture: true });
+
+// Set once the user moves the highlight. Until then it's ours, and items that arrive late can take it back to the top.
+let userHighlighted = false;
+
+useEventListener(commandPaletteElement, 'keydown', (e: KeyboardEvent) => {
+	if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) userHighlighted = true;
+}, { capture: true });
+
+useEventListener(commandPaletteElement, 'pointermove', (e: PointerEvent) => {
+	if (e.target instanceof Element && e.target.closest('[role="option"]')) userHighlighted = true;
+});
 
 // Reka clears the highlight when the pointer leaves the list. Keep it, so Enter still picks the highlighted item.
 useEventListener(commandPaletteElement, 'pointerleave', (e: PointerEvent) => {
@@ -84,13 +96,17 @@ watch(active, (isActive) => {
 watch(search, highlightFirst);
 
 watch(context.loading, (isLoading) => {
-	if (!isLoading) highlightFirst();
+	if (!isLoading) highlightFirstUnlessPicked();
 });
 
-// Reka registers items a tick after they mount, and some arrive later still (async commands, results).
-watch(() => commandPalette.value?.getItems().length, (count) => {
-	if (count && !commandPalette.value?.highlightedElement?.isConnected) highlightFirst();
-});
+// Some items arrive after the first render (async commands, results). Those can land above a fallback like Ask AI, so
+// move an automatic highlight back to the top.
+useMutationObserver(commandPaletteElement, (records) => {
+	const changed = records.some(({ addedNodes, removedNodes }) =>
+		Array.from(addedNodes).some(containsOption) || Array.from(removedNodes).some(containsOption));
+
+	if (changed) highlightFirstUnlessPicked();
+}, { childList: true, subtree: true });
 
 function close() {
 	active.value = false;
@@ -102,25 +118,56 @@ function clear() {
 	context.search.value = '';
 }
 
-function getGroupJumpTarget<T extends { ref: HTMLElement }>(items: T[], highlighted: HTMLElement | null, down: boolean) {
+function getOptions() {
+	return Array.from(commandPaletteElement.value?.querySelectorAll<HTMLElement>(ENABLED_OPTION) ?? []);
+}
+
+function containsOption(node: Node) {
+	return node instanceof Element && (node.matches(OPTION) || node.querySelector(OPTION) !== null);
+}
+
+function getGroupJumpTarget(options: HTMLElement[], highlighted: HTMLElement | null, down: boolean) {
 	const groupOf = (element: HTMLElement | null) => element?.closest('[role="group"]') ?? null;
 	const current = groupOf(highlighted);
 	if (!current) return;
 
-	const index = items.findIndex(({ ref }) => ref === highlighted);
-	const candidates = down ? items.slice(index + 1) : items.slice(0, index).reverse();
-	const group = candidates.map(({ ref }) => groupOf(ref)).find((candidate) => candidate && candidate !== current);
+	const index = options.indexOf(highlighted!);
+	const candidates = down ? options.slice(index + 1) : options.slice(0, index).reverse();
+	const group = candidates.map(groupOf).find((candidate) => candidate && candidate !== current);
 
-	return group ? items.find(({ ref }) => groupOf(ref) === group) : undefined;
+	return group ? options.find((option) => groupOf(option) === group) : undefined;
 }
 
+function highlightFirstUnlessPicked() {
+	if (!userHighlighted || !commandPalette.value?.highlightedElement?.isConnected) highlightFirst();
+}
+
+// Many changes can ask for this in one tick (opening, typing, results); highlight once, after they've rendered.
+let highlightQueued = false;
+
 function highlightFirst() {
-	nextTick(() => commandPalette.value?.highlightFirstItem());
+	userHighlighted = false;
+	if (highlightQueued) return;
+
+	highlightQueued = true;
+
+	nextTick(() => {
+		highlightQueued = false;
+		const first = commandPaletteElement.value?.querySelector<HTMLElement>(ENABLED_OPTION);
+		if (first) highlight(first);
+	});
+}
+
+function highlight(element: HTMLElement) {
+	if (!commandPalette.value) return;
+
+	commandPalette.value.highlightedElement = element;
+	element.scrollIntoView({ block: 'nearest' });
+	onHighlight(element);
 }
 
 // Keep a group's heading in view when keyboard navigation lands on its first item.
-function onHighlight(item?: { ref: HTMLElement }) {
-	const element = item?.ref;
+function onHighlight(element?: HTMLElement) {
 	if (!element || element.matches(':hover')) return;
 
 	const group = element.closest('[role="group"]');
@@ -153,7 +200,7 @@ watch(commandRouter.currentCommand, () => {
 			class="command-palette"
 			model-value=""
 			highlight-on-hover
-			@highlight="onHighlight"
+			@highlight="onHighlight($event?.ref)"
 		>
 			<CommandRouterView />
 		</ListboxRoot>

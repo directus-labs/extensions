@@ -1,4 +1,5 @@
 import type { Flow } from '@directus/types';
+import type { VNode } from 'vue';
 import type { CommandAvailableContext } from '../../command-palette';
 import { describe, expect, it, vi } from 'vitest';
 import { createMemoryHistory, createRouter } from 'vue-router';
@@ -32,7 +33,6 @@ function getCommands(options: { post: ReturnType<typeof vi.fn>; primaryKey?: str
 			params: { collection: 'articles', primaryKey },
 			query: {},
 		},
-		search: '',
 		stores: {
 			useFlowsStore: () => ({ getManualFlowsForCollection: () => [flow()] }),
 			useNotificationsStore: () => ({ add: vi.fn(), refreshUnreadCount: options.refreshUnreadCount }),
@@ -63,6 +63,15 @@ describe('collectionItemFlowCommands', () => {
 
 		expect(await runAction(commands)).toBe(true);
 		expect(post).toHaveBeenCalledOnce();
+	});
+
+	it('names the flow in plain text and renders it in italics', async () => {
+		const [command] = await getCommands({ post: vi.fn() });
+		const rendered = command!.render!() as VNode;
+
+		expect(command!.name).toBe('Run Publish');
+		expect(rendered.type).toBe('span');
+		expect((rendered.children as [string, VNode])[1]).toMatchObject({ type: 'em', children: 'Publish' });
 	});
 
 	it('hides flows while creating a new item', async () => {

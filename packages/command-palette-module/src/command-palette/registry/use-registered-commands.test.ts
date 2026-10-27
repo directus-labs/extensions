@@ -18,8 +18,8 @@ afterEach(() => {
 	vi.restoreAllMocks();
 });
 
-function context(search: string) {
-	return { search } as CommandAvailableContext;
+function context(path: string) {
+	return { route: { path } } as CommandAvailableContext;
 }
 
 describe('sortPositionedConfigs', () => {
@@ -36,8 +36,8 @@ describe('sortPositionedConfigs', () => {
 	it('publishes async commands without letting stale routes overwrite them', async () => {
 		let resolveOld: ((commands: CommandConfig[]) => void) | undefined;
 
-		commands.value = [({ search }) =>
-			search === 'old'
+		commands.value = [({ route }) =>
+			route.path === 'old'
 				? new Promise<CommandConfig[]>((resolve) => {
 					resolveOld = resolve;
 				})

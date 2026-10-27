@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { toArray } from '@directus/utils';
 import { remove as removeDiacritics } from 'diacritics';
 import { computed } from 'vue';
+import { toArray } from '../utils/to-array';
 
 interface HighlightPart {
 	text: string;
@@ -19,6 +19,12 @@ const props = withDefaults(defineProps<Props>(), {
 	query: null,
 	text: '',
 });
+
+// Long texts can match thousands of times. Only a few snippets fit on the line, so stop there, and don't scan past a
+// few words of context around each match.
+const MAX_SNIPPETS = 10;
+const CONTEXT_WORDS = 3;
+const MAX_CONTEXT_LENGTH = 200;
 
 const parts = computed<HighlightPart[]>(() => {
 	const { normalizedText, starts, ends } = normalize(props.text);
@@ -63,19 +69,9 @@ const parts = computed<HighlightPart[]>(() => {
 
 	const result: HighlightPart[] = [];
 
-	for (const [index, [start, end]] of mergedMatches.entries()) {
-		const precedingText = props.text
-			.slice(0, start)
-			.split(' ')
-			.slice(-3)
-			.join(' ')
-			.trim();
-		const followingText = props.text
-			.slice(end)
-			.split(' ')
-			.slice(0, 3)
-			.join(' ')
-			.trim();
+	for (const [index, [start, end]] of mergedMatches.slice(0, MAX_SNIPPETS).entries()) {
+		const precedingText = getPrecedingWords(props.text, start).trim();
+		const followingText = getFollowingWords(props.text, end).trim();
 		const highlightedText = props.text.slice(start, end).trim();
 
 		if (index > 0) result.push({ highlighted: false, text: '...' });
@@ -107,6 +103,38 @@ const parts = computed<HighlightPart[]>(() => {
 
 	return result;
 });
+
+function getPrecedingWords(text: string, start: number) {
+	let limit = Math.max(0, start - MAX_CONTEXT_LENGTH);
+	if (isLowSurrogate(text, limit)) limit++;
+	let index = start;
+
+	for (let word = 0; word < CONTEXT_WORDS; word++) {
+		index = index > limit ? text.lastIndexOf(' ', index - 1) : -1;
+		if (index < limit) return text.slice(limit, start);
+	}
+
+	return text.slice(index + 1, start);
+}
+
+function getFollowingWords(text: string, end: number) {
+	let limit = Math.min(text.length, end + MAX_CONTEXT_LENGTH);
+	if (isLowSurrogate(text, limit)) limit--;
+	let index = end - 1;
+
+	for (let word = 0; word < CONTEXT_WORDS; word++) {
+		index = text.indexOf(' ', index + 1);
+		if (index === -1 || index >= limit) return text.slice(end, limit);
+	}
+
+	return text.slice(end, index);
+}
+
+// The context cutoffs count UTF-16 units, so keep them from splitting an emoji or other surrogate pair.
+function isLowSurrogate(text: string, index: number) {
+	const code = text.codePointAt(index) ?? 0;
+	return code >= 0xDC_00 && code <= 0xDF_FF;
+}
 
 // Characters like "æ" or "ß" expand when normalized, so keep each normalized char's span in the original text.
 function normalize(text: string) {

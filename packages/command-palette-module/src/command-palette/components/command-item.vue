@@ -43,7 +43,7 @@ const showStartIconSlot = computed(() => props.iconPlacement === 'start' && type
 			<span class="command-title" :class="{ 'has-end-label': command.endLabel }">
 				<span class="command-name">
 					<RenderedCommand v-if="command.render" />
-					<span v-else v-md="command.name" />
+					<span v-else>{{ command.name }}</span>
 					<span v-if="iconPlacement === 'end'" class="command-icon">
 						<v-icon v-if="typeof command.icon === 'string'" :name="command.icon" />
 						<RenderIcon v-else />

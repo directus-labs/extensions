@@ -1,16 +1,17 @@
 import type { Ref } from 'vue';
 import type { CollectionSearchResult, SearchCollectionType } from '../types';
 import { useApi, useStores } from '@directus/extensions-sdk';
-import { getEndpoint, mergeFilters } from '@directus/utils';
 import { isPlainObject } from 'lodash-es';
 import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { createDeepObject } from '../utils/create-deep-object';
+import { getEndpoint } from '../utils/get-endpoint';
 import { getItemRoute } from '../utils/get-item-route';
 import { getReadableDisplayTemplate, getReadableFields } from '../utils/get-readable-display-template';
 import { getRouteQueryValue } from '../utils/get-route-query-value';
 import { isItemRouteAvailable } from '../utils/is-item-route-available';
+import { mergeFilters } from '../utils/merge-filters';
 import { useSettings } from './use-settings';
 import { useUnexpectedError } from './use-unexpected-error';
 
@@ -62,11 +63,11 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 	let activeController: AbortController | undefined;
 	let activeSearch: Promise<void> = Promise.resolve();
 
-	watch(query, (value) => {
+	// Watch the trimmed query, so a trailing space doesn't send the same search again.
+	watch(() => query.value?.trim() ?? '', (normalized) => {
 		if (searchTimeout) clearTimeout(searchTimeout);
 		activeController?.abort();
 
-		const normalized = value?.trim() ?? '';
 		const currentRequest = ++requestId;
 
 		results.value = [];

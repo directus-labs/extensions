@@ -1,5 +1,5 @@
-import { getEndpoint } from '@directus/utils';
 import { defineCommands } from '../command-palette';
+import { getEndpoint } from '../utils/get-endpoint';
 import { getPublicURL } from '../utils/get-root-path';
 import { getRoutePrimaryKey } from '../utils/get-route-primary-key';
 import { getRouteVersionContext } from '../utils/get-route-version-context';

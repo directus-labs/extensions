@@ -1,4 +1,4 @@
-import { getFieldsFromTemplate } from '@directus/utils';
+import { getFieldsFromTemplate } from './get-fields-from-template';
 
 interface FieldsStore {
 	getField: (collection: string, field: string) => unknown;

@@ -56,7 +56,6 @@ export interface CommandAvailableContext {
 	stores: ReturnType<typeof useStores>;
 	api: ReturnType<typeof useApi>;
 	i18n: CommandI18n;
-	search: string;
 }
 
 export type CommandsAvailableCallback = (

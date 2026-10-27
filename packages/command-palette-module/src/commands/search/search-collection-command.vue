@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { RecentItem } from '../../command-palette/composables/use-recent-items';
 import { useApi, useStores } from '@directus/extensions-sdk';
-import { getEndpoint, mergeFilters } from '@directus/utils';
 import { isPlainObject } from 'lodash-es';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -13,11 +12,13 @@ import { getPaletteResultLimit } from '../../composables/use-global-search';
 import { useSettings } from '../../composables/use-settings';
 import { useUnexpectedError } from '../../composables/use-unexpected-error';
 import { createDeepObject } from '../../utils/create-deep-object';
+import { getEndpoint } from '../../utils/get-endpoint';
 import { getItemRoute } from '../../utils/get-item-route';
 import { getReadableDisplayTemplate, getReadableFields } from '../../utils/get-readable-display-template';
 import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
 import { getRouteVersionContext } from '../../utils/get-route-version-context';
 import { isItemRouteAvailable } from '../../utils/is-item-route-available';
+import { mergeFilters } from '../../utils/merge-filters';
 
 interface SearchResult {
 	item: Record<string, any>;

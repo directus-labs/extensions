@@ -240,6 +240,21 @@ describe('useGlobalSearch', () => {
 		wrapper.unmount();
 	});
 
+	it('does not search again when only surrounding whitespace changes', async () => {
+		const query: Ref<string | null> = ref(null);
+		mocks.apiGet.mockResolvedValue({ data: { data: [{ id: 1, title: 'Release' }] } });
+
+		const { state, wrapper } = mountSearch({ query, searchAsYouType: true });
+		query.value = 'release';
+		await vi.runAllTimersAsync();
+		query.value = 'release ';
+		await vi.runAllTimersAsync();
+
+		expect(mocks.apiGet).toHaveBeenCalledTimes(1);
+		expect(state.results.value).toHaveLength(1);
+		wrapper.unmount();
+	});
+
 	it('keeps partial results and surfaces one collection failure', async () => {
 		vi.spyOn(console, 'warn').mockImplementation(() => {});
 

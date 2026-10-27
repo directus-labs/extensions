@@ -22,7 +22,9 @@ const RenderedCommand = computed(() => command.value.render);
 	>
 		<div class="title-wrapper">
 			<RenderedCommand v-if="command.render" />
-			<div v-else v-md="command.name" />
+			<div v-else>
+				{{ command.name }}
+			</div>
 			<span v-if="group" class="group">{{ group.name }}</span>
 		</div>
 		<template #description>

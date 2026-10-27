@@ -1,6 +1,6 @@
 import type { Flow, PrimaryKey } from '@directus/types';
 import type { CommandActionContext, CommandConfig } from '../../command-palette';
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import { defineCommands } from '../../command-palette';
 import { useUnexpectedError } from '../../composables/use-unexpected-error';
 import { getFlowsPath } from '../../utils/get-flows-path';
@@ -61,7 +61,8 @@ export const collectionItemFlowCommands = defineCommands({
 		function flowCommand(flow: Flow): CommandConfig {
 			const common = {
 				id: `run-flow-${flow.id}`,
-				name: `Run *${flow.name}*`,
+				name: `Run ${flow.name}`,
+				render: () => h('span', ['Run ', h('em', `${flow.name}`)]),
 				icon: flow.icon ?? 'bolt',
 				keywords: ['context'],
 				group: 'context',

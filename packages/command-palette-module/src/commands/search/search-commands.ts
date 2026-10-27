@@ -19,9 +19,10 @@ export const searchCommands = defineCommands({
 			return router !== undefined && isItemRouteAvailable(router, itemRoute);
 		});
 		const { collections: searchSettings } = useSettings(stores);
+		const settingsByCollection = new Map(searchSettings.value.map((config) => [config.collection, config]));
 
 		return collections.map((collection: Collection) => {
-			const config = searchSettings.value.find(({ collection: name }) => name === collection.collection);
+			const config = settingsByCollection.get(collection.collection);
 
 			return {
 				id: `search-collection:${collection.collection}`,

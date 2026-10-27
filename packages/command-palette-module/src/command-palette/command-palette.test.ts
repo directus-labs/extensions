@@ -1,8 +1,9 @@
 // @vitest-environment happy-dom
 
-import { flushPromises, mount } from '@vue/test-utils';
+import type { Ref } from 'vue';
+import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { computed, defineComponent, h, nextTick } from 'vue';
+import { computed, defineComponent, h, nextTick, ref } from 'vue';
 import CommandPalette from './command-palette.vue';
 import Group from './components/group.vue';
 import Item from './components/item.vue';
@@ -12,12 +13,16 @@ import { useCommandRouter } from './router/router';
 import { rankItems } from './utils/rank-items';
 
 const selected = vi.fn();
+// Stands in for commands whose availability resolves after the query was typed.
+const late = ref<string[]>([]);
+let paletteLoading: Ref<boolean> | undefined;
 
 const SubView = defineComponent(() => () => h(List, () => h(Item, { value: 'sub' }, () => 'Sub item')));
 
 vi.mock('./root-commands.vue', () => ({
 	default: defineComponent(() => {
-		const { search } = useCommandContext();
+		const { search, loading } = useCommandContext();
+		paletteLoading = loading;
 		const router = useCommandRouter();
 		const names = ['Alpha', 'Beta', 'Gamma'];
 		const filtered = computed(() => rankItems(names, search.value, (value) => ({ value })).map(({ item }) => item));
@@ -26,6 +31,7 @@ vi.mock('./root-commands.vue', () => ({
 		const inGroup = (names: string[]) => filtered.value.filter((name) => names.includes(name));
 
 		return () => h(List, () => [
+			...late.value.map(item),
 			inGroup(['Alpha', 'Beta']).length > 0 ? h(Group, { key: 'first', heading: 'First' }, () => inGroup(['Alpha', 'Beta']).map(item)) : null,
 			inGroup(['Gamma']).length > 0 ? h(Group, { key: 'second', heading: 'Second' }, () => inGroup(['Gamma']).map(item)) : null,
 			h(Item, { key: 'open', value: 'open', onSelect: () => router.push({ component: SubView }) }, () => 'Open sub-view'),
@@ -57,8 +63,12 @@ async function press(wrapper: ReturnType<typeof mountPalette>, key: string, init
 	await settle();
 }
 
+enableAutoUnmount(afterEach);
+
 afterEach(() => {
+	vi.restoreAllMocks();
 	selected.mockReset();
+	late.value = [];
 	document.body.innerHTML = '';
 });
 
@@ -127,5 +137,80 @@ describe('CommandPalette', () => {
 
 		await press(wrapper, 'Backspace');
 		expect(highlighted(wrapper)).toBe('Alpha');
+	});
+
+	it('moves an automatic highlight to results that arrive above it', async () => {
+		const wrapper = mountPalette();
+		await settle();
+		await wrapper.get('input').setValue('zz');
+		await settle();
+		expect(highlighted(wrapper)).toBe('Open sub-view');
+
+		late.value = ['Late match'];
+		await settle();
+		expect(highlighted(wrapper)).toBe('Late match');
+	});
+
+	it('keeps a highlight the user chose when results arrive', async () => {
+		const wrapper = mountPalette();
+		await settle();
+		await wrapper.get('input').setValue('zz');
+		await settle();
+		await press(wrapper, 'ArrowDown');
+
+		late.value = ['Late match'];
+		await settle();
+		expect(highlighted(wrapper)).toBe('Open sub-view');
+	});
+
+	it('keeps a highlight picked by hovering when results arrive', async () => {
+		const wrapper = mountPalette();
+		await settle();
+		await wrapper.get('input').setValue('zz');
+		await settle();
+		await wrapper.get('[role="option"]').trigger('pointermove');
+
+		late.value = ['Late match'];
+		await settle();
+		expect(highlighted(wrapper)).toBe('Open sub-view');
+	});
+
+	it.each(['arrow', 'hover'])('keeps a highlight picked by %s while results load', async (how) => {
+		const wrapper = mountPalette();
+		await settle();
+		paletteLoading!.value = true;
+		await settle();
+
+		await (how === 'arrow' ? press(wrapper, 'ArrowDown') : wrapper.findAll('[role="option"]').find((option) => option.text() === 'Beta')!.trigger('pointermove'));
+		await settle();
+		expect(highlighted(wrapper)).toBe('Beta');
+
+		late.value = ['Late match'];
+		paletteLoading!.value = false;
+		await settle();
+		expect(highlighted(wrapper)).toBe('Beta');
+	});
+
+	it('does the same highlight work on open however many items there are', async () => {
+		const scroll = vi.spyOn(Element.prototype, 'scrollIntoView');
+		const querySelectorAll = vi.spyOn(Element.prototype, 'querySelectorAll');
+		const collectionReads = () => querySelectorAll.mock.calls.filter(([selector]) => selector.includes('data-reka-collection-item')).length;
+
+		const work: number[][] = [];
+
+		for (const count of [5, 200]) {
+			late.value = Array.from({ length: count }, (_, index) => `Late ${index}`);
+			scroll.mockClear();
+			querySelectorAll.mockClear();
+
+			const wrapper = mountPalette();
+			await settle();
+			expect(highlighted(wrapper)).toBe('Late 0');
+			work.push([scroll.mock.calls.length, collectionReads()]);
+			wrapper.unmount();
+		}
+
+		// Only Reka's own highlight on mount: one scroll and two collection reads. Ours reads the DOM once instead.
+		expect(work).toEqual([[1, 2], [1, 2]]);
 	});
 });
