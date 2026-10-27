@@ -6,6 +6,12 @@
 
 -   **Directus 12:** Host range widened to `>=10.10.0 <13`, so the marketplace no longer flags the plugin as incompatible on v11 and v12. Extensions SDK updated to 18.1.0.
 -   **Locked items:** Title, meta description, and custom fields now respect `disabled`, so published items in versioned collections can't be edited in place.
+-   Tabs now match the style of core's Tabs group interface.
+
+### Features
+
+-   **Translations:** The interface and display follow the user's Directus language, with English and Vietnamese included. Ported from #301 by @khuepm.
+-   **Required custom fields:** The Custom Fields tab shows an error icon while required fields are empty (#288).
 -   Replaced the removed `rounded` button prop and CSS variables that no longer exist in v12.
 
 ### Fixes

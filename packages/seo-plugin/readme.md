@@ -176,6 +176,11 @@ The interface can be configured with the following options:
 7. **Custom SEO Fields**
    - Toggle to enable/disable the Custom Fields tab.
    - Disabled by default
+   - Fields marked **Required** show an asterisk, an error icon on the Custom Fields tab while empty, and an error in the SEO display. They don't block saving, because the values live inside one JSON field. To enforce them, use a blocking Flow on `items.create` / `items.update` that checks `seo.additional_fields`.
+
+### Translations
+
+The interface and display follow each user's Directus language. English and Vietnamese are included. To add a language, add an entry to `src/lang/index.ts` with the same keys as `en-US`. Missing keys fall back to English.
 
 ### Display Options
 

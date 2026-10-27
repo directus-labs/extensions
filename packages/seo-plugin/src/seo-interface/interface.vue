@@ -112,10 +112,18 @@ const showAdvancedTab = computed(() => props.showSitemap || props.showSearchCont
 const showCustomFieldsTab = computed(() => additionalFields.value?.length > 0);
 const showAnalysisTab = computed(() => value.value && props.showFocusKeyphrase);
 
+const missingRequiredCount = computed(() => {
+	const values = internalValue.value.additional_fields ?? {};
+	return (props.additionalFields ?? []).filter((field) => {
+		const value = values[String(field?.field)];
+		return field?.required && (value === undefined || value === null || value === '');
+	}).length;
+});
+
 const tabs = computed(() => [
 	{ value: 'metadata', label: t('seo_plugin.ui.tabs.basic'), show: true },
 	{ value: 'advanced-settings', label: t('seo_plugin.ui.tabs.advanced'), show: showAdvancedTab.value },
-	{ value: 'custom-fields', label: t('seo_plugin.ui.tabs.custom_fields'), show: showCustomFieldsTab.value },
+	{ value: 'custom-fields', label: t('seo_plugin.ui.tabs.custom_fields'), show: showCustomFieldsTab.value, missingRequired: missingRequiredCount.value },
 	{ value: 'analysis', label: t('seo_plugin.ui.tabs.analysis'), show: !!showAnalysisTab.value },
 ].filter((tab) => tab.show));
 
@@ -138,6 +146,13 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 				@click="activeTab = tab.value"
 			>
 				<span>{{ tab.label }}</span>
+				<v-icon
+					v-if="tab.missingRequired"
+					v-tooltip="t('seo_plugin.ui.required_count', { count: tab.missingRequired })"
+					class="tab-warning"
+					name="error"
+					small
+				/>
 			</button>
 		</div>
 
@@ -323,6 +338,12 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 		outline: var(--theme--border-width) solid var(--theme--primary);
 		outline-offset: 1px;
 	}
+}
+
+.tab-warning {
+	--v-icon-color: var(--theme--danger);
+
+	margin-inline-start: 0.25rem;
 }
 
 .tab-content {
