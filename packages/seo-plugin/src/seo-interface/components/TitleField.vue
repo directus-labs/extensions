@@ -45,6 +45,7 @@ function onInput(newVal: string | null) {
 	>
 		<v-input
 			:model-value="modelValue"
+			:disabled="disabled"
 			placeholder="Enter your SEO title"
 			@update:model-value="onInput"
 		>

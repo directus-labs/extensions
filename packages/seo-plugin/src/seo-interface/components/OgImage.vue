@@ -230,13 +230,13 @@ watch(
 				<!-- <v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 						<v-icon name="zoom_in" />
 					</v-button> -->
-				<v-button v-tooltip="t('download')" icon rounded :href="src" :download="image.filename_download">
+				<v-button v-tooltip="t('download')" icon small :href="src" :download="image.filename_download">
 					<v-icon name="download" />
 				</v-button>
-				<v-button v-tooltip="t('edit_item')" icon rounded @click="editDrawerActive = true">
+				<v-button v-tooltip="t('edit_item')" icon small @click="editDrawerActive = true">
 					<v-icon name="open_in_new" />
 				</v-button>
-				<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
+				<v-button v-tooltip="t('deselect')" icon small @click="deselect">
 					<v-icon name="close" />
 				</v-button>
 			</div>
@@ -275,7 +275,7 @@ watch(
 .image-preview {
 	position: relative;
 	width: 100%;
-	height: var(--input-height-tall);
+	height: var(--input-height-md, var(--input-height-tall));
 	overflow: hidden;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
@@ -376,7 +376,7 @@ watch(
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: var(--input-height-tall);
+	height: var(--input-height-md, var(--input-height-tall));
 	border-radius: var(--theme--border-radius);
 }
 
@@ -477,6 +477,6 @@ watch(
 }
 
 .disabled-placeholder {
-	height: var(--theme--input-height-tall);
+	height: var(--input-height-md, var(--input-height-tall));
 }
 </style>

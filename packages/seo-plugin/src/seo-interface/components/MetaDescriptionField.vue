@@ -41,6 +41,7 @@ function onInput(newVal: string) {
 	>
 		<v-textarea
 			:model-value="modelValue"
+			:disabled="disabled"
 			placeholder="Enter your meta description"
 			@update:model-value="onInput"
 		>

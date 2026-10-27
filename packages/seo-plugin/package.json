@@ -36,7 +36,7 @@
 				"source": "src/seo-display/index.ts"
 			}
 		],
-		"host": "^10.10.0"
+		"host": ">=10.10.0 <13"
 	},
 	"scripts": {
 		"build": "directus-extension build",
@@ -54,7 +54,7 @@
 		"vue-i18n": "^10.0.5"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "13.0.1",
+		"@directus/extensions-sdk": "16.0.2",
 		"@types/lodash-es": "^4.17.12",
 		"sass": "^1.84.0",
 		"typescript": "^5.7.3",

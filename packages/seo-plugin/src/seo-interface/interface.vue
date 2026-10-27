@@ -20,6 +20,7 @@ import { searchControls, sitemapFields } from './fields';
 interface Props extends SeoInterfaceOptions {
 	collection: string;
 	field: string;
+	primaryKey?: string | number | null;
 	value: SeoValue | null;
 	disabled?: boolean;
 	values: Record<string, unknown>;
@@ -74,20 +75,15 @@ const internalValue = computed({
 	},
 });
 
+// Seed defaults on new items so the display has something to score. On existing items this would mark the form dirty on open.
 onMounted(() => {
-	if (!value.value) {
+	if (!value.value && props.primaryKey === '+') {
 		emit('input', internalValue.value);
 	}
 });
 
 function updateField(field: string, value: unknown) {
-	if (!props.value) {
-		const newValue = set({}, field, value);
-		emit('input', newValue as SeoValue);
-		return;
-	}
-
-	const updatedValue = { ...props.value };
+	const updatedValue = { ...internalValue.value };
 	set(updatedValue, field, value);
 	emit('input', updatedValue as SeoValue);
 }
@@ -229,20 +225,11 @@ const showTabsUi = computed(() => {
 						v-for="control in searchControls"
 						:key="control.key"
 						class="field half"
-						:model-value="internalValue[control.key as 'no_index' | 'no_follow']"
+						:value="internalValue[control.key as 'no_index' | 'no_follow']"
 						:disabled="props.disabled"
 						:label="control.label"
-						@update:model-value="updateField(control.key as keyof SeoValue, $event)"
-					>
-						<template #append>
-							<v-icon
-								v-tooltip="'Prevents search engines from indexing this page'"
-								name="visibility_off"
-								small
-								class="info-icon"
-							/>
-						</template>
-					</interface-boolean>
+						@input="updateField(control.key as keyof SeoValue, $event)"
+					/>
 
 					<!-- Warning message when either option is enabled -->
 					<v-notice v-if="internalValue.no_index || internalValue.no_follow" type="warning" class="field full">
@@ -265,6 +252,7 @@ const showTabsUi = computed(() => {
 				<v-form
 					:fields="additionalFields"
 					:model-value="internalValue.additional_fields"
+					:disabled="props.disabled"
 					@update:model-value="updateField('additional_fields', $event)"
 				/>
 			</div>

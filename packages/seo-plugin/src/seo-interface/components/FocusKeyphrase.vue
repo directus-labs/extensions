@@ -105,7 +105,7 @@ onKeyStroke('Enter', (e) => {
 	gap: 8px;
 
 	cursor: pointer;
-	transition: border-color var(--theme--transitions-fast) ease-in-out;
+	transition: border-color var(--fast) var(--transition);
 }
 .keyphrase-display:not(.disabled):hover {
 	border-color: var(--theme--primary);
@@ -114,13 +114,13 @@ onKeyStroke('Enter', (e) => {
 .keyphrase-display.disabled {
 	cursor: not-allowed;
 	background-color: var(--theme--background-subdued);
-	border-color: var(--theme--form--field--input--border-color-disabled);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .keyphrase-text {
 	/* flex-grow: 1; */
 	padding-right: 8px;
-	color: var(--theme----theme--form--field--input--foreground);
+	color: var(--theme--form--field--input--foreground);
 }
 .keyphrase-text.not-clickable {
 	cursor: not-allowed;
