@@ -4,6 +4,7 @@ import { ListboxRoot } from 'reka-ui';
 import { computed, nextTick, ref, watch } from 'vue';
 import Overlay from './components/overlay.vue';
 import { provideGlobalCommandContext } from './composables/use-global-command-state';
+import { startCommandSession } from './registry';
 import RootCommands from './root-commands.vue';
 import { CommandRouterView, createCommandRouter } from './router';
 import { provideCommandRouter } from './router/router';
@@ -86,6 +87,7 @@ onClickOutside(commandPaletteElement, close, {
 
 watch(active, (isActive) => {
 	if (isActive) {
+		startCommandSession();
 		highlightFirst();
 	}
 	else {

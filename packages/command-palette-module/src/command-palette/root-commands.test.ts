@@ -12,7 +12,13 @@ import { createCommandRouter, provideCommandRouter } from './router/router';
 const loading = ref(false);
 const showAskAi = ref(false);
 const askAi = vi.fn();
-const registered = vi.hoisted(() => ({ context: undefined as unknown, name: 'Flows' }));
+const registered = vi.hoisted(() => ({
+	context: undefined as unknown,
+	name: 'Flows',
+	groups: [] as { id: string; name: string }[],
+	commands: undefined as { id: string; name: string; group?: string }[] | undefined,
+}));
+const recentIds = vi.hoisted(() => ({ value: [] as string[] }));
 
 vi.mock('@directus/extensions-sdk', () => ({
 	useApi: () => ({}),
@@ -28,12 +34,14 @@ vi.mock('../composables/use-settings', () => ({ useSettings: () => ({ settings: 
 vi.mock('../composables/use-unexpected-error', () => ({ useUnexpectedError: () => vi.fn() }));
 vi.mock('../composables/use-global-search', () => ({ useGlobalSearch: () => ({ results: ref([]), loading }) }));
 
+vi.mock('./composables/use-recent-commands', () => ({ useRecentCommands: () => ({ commands: ref(recentIds.value), add: vi.fn() }) }));
+
 vi.mock('./composables/use-ask-ai', () => ({ useAskAi: () => ({ visible: showAskAi, askAi }) }));
 
 vi.mock('./registry', () => ({
 	useRegisteredCommands: (context: unknown) => {
 		registered.context = context;
-		return { groups: ref([]), commands: ref([{ id: 'flows', name: registered.name }]) };
+		return { groups: ref(registered.groups), commands: ref(registered.commands ?? [{ id: 'flows', name: registered.name }]) };
 	},
 }));
 
@@ -108,5 +116,31 @@ describe('RootCommands', () => {
 
 		expect(wrapper.get('[role="option"]').text()).toBe('Run *Publish*');
 		registered.name = 'Flows';
+	});
+
+	it('puts the context group ahead of recents with an empty query only', async () => {
+		registered.groups = [{ id: 'collection:articles', name: 'Articles' }, { id: 'context', name: 'Context' }];
+
+		registered.commands = [
+			{ id: 'go-articles', name: 'Go to Articles', group: 'collection:articles' },
+			{ id: 'copy-id', name: 'Copy ID', group: 'context' },
+		];
+
+		recentIds.value = ['go-articles'];
+
+		const search = ref('');
+		const wrapper = mountRoot(search);
+		await flushPromises();
+
+		const headings = () => wrapper.findAll('[role="group"]').map((group) => group.element.firstElementChild!.textContent!.trim());
+		expect(headings()).toEqual(['Context', 'Recents', 'Articles']);
+
+		search.value = 'articles';
+		await flushPromises();
+		expect(headings()[0]).toBe('Articles');
+
+		registered.groups = [];
+		registered.commands = undefined;
+		recentIds.value = [];
 	});
 });

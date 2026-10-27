@@ -92,6 +92,10 @@ const groupsWithCommands = computed(() => {
 		.sort((a, b) => groupScores.get(b.id)! - groupScores.get(a.id)!);
 });
 
+// With no query, actions on the current page lead, ahead of recents.
+const leadingGroups = computed(() => search.value ? [] : groupsWithCommands.value.filter(({ id }) => id === 'context'));
+const trailingGroups = computed(() => groupsWithCommands.value.filter((group) => !leadingGroups.value.includes(group)));
+
 const { visible: showAskAi, askAi } = useAskAi();
 
 // Loading covers the debounce too, so content hits don't flash "No results found" before they arrive.
@@ -141,6 +145,20 @@ async function onSelect(command: CommandConfig) {
 <template>
 	<List>
 		<Empty v-if="isEmpty" />
+		<Group
+			v-for="group in leadingGroups"
+			:key="group.id"
+			:heading="group.name"
+			:icon="group.icon"
+		>
+			<CommandItem
+				v-for="command in positionedCommands.grouped[group.id]"
+				:key="command.id"
+				:command="command"
+				icon-placement="start"
+				@select="onSelect(command)"
+			/>
+		</Group>
 		<RecentItems
 			v-if="!search"
 			:available-commands="commands"
@@ -161,7 +179,7 @@ async function onSelect(command: CommandConfig) {
 			@select="onSelect(command)"
 		/>
 		<Group
-			v-for="group in groupsWithCommands"
+			v-for="group in trailingGroups"
 			:key="group.id"
 			:heading="group.name"
 			:icon="group.icon"

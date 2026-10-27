@@ -12,6 +12,8 @@ A command palette and configurable global search for Directus Studio.
 - Search individual collections
 - Search opted-in collections directly from the palette
 - Create items, upload files, copy version-aware API URLs, and run context-aware manual flows
+- On an item page: switch content versions, open the live preview or Visual Editor, and copy the item link or ID
+- Open your bookmarks, go to your profile, toggle light/dark theme, and sign out
 - Use the dedicated global search page for all configured collections
 - Configure per-collection fields, templates, descriptions, filters, sorting, result limits, and debounce rate
 - Ask the Directus AI Assistant about your query (Directus 11.14+ with an AI provider configured)

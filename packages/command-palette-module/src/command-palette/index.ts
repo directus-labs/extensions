@@ -5,5 +5,5 @@ export { default as Item } from './components/item.vue';
 export { default as List } from './components/list.vue';
 export { useCommandContext } from './composables/use-global-command-state';
 
-export { defineCommands, refreshRegisteredCommands, registerCommands } from './registry';
+export { defineCommands, getSessionValue, refreshRegisteredCommands, registerCommands } from './registry';
 export type * from './registry/types';
