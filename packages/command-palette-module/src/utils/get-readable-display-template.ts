@@ -21,5 +21,12 @@ export function getReadableDisplayTemplate(
 ) {
 	const fields = getReadableFields(fieldsStore, collection, getFieldsFromTemplate(template ?? '') ?? []);
 	if (!template || fields.length === 0) return { template: `{{${primaryKeyField}}}`, fields: [primaryKeyField] };
-	return { template, fields };
+	return { template, fields: fields.flatMap(getRequestFields) };
+}
+
+// `$thumbnail` isn't a real field. Like core, fetch the file fields the thumbnail is drawn from instead.
+function getRequestFields(field: string) {
+	if (!field.endsWith('.$thumbnail') && field !== '$thumbnail') return [field];
+	const parent = field.slice(0, -'$thumbnail'.length);
+	return ['id', 'type', 'title', 'modified_on'].map((fileField) => `${parent}${fileField}`);
 }
