@@ -66,7 +66,7 @@ function formatTime(timestamp: string) {
 	</v-list>
 
 	<v-button v-if="searches.length > 0" class="clear" secondary small @click="emit('clear')">
-		<v-icon name="history_toggle_off" />
+		<v-icon name="history_toggle_off" left />
 		Clear History
 	</v-button>
 </template>

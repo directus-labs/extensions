@@ -11,6 +11,26 @@ describe('getReadableDisplayTemplate', () => {
 		});
 	});
 
+	it('drops thumbnail file fields the user cannot read', () => {
+		const restricted = { getField: (_: string, field: string) => (field === 'logo.modified_on' ? null : {}) };
+
+		expect(getReadableDisplayTemplate(restricted, 'organizations', '{{logo.$thumbnail}} {{name}}', 'id').fields).toEqual([
+			'logo.id',
+			'logo.type',
+			'logo.title',
+			'name',
+		]);
+	});
+
+	it('falls back to the primary key when no thumbnail field is readable', () => {
+		const restricted = { getField: (_: string, field: string) => (field.startsWith('logo.') ? null : {}) };
+
+		expect(getReadableDisplayTemplate(restricted, 'organizations', '{{logo.$thumbnail}}', 'id')).toEqual({
+			template: '{{id}}',
+			fields: ['id'],
+		});
+	});
+
 	it('handles a thumbnail on a file collection itself', () => {
 		expect(getReadableDisplayTemplate(fieldsStore, 'directus_files', '{{$thumbnail}}', 'id').fields).toEqual([
 			'id',

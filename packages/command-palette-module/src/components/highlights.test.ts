@@ -106,6 +106,12 @@ describe('Highlights', () => {
 		expect(wrapper.text()).toBe('match one two ... eight nine match');
 	});
 
+	it('merges snippets whose context only a space separates', () => {
+		const wrapper = mount(Highlights, { props: { query: 'x', text: 'x a b c d x' } });
+
+		expect(wrapper.text()).toBe('x a b c d x');
+	});
+
 	it('renders a bounded number of snippets for texts with thousands of matches', () => {
 		const wrapper = mount(Highlights, {
 			props: {

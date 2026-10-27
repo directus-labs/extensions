@@ -19,9 +19,10 @@ export function getReadableDisplayTemplate(
 	template: string | null | undefined,
 	primaryKeyField: string,
 ) {
-	const fields = getReadableFields(fieldsStore, collection, getFieldsFromTemplate(template ?? '') ?? []);
+	// Expand before the check: the fake $thumbnail field always looks readable, the file fields behind it may not be.
+	const fields = getReadableFields(fieldsStore, collection, getFieldsFromTemplate(template ?? '').flatMap(getRequestFields));
 	if (!template || fields.length === 0) return { template: `{{${primaryKeyField}}}`, fields: [primaryKeyField] };
-	return { template, fields: fields.flatMap(getRequestFields) };
+	return { template, fields };
 }
 
 // `$thumbnail` isn't a real field. Like core, fetch the file fields the thumbnail is drawn from instead.

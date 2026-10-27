@@ -92,7 +92,7 @@ async function selectRecentSearch(value: string) {
 					<p v-show="query">
 						{{ info.hits }} {{ info.hits === 1 ? 'result' : 'results' }} returned in {{ info.time }}ms for "{{
 							info.query
-						}}" across {{ collections.length }} collections.
+						}}" across {{ collections.length }} {{ collections.length === 1 ? 'collection' : 'collections' }}.
 					</p>
 				</div>
 			</header>

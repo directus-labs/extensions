@@ -20,9 +20,9 @@ const props = withDefaults(defineProps<Props>(), {
 	text: '',
 });
 
-// Long texts can match thousands of times. Only a few snippets fit on the line, so stop there, and don't scan past a
+// Long texts can match thousands of times. Only a few matches fit on the line, so stop there, and don't scan past a
 // few words of context around each match.
-const MAX_SNIPPETS = 10;
+const MAX_MATCHES = 10;
 const CONTEXT_WORDS = 3;
 const MAX_CONTEXT_LENGTH = 200;
 
@@ -71,12 +71,14 @@ const parts = computed<HighlightPart[]>(() => {
 	let previousEnd = 0;
 	let previousContextEnd = -1;
 
-	for (const [start, end] of mergedMatches.slice(0, MAX_SNIPPETS)) {
+	for (const [start, end] of mergedMatches.slice(0, MAX_MATCHES)) {
 		// Keep the whitespace touching the match, so "the release" doesn't render as "therelease".
 		const precedingText = getPrecedingWords(props.text, start).trimStart();
 
-		// Matches whose context overlaps share one snippet, so the text between them isn't repeated.
-		if (start - precedingText.length <= previousContextEnd) {
+		// Matches whose context overlaps or touches share one snippet, so no text repeats and no "..." hides nothing.
+		const contextStart = start - precedingText.length;
+
+		if (result.length > 0 && (contextStart <= previousContextEnd || !props.text.slice(previousContextEnd, contextStart).trim())) {
 			result.push({ highlighted: false, text: props.text.slice(previousEnd, start) });
 		}
 		else {
