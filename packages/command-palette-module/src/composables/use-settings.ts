@@ -3,14 +3,11 @@ import { uniqBy } from 'lodash-es';
 import { computed } from 'vue';
 import { systemCollections } from '../system-collections';
 import { parsePersistedSettings } from '../utils/parse-persisted-settings';
+import { readPersistedSettings } from '../utils/settings-mirror';
 
 export function useSettings(stores?: ReturnType<typeof useStores>) {
-	const { useSettingsStore } = stores ?? useStores();
-	const settingsStore = useSettingsStore();
-
-	const settings = computed(() =>
-		parsePersistedSettings(settingsStore.settings.command_palette_settings),
-	);
+	const resolvedStores = stores ?? useStores();
+	const settings = computed(() => parsePersistedSettings(readPersistedSettings(resolvedStores)));
 
 	const collections = computed(() =>
 		uniqBy([...(settings.value?.collections ?? []), ...systemCollections], 'collection'),

@@ -1,3 +1,4 @@
+import { API_INJECT, STORES_INJECT } from '@directus/constants';
 import { defineModule } from '@directus/extensions-sdk';
 import { registerCommands } from './command-palette';
 import { contentCommands } from './commands/content';
@@ -12,8 +13,10 @@ import { settingsCommands } from './commands/settings';
 import { usersCommands } from './commands/users';
 import GlobalSearch from './global-search.vue';
 import Settings from './settings.vue';
+import { getDirectusAppProvides } from './utils/get-directus-app';
 import { injectCommandPalette } from './utils/inject-command-palette';
 import { injectSearchBar } from './utils/inject-search-bar';
+import { syncSettingsMirror } from './utils/settings-mirror';
 
 registerCommands(
 	searchCommands,
@@ -48,6 +51,11 @@ export default defineModule({
 	preRegisterCheck() {
 		injectSearchBar();
 		injectCommandPalette();
+		const provides = getDirectusAppProvides();
+
+		syncSettingsMirror(provides[STORES_INJECT], provides[API_INJECT]).catch((error) => {
+			console.warn('Could not copy the command palette settings for non-admin users', error);
+		});
 
 		return true;
 	},

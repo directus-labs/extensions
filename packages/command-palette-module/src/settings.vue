@@ -17,6 +17,7 @@ import { defaultSettings, ModuleSettings } from './types';
 import { zodErrorToValidationErrors } from './utils/errors';
 import { isAdminFromStores } from './utils/is-admin';
 import { parsePersistedSettings } from './utils/parse-persisted-settings';
+import { syncSettingsMirror } from './utils/settings-mirror';
 
 const i18n = useI18n();
 const { t } = i18n;
@@ -44,8 +45,21 @@ const validationErrors = ref<ValidationError[]>([]);
 async function persistSettings(value: SearchConfigType) {
 	await api.patch('/settings', { command_palette_settings: value });
 	await settingsStore.hydrate();
-	notificationsStore.add({ title: t('settings_update_success') });
 	initialValues.value = clone(settingsStore.settings.command_palette_settings);
+
+	try {
+		await syncSettingsMirror(stores, api);
+		notificationsStore.add({ title: t('settings_update_success') });
+	}
+	catch (error) {
+		console.warn(error);
+
+		// The settings are saved, and the next admin app load retries the copy.
+		notificationsStore.add({
+			title: 'Settings saved, but non-admin users won\'t see the changes until an admin reloads the app',
+			type: 'warning',
+		});
+	}
 }
 
 async function updateSearchSettings(value: Partial<SearchConfigType> | null | undefined) {
@@ -160,29 +174,27 @@ function discardAndLeave() {
 		</template>
 
 		<main class="container">
-			<template v-if="parsedSettings">
-				<section v-if="!isAdmin">
-					<v-info icon="block" title="Unauthorized Access" type="danger" center>
-						You do not have permission to access this page. Please contact an
-						admin to configure search settings.
-					</v-info>
-				</section>
-				<section v-else>
-					<v-form
-						v-model="edits"
-						:initial-values="initialValues"
-						:fields="fields"
-						:validation-errors="validationErrors"
-						:disabled="saving"
-					/>
-				</section>
-			</template>
+			<section v-if="!isAdmin">
+				<v-info icon="block" title="Unauthorized Access" type="danger" center>
+					You do not have permission to access this page. Please contact an
+					admin to configure search settings.
+				</v-info>
+			</section>
+
+			<section v-else-if="parsedSettings">
+				<v-form
+					v-model="edits"
+					:initial-values="initialValues"
+					:fields="fields"
+					:validation-errors="validationErrors"
+					:disabled="saving"
+				/>
+			</section>
 
 			<section v-else-if="globalSearchSettingsField">
 				<v-info icon="block" title="Settings Field Error" type="danger" center>
 					<p>There's an error with the structure of the command palette settings.</p>
 					<v-button
-						v-if="isAdmin"
 						style="margin-top: 12px"
 						secondary
 						:disabled="saving"
@@ -190,9 +202,6 @@ function discardAndLeave() {
 					>
 						Reset Command Palette Settings
 					</v-button>
-					<p v-else>
-						Please contact an admin to reset the command palette settings.
-					</p>
 				</v-info>
 			</section>
 
@@ -200,7 +209,6 @@ function discardAndLeave() {
 				<v-info icon="block" title="Settings Field Missing" type="danger" center>
 					<p>The command palette settings field is missing from Directus project settings.</p>
 					<v-button
-						v-if="isAdmin"
 						kind="primary"
 						style="margin-top: 12px"
 						:loading="saving"
@@ -209,9 +217,6 @@ function discardAndLeave() {
 					>
 						Create Command Palette Settings
 					</v-button>
-					<p v-else>
-						Please contact an admin to create the command palette settings.
-					</p>
 				</v-info>
 			</section>
 		</main>
