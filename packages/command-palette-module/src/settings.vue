@@ -222,7 +222,7 @@ function discardAndLeave() {
 		</main>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" title="Information" close>
+			<sidebar-detail id="info" icon="info" title="Information" close>
 				<div
 					v-md="
 						`**Global Search** –– \n Search for keywords across many different collections and fields.`

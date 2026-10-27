@@ -90,7 +90,7 @@ async function selectRecentSearch(value: string) {
 				</form>
 				<div class="search-info">
 					<p v-show="query">
-						{{ info.hits }} results returned in {{ info.time }}ms for "{{
+						{{ info.hits }} {{ info.hits === 1 ? 'result' : 'results' }} returned in {{ info.time }}ms for "{{
 							info.query
 						}}" across {{ collections.length }} collections.
 					</p>
@@ -120,6 +120,20 @@ async function selectRecentSearch(value: string) {
 						Please contact an admin to properly configure the command palette.
 					</p>
 				</v-info>
+			</section>
+
+			<section
+				v-if="settingsValid && !query && recentSearches.searches.value.length > 0"
+				class="recent-searches"
+			>
+				<p class="text">
+					Recent Searches
+				</p>
+				<RecentSearches
+					:searches="recentSearches.searches.value"
+					@select="selectRecentSearch"
+					@clear="recentSearches.clear"
+				/>
 			</section>
 
 			<!-- Search Results -->
@@ -169,25 +183,12 @@ async function selectRecentSearch(value: string) {
 
 		<!-- Sidebar -->
 		<template #sidebar>
-			<sidebar-detail icon="info" title="Information" close>
+			<sidebar-detail id="info" icon="info" title="Information" close>
 				<div
 					v-md="
-						`**Global Search** –– \n Search for keywords across many different collections and fields.`
+						`**Global Search** –– \n Search for keywords across many different collections and fields.\n\nRecent searches are stored locally for the current Directus project and user.`
 					"
 					class="page-description"
-				/>
-			</sidebar-detail>
-			<sidebar-detail icon="history" title="Recent Searches" start-open>
-				<div
-					v-md="
-						`Recent searches are stored locally for the current Directus project and user.`
-					"
-					class="page-description"
-				/>
-				<RecentSearches
-					:searches="recentSearches.searches.value"
-					@select="selectRecentSearch"
-					@clear="recentSearches.clear"
 				/>
 			</sidebar-detail>
 		</template>
@@ -197,7 +198,6 @@ async function selectRecentSearch(value: string) {
 <style scoped>
 .container {
 	padding: var(--content-padding);
-	padding-top: 0;
 	width: 100%;
 	max-width: 1024px;
 
