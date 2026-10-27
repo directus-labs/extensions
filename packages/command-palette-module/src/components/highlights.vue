@@ -68,40 +68,57 @@ const parts = computed<HighlightPart[]>(() => {
 	mergedMatches.push([currentStart, currentEnd]);
 
 	const result: HighlightPart[] = [];
+	let previousEnd = 0;
+	let previousContextEnd = -1;
 
-	for (const [index, [start, end]] of mergedMatches.slice(0, MAX_SNIPPETS).entries()) {
+	for (const [start, end] of mergedMatches.slice(0, MAX_SNIPPETS)) {
 		// Keep the whitespace touching the match, so "the release" doesn't render as "therelease".
 		const precedingText = getPrecedingWords(props.text, start).trimStart();
-		const followingText = getFollowingWords(props.text, end).trimEnd();
-		const highlightedText = props.text.slice(start, end);
 
-		if (index > 0) result.push({ highlighted: false, text: '...' });
+		// Matches whose context overlaps share one snippet, so the text between them isn't repeated.
+		if (start - precedingText.length <= previousContextEnd) {
+			result.push({ highlighted: false, text: props.text.slice(previousEnd, start) });
+		}
+		else {
+			if (result.length > 0) {
+				pushFollowingText(result, previousEnd);
+				// The previous snippet already ends with an ellipsis.
+				result.push({ highlighted: false, text: ` ${precedingText}` });
+			}
+			else if (precedingText.trim()) {
+				result.push({
+					highlighted: false,
+					text: (start > precedingText.length ? '... ' : '') + precedingText,
+				});
+			}
+			else if (start > 0) {
+				result.push({ highlighted: false, text: '...' });
+			}
+		}
 
-		if (precedingText.trim()) {
-			result.push({
-				highlighted: false,
-				text: (start > precedingText.length ? '... ' : '') + precedingText,
-			});
-		}
-		else if (start > 0) {
-			result.push({ highlighted: false, text: '...' });
-		}
-
-		result.push({ highlighted: true, text: highlightedText });
-
-		if (followingText.trim()) {
-			result.push({
-				highlighted: false,
-				text: end + followingText.length < props.text.length ? `${followingText} ...` : followingText,
-			});
-		}
-		else if (end < props.text.length) {
-			result.push({ highlighted: false, text: '...' });
-		}
+		result.push({ highlighted: true, text: props.text.slice(start, end) });
+		previousEnd = end;
+		previousContextEnd = end + getFollowingWords(props.text, end).trimEnd().length;
 	}
+
+	pushFollowingText(result, previousEnd);
 
 	return result;
 });
+
+function pushFollowingText(result: HighlightPart[], end: number) {
+	const followingText = getFollowingWords(props.text, end).trimEnd();
+
+	if (followingText.trim()) {
+		result.push({
+			highlighted: false,
+			text: end + followingText.length < props.text.length ? `${followingText} ...` : followingText,
+		});
+	}
+	else if (end < props.text.length) {
+		result.push({ highlighted: false, text: '...' });
+	}
+}
 
 function getPrecedingWords(text: string, start: number) {
 	let limit = Math.max(0, start - MAX_CONTEXT_LENGTH);

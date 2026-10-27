@@ -83,6 +83,29 @@ describe('Highlights', () => {
 		expect(wrapper.text()).toBe(expected);
 	});
 
+	it('shows nearby matches in one snippet without repeating text', () => {
+		const wrapper = mount(Highlights, {
+			props: {
+				query: 'e',
+				text: 'admin@example.com',
+			},
+		});
+
+		expect(wrapper.text()).toBe('admin@example.com');
+		expect(wrapper.findAll('mark')).toHaveLength(2);
+	});
+
+	it('separates distant matches with one ellipsis', () => {
+		const wrapper = mount(Highlights, {
+			props: {
+				query: 'match',
+				text: 'match one two three four five six seven eight nine match',
+			},
+		});
+
+		expect(wrapper.text()).toBe('match one two ... eight nine match');
+	});
+
 	it('renders a bounded number of snippets for texts with thousands of matches', () => {
 		const wrapper = mount(Highlights, {
 			props: {
