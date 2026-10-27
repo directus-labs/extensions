@@ -34,7 +34,7 @@
 		"@tiptap/extension-youtube": "3.31.3"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "18.0.6",
+		"@directus/extensions-sdk": "18.1.0",
 		"@tiptap/core": "^3.31.3",
 		"typescript": "^5.9.3"
 	}
