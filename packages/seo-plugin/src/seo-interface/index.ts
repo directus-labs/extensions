@@ -286,7 +286,6 @@ export default defineInterface({
 					fields: additionalFields({ collection: collection || '' }),
 				},
 				width: 'full',
-				required: true,
 			},
 		},
 	],

@@ -26,11 +26,11 @@ const { state: descriptionState } = useSeoField(computed(() => props.value?.meta
 
 // Calculate the status of the additional fields.
 const additionalFieldsStatus = computed(() => {
-	const fields = props.interfaceOptions.additionalFields;
+	const fields = props.interfaceOptions?.additionalFields;
 	if (!fields?.length)
 		return null;
 
-	const fieldValues = props.value.additional_fields;
+	const fieldValues = props.value?.additional_fields;
 
 	const isFieldFilled = (field: any) =>
 		fieldValues?.[field.field] != null
@@ -75,10 +75,10 @@ const status = computed(() => {
 	}
 
 	// Check for missing required additional fields
-	const hasRequiredFields = props.interfaceOptions.additionalFields?.some(
+	const hasRequiredFields = props.interfaceOptions?.additionalFields?.some(
 		(field: any) => field.required
-			&& (!props.value.additional_fields?.[field.field]
-				|| props.value.additional_fields[field.field] === ''),
+			&& (!props.value?.additional_fields?.[field.field]
+				|| props.value?.additional_fields[field.field] === ''),
 	);
 
 	if (hasRequiredFields) {
@@ -96,7 +96,7 @@ const status = computed(() => {
 	}
 
 	// Check for OG image if enabled
-	if (props.interfaceOptions.showOgImage && !props.value?.og_image) {
+	if (props.interfaceOptions?.showOgImage && !props.value?.og_image) {
 		return {
 			icon: 'warning',
 			color: 'warning',
@@ -125,7 +125,7 @@ const status = computed(() => {
 				</label>
 
 				<!-- No Index -->
-				<div v-if="interfaceOptions.showSearchControls" class="preview-box-item">
+				<div v-if="interfaceOptions?.showSearchControls" class="preview-box-item">
 					<v-chip v-if="value.no_index" small label>
 						<v-icon
 							name="visibility_off"
@@ -175,7 +175,7 @@ const status = computed(() => {
 				</div>
 
 				<!-- OG Image -->
-				<div v-if="interfaceOptions.showOgImage" class="preview-box-item border-bottom-dash">
+				<div v-if="interfaceOptions?.showOgImage" class="preview-box-item border-bottom-dash">
 					<div class="left">
 						<h3>OG Image</h3>
 					</div>

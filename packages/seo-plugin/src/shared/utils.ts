@@ -7,7 +7,15 @@
  */
 export function stripHtml(html: string): string {
 	if (!html) return '';
-	return html.replaceAll(/<[^>]*>/g, ' ').replaceAll(/\s+/g, ' ').trim();
+	return decodeEntities(html.replaceAll(/<[^>]*>/g, ' ')).replaceAll(/\s+/g, ' ').trim();
+}
+
+/**
+ * Decodes HTML entities. Older WYSIWYG output stores accents as named entities (`&eacute;`).
+ */
+function decodeEntities(text: string): string {
+	if (!text.includes('&') || typeof DOMParser === 'undefined') return text;
+	return new DOMParser().parseFromString(text, 'text/html').documentElement.textContent ?? text;
 }
 
 /**
@@ -22,8 +30,8 @@ export function stripMarkdown(md: string): string {
 		.replaceAll(/_(.+?)_/g, '$1') // Italic
 		.replaceAll(/```(.+?)```/g, '$1') // Code blocks
 		.replaceAll(/`(.+?)`/g, '$1') // Inline code
-		.replaceAll(/\[(.+?)\]\(.+?\)/g, '$1') // Links
 		.replaceAll(/!\[(.+?)\]\(.+?\)/g, '$1') // Images
+		.replaceAll(/\[(.+?)\]\(.+?\)/g, '$1') // Links
 		.replaceAll(/#{1,6}\s+(.+)/g, '$1') // Headings
 		.replaceAll(/\n+/g, ' ') // Newlines
 		.replaceAll(/\s+/g, ' ')
@@ -47,28 +55,35 @@ export function countWords(text: string): number {
 }
 
 /**
- * Counts case-insensitive occurrences of a substring in a string
+ * Counts case-insensitive, whole-word occurrences of a phrase in a string
  */
-export function countOccurrences(text: string, sub: string): number {
-	if (!text || !sub) return 0;
+export function countOccurrences(text: string, phrase: string): number {
+	if (!text || !phrase) return 0;
 
-	const normalizedText = text.toLowerCase();
-	const normalizedSub = sub.toLowerCase();
+	const normalizedPhrase = phrase.normalize('NFC').trim();
+	if (!normalizedPhrase) return 0;
 
-	// Return 0 if the substring is empty
-	if (normalizedSub.length === 0) return 0;
+	const escaped = normalizedPhrase.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+	// Lookarounds instead of \b, which only understands ASCII letters
+	const pattern = new RegExp(String.raw`(?<![\p{L}\p{N}])${escaped}(?![\p{L}\p{N}])`, 'giu');
 
-	return normalizedText.split(normalizedSub).length - 1;
+	return text.normalize('NFC').match(pattern)?.length ?? 0;
+}
+
+export function containsPhrase(text: string | undefined | null, phrase: string): boolean {
+	return countOccurrences(text ?? '', phrase) > 0;
 }
 
 /**
  * Normalizes a slug for comparison
  */
 export function normalizeSlug(slug: string): string {
-	if (!slug) return '';
-	return slug
+	if (slug === null || slug === undefined || slug === '') return '';
+	return String(slug)
+		.normalize('NFD')
+		.replaceAll(/\p{M}/gu, '') // Fold accents, slugs are usually written without them
 		.toLowerCase()
-		.replaceAll(/[^\w\s-]/g, '') // Remove special characters
+		.replaceAll(/[^\p{L}\p{N}\s-]/gu, '') // Remove special characters
 		.replaceAll(/[\s_]+/g, '-') // Replace spaces and underscores with hyphens
 		.replaceAll(/-+/g, '-'); // Remove duplicate hyphens
 }
@@ -91,14 +106,14 @@ export function extractImageAltText(html: string): string[] {
 	if (!html) return [];
 
 	const altTexts: string[] = [];
-	const imgRegex = /<img[^>]*alt=["']([^"']*)["'][^>]*>/gi;
+	const imgRegex = /<img\s[^>]*?\balt=(?:"([^"]*)"|'([^']*)')/gi;
 	let match: RegExpExecArray | null;
 
 	while ((match = imgRegex.exec(html)) !== null) {
-		const altText = match[1];
+		const altText = stripHtml(match[1] ?? match[2] ?? '');
 
-		if (altText && altText.trim()) {
-			altTexts.push(altText.trim());
+		if (altText) {
+			altTexts.push(altText);
 		}
 	}
 
@@ -125,7 +140,7 @@ export function extractSubheadings(content: string): string[] {
 	const subheadings: string[] = [];
 
 	// Extract HTML headings h2-h6
-	const htmlHeadingRegex = /<h([2-6])[^>]*>(.*?)<\/h\1>/gi;
+	const htmlHeadingRegex = /<h([2-6])[^>]*>([\s\S]*?)<\/h\1>/gi;
 	let match: RegExpExecArray | null;
 
 	while ((match = htmlHeadingRegex.exec(content)) !== null) {

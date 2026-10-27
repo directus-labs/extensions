@@ -2,6 +2,7 @@ import type { AnalysisResult } from './types';
 import { seoRules } from '../../shared/rulesets';
 import {
 	calculateDensity,
+	containsPhrase,
 	countOccurrences,
 	countWords,
 	extractImageAltText,
@@ -29,7 +30,7 @@ export function analyzeTitle(input: AnalysisInput): AnalysisResult {
 	}
 
 	const titleLength = input.title?.length || 0;
-	const hasKeyphrase = input.title?.toLowerCase().includes(input.focusKeyphrase.toLowerCase()) || false;
+	const hasKeyphrase = containsPhrase(input.title, input.focusKeyphrase);
 	const isTitleLengthGood = titleLength >= seoRules.title.minLength && titleLength <= seoRules.title.maxLength;
 
 	if (!input.title) {
@@ -99,7 +100,7 @@ export function analyzeDescription(input: AnalysisInput): AnalysisResult {
 	}
 
 	const descriptionLength = input.description?.length || 0;
-	const hasKeyphrase = input.description?.toLowerCase().includes(input.focusKeyphrase.toLowerCase()) || false;
+	const hasKeyphrase = containsPhrase(input.description, input.focusKeyphrase);
 	const isDescriptionLengthGood = descriptionLength >= seoRules.meta_description.minLength
 		&& descriptionLength <= seoRules.meta_description.maxLength;
 
@@ -180,7 +181,7 @@ export function analyzeSlug(input: AnalysisInput): AnalysisResult {
 
 	const normalizedSlug = normalizeSlug(input.slug);
 	const normalizedKeyphrase = normalizeSlug(input.focusKeyphrase);
-	const hasKeyphrase = normalizedSlug.includes(normalizedKeyphrase);
+	const hasKeyphrase = normalizedKeyphrase !== '' && normalizedSlug.includes(normalizedKeyphrase);
 
 	if (!hasKeyphrase) {
 		return {
@@ -300,9 +301,7 @@ export function analyzeImageAltText(input: AnalysisInput): AnalysisResult {
 		};
 	}
 
-	const keyphraseInAlt = altTexts.some((alt) =>
-		alt.toLowerCase().includes(input.focusKeyphrase.toLowerCase()),
-	);
+	const keyphraseInAlt = altTexts.some((alt) => containsPhrase(alt, input.focusKeyphrase));
 
 	if (!keyphraseInAlt) {
 		return {
@@ -354,9 +353,7 @@ export function analyzeSubheadings(input: AnalysisInput): AnalysisResult {
 		};
 	}
 
-	const keyphraseInSubheadings = subheadings.some((heading) =>
-		heading.toLowerCase().includes(input.focusKeyphrase.toLowerCase()),
-	);
+	const keyphraseInSubheadings = subheadings.some((heading) => containsPhrase(heading, input.focusKeyphrase));
 
 	if (!keyphraseInSubheadings) {
 		return {

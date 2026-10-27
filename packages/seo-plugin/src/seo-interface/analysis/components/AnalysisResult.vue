@@ -43,7 +43,7 @@ const lengthMeterProgress = computed(() => {
 	const value = detailComponent.value;
 	if (!value || value.type !== 'length' || value.data.length === 0 || !value.data.maxLength) return 0;
 	const { length, maxLength } = value.data;
-	return Math.min(100, (length ?? 0 / maxLength) * 100);
+	return Math.min(100, ((length ?? 0) / maxLength) * 100);
 });
 
 const lengthMeterStatus = computed((): SeoFieldStatus => {

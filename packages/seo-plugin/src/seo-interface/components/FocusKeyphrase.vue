@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onClickOutside, onKeyStroke } from '@vueuse/core';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
@@ -16,7 +15,6 @@ const value = computed({
 	set: (val: string) => emit('update:modelValue', val),
 });
 
-const inputRef = ref<HTMLElement | null>(null);
 const isEditing = ref<boolean>(!props.modelValue && !props.disabled);
 
 function enableEdit() {
@@ -27,19 +25,6 @@ function enableEdit() {
 function disableEdit() {
 	isEditing.value = false;
 }
-
-onClickOutside(inputRef, () => {
-	if (!props.disabled) {
-		disableEdit();
-	}
-});
-
-onKeyStroke('Enter', (e) => {
-	if (isEditing.value && !props.disabled) {
-		e.preventDefault();
-		disableEdit();
-	}
-});
 </script>
 
 <template>
@@ -48,11 +33,11 @@ onKeyStroke('Enter', (e) => {
 			<label class="label field-label type-label">Focus Keyphrase</label>
 			<template v-if="isEditing && !disabled">
 				<v-input
-					ref="inputRef"
 					v-model="value"
 					autofocus
 					placeholder="Enter the main keyword or phrase"
 					@blur="disableEdit"
+					@keydown.enter.prevent="disableEdit"
 				/>
 			</template>
 			<div v-else :class="{ disabled }" class="keyphrase-display">

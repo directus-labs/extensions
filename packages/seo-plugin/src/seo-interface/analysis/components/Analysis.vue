@@ -81,7 +81,7 @@ const contentString = computed(() => {
 	return combined.trim();
 });
 
-const slugValue = computed(() => values.value[props.slugField as keyof typeof values.value] || '');
+const slugValue = computed(() => (props.slugField && values?.value?.[props.slugField]) || '');
 
 const analysisInput = computed(() => ({
 	focusKeyphrase: props.focusKeyphrase,
