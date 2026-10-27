@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/seo-plugin",
 	"type": "module",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"description": "SEO plugin for Directus",
 	"license": "MIT",
 	"repository": {
@@ -51,7 +51,7 @@
 		"vue-i18n": "^10.0.5"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "16.0.2",
+		"@directus/extensions-sdk": "18.1.0",
 		"jsdom": "^26.1.0",
 		"sass": "^1.84.0",
 		"typescript": "^5.7.3",
