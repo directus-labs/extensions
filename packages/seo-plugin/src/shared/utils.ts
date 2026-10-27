@@ -51,8 +51,17 @@ export function normalizeContent(content: string): string {
  */
 export function countWords(text: string): number {
 	if (!text) return 0;
+
+	// Segmenter handles languages written without spaces (Japanese, Chinese)
+	if (typeof Intl.Segmenter === 'function') {
+		return [...new Intl.Segmenter(undefined, { granularity: 'word' }).segment(text)].filter((segment) => segment.isWordLike).length;
+	}
+
 	return text.split(/\s+/).filter(Boolean).length;
 }
+
+// Scripts written without spaces between words, or with particles attached to words (Korean)
+const NO_WORD_BOUNDARY_SCRIPTS = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Thai}]/u;
 
 /**
  * Counts case-insensitive, whole-word occurrences of a phrase in a string
@@ -65,7 +74,9 @@ export function countOccurrences(text: string, phrase: string): number {
 
 	const escaped = normalizedPhrase.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 	// Lookarounds instead of \b, which only understands ASCII letters
-	const pattern = new RegExp(String.raw`(?<![\p{L}\p{N}])${escaped}(?![\p{L}\p{N}])`, 'giu');
+	const pattern = NO_WORD_BOUNDARY_SCRIPTS.test(normalizedPhrase)
+		? new RegExp(escaped, 'giu')
+		: new RegExp(String.raw`(?<![\p{L}\p{N}])${escaped}(?![\p{L}\p{N}])`, 'giu');
 
 	return text.normalize('NFC').match(pattern)?.length ?? 0;
 }

@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import {
 	countOccurrences,
+	countWords,
 	extractImageAltText,
 	extractSubheadings,
 	normalizeContent,
@@ -39,6 +40,12 @@ describe('countOccurrences', () => {
 
 	it('matches precomposed and decomposed accents', () => {
 		expect(countOccurrences('café', 'café')).toBe(1);
+	});
+
+	it('matches Japanese, Chinese, and Korean keyphrases inside running text', () => {
+		expect(countOccurrences('東京観光ガイドで東京を楽しむ', '東京')).toBe(2);
+		expect(countOccurrences('上海旅游指南', '旅游')).toBe(1);
+		expect(countOccurrences('서울 여행을 계획하세요', '여행')).toBe(1);
 	});
 
 	it('escapes regex characters in the keyphrase', () => {
@@ -81,5 +88,15 @@ describe('renderTemplate', () => {
 
 	it('renders missing and null values as empty', () => {
 		expect(renderTemplate('{{nil}}{{missing}}{{ missing.deep }}', values)).toBe('');
+	});
+});
+
+describe('countWords', () => {
+	it('counts words in spaced languages', () => {
+		expect(countWords('one two  three')).toBe(3);
+	});
+
+	it('counts words in languages written without spaces', () => {
+		expect(countWords('私は東京に住んでいます')).toBeGreaterThan(3);
 	});
 });
