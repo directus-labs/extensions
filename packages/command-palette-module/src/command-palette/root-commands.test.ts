@@ -19,6 +19,7 @@ const registered = vi.hoisted(() => ({
 	commands: undefined as { id: string; name: string; group?: string }[] | undefined,
 }));
 const recentIds = vi.hoisted(() => ({ value: [] as string[] }));
+const addToRecents = vi.hoisted(() => vi.fn());
 
 vi.mock('@directus/extensions-sdk', () => ({
 	useApi: () => ({}),
@@ -34,7 +35,7 @@ vi.mock('../composables/use-settings', () => ({ useSettings: () => ({ settings: 
 vi.mock('../composables/use-unexpected-error', () => ({ useUnexpectedError: () => vi.fn() }));
 vi.mock('../composables/use-global-search', () => ({ useGlobalSearch: () => ({ results: ref([]), loading }) }));
 
-vi.mock('./composables/use-recent-commands', () => ({ useRecentCommands: () => ({ commands: ref(recentIds.value), add: vi.fn() }) }));
+vi.mock('./composables/use-recent-commands', () => ({ useRecentCommands: () => ({ commands: ref(recentIds.value), add: addToRecents }) }));
 
 vi.mock('./composables/use-ask-ai', () => ({ useAskAi: () => ({ visible: showAskAi, askAi }) }));
 
@@ -138,6 +139,33 @@ describe('RootCommands', () => {
 		search.value = 'articles';
 		await flushPromises();
 		expect(headings()[0]).toBe('Articles');
+
+		registered.groups = [];
+		registered.commands = undefined;
+		recentIds.value = [];
+	});
+
+	it('keeps context commands out of recents', async () => {
+		registered.groups = [{ id: 'collection:articles', name: 'Articles' }, { id: 'context', name: 'Context' }];
+
+		registered.commands = [
+			{ id: 'go-articles', name: 'Go to Articles', group: 'collection:articles' },
+			{ id: 'copy-id', name: 'Copy ID', group: 'context' },
+		];
+
+		recentIds.value = ['copy-id'];
+		addToRecents.mockClear();
+
+		const wrapper = mountRoot('');
+		await flushPromises();
+
+		const headings = wrapper.findAll('[role="group"]').map((group) => group.element.firstElementChild!.textContent!.trim());
+		expect(headings).not.toContain('Recents');
+
+		const option = (name: string) => wrapper.findAll('[role="option"]').find((item) => item.text() === name)!;
+		await option('Copy ID').trigger('click');
+		await option('Go to Articles').trigger('click');
+		expect(addToRecents.mock.calls).toEqual([['go-articles']]);
 
 		registered.groups = [];
 		registered.commands = undefined;

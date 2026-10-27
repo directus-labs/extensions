@@ -4,18 +4,22 @@ import GroupHeading from './group-heading.vue';
 
 defineProps<{
 	heading?: string;
-	icon?: string;
 }>();
 </script>
 
 <template>
-	<ListboxGroup>
-		<ListboxGroupLabel as-child>
+	<ListboxGroup class="command-group" :class="{ titled: heading }">
+		<ListboxGroupLabel v-if="heading" as-child>
 			<GroupHeading>
-				<v-icon v-if="icon" :name="icon" />
 				{{ heading }}
 			</GroupHeading>
 		</ListboxGroupLabel>
 		<slot />
 	</ListboxGroup>
 </template>
+
+<style scoped>
+.command-group.titled:not(:first-child) {
+	margin-block-start: 0.5rem;
+}
+</style>

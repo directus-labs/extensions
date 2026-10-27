@@ -49,7 +49,6 @@ function select(group: (typeof groups.value)[number], hit: Record<string, any>) 
 			v-for="group in groups"
 			:key="group.collection"
 			:heading="group.name"
-			:icon="group.icon"
 		>
 			<Item
 				v-for="{ hit, key } in group.rows"

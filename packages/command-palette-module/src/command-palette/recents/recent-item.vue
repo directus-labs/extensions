@@ -12,14 +12,18 @@ const props = defineProps<{
 const { command } = toRefs(props);
 
 const RenderedCommand = computed(() => command.value.render);
+const RenderIcon = computed(() => command.value.icon);
 </script>
 
 <template>
 	<Item
 		:key="command.id"
 		:value="`recent:${command.id}`"
-		icon="history"
+		:icon="typeof command.icon === 'string' ? command.icon : undefined"
 	>
+		<template v-if="typeof command.icon !== 'string'" #icon>
+			<RenderIcon />
+		</template>
 		<div class="title-wrapper">
 			<RenderedCommand v-if="command.render" />
 			<div v-else>

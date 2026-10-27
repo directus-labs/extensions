@@ -93,6 +93,7 @@ const groupsWithCommands = computed(() => {
 });
 
 // With no query, actions on the current page lead, ahead of recents.
+const recentableCommands = computed(() => commands.value.filter(({ group }) => group !== 'context'));
 const leadingGroups = computed(() => search.value ? [] : groupsWithCommands.value.filter(({ id }) => id === 'context'));
 const trailingGroups = computed(() => groupsWithCommands.value.filter((group) => !leadingGroups.value.includes(group)));
 
@@ -121,7 +122,8 @@ function selectRecentCommand(commandId: string) {
 }
 
 async function onSelect(command: CommandConfig) {
-	addToRecents(command.id);
+	// Context commands act on the page you're on, so replaying them from another page makes no sense.
+	if (command.group !== 'context') addToRecents(command.id);
 
 	if (command.action) {
 		try {
@@ -149,7 +151,6 @@ async function onSelect(command: CommandConfig) {
 			v-for="group in leadingGroups"
 			:key="group.id"
 			:heading="group.name"
-			:icon="group.icon"
 		>
 			<CommandItem
 				v-for="command in positionedCommands.grouped[group.id]"
@@ -161,7 +162,7 @@ async function onSelect(command: CommandConfig) {
 		</Group>
 		<RecentItems
 			v-if="!search"
-			:available-commands="commands"
+			:available-commands="recentableCommands"
 			:command-ids="recentCommandIds"
 			:groups="groups"
 			@select="selectRecentCommand"
@@ -182,7 +183,6 @@ async function onSelect(command: CommandConfig) {
 			v-for="group in trailingGroups"
 			:key="group.id"
 			:heading="group.name"
-			:icon="group.icon"
 		>
 			<CommandItem
 				v-for="command in positionedCommands.grouped[group.id]"
