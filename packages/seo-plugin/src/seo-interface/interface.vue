@@ -101,6 +101,9 @@ const additionalFields = computed(() => {
 	);
 });
 
+// v-form marks a field as edited when it differs from its initial value
+const initialAdditionalFields = { ...props.value?.additional_fields };
+
 const showAdvancedTab = computed(() => props.showSitemap || props.showSearchControls);
 const showCustomFieldsTab = computed(() => additionalFields.value?.length > 0);
 const showAnalysisTab = computed(() => !!props.showFocusKeyphrase);
@@ -270,6 +273,7 @@ function onTabKeydown(event: KeyboardEvent) {
 				<v-form
 					:fields="additionalFields"
 					:model-value="internalValue.additional_fields"
+					:initial-values="initialAdditionalFields"
 					:disabled="props.disabled"
 					@update:model-value="updateField('additional_fields', $event)"
 				/>

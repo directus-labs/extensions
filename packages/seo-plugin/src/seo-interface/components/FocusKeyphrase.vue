@@ -19,9 +19,12 @@ const value = computed({
 });
 
 const isEditing = ref<boolean>(!props.modelValue && !props.disabled);
+// Only grab focus when the user asks to edit, not when the tab opens (keyboard users would get stuck in the input)
+const focusInput = ref(false);
 
 function enableEdit() {
 	if (props.disabled) return;
+	focusInput.value = true;
 	isEditing.value = true;
 }
 
@@ -37,7 +40,7 @@ function disableEdit() {
 			<template v-if="isEditing && !disabled">
 				<v-input
 					v-model="value"
-					autofocus
+					:autofocus="focusInput"
 					:placeholder="t('seo_plugin.ui.keyphrase_placeholder')"
 					@blur="disableEdit"
 					@keydown.enter.prevent="disableEdit"

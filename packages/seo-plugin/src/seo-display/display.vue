@@ -11,13 +11,14 @@ const props = defineProps<{
 	showSearchPreview?: boolean;
 }>();
 
-// A column like `translations.seo` passes one row per translation instead of a single value.
-// Rows without SEO data are kept (scored as missing) so gaps stay visible.
+// A column like `translations.seo` passes one entry per translation instead of a single value:
+// rows (`{ seo: {...} }`) on Directus 11+, the SEO values themselves on 10.
+// Entries without SEO data are kept (scored as missing) so gaps stay visible.
 const values = computed<SeoValue[]>(() => {
 	if (!Array.isArray(props.value)) return [props.value];
 
 	const key = props.field.split('.').at(-1)!;
-	return props.value.map((row) => (row?.[key] ?? {}) as SeoValue);
+	return props.value.map((entry) => ((entry && key in entry ? entry[key] : entry) ?? {}) as SeoValue);
 });
 </script>
 

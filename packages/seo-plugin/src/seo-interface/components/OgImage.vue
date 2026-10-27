@@ -250,7 +250,7 @@ watch(
 					<v-icon name="close" />
 				</v-button>
 			</div>
-			<div v-if="!imageError" class="info">
+			<div v-if="!imageError" class="file-info">
 				<div class="title">
 					{{ image.title }}
 				</div>
@@ -346,7 +346,7 @@ watch(
 			transform: translateY(-50%);
 		}
 
-		.info {
+		.file-info {
 			z-index: 10;
 			opacity: 0;
 			transform: translateY(10px);
@@ -366,7 +366,7 @@ watch(
 				background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.5) 100%);
 			}
 
-			.info {
+			.file-info {
 				opacity: 1;
 				transform: translateY(0);
 			}
@@ -444,7 +444,7 @@ watch(
 		margin-right: 0px;
 	}
 }
-.info {
+.file-info {
 	position: absolute;
 	bottom: 0;
 	left: 0;
