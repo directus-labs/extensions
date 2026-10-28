@@ -11,7 +11,6 @@ import DescriptionBoundary from '../../components/description-boundary.vue';
 import Highlights from '../../components/highlights.vue';
 import { getPaletteResultLimit } from '../../composables/use-global-search';
 import { useSettings } from '../../composables/use-settings';
-import { useUnexpectedError } from '../../composables/use-unexpected-error';
 import { createDeepObject } from '../../utils/create-deep-object';
 import { getDescriptionDisplay, hasDescriptionValue } from '../../utils/get-description-display';
 import { getEndpoint } from '../../utils/get-endpoint';
@@ -53,7 +52,6 @@ const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 const currentUserId = stores.useUserStore().currentUser?.id;
 const settings = useSettings(stores);
-const unexpectedError = useUnexpectedError({ stores, i18n });
 const { search, loading, close } = useCommandContext();
 
 const collectionConfig = computed(() =>
@@ -175,7 +173,8 @@ async function fetchItems(query: string, currentRequest: number) {
 	catch (error) {
 		if (currentRequest === requestId && !controller.signal.aborted) {
 			results.value = [];
-			unexpectedError(error);
+			// Logged, not a dialog: a bad configured filter or sort fails every keystroke.
+			console.error(error);
 		}
 	}
 	finally {
@@ -213,10 +212,9 @@ async function loadRecentItems() {
 
 		if (controller.signal.aborted) return;
 
-		const failure = settled.find(
-			(result): result is PromiseRejectedResult => result.status === 'rejected',
-		);
-		if (failure) unexpectedError(failure.reason);
+		for (const result of settled) {
+			if (result.status === 'rejected') console.error(result.reason);
+		}
 
 		recentItems.value = settled.flatMap((result) =>
 			result.status === 'fulfilled' && result.value ? [result.value] : [],

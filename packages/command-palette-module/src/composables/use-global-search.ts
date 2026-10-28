@@ -148,10 +148,11 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 
 				if (currentRequest !== requestId || controller.signal.aborted) return;
 
-				const failure = settled.find(
-					(result): result is PromiseRejectedResult => result.status === 'rejected',
-				);
-				if (failure) unexpectedError(failure.reason);
+				// Log and skip failed collections, like main. A bad configured filter or sort fails on every search,
+				// so a dialog here would stack one per keystroke.
+				for (const result of settled) {
+					if (result.status === 'rejected') console.error(result.reason);
+				}
 
 				results.value = settled.flatMap((result) =>
 					result.status === 'fulfilled' && result.value ? [result.value] : [],

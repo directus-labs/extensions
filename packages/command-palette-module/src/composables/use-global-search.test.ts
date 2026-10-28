@@ -255,8 +255,9 @@ describe('useGlobalSearch', () => {
 		wrapper.unmount();
 	});
 
-	it('keeps partial results and surfaces one collection failure', async () => {
+	it('keeps partial results and logs a collection failure without a dialog', async () => {
 		vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
 		mocks.useSettings.mockReturnValue({
 			settings: ref({ searchMode: 'on_submit', collections: [], triggerRate: 0 }),
@@ -274,7 +275,8 @@ describe('useGlobalSearch', () => {
 		await state.search('article');
 
 		expect(state.results.value.map(({ collection }) => collection)).toEqual(['articles']);
-		expect(mocks.notificationsAdd).toHaveBeenCalledOnce();
+		expect(consoleError).toHaveBeenCalledOnce();
+		expect(mocks.notificationsAdd).not.toHaveBeenCalled();
 		wrapper.unmount();
 	});
 

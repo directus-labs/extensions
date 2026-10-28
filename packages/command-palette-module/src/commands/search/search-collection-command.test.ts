@@ -73,10 +73,6 @@ vi.mock('../../composables/use-settings', () => ({
 	}),
 }));
 
-vi.mock('../../composables/use-unexpected-error', () => ({
-	useUnexpectedError: () => vi.fn(),
-}));
-
 vi.mock('../../utils/is-item-route-available', () => ({
 	isItemRouteAvailable: () => true,
 }));
@@ -178,6 +174,19 @@ describe('SearchCollectionCommand', () => {
 		mountCommand();
 
 		expect(await searchFor('ada')).toMatchObject({ search: 'ada', limit: 25 });
+	});
+
+	it('logs a failed search and recent item instead of opening a dialog', async () => {
+		const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+		mocks.apiGet.mockRejectedValue(new Error('forbidden'));
+		const wrapper = mountCommand();
+
+		await searchFor('ada');
+
+		await vi.waitFor(() => expect(consoleError).toHaveBeenCalledTimes(2));
+		expect(wrapper.text()).not.toContain('Existing article');
+		mocks.apiGet.mockResolvedValue({ data: { data: [{ id: 1, title: 'Existing article' }] } });
+		consoleError.mockRestore();
 	});
 
 	it('drops template fields the user cannot read', async () => {
