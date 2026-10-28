@@ -153,7 +153,7 @@ describe('SearchCollectionCommand', () => {
 			limit: 10,
 		});
 
-		mocks.readableFields = ['id', 'title', 'author.name'];
+		mocks.readableFields = ['id', 'title', 'author.name', 'date'];
 		mocks.recentItems = [];
 		mountCommand();
 
@@ -166,6 +166,14 @@ describe('SearchCollectionCommand', () => {
 			sort: '-date',
 			limit: 10,
 		});
+	});
+
+	it('sorts by the primary key when the configured sort field is unreadable', async () => {
+		mocks.collections.splice(0, 1, { collection: 'articles', fields: ['title'], sort: '-renamed' });
+		mocks.recentItems = [];
+		mountCommand();
+
+		expect(await searchFor('ada')).toMatchObject({ sort: ['id'] });
 	});
 
 	it('uses full-text search for collections without a search config', async () => {

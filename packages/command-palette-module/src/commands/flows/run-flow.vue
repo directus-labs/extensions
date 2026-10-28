@@ -65,8 +65,8 @@ async function runFlow() {
 	}
 
 	notificationsStore.add({ title: t('trigger_flow_success', { flow: props.flow.name }) });
-	// The flow already ran, so a failed refresh must not keep the dialog open for a retry.
-	void Promise.resolve(notificationsStore.refreshUnreadCount?.()).catch(unexpectedError);
+	// The flow already ran, so a failed refresh must not keep the dialog open for a retry, or show an error after the success toast.
+	void Promise.resolve(notificationsStore.refreshUnreadCount?.()).catch((error) => console.warn(error));
 	close();
 }
 </script>

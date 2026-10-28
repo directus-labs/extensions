@@ -3,7 +3,6 @@ import type { CommandActionContext, CommandConfig } from '../command-palette';
 import formatTitle from '@directus/format-title';
 import { defineCommands, refreshRegisteredCommands } from '../command-palette';
 import { useDeploymentProviders } from '../composables/use-deployment-providers';
-import { useUnexpectedError } from '../composables/use-unexpected-error';
 import { getDirectusRouter } from '../utils/get-directus-router';
 import { isAdminFromStores } from '../utils/is-admin';
 import { isModuleEnabled } from '../utils/is-module-enabled';
@@ -15,7 +14,7 @@ export const deploymentsCommands = defineCommands({
 		if (!canReadDeployments(stores)) return [];
 		return [{ id: group, name: 'Deployments', icon: 'rocket_launch' }];
 	},
-	commands: ({ stores, api, i18n }): CommandConfig[] => {
+	commands: ({ stores, api }): CommandConfig[] => {
 		if (!canReadDeployments(stores)) return [];
 
 		const permissionsStore = stores.usePermissionsStore();
@@ -24,7 +23,8 @@ export const deploymentsCommands = defineCommands({
 		const canManageSettings = canManageDeploymentSettings(permissionsStore);
 		const { providers, loaded, loading, fetch } = useDeploymentProviders(api, {
 			userId: stores.useUserStore().currentUser?.id,
-			onError: useUnexpectedError({ stores, i18n }),
+			// A background fetch, so log it rather than open a dialog over the palette.
+			onError: (error) => console.warn(error),
 		});
 
 		if (!loaded.value && !loading.value) {

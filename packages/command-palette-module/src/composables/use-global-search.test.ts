@@ -382,6 +382,24 @@ describe('useGlobalSearch', () => {
 		wrapper.unmount();
 	});
 
+	it('keeps a readable descending sort and falls back to the primary key otherwise', async () => {
+		mocks.useSettings.mockReturnValue({
+			settings: ref({ searchMode: 'on_submit', collections: [], triggerRate: 0 }),
+			collections: ref([{ ...collection('articles'), sort: '-title' }, { ...collection('news'), sort: 'renamed' }]),
+			valid: ref(true),
+		});
+
+		mocks.getField.mockImplementation((_collection: string, field: string) => (field === 'renamed' ? null : {}));
+		mocks.apiGet.mockResolvedValue({ data: { data: [] } });
+
+		const { state, wrapper } = mountSearch();
+		await state.search('article');
+
+		const sorts = Object.fromEntries(mocks.apiGet.mock.calls.map(([url, config]) => [url, config.params.sort]));
+		expect(sorts).toEqual({ '/items/articles': '-title', '/items/news': ['id'] });
+		wrapper.unmount();
+	});
+
 	it('skips collections whose search fields the user cannot read', async () => {
 		mocks.getField.mockReturnValue(null);
 

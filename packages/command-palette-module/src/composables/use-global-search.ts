@@ -194,6 +194,8 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 		const descriptionDisplay = descriptionField
 			? getDescriptionDisplay(fieldsStore, config.collection, descriptionField)
 			: null;
+		// A renamed, deleted or unreadable sort field fails the whole request, so fall back to the primary key.
+		const sortReadable = getReadableFields(fieldsStore, config.collection, [config.sort?.replace(/^-/, '') ?? '']).length > 0;
 		const filter = mergeFilters(config.filter ?? null, {
 			_or: searchFields.map((field) => createDeepObject(field, { _icontains: value })),
 		});
@@ -203,7 +205,7 @@ export function useGlobalSearch(options: GlobalSearchOptions = {}) {
 				limit: options.globallyAvailableOnly
 					? getPaletteResultLimit(config.limit)
 					: config.limit ?? DEFAULT_RESULT_LIMIT,
-				sort: config.sort ?? [primaryKeyField],
+				sort: config.sort && sortReadable ? config.sort : [primaryKeyField],
 				filter,
 				fields: [primaryKeyField, descriptionField, ...displayFields].filter(Boolean),
 			},

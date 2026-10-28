@@ -190,11 +190,14 @@ function getSearchParams(query: string) {
 	const searchFields = config ? getReadableFields(fieldsStore, props.collection, config.fields) : [];
 	if (!config || searchFields.length === 0) return { search: query, limit: 25 };
 
+	// A renamed, deleted or unreadable sort field fails the whole request, so fall back to the primary key.
+	const sortReadable = getReadableFields(fieldsStore, props.collection, [config.sort?.replace(/^-/, '') ?? '']).length > 0;
+
 	return {
 		filter: mergeFilters(config.filter ?? null, {
 			_or: searchFields.map((field) => createDeepObject(field, { _icontains: query })),
 		}),
-		sort: config.sort ?? [primaryKeyField.value],
+		sort: config.sort && sortReadable ? config.sort : [primaryKeyField.value],
 		limit: getPaletteResultLimit(config.limit),
 	};
 }

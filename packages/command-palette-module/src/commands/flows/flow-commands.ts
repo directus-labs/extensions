@@ -99,8 +99,8 @@ export const collectionItemFlowCommands = defineCommands({
 					}
 
 					notificationsStore.add({ title: i18n.t('trigger_flow_success', { flow: flow.name }) });
-					// The flow already ran, so a failed refresh must not keep the palette open for a retry.
-					void Promise.resolve(notificationsStore.refreshUnreadCount?.()).catch(unexpectedError);
+					// The flow already ran, so a failed refresh must not keep the palette open for a retry, or show an error after the success toast.
+					void Promise.resolve(notificationsStore.refreshUnreadCount?.()).catch((error) => console.warn(error));
 					return true;
 				},
 			};

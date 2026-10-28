@@ -106,6 +106,7 @@ describe('RunFlow', () => {
 	});
 
 	it('closes after the flow runs even when the unread count refresh fails', async () => {
+		const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 		mocks.apiPost.mockResolvedValue({});
 		mocks.refreshUnreadCount.mockRejectedValue(new Error('offline'));
 
@@ -114,7 +115,8 @@ describe('RunFlow', () => {
 
 		await runButton.trigger('click');
 		await vi.waitFor(() => expect(mocks.close).toHaveBeenCalledOnce());
-		await vi.waitFor(() => expect(mocks.unexpectedError).toHaveBeenCalledOnce());
+		await vi.waitFor(() => expect(consoleWarn).toHaveBeenCalledOnce());
+		expect(mocks.unexpectedError).not.toHaveBeenCalled();
 		expect(mocks.apiPost).toHaveBeenCalledOnce();
 	});
 });
