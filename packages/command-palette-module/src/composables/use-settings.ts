@@ -2,35 +2,18 @@ import { useStores } from '@directus/extensions-sdk';
 import { uniqBy } from 'lodash-es';
 import { computed } from 'vue';
 import { systemCollections } from '../system-collections';
-import { ModuleSettings } from '../types';
+import { parsePersistedSettings } from '../utils/parse-persisted-settings';
+import { readPersistedSettings } from '../utils/settings-mirror';
 
 export function useSettings(stores?: ReturnType<typeof useStores>) {
-	const { useSettingsStore } = stores ?? useStores();
-	const settingsStore = useSettingsStore();
+	const resolvedStores = stores ?? useStores();
+	const settings = computed(() => parsePersistedSettings(readPersistedSettings(resolvedStores)));
 
-	const settings = computed(() => {
-		const result = ModuleSettings.safeParse(
-			settingsStore.settings.command_palette_settings,
-		);
+	const collections = computed(() =>
+		uniqBy([...(settings.value?.collections ?? []), ...systemCollections], 'collection'),
+	);
 
-		if (result.success) {
-			return result.data;
-		}
-
-		return null;
-	});
-
-	const collections = computed(() => {
-		return uniqBy(
-			[...(settings.value?.collections ?? []), ...systemCollections],
-			'collection',
-		);
-	});
-
-	const valid = computed(() => {
-		// Check if the global search settings exist and the collections to search are valid
-		return !!settings.value && collections.value.length > 0;
-	});
+	const valid = computed(() => settings.value !== undefined && collections.value.length > 0);
 
 	return { settings, collections, valid };
 }

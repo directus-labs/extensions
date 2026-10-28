@@ -1,48 +1,45 @@
 <script setup lang="ts">
-import type { Settings } from '@directus/types';
 import { useStores } from '@directus/extensions-sdk';
 import { onKeyDown, useEventListener } from '@vueuse/core';
 import { computed, ref } from 'vue';
 import { useSettings } from '../composables/use-settings';
 import { OPEN_SEARCH_EVENT } from '../constants';
+import { isMacOS } from '../utils/is-mac-os';
+import { isModuleEnabled } from '../utils/is-module-enabled';
 import CommandPalette from './command-palette.vue';
 
-const { useSettingsStore } = useStores();
-const settingsStore = useSettingsStore();
-const settings = useSettings();
-
+const stores = useStores();
+const settings = useSettings(stores);
 const active = ref(false);
+const moduleEnabled = computed(() => isModuleEnabled(stores));
 
-const moduleEnabled = computed(
-	() =>
-		(settingsStore.settings as Settings).module_bar.find(
-			(module) => module.type === 'module' && module.id === 'global-search',
-		)?.enabled,
+const paletteEnabled = computed(
+	() => moduleEnabled.value && settings.settings.value?.commandPaletteEnabled !== false,
 );
 
-onKeyDown('k', (e) => {
-	if (!moduleEnabled.value)
-		return;
-	if (settings.settings.value?.commandPaletteEnabled === false)
-		return;
+onKeyDown('k', (event) => {
+	if (!paletteEnabled.value) return;
 
-	if (e.metaKey || e.ctrlKey) {
-		e.preventDefault();
-		e.stopPropagation();
-		toggle();
-	}
+	// Leave Cmd/Ctrl+K to rich editors for links. The markdown editor (CodeMirror 5) and the v12 WYSIWYG
+	// (Tiptap) are contenteditable; the v11 WYSIWYG (TinyMCE) runs in an iframe, so its keys never reach us.
+	if (event.target instanceof HTMLElement && event.target.closest('[contenteditable="true"]')) return;
+
+	// Ctrl+K is "delete to end of line" in macOS text fields.
+	if (!(isMacOS() ? event.metaKey : event.ctrlKey)) return;
+
+	event.preventDefault();
+	event.stopPropagation();
+	active.value = !active.value;
 });
 
 onKeyDown('Escape', () => {
 	active.value = false;
 });
 
-useEventListener(OPEN_SEARCH_EVENT, () => {
-	active.value = true;
-});
+useEventListener(window, OPEN_SEARCH_EVENT, open);
 
-function toggle() {
-	active.value = !active.value;
+function open() {
+	if (paletteEnabled.value) active.value = true;
 }
 </script>
 

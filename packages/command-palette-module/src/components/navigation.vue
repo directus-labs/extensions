@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { useStores } from '@directus/extensions-sdk';
 import { useRoute } from 'vue-router';
-import { useIsAdmin } from '../composables/use-is-admin';
+import { isAdminFromStores } from '../utils/is-admin';
 
 defineOptions({
 	name: 'SearchNavigation',
@@ -9,11 +10,11 @@ defineOptions({
 
 const route = useRoute();
 
-const isAdmin = useIsAdmin();
+const isAdmin = isAdminFromStores(useStores());
 
 const pages = [
 	{ title: 'Search', name: 'global-search-index', icon: 'search' },
-	...(isAdmin.value
+	...(isAdmin
 		? [{ title: 'Settings', name: 'global-search-settings', icon: 'settings' }]
 		: []),
 ];

@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { CommandGroup } from '../../primitives/cmdk';
+import { ListboxGroup, ListboxGroupLabel } from 'reka-ui';
 import GroupHeading from './group-heading.vue';
 
 defineProps<{
 	heading?: string;
-	forceMount?: boolean;
 }>();
 </script>
 
 <template>
-	<CommandGroup :force-moun="forceMount">
-		<template #heading>
-			<slot name="heading">
-				<GroupHeading>{{ heading }}</GroupHeading>
-			</slot>
-		</template>
+	<ListboxGroup class="command-group" :class="{ titled: heading }">
+		<ListboxGroupLabel v-if="heading" as-child>
+			<GroupHeading>
+				{{ heading }}
+			</GroupHeading>
+		</ListboxGroupLabel>
 		<slot />
-	</CommandGroup>
+	</ListboxGroup>
 </template>
 
-<style scoped lang="scss">
-[cmdk-group] {}
+<style scoped>
+.command-group.titled:not(:first-child) {
+	margin-block-start: 0.5rem;
+}
 </style>

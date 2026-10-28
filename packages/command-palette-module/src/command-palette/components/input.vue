@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { CommandInput } from '../../primitives/cmdk';
+import { ListboxFilter } from 'reka-ui';
 
 defineProps<{
+	listId: string;
 	loading?: boolean;
 	placeholder?: string;
 	showBack?: boolean;
@@ -12,30 +12,33 @@ defineEmits<{
 	back: [];
 }>();
 
-const search = defineModel<string | null>();
+const search = defineModel<string>({ default: '' });
 
-const input = ref<HTMLInputElement | null>(null);
-
-watch(
-	input,
-	() => {
-		input.value.$el.focus();
-	},
-	{ once: true },
-);
+// Reka only checks its own composition flag. Safari sends the Enter that ends an IME composition
+// after compositionend, as keyCode 229, so stop it before Reka selects an item.
+function onKeydown(event: KeyboardEvent) {
+	if (event.key === 'Enter' && (event.isComposing || event.keyCode === 229)) event.stopPropagation();
+}
 </script>
 
 <template>
-	<div class="search-input">
+	<div class="search-input" @keydown.capture="onKeydown">
 		<span v-if="showBack" class="back" @click="$emit('back')">
 			<v-icon name="keyboard_backspace" />
 		</span>
 		<span v-else class="back-placeholder" />
-		<CommandInput
-			ref="input"
-			:value="search"
+		<ListboxFilter
+			v-model="search"
 			:placeholder="placeholder"
-			@change="search = $event"
+			auto-focus
+			role="combobox"
+			aria-label="Command Menu"
+			aria-autocomplete="list"
+			aria-expanded="true"
+			:aria-controls="listId"
+			autocomplete="off"
+			autocorrect="off"
+			spellcheck="false"
 		/>
 		<v-progress-circular v-if="loading === true" indeterminate />
 		<v-icon v-else-if="search" clickable name="close" @click="search = ''" />
@@ -47,23 +50,24 @@ watch(
 	display: flex;
 	position: relative;
 	align-items: center;
-	padding: 8px 12px;
-	height: 54px;
-	border-bottom: 1px solid var(--theme--primary);
+	padding: 0.5rem 0.75rem;
+	block-size: 3.375rem;
+	border-block-end: 0.0625rem solid var(--theme--primary);
 
 	.back,
 	.back-placeholder {
-		margin-right: 10px;
+		margin-inline-end: 0.625rem;
 	}
 
 	.back {
-		--v-icon-size: 18px;
+		--v-icon-size: 1.125rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 3px;
+		padding: 0.1875rem;
 		background: var(--theme--background-normal);
-		border-radius: 4px;
+		border-radius: 0.25rem;
+		cursor: pointer;
 	}
 
 	input {
@@ -72,17 +76,17 @@ watch(
 		border: none;
 		color: var(--theme--foreground);
 		outline: none;
-		padding: 20px 20px 20px 0px;
+		padding: 1.25rem 1.25rem 1.25rem 0;
 		margin: 0;
-		width: 100%;
-		height: 100%;
-		line-height: 48px;
-		font-size: var(--global-search--search-bar-font-size, 18px);
+		inline-size: 100%;
+		block-size: 100%;
+		line-height: 3rem;
+		font-size: var(--global-search--search-bar-font-size, 1.125rem);
 	}
 
 	.v-progress-circular {
 		position: absolute;
-		right: 12px;
+		inset-inline-end: 0.75rem;
 	}
 }
 </style>

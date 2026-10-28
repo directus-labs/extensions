@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { CommandList } from '../../primitives/cmdk';
+import { ListboxContent } from 'reka-ui';
+import { computed, useId } from 'vue';
 import { useCommandContext } from '../composables/use-global-command-state';
 import CommandInput from './input.vue';
 
@@ -15,6 +15,7 @@ withDefaults(
 
 const { loading, search, router } = useCommandContext();
 const showBack = computed(() => router.stack.value.length > 1);
+const listId = `command-palette-list-${useId()}`;
 </script>
 
 <template>
@@ -22,11 +23,15 @@ const showBack = computed(() => router.stack.value.length > 1);
 		v-model="search"
 		:loading="loading"
 		:placeholder="searchBarPlaceholder"
+		:list-id="listId"
 		:show-back="showBack"
+		@back="router.pop()"
 	/>
-	<CommandList>
-		<slot />
-	</CommandList>
+	<ListboxContent :id="listId" class="command-list" aria-label="Suggestions">
+		<div class="command-list-viewport">
+			<slot />
+		</div>
+	</ListboxContent>
 	<div class="command-footer">
 		<span>
 			<v-icon name="sync_alt" />
@@ -44,27 +49,25 @@ const showBack = computed(() => router.stack.value.length > 1);
 </template>
 
 <style scoped lang="scss">
-[cmdk-list] {
+.command-list {
 	max-height: 50vh;
 	overflow-y: scroll;
-	height: var(--cmdk-list-height);
-	/* transition: height 100ms ease; */
 }
 
-:deep([cmdk-list-sizer]) {
-	padding: 4px;
+.command-list-viewport {
+	padding: 0.25rem;
 }
 
 .command-footer {
-	--v-icon-size: 18px;
+	--v-icon-size: 1.125rem;
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	display: flex;
 	justify-content: end;
-	gap: 12px;
-	padding: 8px 12px;
+	gap: 0.75rem;
+	padding: 0.5rem 0.75rem;
 	color: var(--theme--foreground-subdued);
-	border-top: solid 1px var(--theme--border-color);
+	border-block-start: solid 0.0625rem var(--theme--border-color);
 
 	:deep([data-icon='sync_alt']) {
 		transform: rotate(90deg);
@@ -73,7 +76,7 @@ const showBack = computed(() => router.stack.value.length > 1);
 	& > span {
 		display: flex;
 		align-items: center;
-		gap: 6px;
+		gap: 0.375rem;
 	}
 }
 </style>

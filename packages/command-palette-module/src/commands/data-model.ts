@@ -10,9 +10,10 @@ export const dataModelCommands = defineCommands({
 		{
 			id: 'data-model',
 			name: 'Data Model',
+			icon: 'database',
 		},
 	],
-	commands: ({ stores }) => {
+	commands: ({ stores, route }) => {
 		const isAdmin = isAdminFromStores(stores);
 
 		if (!isAdmin)
@@ -28,16 +29,20 @@ export const dataModelCommands = defineCommands({
 				icon: 'add',
 				group: 'data-model',
 				keywords: ['data', 'model'],
+				priority: 20,
 				action: ({ router }) => {
 					router.push('/settings/data-model/+');
 				},
 			},
-			...collectionStore.allCollections.map(
-				({ collection, meta }: Collection) =>
-					editCollectionCommand(collection, {
-						group: meta?.hidden ? 'data-model' : `collection:${collection}`,
-					}),
-			),
+			...collectionStore.allCollections
+				.filter(({ collection, type }: Collection & { type?: string }) =>
+					type !== 'alias' && route.path !== `/settings/data-model/${collection}`)
+				.map(
+					({ collection, meta }: Collection) =>
+						editCollectionCommand(collection, {
+							group: meta?.hidden ? 'data-model' : `collection:${collection}`,
+						}),
+				),
 		];
 	},
 });

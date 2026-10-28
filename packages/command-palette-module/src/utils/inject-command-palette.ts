@@ -4,18 +4,20 @@ import { routeLocationKey, routerKey } from 'vue-router';
 import CommandPaletteApp from '../command-palette/command-palette-app.vue';
 import { getDirectusApp, getDirectusAppProvides } from './get-directus-app';
 
+const ID = 'global-search-command-palette';
+
 export function injectCommandPalette() {
+	if (document.querySelector(`#${ID}`)) return;
+
 	const app = createApp(CommandPaletteApp);
 	const directusApp = getDirectusApp();
 
-	// Register components from the Directus app
 	for (const [name, component] of Object.entries(
 		directusApp._context.components,
 	)) {
 		app.component(name, component as any);
 	}
 
-	// Register directives from the Directus app
 	for (const [name, directive] of Object.entries(
 		directusApp._context.directives,
 	)) {
@@ -28,7 +30,6 @@ export function injectCommandPalette() {
 		app.provide(key, injects[key]);
 	}
 
-	// Provide the router and route location to the command palette
 	const vueI18nSymbol = directusApp.__VUE_I18N_SYMBOL__;
 
 	directusApp.runWithContext(() => {
@@ -37,13 +38,18 @@ export function injectCommandPalette() {
 		app.provide(vueI18nSymbol, inject(vueI18nSymbol));
 	});
 
-	// @ts-ignore
+	// @ts-expect-error Vue I18n stores its injection symbol on the app instance
 	app.__VUE_I18N_SYMBOL__ = vueI18nSymbol;
 
-	// Mount the app
 	const container = document.createElement('div');
-	container.id = 'global-search-command-palette';
+	container.id = ID;
 	document.body.append(container);
 
-	app.mount(container);
+	try {
+		app.mount(container);
+	}
+	catch (error) {
+		container.remove();
+		throw error;
+	}
 }

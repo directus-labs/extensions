@@ -1,86 +1,98 @@
 <script setup lang="ts">
 import type { ValidationError } from '@directus/types';
 import type { Ref } from 'vue';
+import type { RouteLocationRaw } from 'vue-router';
 import type { SearchConfigType } from './types';
-import { useStores } from '@directus/extensions-sdk';
+import { useApi, useStores } from '@directus/extensions-sdk';
 import { useMagicKeys } from '@vueuse/core';
-import { clone, merge } from 'lodash-es';
+import { clone, mergeWith } from 'lodash-es';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave, useRouter } from 'vue-router';
 import { ZodError } from 'zod';
 import SearchNavigation from './components/navigation.vue';
-
-import { useIsAdmin } from './composables/use-is-admin';
+import { useUnexpectedError } from './composables/use-unexpected-error';
 import { fields } from './settings-fields';
 import { defaultSettings, ModuleSettings } from './types';
 import { zodErrorToValidationErrors } from './utils/errors';
+import { isAdminFromStores } from './utils/is-admin';
+import { parsePersistedSettings } from './utils/parse-persisted-settings';
+import { syncSettingsMirror } from './utils/settings-mirror';
 
-const { t } = useI18n();
-const { useSettingsStore, useFieldsStore } = useStores();
-
+const i18n = useI18n();
+const { t } = i18n;
+const router = useRouter();
+const api = useApi();
+const stores = useStores();
+const { useSettingsStore, useFieldsStore, useNotificationsStore } = stores;
 const fieldsStore = useFieldsStore();
 const settingsStore = useSettingsStore();
-
-const isAdmin = useIsAdmin();
-
-const globalSearchSettings = computed(
-	() => settingsStore.settings.command_palette_settings,
+const notificationsStore = useNotificationsStore();
+const isAdmin = computed(() => isAdminFromStores(stores));
+const unexpectedError = useUnexpectedError({ stores, i18n });
+const globalSearchSettings = computed(() => settingsStore.settings.command_palette_settings);
+const parsedSettings = computed(() => parsePersistedSettings(globalSearchSettings.value));
+const globalSearchSettingsField = computed(() =>
+	fieldsStore.getField('directus_settings', 'command_palette_settings'),
 );
-
-const globalSearchSettingsField = fieldsStore.getField(
-	'directus_settings',
-	'command_palette_settings',
-);
-
-const initialValues = ref(
-	clone(settingsStore.settings.command_palette_settings),
-);
-
+const initialValues = ref(clone(settingsStore.settings.command_palette_settings));
 const edits: Ref<Partial<SearchConfigType> | null> = ref(null);
-
-const hasEdits = computed(() => {
-	return edits.value !== null && Object.keys(edits.value).length > 0;
-});
-
+const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
 const saving = ref(false);
 const validationErrors = ref<ValidationError[]>([]);
 
-async function updateSearchSettings(value: SearchConfigType) {
-	if (!value)
-		return;
+// settingsStore.updateSettings swallows request errors, so a failed save would look successful and drop edits.
+async function persistSettings(value: SearchConfigType) {
+	await api.patch('/settings', { command_palette_settings: value });
+	await settingsStore.hydrate();
+	initialValues.value = clone(settingsStore.settings.command_palette_settings);
+
+	try {
+		await syncSettingsMirror(stores, api);
+		notificationsStore.add({ title: t('settings_update_success') });
+	}
+	catch (error) {
+		console.warn(error);
+
+		// The settings are saved, and the next admin app load retries the copy.
+		notificationsStore.add({
+			title: 'Settings saved, but non-admin users won\'t see the changes until an admin reloads the app',
+			type: 'warning',
+		});
+	}
+}
+
+async function updateSearchSettings(value: Partial<SearchConfigType> | null | undefined) {
+	if (!value || saving.value) return;
+
 	validationErrors.value = [];
 	saving.value = true;
 
 	try {
-		const result = ModuleSettings.parse(merge({}, initialValues.value, value));
-
-		await settingsStore.updateSettings({
-			command_palette_settings: result,
-		});
-
-		await settingsStore.hydrate();
+		// Collection settings are complete form values, so replacing arrays preserves deletions.
+		const merged = mergeWith({}, initialValues.value, value, (_current, update) =>
+			Array.isArray(update) ? update : undefined);
+		const result = ModuleSettings.parse(merged);
+		await persistSettings(result);
 		edits.value = null;
-		saving.value = false;
-
-		initialValues.value = clone(
-			settingsStore.settings.command_palette_settings,
-		);
 	}
 	catch (error) {
 		if (error instanceof ZodError) {
-			validationErrors.value = zodErrorToValidationErrors(
-				error,
-				'command_palette_settings',
-			);
+			validationErrors.value = zodErrorToValidationErrors(error, 'command_palette_settings');
 		}
-
+		else {
+			unexpectedError(error);
+		}
+	}
+	finally {
 		saving.value = false;
 	}
 }
 
 async function createGlobalSearchSettings() {
-	if (globalSearchSettingsField)
-		return;
+	if (globalSearchSettingsField.value || !isAdmin.value || saving.value) return;
+
+	saving.value = true;
 
 	try {
 		await fieldsStore.createField('directus_settings', {
@@ -96,93 +108,96 @@ async function createGlobalSearchSettings() {
 			},
 		});
 
-		await updateSearchSettings(defaultSettings);
-		await settingsStore.hydrate();
-
-		initialValues.value = clone(
-			settingsStore.settings.command_palette_settings,
-		);
+		await persistSettings(defaultSettings);
 	}
 	catch (error) {
-		console.error(error);
-		// @TODO: Handle error
+		unexpectedError(error);
+	}
+	finally {
+		saving.value = false;
 	}
 }
 
-// Cmd + S to save
-const { meta, s } = useMagicKeys();
+const { control, meta, s } = useMagicKeys();
 
-watch([meta, s], ([mVal, sVal]) => {
-	if (mVal && sVal && hasEdits.value) {
-		// @TODO: Fix this type error
-		updateSearchSettings(edits.value as any);
+watch([meta, control, s], ([metaValue, controlValue, sValue]) => {
+	if ((metaValue || controlValue) && sValue && hasEdits.value && !saving.value) {
+		void updateSearchSettings(edits.value);
 	}
 });
+
+const confirmLeave = ref(false);
+const leaveTo = ref<RouteLocationRaw | null>(null);
+
+onBeforeRouteLeave((to) => {
+	if (!hasEdits.value) return true;
+	leaveTo.value = to;
+	confirmLeave.value = true;
+	return false;
+});
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+
+	const target = leaveTo.value;
+	edits.value = null;
+	confirmLeave.value = false;
+	leaveTo.value = null;
+	void router.push(target);
+}
 </script>
 
 <template>
-	<private-view title="Settings">
-		<!-- Header Icon -->
+	<private-view title="Settings" show-back back-to="/global-search">
+		<!-- Header icon fallback for hosts before 11.14, which lack the show-back prop -->
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="search" />
 			</v-button>
 		</template>
 
-		<!-- Navigation -->
 		<template #navigation>
 			<SearchNavigation />
 		</template>
 
-		<template #headline>
-			<v-breadcrumb
-				:items="[
-					{ name: 'Global Search', to: { name: 'global-search-index' } },
-				]"
-			/>
-		</template>
-
-		<!-- Actions -->
-		<template #actions>
+		<template v-if="isAdmin" #actions>
 			<v-button
 				v-tooltip.bottom="hasEdits ? t('save') : t('not_allowed')"
 				rounded
 				icon
 				:loading="saving"
-				:disabled="!hasEdits"
+				:disabled="!hasEdits || saving"
 				@click="updateSearchSettings(edits)"
 			>
 				<v-icon name="check" />
 			</v-button>
 		</template>
 
-		<!-- Main Content -->
 		<main class="container">
-			<template v-if="globalSearchSettings">
-				<section v-if="!isAdmin">
-					<v-info icon="block" title="Unauthorized Access" type="danger" center>
-						You do not have permission to access this page. Please contact an
-						admin to configure search settings.
-					</v-info>
-				</section>
-				<section v-if="isAdmin">
-					<v-form
-						v-model="edits"
-						:initial-values="initialValues"
-						:fields="fields"
-						:validation-errors="validationErrors"
-					/>
-				</section>
-			</template>
+			<section v-if="!isAdmin">
+				<v-info icon="block" title="Unauthorized Access" type="danger" center>
+					You do not have permission to access this page. Please contact an
+					admin to configure search settings.
+				</v-info>
+			</section>
+
+			<section v-else-if="parsedSettings">
+				<v-form
+					v-model="edits"
+					:initial-values="initialValues"
+					:fields="fields"
+					:validation-errors="validationErrors"
+					:disabled="saving"
+				/>
+			</section>
 
 			<section v-else-if="globalSearchSettingsField">
 				<v-info icon="block" title="Settings Field Error" type="danger" center>
-					<p>
-						There's an error with the structure of the command palette settings.
-					</p>
+					<p>There's an error with the structure of the command palette settings.</p>
 					<v-button
 						style="margin-top: 12px"
 						secondary
+						:disabled="saving"
 						@click="updateSearchSettings(defaultSettings)"
 					>
 						Reset Command Palette Settings
@@ -190,20 +205,14 @@ watch([meta, s], ([mVal, sVal]) => {
 				</v-info>
 			</section>
 
-			<section v-else-if="!globalSearchSettingsField">
-				<v-info
-					icon="block"
-					title="Settings Field Missing"
-					type="danger"
-					center
-				>
-					<p>
-						The command palette settings field is missing from Directus project
-						settings.
-					</p>
+			<section v-else>
+				<v-info icon="block" title="Settings Field Missing" type="danger" center>
+					<p>The command palette settings field is missing from Directus project settings.</p>
 					<v-button
 						kind="primary"
 						style="margin-top: 12px"
+						:loading="saving"
+						:disabled="saving"
 						@click="createGlobalSearchSettings"
 					>
 						Create Command Palette Settings
@@ -212,9 +221,8 @@ watch([meta, s], ([mVal, sVal]) => {
 			</section>
 		</main>
 
-		<!-- Sidebar -->
 		<template #sidebar>
-			<sidebar-detail icon="info" title="Information" close>
+			<sidebar-detail id="info" icon="info" title="Information" close>
 				<div
 					v-md="
 						`**Global Search** –– \n Search for keywords across many different collections and fields.`
@@ -223,6 +231,21 @@ watch([meta, s], ([mVal, sVal]) => {
 				/>
 			</sidebar-detail>
 		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">
+						{{ t('keep_editing') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 

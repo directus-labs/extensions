@@ -1,4 +1,5 @@
-export { defineCommands, registerCommands } from './register-commands';
+export { defineCommands, refreshRegisteredCommands, registerCommands } from './register-commands';
+export { getSessionValue, startCommandSession } from './session-cache';
 
-export type { CommandConfig, GroupConfig } from './types';
+export type * from './types';
 export { useRegisteredCommands } from './use-registered-commands';

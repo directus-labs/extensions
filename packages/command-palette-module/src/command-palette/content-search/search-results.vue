@@ -1,58 +1,74 @@
 <script setup lang="ts">
-import type { CollectionSearchResult, RecentSearchEntry } from '../../../types';
-import { omit } from 'lodash-es';
-import ResultGroup from './result-group.vue';
+import type { CollectionSearchResult } from '../../types';
+import { useStores } from '@directus/extensions-sdk';
+import formatTitle from '@directus/format-title';
+import { computed } from 'vue';
+import DescriptionBoundary from '../../components/description-boundary.vue';
+import Highlights from '../../components/highlights.vue';
+import { hasDescriptionValue } from '../../utils/get-description-display';
+import Group from '../components/group.vue';
+import Item from '../components/item.vue';
 
-defineProps<{
+const props = defineProps<{
 	results: CollectionSearchResult[];
-	totalResults: number;
-	loading: boolean;
+	query: string;
 }>();
 
 const emit = defineEmits<{
-	open: [path: string, entry: RecentSearchEntry];
+	select: [item: { collection: string; pk: string }];
 }>();
 
-function onHitSelected(result: CollectionSearchResult, index: number) {
-	const hit = result.hits[index];
+const collectionsStore = useStores().useCollectionsStore();
+const groups = computed(() =>
+	props.results.map((result) => {
+		const collection = collectionsStore.getCollection(result.collection);
+		const icon = collection?.meta?.icon;
 
-	emit('open', `/content/${result.collection}/${hit[result.primaryKeyField]}`, {
-		...omit(result, 'hits'),
-		hit,
+		return {
+			...result,
+			name: String(collection?.name ?? formatTitle(result.collection)),
+			icon: typeof icon === 'string' ? icon : 'box',
+			rows: result.hits.map((hit) => ({ hit, key: JSON.stringify([result.collection, hit[result.primaryKeyField]]) })),
+		};
+	}),
+);
+
+function select(group: (typeof groups.value)[number], hit: Record<string, any>) {
+	const pk = String(hit[group.primaryKeyField]);
+
+	emit('select', {
+		collection: group.collection,
+		pk,
 	});
-}
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-function onRecentSelected(entry: RecentSearchEntry) {
-	emit(
-		'open',
-		`/content/${entry.collection}/${entry.hit[entry.primaryKeyField]}`,
-		entry,
-	);
 }
 </script>
 
 <template>
-	<v-list class="search-results-list">
-		<template v-if="(query && results.length > 0) || loading">
-			<!-- eslint-disable-next-line vue/valid-v-for -->
-			<ResultGroup
-				v-for="(result, index) in results"
-				:query="query"
-				:result="result"
-				:active-index="activeIndex - offsets[index]"
-				@set-active-index="activeIndex = $event + offsets[index]"
-				@select="onHitSelected(result, $event)"
-			/>
-		</template>
-	</v-list>
+	<DescriptionBoundary v-slot="{ failed }" :results="results">
+		<Group
+			v-for="group in groups"
+			:key="group.collection"
+			:heading="group.name"
+		>
+			<Item
+				v-for="{ hit, key } in group.rows"
+				:key="key"
+				:value="key"
+				:icon="group.icon"
+				@select="select(group, hit)"
+			>
+				<render-template :collection="group.collection" :item="hit" :template="group.displayTemplate" />
+				<template v-if="group.descriptionField && hasDescriptionValue(hit[group.descriptionField])" #description>
+					<component
+						:is="group.descriptionDisplay.component"
+						v-if="group.descriptionDisplay && !failed.has(key)"
+						v-bind="group.descriptionDisplay.props"
+						:value="hit[group.descriptionField]"
+						:data-description-key="key"
+					/>
+					<Highlights v-else :text="String(hit[group.descriptionField])" :query="query" />
+				</template>
+			</Item>
+		</Group>
+	</DescriptionBoundary>
 </template>
-
-<style scoped lang="scss">
-.search-results-list {
-	max-height: min(350px, 50vh);
-	overflow-y: auto;
-
-	padding: 6px;
-}
-</style>

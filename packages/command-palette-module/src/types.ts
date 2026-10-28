@@ -1,15 +1,16 @@
 import type { Filter } from '@directus/types';
 import { z } from 'zod';
 
+const SearchFilter = z.looseObject({}) as z.ZodType<Filter>;
+
 export const SearchCollection = z.object({
 	collection: z.string(),
 	displayTemplate: z.string().optional().nullable(),
 	descriptionField: z.string().optional().nullable(),
-	thumbnailField: z.string().optional().nullable(),
 	fields: z.array(z.string().min(1, 'field name cannot be empty')),
-	filter: z.object({}).optional().nullable() as z.ZodNullable<z.ZodOptional<z.ZodType<Filter>>>,
+	filter: SearchFilter.optional().nullable(),
 	sort: z.string().optional().nullable(),
-	limit: z.number().gte(-1, 'greater than or equal to -1').nullable(),
+	limit: z.number().finite().gte(-1, 'greater than or equal to -1').nullable(),
 	availableGlobally: z.boolean().optional().prefault(false),
 });
 
@@ -18,7 +19,7 @@ export const ModuleSettings = z.object({
 		error: () => 'either as_you_type or on_submit',
 	}),
 	collections: z.array(SearchCollection),
-	triggerRate: z.number().gte(0, 'greater than or equal to 0').optional(),
+	triggerRate: z.number().finite().gte(0, 'greater than or equal to 0').optional(),
 	commandPaletteEnabled: z.boolean().optional().prefault(true),
 	recentSearchLimit: z.number().gte(0, 'greater than or equal to 0').optional(),
 });
@@ -26,8 +27,14 @@ export const ModuleSettings = z.object({
 interface CollectionSearchInfo {
 	collection: string;
 	displayTemplate: string;
-	descriptionField: string;
+	descriptionField?: string;
+	descriptionDisplay?: DescriptionDisplay;
 	primaryKeyField: string;
+}
+
+export interface DescriptionDisplay {
+	component: string;
+	props: Record<string, unknown>;
 }
 
 export type CollectionSearchResult = CollectionSearchInfo & {
@@ -37,7 +44,7 @@ export type CollectionSearchResult = CollectionSearchInfo & {
 export const defaultSettings: SearchConfigType = {
 	searchMode: 'as_you_type',
 	collections: [],
-	triggerRate: 100,
+	triggerRate: 150,
 	commandPaletteEnabled: true,
 	recentSearchLimit: 5,
 };
