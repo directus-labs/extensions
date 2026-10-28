@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { toArray } from '@directus/utils';
 import { remove as removeDiacritics } from 'diacritics';
-import { flatten } from 'lodash-es';
 import { computed } from 'vue';
+import { toArray } from '../utils/to-array';
 
 interface HighlightPart {
 	text: string;
 	highlighted: boolean;
 }
+
+type Match = [start: number, end: number];
 
 interface Props {
 	query?: string | string[] | null;
@@ -19,144 +20,161 @@ const props = withDefaults(defineProps<Props>(), {
 	text: '',
 });
 
+// Long texts can match thousands of times. Only a few matches fit on the line, so stop there, and don't scan past a
+// few words of context around each match.
+const MAX_MATCHES = 10;
+const CONTEXT_WORDS = 3;
+const MAX_CONTEXT_LENGTH = 200;
+
 const parts = computed<HighlightPart[]>(() => {
-	const normalizedText = removeDiacritics(props.text).toLowerCase();
-	const queries = toArray(props.query);
+	const { normalizedText, starts, ends } = normalize(props.text);
+	const matches = toArray(props.query).flatMap((query): Match[] => {
+		if (!query) return [];
 
-	if (queries.length === 0) {
-		return [
-			{
-				highlighted: false,
-				text: props.text,
-			},
-		];
-	}
+		const normalizedQuery = removeDiacritics(query).toLowerCase();
+		if (!normalizedQuery) return [];
 
-	const matches = flatten(
-		queries.reduce<number[][][]>((acc, query) => {
-			if (!query)
-				return acc;
+		const indices: Match[] = [];
+		let index = normalizedText.indexOf(normalizedQuery);
 
-			const normalizedQuery = removeDiacritics(query).toLowerCase();
-			const indices = [];
+		while (index !== -1) {
+			const end = index + normalizedQuery.length;
+			indices.push([starts[index]!, ends[end - 1]!]);
+			index = normalizedText.indexOf(normalizedQuery, index + 1);
+		}
 
-			let startIndex = 0;
-			let index = normalizedText.indexOf(normalizedQuery, startIndex);
-
-			while (index > -1) {
-				startIndex = index + normalizedQuery.length;
-				indices.push([index, startIndex]);
-				index = normalizedText.indexOf(normalizedQuery, index + 1);
-			}
-
-			acc.push(indices);
-
-			return acc;
-		}, []),
-	);
-
-	matches.sort((a: any, b: any) => {
-		if (a[0] !== b[0])
-			return a[0] - b[0];
-		return a[1] - b[1];
+		return indices;
 	});
 
-	if (matches.length === 0) {
-		return [
-			{
-				highlighted: false,
-				text: props.text,
-			},
-		];
-	}
+	matches.sort(([startA, endA], [startB, endB]) => startA - startB || endA - endB);
 
-	const mergedMatches = [];
-	let curStart = matches[0] ? matches[0][0] : 0;
-	let curEnd = matches[0] ? matches[0][1] : 0;
+	const firstMatch = matches[0];
+	if (!firstMatch) return [{ highlighted: false, text: props.text }];
 
-	matches.shift();
+	const mergedMatches: Match[] = [];
+	let [currentStart, currentEnd] = firstMatch;
 
-	for (const [start, end] of matches) {
-		if (start && curEnd && start >= curEnd) {
-			mergedMatches.push([curStart, curEnd]);
-			curStart = start;
-			curEnd = end;
+	for (const [start, end] of matches.slice(1)) {
+		if (start >= currentEnd) {
+			mergedMatches.push([currentStart, currentEnd]);
+			currentStart = start;
+			currentEnd = end;
 		}
-		else if (end && curEnd && end > curEnd) {
-			curEnd = end;
+		else if (end > currentEnd) {
+			currentEnd = end;
 		}
 	}
 
-	mergedMatches.push([curStart, curEnd]);
+	mergedMatches.push([currentStart, currentEnd]);
 
-	const parts: HighlightPart[] = [];
+	const result: HighlightPart[] = [];
+	let previousEnd = 0;
+	let previousContextEnd = -1;
 
-	for (const [index, [start, end]] of mergedMatches.entries()) {
-		const precedingText = props.text
-			.slice(0, start)
-			.split(' ')
-			.slice(-3)
-			.join(' ')
-			.trim();
+	for (const [start, end] of mergedMatches.slice(0, MAX_MATCHES)) {
+		// Keep the whitespace touching the match, so "the release" doesn't render as "therelease".
+		const precedingText = getPrecedingWords(props.text, start).trimStart();
 
-		const followingText = props.text
-			.slice(end)
-			.split(' ')
-			.slice(0, 3)
-			.join(' ')
-			.trim();
+		// Matches whose context overlaps or touches share one snippet, so no text repeats and no "..." hides nothing.
+		const contextStart = start - precedingText.length;
 
-		const highlightedText = props.text.slice(start, end).trim();
-
-		if (index > 0) {
-			parts.push({
-				highlighted: false,
-				text: '...',
-			});
+		if (result.length > 0 && (contextStart <= previousContextEnd || !props.text.slice(previousContextEnd, contextStart).trim())) {
+			result.push({ highlighted: false, text: props.text.slice(previousEnd, start) });
 		}
-
-		if (precedingText) {
-			parts.push({
-				highlighted: false,
-				text: (/\s$/.test(precedingText) ? '...' : '... ') + precedingText,
-			});
-		}
-		else if (start > 0) {
-			parts.push({
-				highlighted: false,
-				text: '...',
-			});
-		}
-
-		parts.push({
-			highlighted: true,
-			text: highlightedText,
-		});
-
-		if (followingText) {
-			if (end + followingText.length < normalizedText.length) {
-				parts.push({
+		else {
+			if (result.length > 0) {
+				pushFollowingText(result, previousEnd);
+				// The previous snippet already ends with an ellipsis.
+				result.push({ highlighted: false, text: ` ${precedingText}` });
+			}
+			else if (precedingText.trim()) {
+				result.push({
 					highlighted: false,
-					text: followingText + (/^\s/.test(followingText) ? '...' : ' ...'),
+					text: (start > precedingText.length ? '... ' : '') + precedingText,
 				});
 			}
-			else {
-				parts.push({
-					highlighted: false,
-					text: followingText,
-				});
+			else if (start > 0) {
+				result.push({ highlighted: false, text: '...' });
 			}
 		}
-		else if (end < normalizedText.length) {
-			parts.push({
-				highlighted: false,
-				text: '...',
-			});
-		}
+
+		result.push({ highlighted: true, text: props.text.slice(start, end) });
+		previousEnd = end;
+		previousContextEnd = end + getFollowingWords(props.text, end).trimEnd().length;
 	}
 
-	return parts;
+	pushFollowingText(result, previousEnd);
+
+	return result;
 });
+
+function pushFollowingText(result: HighlightPart[], end: number) {
+	const followingText = getFollowingWords(props.text, end).trimEnd();
+
+	if (followingText.trim()) {
+		result.push({
+			highlighted: false,
+			text: end + followingText.length < props.text.length ? `${followingText} ...` : followingText,
+		});
+	}
+	else if (end < props.text.length) {
+		result.push({ highlighted: false, text: '...' });
+	}
+}
+
+function getPrecedingWords(text: string, start: number) {
+	let limit = Math.max(0, start - MAX_CONTEXT_LENGTH);
+	if (isLowSurrogate(text, limit)) limit++;
+	let index = start;
+
+	for (let word = 0; word < CONTEXT_WORDS; word++) {
+		index = index > limit ? text.lastIndexOf(' ', index - 1) : -1;
+		if (index < limit) return text.slice(limit, start);
+	}
+
+	return text.slice(index + 1, start);
+}
+
+function getFollowingWords(text: string, end: number) {
+	let limit = Math.min(text.length, end + MAX_CONTEXT_LENGTH);
+	if (isLowSurrogate(text, limit)) limit--;
+	let index = end - 1;
+
+	for (let word = 0; word < CONTEXT_WORDS; word++) {
+		index = text.indexOf(' ', index + 1);
+		if (index === -1 || index >= limit) return text.slice(end, limit);
+	}
+
+	return text.slice(end, index);
+}
+
+// The context cutoffs count UTF-16 units, so keep them from splitting an emoji or other surrogate pair.
+function isLowSurrogate(text: string, index: number) {
+	const code = text.codePointAt(index) ?? 0;
+	return code >= 0xDC_00 && code <= 0xDF_FF;
+}
+
+// Characters like "æ" or "ß" expand when normalized, so keep each normalized char's span in the original text.
+function normalize(text: string) {
+	let normalizedText = '';
+	const starts: number[] = [];
+	const ends: number[] = [];
+	let offset = 0;
+
+	for (const char of text) {
+		const normalizedChar = removeDiacritics(char).toLowerCase();
+		normalizedText += normalizedChar;
+
+		for (let index = 0; index < normalizedChar.length; index++) {
+			starts.push(offset);
+			ends.push(offset + char.length);
+		}
+
+		offset += char.length;
+	}
+
+	return { normalizedText, starts, ends };
+}
 </script>
 
 <template>

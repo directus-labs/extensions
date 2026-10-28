@@ -1,72 +1,57 @@
 <script setup lang="ts">
-import { useStorage } from '@vueuse/core';
+import type { RecentSearch } from '../composables/use-recent-searches';
 import { format, isThisYear, isToday, isYesterday } from 'date-fns';
 import { groupBy, orderBy } from 'lodash-es';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const emit = defineEmits(['updateQuery']);
+const props = defineProps<{
+	searches: RecentSearch[];
+}>();
 
-const searchHistory = useStorage('search-history', []);
+const emit = defineEmits<{
+	clear: [];
+	select: [query: string];
+}>();
 
 const { t } = useI18n();
 
-function formatTime(time: string) {
-	return format(new Date(time), String(t('date-fns_time_no_seconds')));
-}
-
 const groupedSearches = computed(() => {
-	const searchesByDate = groupBy(
-		searchHistory.value,
-		(search: { timestamp: string; query: string }) => {
-			const date = new Date(search.timestamp).toDateString();
-			return date;
-		},
+	const searchesByDate = groupBy(props.searches, (search) =>
+		new Date(search.timestamp).toDateString());
+
+	return orderBy(
+		Object.entries(searchesByDate).map(([key, searches]) => {
+			const date = new Date(key);
+			let dateFormatted: string;
+
+			if (isToday(date)) dateFormatted = String(t('today'));
+			else if (isYesterday(date)) dateFormatted = String(t('yesterday'));
+			else if (isThisYear(date)) dateFormatted = format(date, String(t('date-fns_date_short_no_year')));
+			else dateFormatted = format(date, String(t('date-fns_date_short')));
+
+			return { date, dateFormatted, searches: orderBy(searches, ['timestamp'], ['desc']) };
+		}),
+		['date'],
+		['desc'],
 	);
-
-	const groups = [];
-
-	for (const [key, value] of Object.entries(searchesByDate)) {
-		const date = new Date(key);
-		const today = isToday(date);
-		const yesterday = isYesterday(date);
-		const thisYear = isThisYear(date);
-
-		let dateFormatted: string;
-
-		if (today)
-			dateFormatted = String(t('today'));
-		else if (yesterday)
-			dateFormatted = String(t('yesterday'));
-		else if (thisYear)
-			dateFormatted = String(t('date-fns_date_short_no_year'));
-		else dateFormatted = String(t('date-fns_date_short'));
-
-		groups.push({
-			date,
-			dateFormatted: String(dateFormatted),
-			searches: orderBy(value, ['timestamp'], ['desc']),
-		});
-	}
-
-	return orderBy(groups, ['date'], ['desc']);
 });
+
+function formatTime(timestamp: string) {
+	return format(new Date(timestamp), String(t('date-fns_time_no_seconds')));
+}
 </script>
 
 <template>
-	<v-list v-if="searchHistory">
-		<template v-for="group in groupedSearches" :key="group.key">
+	<v-list v-if="searches.length > 0">
+		<template v-for="group in groupedSearches" :key="group.date.toISOString()">
 			<v-divider>{{ group.dateFormatted }}</v-divider>
 			<v-list-item
 				v-for="search in group.searches"
 				:key="search.query"
 				clickable
 				block
-				@click="
-					emit('updateQuery', {
-						query: search.query,
-					})
-				"
+				@click="emit('select', search.query)"
 			>
 				<v-list-item-content>
 					<div class="search-title">
@@ -80,8 +65,8 @@ const groupedSearches = computed(() => {
 		</template>
 	</v-list>
 
-	<v-button kind="secondary" full-width @click="searchHistory = []">
-		<v-icon name="history_toggle_off" style="margin-right: 8px" />
+	<v-button v-if="searches.length > 0" class="clear" secondary small @click="emit('clear')">
+		<v-icon name="history_toggle_off" left />
 		Clear History
 	</v-button>
 </template>
@@ -94,7 +79,11 @@ const groupedSearches = computed(() => {
 	gap: 8px;
 }
 
-.hit-description {
+.clear {
+	margin-top: 8px;
+}
+
+.time {
 	color: var(--theme--foreground-subdued);
 }
 </style>

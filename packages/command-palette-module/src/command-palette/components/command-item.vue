@@ -1,46 +1,38 @@
 <script setup lang="ts">
 import type { CommandConfig } from '../registry';
-import { assignWith, isUndefined, omit } from 'lodash-es';
 import { computed } from 'vue';
 import Item from './item.vue';
 
-const props = defineProps<
-	{
+const props = withDefaults(
+	defineProps<{
 		command: CommandConfig;
-		forceMount?: boolean;
-		sort?: number;
-	} & Partial<CommandConfig>
->();
+		iconPlacement?: 'start' | 'end' | 'none';
+	}>(),
+	{
+		iconPlacement: 'end',
+	},
+);
 
 defineEmits<{
 	select: [];
 }>();
 
-// Allow for prop overrides
-const command = computed(() =>
-	assignWith(props.command, omit(props, 'command'), (obj, src) =>
-		isUndefined(src) ? obj : src),
+const RenderedCommand = computed(() => props.command.render);
+const RenderIcon = computed(() => props.command.icon);
+const startIcon = computed(() =>
+	props.iconPlacement === 'start' && typeof props.command.icon === 'string' ? props.command.icon : undefined,
 );
-
-const RenderedCommand = computed(() => command.value.render);
-const RenderIcon = computed(() => command.value.icon);
+const showStartIconSlot = computed(() => props.iconPlacement === 'start' && typeof props.command.icon !== 'string');
 </script>
 
 <template>
 	<Item
 		:value="command.id"
-		:keywords="[
-			command.name ?? '',
-			command.description ?? '',
-			...(command.keywords ?? []),
-		]"
-		:force-mount="forceMount"
-		:data-sort="sort"
+		:icon="startIcon"
 		@select="$emit('select')"
 	>
-		<template #icon>
-			<v-icon v-if="typeof command.icon === 'string'" :name="command.icon" />
-			<RenderIcon v-else />
+		<template v-if="showStartIconSlot" #icon>
+			<RenderIcon />
 		</template>
 		<template #description>
 			<slot name="description">
@@ -48,8 +40,52 @@ const RenderIcon = computed(() => command.value.icon);
 			</slot>
 		</template>
 		<slot>
-			<RenderedCommand v-if="command.render" />
-			<div v-else v-md="command.name" />
+			<span class="command-title" :class="{ 'has-end-label': command.endLabel }">
+				<span class="command-name">
+					<RenderedCommand v-if="command.render" />
+					<span v-else>{{ command.name }}</span>
+					<span v-if="iconPlacement === 'end'" class="command-icon">
+						<v-icon v-if="typeof command.icon === 'string'" :name="command.icon" />
+						<RenderIcon v-else />
+					</span>
+				</span>
+				<span v-if="command.endLabel" class="end-label">{{ command.endLabel }}</span>
+			</span>
 		</slot>
 	</Item>
 </template>
+
+<style scoped lang="scss">
+.command-title {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	min-inline-size: 0;
+
+	&.has-end-label {
+		justify-content: space-between;
+		inline-size: 100%;
+	}
+}
+
+.command-name {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	min-inline-size: 0;
+}
+
+.command-icon {
+	--v-icon-size: 1rem;
+	--v-icon-color: var(--theme--foreground-subdued);
+
+	display: inline-flex;
+	align-items: center;
+}
+
+.end-label {
+	flex: 0 0 auto;
+	color: var(--theme--foreground-subdued);
+	font-size: 0.75rem;
+}
+</style>

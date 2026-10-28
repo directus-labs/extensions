@@ -1,4 +1,5 @@
 import type { AxiosError, AxiosResponse } from 'axios';
+import type { CommandI18n } from '../command-palette';
 import { useStores } from '@directus/extensions-sdk';
 import { useI18n } from 'vue-i18n';
 
@@ -15,7 +16,7 @@ interface APIError {
 
 export function useUnexpectedError(context?: {
 	stores: ReturnType<typeof useStores>;
-	i18n: ReturnType<typeof useI18n>;
+	i18n: CommandI18n;
 }) {
 	const { useNotificationsStore } = context?.stores ?? useStores();
 	const { t } = context?.i18n ?? useI18n();

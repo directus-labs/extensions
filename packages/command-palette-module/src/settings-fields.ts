@@ -109,6 +109,9 @@ export const fields: DeepPartial<Field>[] = [
 						name: 'Number of Results',
 						meta: {
 							interface: 'input',
+							options: {
+								min: -1,
+							},
 							width: 'half',
 							note: 'The maximum number of search results to return. It is recommended to keep this number low to improve performance.',
 						},
@@ -134,7 +137,6 @@ export const fields: DeepPartial<Field>[] = [
 						type: 'boolean',
 						name: 'Available Globally',
 						meta: {
-							hidden: true, // Option not available for now
 							interface: 'toggle',
 							width: 'half',
 							note: 'Make this collection available to global search in the command palette without entering the "Search Collection..." command. This can impact the overall performance.',
@@ -156,8 +158,13 @@ export const fields: DeepPartial<Field>[] = [
 		name: 'Trigger Rate',
 		meta: {
 			interface: 'input',
+			options: {
+				min: 0,
+				step: 10,
+				placeholder: '150',
+			},
 			width: 'half',
-			note: 'The *As You Type* mode is debounced for performance. This setting controls the rate at which the search is triggered.  Smaller values will trigger the search more often. In milliseconds. Default is 100ms',
+			note: 'The *As You Type* mode is debounced for performance. This setting controls the rate at which the search is triggered.  Smaller values will trigger the search more often. In milliseconds. Default is 150ms',
 		},
 	},
 	{

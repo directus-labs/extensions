@@ -1,140 +1,99 @@
 <script setup lang="ts">
-import type { Flow, PrimaryKey } from '@directus/types';
+import type { Flow } from '@directus/types';
 import { useApi, useStores } from '@directus/extensions-sdk';
-import formatTitle from '@directus/format-title';
-import { computed, ref, unref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { useCommandContext } from '../../command-palette';
 import { useCommandRouter } from '../../command-palette/router/router';
 import { useUnexpectedError } from '../../composables/use-unexpected-error';
+import { getRoutePrimaryKey } from '../../utils/get-route-primary-key';
+import {
+	getManualFlowConfirmDetails,
+	isManualFlowConfirmButtonDisabled,
+	triggerManualFlow,
+} from './manual-flow';
 
 const props = defineProps<{
 	flow: Flow;
 	location: 'item' | 'collection';
 }>();
 
-const { useNotificationsStore } = useStores();
+const stores = useStores();
+const { useNotificationsStore } = stores;
 const { t } = useI18n();
-
 const unexpectedError = useUnexpectedError();
 const notificationsStore = useNotificationsStore();
 const api = useApi();
 const route = useRoute();
 const { close } = useCommandContext();
 const { pop: goBack } = useCommandRouter();
-
-const selection = ref<PrimaryKey[]>([]);
-const confirmValues = ref<Record<string, any> | null>();
-
-const collection = computed(() => route.params.collection);
-const primaryKey = computed(() => route.params.primaryKey);
+const confirmValues = ref<Record<string, any> | null>(null);
+const running = ref(false);
+const collection = computed(() => typeof route.params.collection === 'string' ? route.params.collection : '');
+const primaryKey = computed(() => getRoutePrimaryKey(route.params.primaryKey) ?? null);
+const confirmDetails = computed(() => getManualFlowConfirmDetails(props.flow));
+const isConfirmButtonDisabled = computed(() =>
+	isManualFlowConfirmButtonDisabled(props.flow.id, confirmDetails.value, confirmValues.value),
+);
+const confirmButtonCTA = computed(() =>
+	props.location === 'item' ? t('run_flow_on_current') : t('run_flow'),
+);
 
 async function runFlow() {
-	const flow = props.flow;
+	if (running.value) return;
+	running.value = true;
 
 	try {
-		if (
-			props.location === 'collection'
-			&& flow.options?.requireSelection === false
-			&& selection.value.length === 0
-		) {
-			await api.post(`/flows/trigger/${flow.id}`, {
-				...unref(confirmValues),
-				collection: collection.value,
-			});
-		}
-		else {
-			const keys = primaryKey.value ? [primaryKey.value] : selection.value;
+		const options = {
+			api,
+			flow: props.flow,
+			collection: collection.value,
+			values: confirmValues.value,
+		};
 
-			await api.post(`/flows/trigger/${flow.id}`, {
-				...unref(confirmValues),
-				collection: collection.value,
-				keys,
-			});
-		}
-
-		notificationsStore.add({
-			title: t('run_flow_success', { flow: flow.name }),
-		});
-
-		resetConfirm();
-		close();
+		await (props.location === 'item'
+			? triggerManualFlow({ ...options, location: props.location, primaryKey })
+			: triggerManualFlow({ ...options, location: props.location }));
 	}
 	catch (error) {
 		unexpectedError(error);
+		return;
 	}
-}
-
-const confirmDetails = computed(() => {
-	const flow = props.flow;
-
-	if (!flow.options?.requireConfirmation)
-		return null;
-
-	return {
-		description: flow.options.confirmationDescription,
-		fields: (flow.options.fields ?? []).map((field: Record<string, any>) => ({
-			...field,
-			name: !field.name && field.field ? formatTitle(field.field) : field.name,
-		})),
-	};
-});
-
-const isConfirmButtonDisabled = computed(() => {
-	for (const field of confirmDetails.value?.fields || []) {
-		if (
-			field.meta?.required
-			&& (!confirmValues.value
-				|| confirmValues.value[field.field] === null
-				|| confirmValues.value[field.field] === undefined)
-		) {
-			return true;
-		}
+	finally {
+		running.value = false;
 	}
 
-	return false;
-});
-
-const confirmButtonCTA = computed(() => {
-	if (props.location === 'item')
-		return t('run_flow_on_current');
-	if (unref(selection).length === 0)
-		return t('run_flow');
-	return t('run_flow_on_selected', unref(selection).length);
-});
-
-const displayCustomConfirmDialog = computed(() => !!confirmDetails.value);
-
-function resetConfirm() {
-	goBack();
+	notificationsStore.add({ title: t('trigger_flow_success', { flow: props.flow.name }) });
+	// The flow already ran, so a failed refresh must not keep the dialog open for a retry, or show an error after the success toast.
+	void Promise.resolve(notificationsStore.refreshUnreadCount?.()).catch((error) => console.warn(error));
+	close();
 }
 </script>
 
 <template>
-	<v-dialog :model-value="displayCustomConfirmDialog" @esc="resetConfirm">
+	<v-dialog :model-value="!!confirmDetails" @esc="goBack">
 		<v-card class="allow-drawer">
-			<v-card-title>
-				{{
-					confirmDetails!.description ?? t("run_flow_confirm")
-				}}
-			</v-card-title>
+			<v-card-title>{{ confirmDetails?.description ?? t('run_flow_confirm') }}</v-card-title>
 			<v-card-text class="confirm-form">
 				<v-form
-					v-if="confirmDetails!.fields && confirmDetails!.fields.length > 0"
-					:fields="confirmDetails!.fields"
+					v-if="confirmDetails?.fields.length"
+					:fields="confirmDetails.fields"
 					:model-value="confirmValues"
 					autofocus
 					primary-key="+"
 					@update:model-value="confirmValues = $event"
 				/>
 			</v-card-text>
-
 			<v-card-actions>
-				<v-button secondary @click="resetConfirm">
-					{{ t("cancel") }}
+				<v-button secondary @click="goBack">
+					{{ t('cancel') }}
 				</v-button>
-				<v-button :disabled="isConfirmButtonDisabled" @click="runFlow">
+				<v-button
+					:loading="running"
+					:disabled="running || isConfirmButtonDisabled"
+					@click="runFlow"
+				>
 					{{ confirmButtonCTA }}
 				</v-button>
 			</v-card-actions>

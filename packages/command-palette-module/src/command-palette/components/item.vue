@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import type { Component as ComponentType } from 'vue';
-import { CommandItem } from '../../primitives/cmdk';
+import { ListboxItem } from 'reka-ui';
 
 withDefaults(
 	defineProps<{
 		icon?: string;
 		value?: string;
-		keywords?: string[];
-		forceMount?: boolean;
-		as: ComponentType;
+		as?: ComponentType | string;
 	}>(),
 	{
-		as: () => CommandItem,
+		as: () => ListboxItem,
 	},
 );
 
@@ -25,9 +23,7 @@ defineEmits<{
 		:is="as"
 		class="result-item"
 		:value="value"
-		:keywords="keywords"
-		:force-mount="forceMount"
-		@select="$emit('select')"
+		@select.prevent="$emit('select')"
 	>
 		<span class="icon">
 			<slot name="icon">
@@ -51,11 +47,12 @@ defineEmits<{
 
 	display: flex;
 	align-items: center;
-	padding: 6px 12px 6px 8px;
-	border-radius: 6px;
-	min-height: 40px;
+	padding: 0.1875rem 0.75rem 0.1875rem 0.5rem;
+	border-radius: 0.375rem;
+	min-block-size: 2.125rem;
+	cursor: pointer;
 
-	&[data-selected='true'] {
+	&[data-highlighted] {
 		background-color: var(--theme--background-subdued);
 		--v-icon-color: var(--theme--foreground);
 
@@ -69,17 +66,27 @@ defineEmits<{
 	}
 
 	.icon {
-		margin-right: 12px;
-		width: 24px;
-		height: 24px;
+		--v-icon-size: 1.25rem;
+
+		display: flex;
+		flex: 0 0 1.25rem;
+		align-items: center;
+		justify-content: center;
+		margin-inline-end: 0.625rem;
+		inline-size: 1.25rem;
+		block-size: 1.25rem;
 	}
 
 	.content {
 		flex: 1;
+		min-inline-size: 0;
 	}
 
 	.title {
 		color: var(--theme--foreground);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.description {

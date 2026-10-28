@@ -1,15 +1,20 @@
 <script setup lang="ts">
+import { useStores } from '@directus/extensions-sdk';
+import { watchDebounced } from '@vueuse/core';
+import { computed, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CollectionResults from './components/collection-results.vue';
-
 import SearchNavigation from './components/navigation.vue';
 import RecentSearches from './components/recent-searches.vue';
 import { useGlobalSearch } from './composables/use-global-search';
-import { useIsAdmin } from './composables/use-is-admin';
+import { useRecentSearches } from './composables/use-recent-searches';
+import { isAdminFromStores } from './utils/is-admin';
 
 const { t } = useI18n();
-
-const isAdmin = useIsAdmin();
+const stores = useStores();
+const isAdmin = computed(() => isAdminFromStores(stores));
+const currentUserId = stores.useUserStore().currentUser?.id;
+const recentSearches = useRecentSearches(currentUserId);
 
 const {
 	query,
@@ -19,16 +24,31 @@ const {
 	search,
 	clear,
 	collections,
+	completedSearch,
 	info,
 	loading,
 } = useGlobalSearch({
 	syncWithQuery: true,
 });
+
+// Only keep a search once typing settles, so as-you-type doesn't save every prefix.
+watchDebounced(completedSearch, (completed) => {
+	if (completed) recentSearches.add(completed.query);
+}, { debounce: 1000 });
+
+async function selectRecentSearch(value: string) {
+	query.value = value;
+	if (settings.value?.searchMode !== 'on_submit') return;
+
+	// Let the query watcher run first; it cancels any request started before it.
+	await nextTick();
+	void search(value);
+}
 </script>
 
 <template>
-	<private-view title="Search">
-		<!-- Header Icon -->
+	<private-view title="Search" icon="search">
+		<!-- Header icon fallback for hosts before 11.14, which lack the icon prop -->
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="search" />
@@ -38,14 +58,6 @@ const {
 		<!-- Navigation -->
 		<template #navigation>
 			<SearchNavigation />
-		</template>
-
-		<template #headline>
-			<v-breadcrumb
-				:items="[
-					{ name: 'Global Search', to: { name: 'global-search-index' } },
-				]"
-			/>
 		</template>
 
 		<!-- Main Content -->
@@ -72,15 +84,15 @@ const {
 							/>
 						</template>
 					</v-input>
-					<v-button v-if="settings.searchMode === 'form_submit'" type="submit">
+					<v-button v-if="settings?.searchMode === 'on_submit'" type="submit">
 						Search
 					</v-button>
 				</form>
 				<div class="search-info">
 					<p v-show="query">
-						{{ info.hits }} results returned in {{ info.time }}ms for "{{
+						{{ info.hits }} {{ info.hits === 1 ? 'result' : 'results' }} returned in {{ info.time }}ms for "{{
 							info.query
-						}}" across {{ collections.length }} collections.
+						}}" across {{ collections.length }} {{ collections.length === 1 ? 'collection' : 'collections' }}.
 					</p>
 				</div>
 			</header>
@@ -110,6 +122,20 @@ const {
 				</v-info>
 			</section>
 
+			<section
+				v-if="settingsValid && !query && recentSearches.searches.value.length > 0"
+				class="recent-searches"
+			>
+				<p class="text">
+					Recent Searches
+				</p>
+				<RecentSearches
+					:searches="recentSearches.searches.value"
+					@select="selectRecentSearch"
+					@clear="recentSearches.clear"
+				/>
+			</section>
+
 			<!-- Search Results -->
 			<section v-if="settingsValid && query" class="search-results">
 				<p class="text">
@@ -122,6 +148,7 @@ const {
 							hits,
 							displayTemplate,
 							descriptionField,
+							descriptionDisplay,
 						} in results"
 						:key="collection"
 					>
@@ -129,9 +156,10 @@ const {
 							v-if="hits.length > 0"
 							:collection="collection"
 							:hits="hits"
-							:query="query"
+							:query="query ?? ''"
 							:display-template="displayTemplate"
 							:description-field="descriptionField"
+							:description-display="descriptionDisplay"
 						/>
 					</template>
 				</v-list>
@@ -155,27 +183,12 @@ const {
 
 		<!-- Sidebar -->
 		<template #sidebar>
-			<sidebar-detail icon="info" title="Information" close>
+			<sidebar-detail id="info" icon="info" title="Information" close>
 				<div
 					v-md="
-						`**Global Search** –– \n Search for keywords across many different collections and fields.`
+						`**Global Search** –– \n Search for keywords across many different collections and fields.\n\nRecent searches are stored locally for the current Directus project and user.`
 					"
 					class="page-description"
-				/>
-			</sidebar-detail>
-			<sidebar-detail icon="history" title="Recent Searches" start-open>
-				<div
-					v-md="
-						`Recent searches are only stored locally on your browser and not in the database.`
-					"
-					class="page-description"
-				/>
-				<RecentSearches
-					@update-query="
-						(value: SearchHistoryItem) => {
-							query = value.query;
-						}
-					"
 				/>
 			</sidebar-detail>
 		</template>
@@ -185,7 +198,6 @@ const {
 <style scoped>
 .container {
 	padding: var(--content-padding);
-	padding-top: 0;
 	width: 100%;
 	max-width: 1024px;
 

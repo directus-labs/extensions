@@ -1,6 +1,6 @@
 import type { Ref } from 'vue';
 import type { CommandRouter } from '../router';
-import { createContext } from '../../primitives/cmdk/utils/create-context';
+import { createContext } from 'reka-ui';
 
 export interface GlobalCommandContext {
 	search: Ref<string>;
