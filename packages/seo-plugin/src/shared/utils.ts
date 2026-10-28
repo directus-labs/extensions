@@ -218,9 +218,17 @@ export function isEmptyValue(value: unknown): boolean {
 
 /**
  * Next value for arrow-key navigation in a tablist or radiogroup, or undefined for other keys.
+ * Same keys as reka-ui's roving focus, which core's tabs use: horizontal lists ignore Up/Down and RTL flips Left/Right.
  */
-export function nextRovingValue<T>(key: string, values: T[], current: T): T | undefined {
+export function nextRovingValue<T>(
+	key: string,
+	values: T[],
+	current: T,
+	{ orientation, dir }: { orientation?: 'horizontal'; dir?: string } = {},
+): T | undefined {
 	const index = values.indexOf(current);
+	if (dir === 'rtl') key = ({ ArrowLeft: 'ArrowRight', ArrowRight: 'ArrowLeft' } as Record<string, string>)[key] ?? key;
+	if (orientation === 'horizontal' && (key === 'ArrowUp' || key === 'ArrowDown')) return undefined;
 
 	switch (key) {
 		case 'ArrowRight':
@@ -230,8 +238,10 @@ export function nextRovingValue<T>(key: string, values: T[], current: T): T | un
 		case 'ArrowUp':
 			return values[(index - 1 + values.length) % values.length];
 		case 'Home':
+		case 'PageUp':
 			return values[0];
 		case 'End':
+		case 'PageDown':
 			return values.at(-1);
 		default:
 			return undefined;

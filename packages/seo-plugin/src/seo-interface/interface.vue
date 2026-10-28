@@ -22,6 +22,7 @@ interface Props extends SeoInterfaceOptions {
 	field: string;
 	value: SeoValue | null;
 	disabled?: boolean;
+	direction?: string;
 	values: Record<string, unknown>;
 }
 
@@ -127,7 +128,10 @@ const currentTab = computed(() => (tabs.value.some((tab) => tab.value === active
 const idPrefix = `seo-${Math.random().toString(36).slice(2, 8)}`;
 
 function onTabKeydown(event: KeyboardEvent) {
-	const next = nextRovingValue(event.key, tabs.value.map((tab) => tab.value), currentTab.value);
+	const next = nextRovingValue(event.key, tabs.value.map((tab) => tab.value), currentTab.value, {
+		orientation: 'horizontal',
+		dir: props.direction,
+	});
 	if (!next) return;
 
 	event.preventDefault();
@@ -137,7 +141,7 @@ function onTabKeydown(event: KeyboardEvent) {
 </script>
 
 <template>
-	<div class="seo-tabs">
+	<div class="seo-tabs" :dir="direction">
 		<div v-if="tabs.length > 1" class="tabs-list" role="tablist" :aria-label="t('seo_plugin.ui.tabs.label')" @keydown="onTabKeydown">
 			<button
 				v-for="tab in tabs"
@@ -164,7 +168,7 @@ function onTabKeydown(event: KeyboardEvent) {
 		</div>
 
 		<!-- v-if, not v-show: interfaces like the code editor measure their size on mount (#292) -->
-		<div v-if="currentTab === 'metadata'" :id="`${idPrefix}-panel`" role="tabpanel" :aria-labelledby="`${idPrefix}-tab-metadata`" class="tab-content form-grid">
+		<div v-if="currentTab === 'metadata'" :id="`${idPrefix}-panel`" role="tabpanel" tabindex="0" :aria-labelledby="`${idPrefix}-tab-metadata`" class="tab-content form-grid">
 			<!-- Title -->
 			<TitleField
 				:model-value="internalValue.title"
@@ -209,7 +213,7 @@ function onTabKeydown(event: KeyboardEvent) {
 			</OgImagePreview>
 		</div>
 
-		<div v-else-if="currentTab === 'advanced-settings'" :id="`${idPrefix}-panel`" role="tabpanel" :aria-labelledby="`${idPrefix}-tab-advanced-settings`" class="tab-content form-grid">
+		<div v-else-if="currentTab === 'advanced-settings'" :id="`${idPrefix}-panel`" role="tabpanel" tabindex="0" :aria-labelledby="`${idPrefix}-tab-advanced-settings`" class="tab-content form-grid">
 			<!-- Sitemap Fields -->
 			<div v-if="props.showSitemap" class="field">
 				<label class="label field-label type-label">
@@ -267,7 +271,7 @@ function onTabKeydown(event: KeyboardEvent) {
 			</div>
 		</div>
 
-		<div v-else-if="currentTab === 'custom-fields'" :id="`${idPrefix}-panel`" role="tabpanel" :aria-labelledby="`${idPrefix}-tab-custom-fields`" class="tab-content form-grid">
+		<div v-else-if="currentTab === 'custom-fields'" :id="`${idPrefix}-panel`" role="tabpanel" tabindex="0" :aria-labelledby="`${idPrefix}-tab-custom-fields`" class="tab-content form-grid">
 			<!-- Custom Fields -->
 			<div class="field">
 				<v-form
@@ -280,7 +284,7 @@ function onTabKeydown(event: KeyboardEvent) {
 			</div>
 		</div>
 
-		<div v-else-if="currentTab === 'analysis'" :id="`${idPrefix}-panel`" role="tabpanel" :aria-labelledby="`${idPrefix}-tab-analysis`" class="tab-content">
+		<div v-else-if="currentTab === 'analysis'" :id="`${idPrefix}-panel`" role="tabpanel" tabindex="0" :aria-labelledby="`${idPrefix}-tab-analysis`" class="tab-content">
 			<!-- Focus Keyphrase -->
 			<FocusKeyphrase
 				v-if="showFocusKeyphrase"

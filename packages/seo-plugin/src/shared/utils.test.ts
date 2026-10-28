@@ -130,6 +130,15 @@ describe('nextRovingValue', () => {
 	it('ignores other keys', () => {
 		expect(nextRovingValue('Enter', values, 'a')).toBeUndefined();
 	});
+
+	it('matches core tabs: PageUp/PageDown, no Up/Down when horizontal, flipped arrows in RTL', () => {
+		expect(nextRovingValue('PageUp', values, 'b')).toBe('a');
+		expect(nextRovingValue('PageDown', values, 'a')).toBe('c');
+		expect(nextRovingValue('ArrowDown', values, 'a', { orientation: 'horizontal' })).toBeUndefined();
+		expect(nextRovingValue('ArrowDown', values, 'a')).toBe('b');
+		expect(nextRovingValue('ArrowRight', values, 'b', { dir: 'rtl' })).toBe('a');
+		expect(nextRovingValue('ArrowLeft', values, 'b', { dir: 'rtl' })).toBe('c');
+	});
 });
 
 describe('formatFilesize', () => {
