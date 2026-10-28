@@ -3,11 +3,11 @@ import type { SeoInterfaceOptions, SeoValue } from '../shared/types/seo';
 // @ts-expect-error - types missing
 import { formatTitle } from '@directus/format-title';
 
-import { set } from 'lodash-es';
-import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from 'reka-ui';
-import { computed, onMounted, toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
+import { useSeoI18n } from '../lang/use-seo-i18n';
 import OgImagePreview from '../shared/components/OgImagePreview.vue';
 import SearchPreview from '../shared/components/SearchPreview.vue';
+import { isEmptyValue, nextRovingValue } from '../shared/utils';
 
 import Analysis from './analysis/components/Analysis.vue';
 import FocusKeyphrase from './components/FocusKeyphrase.vue';
@@ -22,13 +22,15 @@ interface Props extends SeoInterfaceOptions {
 	field: string;
 	value: SeoValue | null;
 	disabled?: boolean;
+	direction?: string;
 	values: Record<string, unknown>;
-	canonicalUrl?: string;
 }
 
 const props = defineProps<Props>();
 
 const emit = defineEmits<(event: 'input', value: SeoValue) => void>();
+
+const { t } = useSeoI18n();
 
 const { value } = toRefs(props);
 
@@ -48,51 +50,35 @@ function getDefaultSeoValue(): SeoValue {
 	};
 }
 
-const internalValue = computed({
-	get() {
-		if (!value.value) {
-			return {
-				...getDefaultSeoValue(),
-				sitemap: {
-					priority: props.defaultPriority || '0.5',
-					change_frequency: props.defaultChangeFrequency || 'weekly',
-				},
-			};
-		}
-
+const internalValue = computed<SeoValue>(() => {
+	if (!value.value) {
 		return {
-			...value.value,
+			...getDefaultSeoValue(),
 			sitemap: {
 				priority: props.defaultPriority || '0.5',
 				change_frequency: props.defaultChangeFrequency || 'weekly',
-				...value.value.sitemap,
 			},
 		};
-	},
-	set(newValue: SeoValue) {
-		value.value = newValue;
-	},
-});
-
-onMounted(() => {
-	if (!value.value) {
-		emit('input', internalValue.value);
 	}
+
+	return {
+		...value.value,
+		sitemap: {
+			priority: props.defaultPriority || '0.5',
+			change_frequency: props.defaultChangeFrequency || 'weekly',
+			...value.value.sitemap,
+		},
+	};
 });
 
 function updateField(field: string, value: unknown) {
-	if (!props.value) {
-		const newValue = set({}, field, value);
-		emit('input', newValue as SeoValue);
-		return;
-	}
-
-	const updatedValue = { ...props.value };
-	set(updatedValue, field, value);
+	const [key, subKey] = field.split('.') as [keyof SeoValue, string?];
+	const updatedValue: Record<string, unknown> = { ...internalValue.value };
+	updatedValue[key] = subKey ? { ...(updatedValue[key] as object), [subKey]: value } : value;
 	emit('input', updatedValue as SeoValue);
 }
 
-/* Transform additional fields to proper format to use v-form within CustomFields component */
+/* Transform additional fields to the format v-form expects */
 const additionalFields = computed(() => {
 	return (
 		props.additionalFields
@@ -116,37 +102,73 @@ const additionalFields = computed(() => {
 	);
 });
 
+// v-form marks a field as edited when it differs from its initial value
+const initialAdditionalFields = { ...props.value?.additional_fields };
+
 const showAdvancedTab = computed(() => props.showSitemap || props.showSearchControls);
 const showCustomFieldsTab = computed(() => additionalFields.value?.length > 0);
-const showAnalysisTab = computed(() => value.value && props.showFocusKeyphrase);
+const showAnalysisTab = computed(() => !!props.showFocusKeyphrase);
 
-const showTabsUi = computed(() => {
-	// Show tabs UI if any of the optional tabs are rendered
-	return showAdvancedTab.value || showCustomFieldsTab.value || showAnalysisTab.value;
+const missingRequiredCount = computed(() => {
+	const values = internalValue.value.additional_fields ?? {};
+	return (props.additionalFields ?? []).filter((field) => field?.required && isEmptyValue(values[String(field.field)])).length;
 });
+
+const tabs = computed(() => [
+	{ value: 'metadata', label: t('seo_plugin.ui.tabs.basic'), show: true },
+	{ value: 'advanced-settings', label: t('seo_plugin.ui.tabs.advanced'), show: showAdvancedTab.value },
+	{ value: 'custom-fields', label: t('seo_plugin.ui.tabs.custom_fields'), show: showCustomFieldsTab.value, missingRequired: missingRequiredCount.value },
+	{ value: 'analysis', label: t('seo_plugin.ui.tabs.analysis'), show: showAnalysisTab.value },
+].filter((tab) => tab.show));
+
+const activeTab = ref('metadata');
+// Fall back to Basic if the active tab disappears (e.g. its option is turned off)
+const currentTab = computed(() => (tabs.value.some((tab) => tab.value === activeTab.value) ? activeTab.value : 'metadata'));
+
+const idPrefix = `seo-${Math.random().toString(36).slice(2, 8)}`;
+
+function onTabKeydown(event: KeyboardEvent) {
+	const next = nextRovingValue(event.key, tabs.value.map((tab) => tab.value), currentTab.value, {
+		orientation: 'horizontal',
+		dir: props.direction,
+	});
+	if (!next) return;
+
+	event.preventDefault();
+	activeTab.value = next;
+	(event.currentTarget as HTMLElement).querySelector<HTMLElement>(`#${idPrefix}-tab-${next}`)?.focus();
+}
 </script>
 
 <template>
-	<TabsRoot class="seo-tabs" default-value="metadata" :unmount-on-hide="false">
-		<TabsList v-if="showTabsUi" class="tabs-list" aria-label="SEO Configuration">
-			<TabsIndicator class="tabs-indicator">
-				<div class="indicator-bar" />
-			</TabsIndicator>
-			<TabsTrigger class="tab-trigger" value="metadata">
-				<span>Basic</span>
-			</TabsTrigger>
-			<TabsTrigger v-if="showAdvancedTab" class="tab-trigger" value="advanced-settings">
-				<span>Advanced</span>
-			</TabsTrigger>
-			<TabsTrigger v-if="showCustomFieldsTab" class="tab-trigger" value="custom-fields">
-				<span>Custom Fields</span>
-			</TabsTrigger>
-			<TabsTrigger v-if="showAnalysisTab" class="tab-trigger" value="analysis">
-				<span>Keyphrase</span>
-			</TabsTrigger>
-		</TabsList>
+	<div class="seo-tabs" :dir="direction">
+		<div v-if="tabs.length > 1" class="tabs-list" role="tablist" :aria-label="t('seo_plugin.ui.tabs.label')" @keydown="onTabKeydown">
+			<button
+				v-for="tab in tabs"
+				:id="`${idPrefix}-tab-${tab.value}`"
+				:key="tab.value"
+				type="button"
+				role="tab"
+				class="tab-trigger"
+				:tabindex="currentTab === tab.value ? 0 : -1"
+				:aria-selected="currentTab === tab.value"
+				:aria-controls="`${idPrefix}-panel`"
+				:data-state="currentTab === tab.value ? 'active' : 'inactive'"
+				@click="activeTab = tab.value"
+			>
+				<span>{{ tab.label }}</span>
+				<v-icon
+					v-if="tab.missingRequired"
+					v-tooltip="t('seo_plugin.ui.required_count', { count: tab.missingRequired })"
+					class="warning"
+					name="error"
+					small
+				/>
+			</button>
+		</div>
 
-		<TabsContent value="metadata" class="tab-content form-grid">
+		<!-- v-if, not v-show: interfaces like the code editor measure their size on mount (#292) -->
+		<div v-if="currentTab === 'metadata'" :id="`${idPrefix}-panel`" role="tabpanel" tabindex="0" :aria-labelledby="`${idPrefix}-tab-metadata`" class="tab-content form-grid">
 			<!-- Title -->
 			<TitleField
 				:model-value="internalValue.title"
@@ -178,7 +200,6 @@ const showTabsUi = computed(() => {
 				:title="internalValue.title"
 				:description="internalValue.meta_description"
 				:og-image="internalValue.og_image"
-				:url="props.canonicalUrl"
 				class="field"
 			>
 				<OgImage
@@ -190,30 +211,29 @@ const showTabsUi = computed(() => {
 					@input="updateField('og_image', $event)"
 				/>
 			</OgImagePreview>
-		</TabsContent>
+		</div>
 
-		<!-- Use new computed prop for condition -->
-		<TabsContent v-if="showAdvancedTab" value="advanced-settings" class="tab-content form-grid">
+		<div v-else-if="currentTab === 'advanced-settings'" :id="`${idPrefix}-panel`" role="tabpanel" tabindex="0" :aria-labelledby="`${idPrefix}-tab-advanced-settings`" class="tab-content form-grid">
 			<!-- Sitemap Fields -->
 			<div v-if="props.showSitemap" class="field">
 				<label class="label field-label type-label">
-					Sitemap Settings
-					<v-icon v-tooltip="'Control how search engines crawl and index your site'" name="info" small class="info-icon" />
+					{{ t('seo_plugin.interface.sitemap_settings') }}
+					<v-icon v-tooltip="t('seo_plugin.tooltips.sitemap_settings')" name="info" small class="info-icon" />
 				</label>
 				<div class="form-grid">
 					<div v-for="sitemapField in sitemapFields" :key="sitemapField.key" class="field half">
 						<v-select
 							:model-value="internalValue.sitemap?.[sitemapField.key as keyof SeoValue['sitemap']] || ''"
-							:items="sitemapField.options"
+							:items="sitemapField.options.map((option) => ({ ...option, text: t(option.text) }))"
 							:disabled="props.disabled"
-							:placeholder="sitemapField.label"
+							:placeholder="t(sitemapField.label)"
 							@update:model-value="updateField(`sitemap.${sitemapField.key}` as 'sitemap.priority' | 'sitemap.change_frequency', $event)"
 						>
 							<template #prepend>
 								<v-icon :name="sitemapField.icon" />
 							</template>
 						</v-select>
-						<small v-if="sitemapField.tooltip" class="hint">{{ sitemapField.tooltip }}</small>
+						<small v-if="sitemapField.tooltip" class="hint">{{ t(sitemapField.tooltip) }}</small>
 					</div>
 				</div>
 			</div>
@@ -221,56 +241,50 @@ const showTabsUi = computed(() => {
 			<!-- Search Engine Controls -->
 			<div v-if="props.showSearchControls" class="field">
 				<label class="label field-label type-label">
-					Search Engine Controls
-					<v-icon v-tooltip="'Control how search engines interact with this page'" name="info" small class="info-icon" />
+					{{ t('seo_plugin.interface.search_controls') }}
+					<v-icon v-tooltip="t('seo_plugin.tooltips.search_controls')" name="info" small class="info-icon" />
 				</label>
 				<div class="form-grid">
 					<interface-boolean
 						v-for="control in searchControls"
 						:key="control.key"
 						class="field half"
-						:model-value="internalValue[control.key as 'no_index' | 'no_follow']"
+						:value="internalValue[control.key as 'no_index' | 'no_follow']"
 						:disabled="props.disabled"
-						:label="control.label"
-						@update:model-value="updateField(control.key as keyof SeoValue, $event)"
-					>
-						<template #append>
-							<v-icon
-								v-tooltip="'Prevents search engines from indexing this page'"
-								name="visibility_off"
-								small
-								class="info-icon"
-							/>
-						</template>
-					</interface-boolean>
+						:label="t(control.label)"
+						@input="updateField(control.key as keyof SeoValue, $event)"
+					/>
 
 					<!-- Warning message when either option is enabled -->
 					<v-notice v-if="internalValue.no_index || internalValue.no_follow" type="warning" class="field full">
 						<span>
 							{{
 								internalValue.no_index && internalValue.no_follow
-									? "This page will be hidden from search engines and its links won't be followed"
+									? t('seo_plugin.interface.hidden_and_not_followed')
 									: internalValue.no_index
-										? 'This page will be hidden from search engines'
-										: "Links on this page won't be followed by search engines"
+										? t('seo_plugin.interface.hidden_from_search')
+										: t('seo_plugin.interface.links_not_followed_warning')
 							}}
 						</span>
 					</v-notice>
 				</div>
 			</div>
-		</TabsContent>
-		<TabsContent v-if="showCustomFieldsTab" value="custom-fields" class="tab-content form-grid">
+		</div>
+
+		<div v-else-if="currentTab === 'custom-fields'" :id="`${idPrefix}-panel`" role="tabpanel" tabindex="0" :aria-labelledby="`${idPrefix}-tab-custom-fields`" class="tab-content form-grid">
 			<!-- Custom Fields -->
 			<div class="field">
 				<v-form
 					:fields="additionalFields"
 					:model-value="internalValue.additional_fields"
+					:initial-values="initialAdditionalFields"
+					:disabled="props.disabled"
 					@update:model-value="updateField('additional_fields', $event)"
 				/>
 			</div>
-		</TabsContent>
+		</div>
 
-		<TabsContent v-if="showAnalysisTab" value="analysis" class="tab-content">
+		<div v-else-if="currentTab === 'analysis'" :id="`${idPrefix}-panel`" role="tabpanel" tabindex="0" :aria-labelledby="`${idPrefix}-tab-analysis`" class="tab-content">
 			<!-- Focus Keyphrase -->
 			<FocusKeyphrase
 				v-if="showFocusKeyphrase"
@@ -287,78 +301,64 @@ const showTabsUi = computed(() => {
 				:slug-field="slugField"
 				:content-fields="contentFields"
 			/>
-		</TabsContent>
-	</TabsRoot>
+		</div>
+	</div>
 </template>
 
 <style lang="scss" scoped>
 @use '../shared/styles/shared.scss' as *;
 
 .tabs-list {
-	position: relative;
 	display: flex;
-	flex-shrink: 0;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color);
-	color: var(--header-color, var(--theme--foreground));
-	margin-bottom: 16px;
+	gap: 0 0.5rem;
+	padding: 0.25rem;
+	margin-bottom: var(--theme--form--row-gap);
+	border-radius: var(--theme--border-radius);
+	background-color: var(--theme--background-subdued);
+	flex-wrap: wrap;
 }
 
-.tabs-indicator {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	height: 2px;
-	width: var(--reka-tabs-indicator-size);
-	transform: translateX(var(--reka-tabs-indicator-position)) translateY(1px);
-	transition: width 0.3s ease, transform 0.3s ease;
-	will-change: width, transform;
-
-	.indicator-bar {
-		background-color: var(--theme--primary);
-		width: 100%;
-		height: 100%;
-		border-radius: 9999px;
-	}
-}
-
+/* Matches core's group-tabs interface (app/src/interfaces/group-tabs/tab-trigger.vue) */
 .tab-trigger {
-	background-color: transparent;
-	padding: 10px 16px;
-	min-width: fit-content;
-	display: flex;
+	position: relative;
+	display: inline-flex;
 	align-items: center;
-	justify-content: center;
-	font-size: 15px;
-	color: var(--theme--foreground-normal);
-	user-select: none;
-	border: none;
-	border-radius: var(--theme--border-radius, 4px) var(--theme--border-radius, 4px) 0 0;
+	padding: 0.25rem 0.625rem;
+	border: var(--theme--border-width) solid transparent;
+	border-radius: var(--theme--border-radius);
+	background-color: transparent;
+	color: var(--theme--foreground-subdued);
+	font: inherit;
+	font-weight: 600;
 	cursor: pointer;
-	outline: none;
-	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+	transition:
+		color var(--fast) var(--transition),
+		background-color var(--fast) var(--transition),
+		border-color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--theme--primary);
-		background-color: var(--theme--background-subdued);
+		color: var(--theme--foreground-accent);
 	}
 
 	&[data-state='active'] {
-		color: var(--theme--primary);
+		border-color: var(--theme--background-accent);
+		background-color: var(--theme--background-accent);
+		color: var(--theme--foreground-accent);
 	}
 
 	&:focus-visible {
-		position: relative;
-		box-shadow: 0 0 0 var(--theme--border-width) var(--theme--primary);
+		outline: var(--theme--border-width) solid var(--theme--primary);
+		outline-offset: 1px;
 	}
+}
+
+.tab-trigger .warning {
+	margin-inline-start: 0.5rem;
+	color: var(--theme--danger);
 }
 
 .tab-content {
 	flex-grow: 1;
-	outline: none;
-
-	&[data-state='inactive'] {
-		display: none;
-	}
 }
 
 .mb-8 {

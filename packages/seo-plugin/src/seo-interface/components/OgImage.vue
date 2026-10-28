@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { getRootPath } from '@directus-labs/utils';
-import { useApi } from '@directus/extensions-sdk';
+import { useApi, useStores } from '@directus/extensions-sdk';
 import { computed, ref, watch } from 'vue';
 
-import { useI18n } from 'vue-i18n';
+import { useSeoI18n } from '../../lang/use-seo-i18n';
+import { formatFilesize } from '../../shared/utils';
 
 interface Image {
 	id: string;
@@ -45,13 +46,15 @@ const emit = defineEmits<{
 
 const loading = ref(false);
 const image = ref<Image | null>(null);
-// const lightboxActive = ref(false);
 const editDrawerActive = ref(false);
 const imageError = ref<string | null>(null);
 const isImage = ref(true);
 
 const api = useApi();
-const { t, te } = useI18n();
+const { useCollectionsStore } = useStores();
+// The collections store only holds collections the user can read. Core's uploader and file drawer crash without it.
+const canReadFiles = computed(() => !!useCollectionsStore().getCollection('directus_files'));
+const { t, te } = useSeoI18n();
 
 function addQueryToPath(path: string, query: Record<string, string>): string {
 	const queryParams: string[] = [];
@@ -75,25 +78,25 @@ function addTokenToURL(api: ReturnType<typeof useApi>, url: string, token?: stri
 	return addQueryToPath(url, { access_token: accessToken });
 }
 
-const src = computed(() => {
+// Relative to the API root, so it works with both api.get() and <img src> on subpath installs
+const assetPath = computed(() => {
 	if (!image.value?.type)
 		return null;
 
 	if (image.value.type.includes('svg')) {
-		return addTokenToURL(api, `${getRootPath()}assets/${image.value.id}`);
+		return `assets/${image.value.id}`;
 	}
 
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-
-		const url =
-			`${getRootPath()}assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
-
-		return addTokenToURL(api, url);
+		return `assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
 	}
 
 	return null;
 });
+
+const src = computed(() => (assetPath.value ? addTokenToURL(api, `${getRootPath()}${assetPath.value}`) : null));
+const downloadUrl = computed(() => (image.value ? addTokenToURL(api, `${getRootPath()}assets/${image.value.id}?download`) : null));
 
 const meta = computed(() => {
 	if (!image.value)
@@ -101,10 +104,10 @@ const meta = computed(() => {
 	const { filesize, width, height, type } = image.value;
 
 	if (width && height) {
-		return `${width}x${height} • ${filesize} • ${type}`;
+		return `${width}x${height} • ${formatFilesize(filesize)} • ${type}`;
 	}
 
-	return `${filesize} • ${type}`;
+	return `${formatFilesize(filesize)} • ${type}`;
 });
 
 const edits = computed(() => {
@@ -117,16 +120,17 @@ const edits = computed(() => {
 
 async function fetchImage() {
 	loading.value = true;
+	imageError.value = null;
+	isImage.value = true;
+
+	// Stored as filename_disk ("<uuid>.png") or a bare UUID. The API reads the first 36 chars the same way.
+	const id = (typeof props.value === 'string' ? props.value : props.value?.id as string | undefined)?.slice(0, 36);
 
 	try {
-		let id = typeof props.value === 'string' ? props.value : props.value?.id as string;
-
 		if (id) {
-			id = id.split('.').slice(0, -1).join('.');
-
 			const response = await api.get(`/files/${id}`, {
 				params: {
-					fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
+					fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download', 'modified_on'],
 				},
 			});
 
@@ -138,27 +142,32 @@ async function fetchImage() {
 				: response.data.data;
 		}
 	}
+	catch (error: unknown) {
+		// Deleted file or no read access: keep the value and show an error with a deselect action
+		image.value = { id } as Image;
+		imageError.value = getErrorCode(error);
+	}
 	finally {
 		loading.value = false;
 	}
 }
 
+function getErrorCode(error: unknown): string {
+	const err = error as { response?: { data?: { errors?: Array<{ extensions?: { code?: string } }> } } };
+	const code = err.response?.data?.errors?.[0]?.extensions?.code;
+	return code && te(`errors.${code}`) ? code : 'UNKNOWN';
+}
+
 async function imageErrorHandler() {
 	isImage.value = false;
-	if (!src.value)
+	if (!assetPath.value)
 		return;
 
 	try {
-		await api.get(src.value);
+		await api.get(`/${assetPath.value}`);
 	}
 	catch (error: unknown) {
-		const err = error as { response?: { data?: { errors?: Array<{ extensions?: { code?: string } }> } } };
-		const errorCode = err.response?.data?.errors?.[0]?.extensions?.code;
-		imageError.value = errorCode || 'UNKNOWN';
-
-		if (!te(`errors.${imageError.value}`)) {
-			imageError.value = 'UNKNOWN';
-		}
+		imageError.value = getErrorCode(error);
 	}
 }
 
@@ -172,7 +181,6 @@ function deselect() {
 	emit('input', null);
 	loading.value = false;
 	image.value = null;
-	// lightboxActive.value = false;
 	editDrawerActive.value = false;
 }
 
@@ -189,7 +197,7 @@ watch(
 		if (newValue === oldValue)
 			return;
 
-		if (newValue) {
+		if (newValue && canReadFiles.value) {
 			fetchImage();
 		}
 
@@ -204,6 +212,9 @@ watch(
 <template>
 	<div class="image" :class="[width, { crop, 'og-preview-mode': inOgPreview }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
+		<v-notice v-else-if="!canReadFiles" class="disabled-placeholder" center icon="hide_image">
+			{{ t('seo_plugin.ui.no_file_access') }}
+		</v-notice>
 		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="hide_image">
 			{{ t('no_image_selected') }}
 		</v-notice>
@@ -211,7 +222,7 @@ watch(
 			<div v-if="imageError || !src" class="image-error">
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 				<span class="message">
-					{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
+					{{ imageError ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 			<img
@@ -227,20 +238,19 @@ watch(
 			</div>
 			<div class="shadow" />
 			<div v-if="!disabled" class="actions">
-				<!-- <v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
-						<v-icon name="zoom_in" />
-					</v-button> -->
-				<v-button v-tooltip="t('download')" icon rounded :href="src" :download="image.filename_download">
-					<v-icon name="download" />
-				</v-button>
-				<v-button v-tooltip="t('edit_item')" icon rounded @click="editDrawerActive = true">
-					<v-icon name="open_in_new" />
-				</v-button>
-				<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
+				<template v-if="!imageError">
+					<v-button v-tooltip="t('download')" icon small :href="downloadUrl" :download="image.filename_download">
+						<v-icon name="download" />
+					</v-button>
+					<v-button v-tooltip="t('edit_item')" icon small @click="editDrawerActive = true">
+						<v-icon name="open_in_new" />
+					</v-button>
+				</template>
+				<v-button v-tooltip="t('deselect')" icon small @click="deselect">
 					<v-icon name="close" />
 				</v-button>
 			</div>
-			<div class="info">
+			<div v-if="!imageError" class="file-info">
 				<div class="title">
 					{{ image.title }}
 				</div>
@@ -249,20 +259,13 @@ watch(
 				</div>
 			</div>
 			<drawer-item
-				v-if="!disabled && image"
+				v-if="!disabled && image && !imageError"
 				v-model:active="editDrawerActive"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
 				@input="stageEdits"
 			/>
-			<!-- TODO: Add lightbox functionality -->
-			<!-- <file-lightbox
-					v-if="image"
-					v-model="lightboxActive"
-					:id="image.id"
-					:title="image.title"
-				/> -->
 		</div>
 		<v-upload v-else from-library from-url :folder="folder" @input="setImage" />
 	</div>
@@ -275,7 +278,7 @@ watch(
 .image-preview {
 	position: relative;
 	width: 100%;
-	height: var(--input-height-tall);
+	height: var(--input-height-md, var(--input-height-tall));
 	overflow: hidden;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
@@ -316,7 +319,8 @@ watch(
 		width: 100%;
 		height: 100%;
 
-		.image-preview {
+		.image-preview,
+		.disabled-placeholder {
 			height: 100%;
 			border-radius: 0;
 		}
@@ -343,7 +347,7 @@ watch(
 			transform: translateY(-50%);
 		}
 
-		.info {
+		.file-info {
 			z-index: 10;
 			opacity: 0;
 			transform: translateY(10px);
@@ -363,7 +367,7 @@ watch(
 				background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.5) 100%);
 			}
 
-			.info {
+			.file-info {
 				opacity: 1;
 				transform: translateY(0);
 			}
@@ -376,7 +380,7 @@ watch(
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: var(--input-height-tall);
+	height: var(--input-height-md, var(--input-height-tall));
 	border-radius: var(--theme--border-radius);
 }
 
@@ -441,7 +445,7 @@ watch(
 		margin-right: 0px;
 	}
 }
-.info {
+.file-info {
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -477,6 +481,6 @@ watch(
 }
 
 .disabled-placeholder {
-	height: var(--theme--input-height-tall);
+	height: var(--input-height-md, var(--input-height-tall));
 }
 </style>

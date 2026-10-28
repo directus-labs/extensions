@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { getRootPath } from '@directus-labs/utils';
-import { RadioGroupIndicator, RadioGroupItem, RadioGroupRoot } from 'reka-ui';
-import { computed, defineProps, ref } from 'vue';
-import { truncate } from '../utils';
+import { computed, ref } from 'vue';
+import { useSeoI18n } from '../../lang/use-seo-i18n';
+import { nextRovingValue, truncate } from '../utils';
 
 const props = defineProps<{
 	title: string;
@@ -10,8 +10,26 @@ const props = defineProps<{
 	ogImage?: string | null;
 }>();
 
+const { t } = useSeoI18n();
+
 type Platform = 'facebook' | 'linkedin' | 'x';
 const selectedPlatform = ref<Platform>('linkedin');
+
+// Directus 10 has no X icon, so X uses an inline logo
+const platforms: { value: Platform; label: string; icon?: string }[] = [
+	{ value: 'facebook', label: 'Facebook', icon: 'facebook' },
+	{ value: 'linkedin', label: 'LinkedIn', icon: 'linkedin' },
+	{ value: 'x', label: 'X' },
+];
+
+function onPlatformKeydown(event: KeyboardEvent) {
+	const next = nextRovingValue(event.key, platforms.map((platform) => platform.value), selectedPlatform.value);
+	if (!next) return;
+
+	event.preventDefault();
+	selectedPlatform.value = next;
+	(event.currentTarget as HTMLElement).querySelector<HTMLElement>(`[data-platform="${next}"]`)?.focus();
+}
 
 const imageUrlToDisplay = computed(() => {
 	if (!props.ogImage) return null;
@@ -34,7 +52,7 @@ const domain = computed(() => {
 <template>
 	<div class="seo-image-preview">
 		<div class="preview-header">
-			<label class="label field-label type-label">Social Image Preview</label>
+			<label class="label field-label type-label">{{ t('seo_plugin.preview.social_media_preview') }}</label>
 		</div>
 		<div class="preview-container">
 			<div class="og-preview-container">
@@ -48,14 +66,14 @@ const domain = computed(() => {
 								alt="OG Image Preview"
 							>
 						</slot>
-						<div v-if="selectedPlatform === 'x'" class="preview-domain-badge">
+						<div v-if="selectedPlatform === 'x' && props.ogImage" class="preview-domain-badge">
 							{{ domain }}
 						</div>
 					</div>
 					<div v-if="!props.ogImage" class="preview-content empty-content">
 						<div class="empty-state-message">
 							<p>
-								Upload an image to preview how your links will appear when shared on social media
+								{{ t('seo_plugin.ui.upload_image_preview') }}
 							</p>
 						</div>
 					</div>
@@ -64,44 +82,44 @@ const domain = computed(() => {
 							{{ domain }}
 						</div>
 						<div class="preview-title">
-							{{ truncate(title, 60) || 'Enter a title to see preview' }}
+							{{ truncate(title, 60) || t('seo_plugin.ui.preview_title') }}
 						</div>
 						<div class="preview-description">
-							{{ truncate(description, 160) || 'Enter a description to see preview' }}
+							{{ truncate(description, 160) || t('seo_plugin.ui.preview_description') }}
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="preview-info">
-				<h3>Preview how your content will look when shared on social media.</h3>
+				<h3>{{ t('seo_plugin.ui.social_preview_desc') }}</h3>
 				<div class="platform-selection">
-					<RadioGroupRoot v-model="selectedPlatform" class="platform-switcher">
-						<RadioGroupItem value="facebook" class="platform-tab">
-							<v-icon name="facebook" small />
-							<span>Facebook</span>
-							<RadioGroupIndicator class="platform-indicator">
+					<div class="platform-switcher" role="radiogroup" :aria-label="t('seo_plugin.ui.platforms_label')" @keydown="onPlatformKeydown">
+						<button
+							v-for="platform in platforms"
+							:key="platform.value"
+							type="button"
+							role="radio"
+							class="platform-tab"
+							:data-platform="platform.value"
+							:tabindex="selectedPlatform === platform.value ? 0 : -1"
+							:aria-checked="selectedPlatform === platform.value"
+							:data-state="selectedPlatform === platform.value ? 'checked' : 'unchecked'"
+							@click="selectedPlatform = platform.value"
+						>
+							<v-icon v-if="platform.icon" :name="platform.icon" small />
+							<svg v-else class="x-logo" viewBox="0 0 24 24" aria-hidden="true">
+								<path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+							</svg>
+							<span>{{ platform.label }}</span>
+							<div v-if="selectedPlatform === platform.value" class="platform-indicator">
 								<div class="indicator-bar" />
-							</RadioGroupIndicator>
-						</RadioGroupItem>
-						<RadioGroupItem value="linkedin" class="platform-tab">
-							<v-icon name="linkedin" small />
-							<span>LinkedIn</span>
-							<RadioGroupIndicator class="platform-indicator">
-								<div class="indicator-bar" />
-							</RadioGroupIndicator>
-						</RadioGroupItem>
-						<RadioGroupItem value="x" class="platform-tab">
-							<v-icon name="x_twitter" small />
-							<span>X</span>
-							<RadioGroupIndicator class="platform-indicator">
-								<div class="indicator-bar" />
-							</RadioGroupIndicator>
-						</RadioGroupItem>
-					</RadioGroupRoot>
+							</div>
+						</button>
+					</div>
 				</div>
 				<div class="recommendations">
-					<h4>Recommend Image Size</h4>
-					<p>• 1200 X 630 pixels<br>• 1.91:1 aspect ratio</p>
+					<h4>{{ t('seo_plugin.ui.recommend_image_size') }}</h4>
+					<p>• {{ t('seo_plugin.image_size.pixels') }}<br>• {{ t('seo_plugin.image_size.ratio') }}</p>
 				</div>
 			</div>
 		</div>
@@ -324,6 +342,11 @@ const domain = computed(() => {
 	}
 }
 
+.x-logo {
+	width: 16px;
+	height: 16px;
+}
+
 .platform-indicator {
 	position: absolute;
 	left: 0;
@@ -392,6 +415,11 @@ const domain = computed(() => {
 		position: relative;
 		border-bottom: none;
 		background-color: transparent;
+	}
+
+	/* The image's hover details sit where the badge is */
+	.preview-image-container:hover .preview-domain-badge {
+		opacity: 0;
 	}
 
 	.preview-domain-badge {

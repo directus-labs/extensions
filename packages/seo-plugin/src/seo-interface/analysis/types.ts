@@ -17,8 +17,11 @@ export interface AnalysisResultDetails {
 
 export interface AnalysisResult {
 	id: string;
+	/** i18n key */
 	title: string;
 	status: AnalysisStatus;
+	/** i18n key */
 	message: string;
+	messageParams?: Record<string, unknown>;
 	details?: AnalysisResultDetails;
 }

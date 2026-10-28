@@ -1,7 +1,6 @@
 import type { Ref } from 'vue';
 import type { SeoFieldRule, SeoFieldState, SeoFieldStatus } from '../types/seo';
-import { render } from 'micromustache';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 export interface SeoFieldStateWithIcon extends SeoFieldState {
 	icon: {
@@ -13,30 +12,26 @@ export interface SeoFieldStateWithIcon extends SeoFieldState {
 export const STATUS_CONFIG = {
 	'missing': {
 		icon: { name: 'error', class: 'error' },
-		message: 'Missing',
+		message: 'seo_plugin.status.missing',
 	},
 	'too-long': {
 		icon: { name: 'warning', class: 'warning' },
-		message: 'Too long',
+		message: 'seo_plugin.status.too_long',
 	},
 	'too-short': {
 		icon: { name: 'warning', class: 'warning' },
-		message: 'Too short',
+		message: 'seo_plugin.status.too_short',
 	},
 	'ideal': {
 		icon: { name: 'check', class: 'success' },
-		message: 'Ideal length',
+		message: 'seo_plugin.status.ideal',
 	},
 };
 
 export function useSeoField(
 	modelValue: Ref<string | undefined | null>,
 	rule: SeoFieldRule | undefined,
-	values: Ref<Record<string, any>> = ref({}),
 ) {
-	const isTouched = ref(false);
-	const isTemplateUpdate = ref(false);
-
 	const length = computed(() => modelValue.value?.length ?? 0);
 
 	const progress = computed(() => {
@@ -68,24 +63,7 @@ export function useSeoField(
 		};
 	});
 
-	/* Helper function to render the value with the values using micromustache. */
-	function transform(value: string) {
-		if (!value)
-			return '';
-
-		try {
-			return render(value, values.value);
-		}
-		catch (error) {
-			console.warn('Template rendering error:', error);
-			return value;
-		}
-	}
-
 	return {
-		isTouched,
-		isTemplateUpdate,
 		state,
-		transform,
 	};
 }

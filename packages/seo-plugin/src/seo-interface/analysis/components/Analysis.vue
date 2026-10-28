@@ -1,17 +1,9 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
 import type { AnalysisResult } from '../../analysis/types';
-import { useDebounceFn } from '@vueuse/core';
-
-import { get } from 'lodash-es';
-import {
-	AccordionContent,
-	AccordionHeader,
-	AccordionItem,
-	AccordionRoot,
-	AccordionTrigger,
-} from 'reka-ui';
-import { computed, inject, ref, watch } from 'vue';
+import { computed, inject, onBeforeUnmount, ref, watch } from 'vue';
+import { useSeoI18n } from '../../../lang/use-seo-i18n';
+import { getPath } from '../../../shared/utils';
 import {
 	analyzeContent,
 	analyzeDescription,
@@ -22,7 +14,7 @@ import {
 } from '../../analysis/utils';
 import AnalysisResultComponent from './AnalysisResult.vue';
 
-type SectionId = 'problems' | 'improvements' | 'goodResults';
+type SectionId = 'problems' | 'improvements' | 'good';
 
 const props = defineProps<{
 	focusKeyphrase: string;
@@ -31,6 +23,8 @@ const props = defineProps<{
 	slugField: string | null | undefined;
 	contentFields: string[] | string | undefined;
 }>();
+
+const { t } = useSeoI18n();
 
 const values = inject('values') as Ref<Record<string, any>>;
 
@@ -44,7 +38,7 @@ const contentData = computed(() => {
 	const fieldsToExtract = Array.isArray(props.contentFields) ? props.contentFields : [props.contentFields];
 
 	return fieldsToExtract.reduce((acc, fieldName) => {
-		const content = get(values.value, fieldName);
+		const content = getPath(values.value, fieldName);
 
 		if (content !== undefined && content !== null) {
 			acc[fieldName] = content;
@@ -81,7 +75,7 @@ const contentString = computed(() => {
 	return combined.trim();
 });
 
-const slugValue = computed(() => values.value[props.slugField as keyof typeof values.value] || '');
+const slugValue = computed(() => (props.slugField && values?.value?.[props.slugField]) || '');
 
 const analysisInput = computed(() => ({
 	focusKeyphrase: props.focusKeyphrase,
@@ -91,7 +85,16 @@ const analysisInput = computed(() => ({
 	combinedContent: contentString.value,
 }));
 
-const runAnalysis = useDebounceFn(() => {
+let analysisTimer: ReturnType<typeof setTimeout> | undefined;
+
+function runAnalysis() {
+	clearTimeout(analysisTimer);
+	analysisTimer = setTimeout(analyze, 500);
+}
+
+onBeforeUnmount(() => clearTimeout(analysisTimer));
+
+function analyze() {
 	if (!props.focusKeyphrase) {
 		analysisResults.value = [];
 		return;
@@ -111,7 +114,7 @@ const runAnalysis = useDebounceFn(() => {
 				]
 			: []),
 	];
-}, 500);
+}
 
 watch(
 	[
@@ -121,11 +124,12 @@ watch(
 		() => slugValue.value,
 		() => contentData.value,
 	],
-	() => {
-		runAnalysis();
-	},
-	{ deep: true, immediate: true },
+	runAnalysis,
+	{ deep: true },
 );
+
+// Panels mount on tab switch, so analyze right away instead of after the debounce
+analyze();
 
 const allAnalyses = computed(() => analysisResults.value);
 
@@ -138,21 +142,21 @@ const openSectionIds = ref<SectionId[]>(['problems', 'improvements']);
 const sections = computed(() => [
 	{
 		id: 'problems' as SectionId,
-		title: 'Problems',
+		title: 'seo_plugin.analysis.problems',
 		icon: 'error',
 		iconClass: 'error',
 		results: problemResults.value,
 	},
 	{
 		id: 'improvements' as SectionId,
-		title: 'Improvements',
+		title: 'seo_plugin.analysis.improvements',
 		icon: 'warning',
 		iconClass: 'warning',
 		results: improvementResults.value,
 	},
 	{
 		id: 'good' as SectionId,
-		title: 'Good results',
+		title: 'seo_plugin.analysis.good_results',
 		icon: 'check_circle',
 		iconClass: 'good',
 		results: goodResults.value,
@@ -169,38 +173,44 @@ function collapseAllSections() {
 	openSectionIds.value = [];
 }
 
+function toggleSection(id: SectionId) {
+	openSectionIds.value = openSectionIds.value.includes(id)
+		? openSectionIds.value.filter((openId) => openId !== id)
+		: [...openSectionIds.value, id];
+}
+
 const hasOnlyNeutralResults = computed(() => {
 	return allAnalyses.value.length > 0 && availableSectionIds.value.length === 0;
 });
 
-const canCollapseAll = computed(() => openSectionIds.value.length > 0);
-const canExpandAll = computed(() => openSectionIds.value.length < availableSectionIds.value.length);
+const canCollapseAll = computed(() => availableSectionIds.value.some((id) => openSectionIds.value.includes(id)));
+const canExpandAll = computed(() => availableSectionIds.value.some((id) => !openSectionIds.value.includes(id)));
 </script>
 
 <template>
 	<div class="seo-analysis-container field">
 		<div class="header">
-			<label class="label field-label type-label">Analysis</label>
+			<label class="label field-label type-label">{{ t('seo_plugin.analysis.label') }}</label>
 			<div class="action-bar">
 				<v-button
-					v-tooltip="'Collapse all'"
+					v-tooltip="t('seo_plugin.analysis.collapse_all')"
 					:disabled="!canCollapseAll"
 					icon
 					small
 					secondary
-					title="Collapse all"
+					:title="t('seo_plugin.analysis.collapse_all')"
 					@click="collapseAllSections"
 				>
 					<v-icon name="unfold_less" />
 				</v-button>
 
 				<v-button
-					v-tooltip="'Expand all'"
+					v-tooltip="t('seo_plugin.analysis.expand_all')"
 					:disabled="!canExpandAll"
 					icon
 					small
 					secondary
-					title="Expand all"
+					:title="t('seo_plugin.analysis.expand_all')"
 					@click="expandAllSections"
 				>
 					<v-icon name="unfold_more" />
@@ -209,48 +219,44 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 		</div>
 
 		<div v-if="!focusKeyphrase" class="empty-state">
-			Enter a focus keyphrase to analyze your content.
+			{{ t('seo_plugin.analysis.empty') }}
 		</div>
 
 		<template v-else>
-			<AccordionRoot
-				v-model="openSectionIds"
-				type="multiple"
-				collapsible
-				class="analysis-accordion"
-				:unmount-on-hide="false"
-			>
+			<div class="analysis-accordion">
 				<template v-for="section in sections" :key="section.id">
-					<AccordionItem
-						v-if="section.results.length > 0"
-						:value="section.id"
-						class="accordion-item"
-					>
-						<AccordionHeader class="accordion-header">
-							<AccordionTrigger class="accordion-trigger">
+					<div v-if="section.results.length > 0" class="accordion-item">
+						<h3 class="accordion-header">
+							<button
+								type="button"
+								class="accordion-trigger"
+								:aria-expanded="openSectionIds.includes(section.id)"
+								:data-state="openSectionIds.includes(section.id) ? 'open' : 'closed'"
+								@click="toggleSection(section.id)"
+							>
 								<div class="section-title" :class="section.id">
 									<v-icon :name="section.icon" :class="section.iconClass" />
-									{{ section.title }} ({{ section.results.length }})
+									{{ t(section.title) }} ({{ section.results.length }})
 								</div>
 								<v-icon name="chevron_right" class="section-icon" />
-							</AccordionTrigger>
-						</AccordionHeader>
-						<AccordionContent class="accordion-content">
+							</button>
+						</h3>
+						<div v-if="openSectionIds.includes(section.id)" class="accordion-content">
 							<AnalysisResultComponent
 								v-for="result in section.results"
 								:key="result.id"
 								:result="result"
 							/>
-						</AccordionContent>
-					</AccordionItem>
+						</div>
+					</div>
 				</template>
-			</AccordionRoot>
+			</div>
 
 			<div v-if="hasOnlyNeutralResults" class="all-neutral-state">
-				We found nothing to report! This might happen if content is missing or too short.
+				{{ t('seo_plugin.analysis.all_neutral') }}
 			</div>
 			<div v-else-if="allAnalyses.length === 0 && focusKeyphrase" class="no-results-state">
-				Could not generate analysis results. Check configuration and content fields.
+				{{ t('seo_plugin.analysis.no_results') }}
 			</div>
 		</template>
 	</div>
@@ -378,37 +384,8 @@ const canExpandAll = computed(() => openSectionIds.value.length < availableSecti
 			overflow: hidden;
 			background-color: var(--theme--background);
 
-			&[data-state='open'] {
-				padding: 8px 8px 16px 8px;
-				animation: slideDown 150ms ease-out;
-				height: auto;
-			}
-			&[data-state='closed'] {
-				padding-top: 0;
-				padding-bottom: 0;
-				padding-left: 8px;
-				padding-right: 8px;
-				animation: slideUp 150ms ease-out forwards;
-			}
+			padding: 8px 8px 16px 8px;
 		}
-	}
-}
-
-@keyframes slideDown {
-	from {
-		height: 0;
-	}
-	to {
-		height: var(--reka-accordion-content-height);
-	}
-}
-
-@keyframes slideUp {
-	from {
-		height: var(--reka-accordion-content-height);
-	}
-	to {
-		height: 0;
 	}
 }
 </style>

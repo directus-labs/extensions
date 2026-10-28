@@ -1,3 +1,5 @@
+import { render } from 'micromustache';
+
 /**
  * Utility functions for SEO analysis
  */
@@ -7,7 +9,15 @@
  */
 export function stripHtml(html: string): string {
 	if (!html) return '';
-	return html.replaceAll(/<[^>]*>/g, ' ').replaceAll(/\s+/g, ' ').trim();
+	return decodeEntities(html.replaceAll(/<[^>]*>/g, ' ')).replaceAll(/\s+/g, ' ').trim();
+}
+
+/**
+ * Decodes HTML entities. Older WYSIWYG output stores accents as named entities (`&eacute;`).
+ */
+function decodeEntities(text: string): string {
+	if (!text.includes('&') || typeof DOMParser === 'undefined') return text;
+	return new DOMParser().parseFromString(text, 'text/html').documentElement.textContent ?? text;
 }
 
 /**
@@ -22,8 +32,8 @@ export function stripMarkdown(md: string): string {
 		.replaceAll(/_(.+?)_/g, '$1') // Italic
 		.replaceAll(/```(.+?)```/g, '$1') // Code blocks
 		.replaceAll(/`(.+?)`/g, '$1') // Inline code
-		.replaceAll(/\[(.+?)\]\(.+?\)/g, '$1') // Links
 		.replaceAll(/!\[(.+?)\]\(.+?\)/g, '$1') // Images
+		.replaceAll(/\[(.+?)\]\(.+?\)/g, '$1') // Links
 		.replaceAll(/#{1,6}\s+(.+)/g, '$1') // Headings
 		.replaceAll(/\n+/g, ' ') // Newlines
 		.replaceAll(/\s+/g, ' ')
@@ -43,32 +53,50 @@ export function normalizeContent(content: string): string {
  */
 export function countWords(text: string): number {
 	if (!text) return 0;
+
+	// Segmenter handles languages written without spaces (Japanese, Chinese)
+	if (typeof Intl.Segmenter === 'function') {
+		return [...new Intl.Segmenter(undefined, { granularity: 'word' }).segment(text)].filter((segment) => segment.isWordLike).length;
+	}
+
 	return text.split(/\s+/).filter(Boolean).length;
 }
 
+// Scripts written without spaces between words, or with particles attached to words (Korean)
+const NO_WORD_BOUNDARY_SCRIPTS = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Thai}]/u;
+
 /**
- * Counts case-insensitive occurrences of a substring in a string
+ * Counts case-insensitive, whole-word occurrences of a phrase in a string
  */
-export function countOccurrences(text: string, sub: string): number {
-	if (!text || !sub) return 0;
+export function countOccurrences(text: string, phrase: string): number {
+	if (!text || !phrase) return 0;
 
-	const normalizedText = text.toLowerCase();
-	const normalizedSub = sub.toLowerCase();
+	const normalizedPhrase = phrase.normalize('NFC').trim();
+	if (!normalizedPhrase) return 0;
 
-	// Return 0 if the substring is empty
-	if (normalizedSub.length === 0) return 0;
+	const escaped = normalizedPhrase.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+	// Lookarounds instead of \b, which only understands ASCII letters
+	const pattern = NO_WORD_BOUNDARY_SCRIPTS.test(normalizedPhrase)
+		? new RegExp(escaped, 'giu')
+		: new RegExp(String.raw`(?<![\p{L}\p{M}\p{N}])${escaped}(?![\p{L}\p{M}\p{N}])`, 'giu');
 
-	return normalizedText.split(normalizedSub).length - 1;
+	return text.normalize('NFC').match(pattern)?.length ?? 0;
+}
+
+export function containsPhrase(text: string | undefined | null, phrase: string): boolean {
+	return countOccurrences(text ?? '', phrase) > 0;
 }
 
 /**
  * Normalizes a slug for comparison
  */
 export function normalizeSlug(slug: string): string {
-	if (!slug) return '';
-	return slug
+	if (slug === null || slug === undefined || slug === '') return '';
+	return String(slug)
+		.normalize('NFD')
+		.replaceAll(/\p{M}/gu, '') // Fold accents, slugs are usually written without them
 		.toLowerCase()
-		.replaceAll(/[^\w\s-]/g, '') // Remove special characters
+		.replaceAll(/[^\p{L}\p{N}\s_-]/gu, '') // Remove special characters
 		.replaceAll(/[\s_]+/g, '-') // Replace spaces and underscores with hyphens
 		.replaceAll(/-+/g, '-'); // Remove duplicate hyphens
 }
@@ -91,14 +119,14 @@ export function extractImageAltText(html: string): string[] {
 	if (!html) return [];
 
 	const altTexts: string[] = [];
-	const imgRegex = /<img[^>]*alt=["']([^"']*)["'][^>]*>/gi;
+	const imgRegex = /<img\s[^>]*?\balt=(?:"([^"]*)"|'([^']*)')/gi;
 	let match: RegExpExecArray | null;
 
 	while ((match = imgRegex.exec(html)) !== null) {
-		const altText = match[1];
+		const altText = stripHtml(match[1] ?? match[2] ?? '');
 
-		if (altText && altText.trim()) {
-			altTexts.push(altText.trim());
+		if (altText) {
+			altTexts.push(altText);
 		}
 	}
 
@@ -125,7 +153,7 @@ export function extractSubheadings(content: string): string[] {
 	const subheadings: string[] = [];
 
 	// Extract HTML headings h2-h6
-	const htmlHeadingRegex = /<h([2-6])[^>]*>(.*?)<\/h\1>/gi;
+	const htmlHeadingRegex = /<h([2-6])[^>]*>([\s\S]*?)<\/h\1>/gi;
 	let match: RegExpExecArray | null;
 
 	while ((match = htmlHeadingRegex.exec(content)) !== null) {
@@ -156,4 +184,85 @@ export function extractSubheadings(content: string): string[] {
 export function truncate(text: string | undefined | null, maxLength: number): string {
 	if (!text) return '';
 	return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+}
+
+/**
+ * Reads a dot or bracket path (`author.name`, `tags[0]`) from an object
+ */
+export function getPath(source: unknown, path: string): unknown {
+	return path
+		.split(/[.[\]]/)
+		.filter(Boolean)
+		.reduce<any>((value, key) => value?.[key], source);
+}
+
+/**
+ * Replaces `{{ path }}` placeholders with values. Missing and null values render empty.
+ */
+export function renderTemplate(template: string, values: Record<string, unknown>): string {
+	try {
+		return render(template, values);
+	}
+	catch {
+		// Malformed template (e.g. an unclosed tag): leave it as typed
+		return template;
+	}
+}
+
+/**
+ * How required custom SEO fields decide "not filled in". `false` and `0` count as filled.
+ */
+export function isEmptyValue(value: unknown): boolean {
+	return value === undefined || value === null || value === '';
+}
+
+/**
+ * Next value for arrow-key navigation in a tablist or radiogroup, or undefined for other keys.
+ * Same keys as reka-ui's roving focus, which core's tabs use: horizontal lists ignore Up/Down and RTL flips Left/Right.
+ */
+export function nextRovingValue<T>(
+	key: string,
+	values: T[],
+	current: T,
+	{ orientation, dir }: { orientation?: 'horizontal'; dir?: string } = {},
+): T | undefined {
+	const index = values.indexOf(current);
+	if (dir === 'rtl') key = ({ ArrowLeft: 'ArrowRight', ArrowRight: 'ArrowLeft' } as Record<string, string>)[key] ?? key;
+	if (orientation === 'horizontal' && (key === 'ArrowUp' || key === 'ArrowDown')) return undefined;
+
+	switch (key) {
+		case 'ArrowRight':
+		case 'ArrowDown':
+			return values[(index + 1) % values.length];
+		case 'ArrowLeft':
+		case 'ArrowUp':
+			return values[(index - 1 + values.length) % values.length];
+		case 'Home':
+		case 'PageUp':
+			return values[0];
+		case 'End':
+		case 'PageDown':
+			return values.at(-1);
+		default:
+			return undefined;
+	}
+}
+
+/**
+ * Same output as core's app/src/utils/format-filesize.ts (decimal units)
+ */
+export function formatFilesize(bytes = 0): string {
+	if (!bytes) return '--';
+	if (Math.abs(bytes) < 1000) return `${bytes} B`;
+
+	const units = ['kB', 'MB', 'GB', 'TB'];
+	let unitIndex = -1;
+	let remaining = bytes;
+
+	do {
+		remaining /= 1000;
+		unitIndex += 1;
+	} while (Math.abs(remaining) >= 1000 && unitIndex < units.length - 1);
+
+	return `${remaining.toFixed(1)} ${units[unitIndex]}`;
 }

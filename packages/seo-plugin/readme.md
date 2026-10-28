@@ -57,13 +57,13 @@ A powerful SEO management extension that helps you optimize your content for sea
 
 SEO data is stored as JSON for simplicity and flexibility.
 
-OG Image stores the UUID of the uploaded image. You'll want to make sure your frontend is configured to display the image correctly.
+OG Image stores the file's `filename_disk` (`<uuid>.<ext>`). Both that and a bare UUID work with `/assets/<value>`, since the assets endpoint reads the first 36 characters as the file ID.
 
 ```json
 {
 	"title": "This is the Directus SEO Plugin.",
 	"meta_description": "A powerful SEO management extension that helps you optimize your content for search engines and social media sharing, right within Directus. It includes a comprehensive interface for managing metadata and a display component for monitoring SEO status.",
-	"og_image": "f5d20d13-e86a-4aaa-ab1c-241925b89ea3",
+	"og_image": "f5d20d13-e86a-4aaa-ab1c-241925b89ea3.jpg",
 	"focus_keyphrase": "Directus SEO",
 	"additional_fields": {
 		"canonical_url": "https://directus.io/",
@@ -171,11 +171,26 @@ The interface can be configured with the following options:
    - When enabled, includes:
      - Default change frequency (preset to 'weekly')
      - Default priority (preset to '0.5')
+   - Defaults are saved with the item once the SEO field is edited. Items whose SEO field was never touched store `null`, so apply the same defaults in your frontend.
    - Disabled by default
 
 7. **Custom SEO Fields**
    - Toggle to enable/disable the Custom Fields tab.
    - Disabled by default
+   - Fields marked **Required** show an asterisk, an error icon on the Custom Fields tab while empty, and an error in the SEO display. They don't block saving, because the values live inside one JSON field. To enforce them, use a blocking Flow on `items.create` / `items.update` that checks `seo.additional_fields`.
+
+### Translated content
+
+To keep SEO per language, add the SEO field to your translations collection (the one the Translations interface creates, e.g. `articles_translations`). Templates, the keyphrase analysis, and the slug check then use that language's fields.
+
+To see SEO status per language in a list:
+
+- **Recommended:** on the translations field, choose the core **Translations** display and add the SEO field to its template (e.g. `{{seo}}`). The cell shows the status for the default or user language, and hovering lists every language with its status.
+- A `translations.seo` column also works. It shows one chip with the worst status across translations; hovering lists each translation's status. It can't show language names, because displays don't receive the language field for that column.
+
+### Translations
+
+The interface and display follow each user's Directus language. Included: English, German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Portuguese (Brazil), Vietnamese, and Chinese (Simplified). Regional variants like `es-MX`, `fr-CA`, and `pt-PT` use the closest one. To add or fix a language, edit or add a file in `src/lang/` with the same keys as `en-US.ts` and register it in `src/lang/index.ts`. Missing keys fall back to English.
 
 ### Display Options
 

@@ -1,5 +1,44 @@
 # Changelog
 
+## 1.2.0 - 2026-10-27
+
+### Compatibility
+
+-   **Directus 12:** Host range widened to `>=10.10.0 <13`, so the marketplace no longer flags the plugin as incompatible on v11 and v12. Extensions SDK updated to 18.1.0.
+-   **Locked items:** Title, meta description, and custom fields now respect `disabled`, so published items in versioned collections can't be edited in place.
+-   Replaced the removed `rounded` button prop and CSS variables that no longer exist in v12.
+-   Tabs now match the style of core's Tabs group interface.
+
+### Features
+
+-   **Translations:** The interface and display follow the user's Directus language. Included: English, German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Portuguese (Brazil), Vietnamese, and Chinese (Simplified). UI translation work started in #301 by @khuepm.
+-   Keyphrase analysis now works for Japanese, Chinese, Korean, and Thai content.
+-   **Required custom fields:** The Custom Fields tab shows an error icon while required fields are empty (#288).
+
+### Fixes
+
+-   Opening an item no longer writes default SEO values or marks the form as changed. Inside a translations field this used to create an empty translation for every language you viewed. The SEO field stays empty (shown as `--` in lists) until someone edits it.
+-   Users without access to files see a notice instead of a crash.
+-   A `translations.seo` column shows the worst status across translations, with each translation's status on hover. The SEO display also renders inside core's Translations display, which shows language names.
+-   Changing one sitemap setting no longer drops the other.
+-   Fixed an infinite request loop when the site favicon fails to load (#299).
+-   Keyphrases with accents now match WYSIWYG content that stores them as HTML entities like `&eacute;` (#323).
+-   Keyphrases match whole words only ("seo" no longer matches "Seoul").
+-   The slug check ignores accents and no longer passes every non-Latin keyphrase.
+-   Alt text containing quotes and headings spanning multiple lines are now read correctly.
+-   The length meter in the analysis no longer always shows full.
+-   The keyphrase field no longer swallows the Enter key elsewhere on the page.
+-   Code editors and other interfaces in the Custom Fields tab render at full size (#292).
+-   OG images stored as a bare UUID now load, and a missing or unreadable file shows an error with a deselect action.
+-   Fixed image URLs on installs served from a subpath.
+-   The display no longer crashes when interface options were never saved.
+-   The "Custom SEO Fields" option is no longer required.
+
+### Improvements
+
+-   Bundle size cut from 132KB to 80KB (36KB to 20KB gzipped) by dropping `reka-ui`, `lodash-es`, `micromustache`, and `@vueuse/core`.
+-   Tabs and the platform switcher support keyboard navigation (arrow keys, Home, End).
+
 ## 1.1.0 - 2025-04-21
 
 ### Features

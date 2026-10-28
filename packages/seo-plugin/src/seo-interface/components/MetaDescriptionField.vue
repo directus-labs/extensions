@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
 import { inject, toRefs } from 'vue';
+import { useSeoI18n } from '../../lang/use-seo-i18n';
 import { useSeoField } from '../../shared/composables/useSeoField';
 import { seoRules } from '../../shared/rulesets';
+import { renderTemplate, stripHtml } from '../../shared/utils';
 import SeoFieldWrapper from './SeoFieldWrapper.vue';
 
 const props = defineProps<{
@@ -12,46 +14,34 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['update:modelValue']);
+const { t } = useSeoI18n();
 const values = inject('values') as Ref<Record<string, any>>;
 
 const { modelValue } = toRefs(props);
 
-const {
-	isTouched,
-	isTemplateUpdate,
-	state,
-	transform,
-} = useSeoField(modelValue, seoRules.meta_description, values);
-
-function onInput(newVal: string) {
-	if (!isTemplateUpdate.value) {
-		isTouched.value = true;
-	}
-
-	emit('update:modelValue', newVal);
-	isTemplateUpdate.value = false;
-}
+const { state } = useSeoField(modelValue, seoRules.meta_description);
 </script>
 
 <template>
 	<SeoFieldWrapper
-		label="Meta Description"
+		:label="t('seo_plugin.ui.meta_description')"
 		:state="state"
 		:rule="seoRules.meta_description"
 	>
 		<v-textarea
 			:model-value="modelValue"
-			placeholder="Enter your meta description"
-			@update:model-value="onInput"
+			:disabled="disabled"
+			:placeholder="t('seo_plugin.placeholders.enter_description')"
+			@update:model-value="emit('update:modelValue', $event)"
 		>
 			<template v-if="template && !disabled" #append>
 				<v-button
-					v-tooltip="'Generate from template'"
+					v-tooltip="t('seo_plugin.interface.generate_from_template')"
 					x-small
 					secondary
 					icon
 					class="template-button"
-					@click="onInput(transform(template))"
+					@click="emit('update:modelValue', stripHtml(renderTemplate(template, values)))"
 				>
 					<v-icon name="auto_fix_high" />
 				</v-button>
@@ -74,14 +64,10 @@ function onInput(newVal: string) {
 	color: var(--theme--foreground-subdued);
 }
 
-.textarea-wrapper {
-	position: relative;
-}
-
+/* Core's textarea puts the append slot below the text */
 .template-button {
-	position: absolute;
-	z-index: 10;
-	right: 8px;
-	top: 8px;
+	display: flex;
+	inline-size: fit-content;
+	margin: 0 8px 8px auto;
 }
 </style>
