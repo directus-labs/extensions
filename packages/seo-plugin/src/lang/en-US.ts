@@ -47,7 +47,7 @@ export default {
 			platforms_label: 'Social platform',
 			no_file_access: 'You don\'t have access to files',
 			translation_number: 'Translation {number}',
-			translations_display_hint: 'To see language names, use the Translations display on the translations field and add the SEO field to its template.',
+			translations_display_hint: 'For language names, set the display of {field} to Translations, with template {template}.',
 			focus_keyphrase: 'Focus Keyphrase',
 			page_title: 'Page Title',
 			meta_description: 'Meta Description',

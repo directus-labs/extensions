@@ -67,7 +67,7 @@ export default {
 			social_preview_desc: 'Bekijk hoe je inhoud eruitziet wanneer deze op social media wordt gedeeld.',
 			recommend_image_size: 'Aanbevolen afbeeldingsformaat',
 			translation_number: 'Vertaling {number}',
-			translations_display_hint: 'Gebruik de weergave Vertalingen op het vertalingenveld en voeg het SEO-veld toe aan de sjabloon om taalnamen te zien.',
+			translations_display_hint: 'Stel voor taalnamen de weergave van {field} in op Vertalingen, met sjabloon {template}.',
 		},
 		frequencies: {
 			always: 'Altijd',

@@ -24,7 +24,13 @@ const translationValues = computed<SeoValue[] | null>(() => {
 
 <template>
 	<div class="seo-display">
-		<TranslationsStatus v-if="translationValues" :values="translationValues" :interface-options="interfaceOptions" />
+		<TranslationsStatus
+			v-if="translationValues"
+			:values="translationValues"
+			:interface-options="interfaceOptions"
+			:collection="collection"
+			:field="field.split('.').at(-1)!"
+		/>
 		<SeoStatus
 			v-else
 			:value="value as SeoValue"

@@ -67,7 +67,7 @@ export default {
 			social_preview_desc: 'Vorschau, wie Ihr Inhalt beim Teilen in sozialen Medien aussieht.',
 			recommend_image_size: 'Empfohlene Bildgröße',
 			translation_number: 'Übersetzung {number}',
-			translations_display_hint: 'Um Sprachnamen zu sehen, verwenden Sie die Anzeige „Übersetzungen“ im Übersetzungsfeld und fügen Sie das SEO-Feld zu deren Vorlage hinzu.',
+			translations_display_hint: 'Für Sprachnamen stellen Sie die Anzeige von {field} auf „Übersetzungen“ mit der Vorlage {template}.',
 		},
 		frequencies: {
 			always: 'Immer',

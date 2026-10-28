@@ -67,7 +67,7 @@ export default {
 			social_preview_desc: 'Veja como seu conteúdo vai aparecer quando compartilhado nas redes sociais.',
 			recommend_image_size: 'Tamanho de imagem recomendado',
 			translation_number: 'Tradução {number}',
-			translations_display_hint: 'Para ver os nomes dos idiomas, use a exibição Traduções no campo de traduções e adicione o campo SEO ao modelo.',
+			translations_display_hint: 'Para ver os nomes dos idiomas, defina a exibição de {field} como Traduções, com o modelo {template}.',
 		},
 		frequencies: {
 			always: 'Sempre',

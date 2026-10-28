@@ -67,7 +67,7 @@ export default {
 			social_preview_desc: 'Zobacz, jak Twoja treść będzie wyglądać po udostępnieniu w mediach społecznościowych.',
 			recommend_image_size: 'Zalecany rozmiar obrazu',
 			translation_number: 'Tłumaczenie {number}',
-			translations_display_hint: 'Aby zobaczyć nazwy języków, użyj wyświetlania Tłumaczenia w polu tłumaczeń i dodaj pole SEO do jego szablonu.',
+			translations_display_hint: 'Aby zobaczyć nazwy języków, ustaw wyświetlanie pola {field} na Tłumaczenia z szablonem {template}.',
 		},
 		frequencies: {
 			always: 'Zawsze',

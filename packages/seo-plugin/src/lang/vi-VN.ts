@@ -67,7 +67,7 @@ export default {
 			social_preview_desc: 'Xem trước nội dung của bạn sẽ hiển thị như thế nào khi chia sẻ trên mạng xã hội.',
 			recommend_image_size: 'Kích thước ảnh khuyến nghị',
 			translation_number: 'Bản dịch {number}',
-			translations_display_hint: 'Để xem tên ngôn ngữ, hãy dùng kiểu hiển thị Bản dịch trên trường bản dịch và thêm trường SEO vào mẫu của nó.',
+			translations_display_hint: 'Để xem tên ngôn ngữ, hãy đặt kiểu hiển thị của {field} thành Bản dịch, với mẫu {template}.',
 		},
 		frequencies: {
 			always: 'Luôn luôn',
