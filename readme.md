@@ -82,9 +82,10 @@ Some of the published extensions may not be compatible with the sandbox requirem
 
 | Extension                                                                                          | System Name            | Type      |
 | -------------------------------------------------------------------------------------------------- | :--------------------- | :-------- |
-| [WYSIWYG](//github.com/directus-labs/extensions/tree/main/boilerplates/input-rich-text-html)       | `input-rich-text-html` | Interface |
 | [Block Editor](//github.com/directus-labs/extensions/tree/main/boilerplates/input-block-editor)    | `input-block-editor`   | Interface |
 | [Table](//github.com/directus-labs/extensions/tree/main/boilerplates/tabular-layout)               | `tabular`              | Layout    |
+
+To extend the WYSIWYG interface, use [Callout Richtext](//github.com/directus-labs/extensions/tree/main/packages/callout-richtext) or [YouTube Richtext](//github.com/directus-labs/extensions/tree/main/packages/youtube-richtext) as a starting point. The old TinyMCE WYSIWYG boilerplate is [archived](//github.com/directus-labs/extensions/tree/main/archived/input-rich-text-html).
 
 <br>
 
