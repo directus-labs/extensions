@@ -300,8 +300,8 @@ watch(
 
 <style scoped>
 .content {
-	padding: var(--content-padding);
-	padding-block-start: 0;
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 }
 
 .drawer-content {

@@ -193,9 +193,6 @@ watch(
 
 <template>
 	<private-view :title="title" show-back @back="router.push(`/mock-api/${collectionId}`)">
-		<template #headline>
-			{{ collection?.name }}
-		</template>
 		<template #navigation>
 			<MockNavigation />
 		</template>
@@ -288,8 +285,8 @@ watch(
 
 <style scoped>
 .content {
-	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 }
 
 .served {

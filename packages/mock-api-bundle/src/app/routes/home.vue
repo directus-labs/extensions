@@ -62,7 +62,8 @@ onMounted(async () => {
 
 <style scoped>
 .content {
-	padding: var(--content-padding);
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 }
 
 .actions {

@@ -75,8 +75,8 @@ onMounted(async () => {
 
 <style scoped>
 .content {
-	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 	max-inline-size: 800px;
 }
 
