@@ -581,12 +581,50 @@ function useTreeView({
 			return collapsedState.value.includes(id);
 		}
 
-		function onToggleChildren(item: Item) {
+		function onToggleChildren(item: Item, deep = false) {
 			if (!item[childrenKey]?.length)
 				return;
 
+			if (deep) {
+				toggleChildrenDeep(item);
+				return;
+			}
+
 			item[collapsedKey] = toggleItem(item[itemKey.value]);
 			collapseChildren(item[itemKey.value], item[childrenKey]);
+		}
+
+		// Shift-click: expand/collapse the ENTIRE subtree. Pick a target state (the opposite of
+		// the clicked node's current one) and drive the clicked node + every descendant container
+		// to it, so one gesture fully unfolds or folds the branch instead of a single level.
+		function toggleChildrenDeep(item: Item) {
+			const target = !isCollapsed(item[itemKey.value]);
+			const subtree: PrimaryKey[] = item[childrenKey] ?? [];
+			const containerIds: PrimaryKey[] = [item[itemKey.value]];
+
+			for (const internalItem of internalItems.value) {
+				if (
+					subtree.includes(internalItem[itemKey.value])
+					&& internalItem[childrenKey]?.length
+				) {
+					containerIds.push(internalItem[itemKey.value]);
+				}
+			}
+
+			for (const id of containerIds) {
+				if (isCollapsed(id) === target)
+					continue;
+
+				const node = internalItems.value.find(
+					(internalItem) => internalItem[itemKey.value] === id,
+				);
+
+				if (!node)
+					continue;
+
+				node[collapsedKey] = toggleItem(id);
+				collapseChildren(id, node[childrenKey]);
+			}
 		}
 
 		function toggleItem(id: PrimaryKey): boolean {
@@ -755,7 +793,7 @@ function useTreeView({
 						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
 						@mouseover.prevent="onDragOver"
-						@toggle-children="onToggleChildren(item)"
+						@toggle-children="(deep) => onToggleChildren(item, deep)"
 						@click="
 							!disabled && clickable
 								? $emit('click:row', { item, event: $event })
