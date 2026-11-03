@@ -40,6 +40,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [PDF Viewer Interface](//github.com/directus-labs/extensions/tree/main/packages/pdf-viewer-interface) | Interface | N&#x2F;A |
 | [Plausible Analytics Bundle](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle) | Bundle | N&#x2F;A |
 | [Related Items Bundle](//github.com/directus-labs/extensions/tree/main/packages/related-items-bundle) | Bundle | N&#x2F;A |
+| [Resend Operation](//github.com/directus-labs/extensions/tree/main/packages/resend-operation) | Operation | ✅ |
 | [Rss to JSON Operation](//github.com/directus-labs/extensions/tree/main/packages/rss-to-json-operation) | Operation | ✅ |
 | [SEO Plugin](//github.com/directus-labs/extensions/tree/main/packages/seo-plugin) | Bundle | N&#x2F;A |
 | [Simple List Interface](//github.com/directus-labs/extensions/tree/main/packages/simple-list-interface) | Interface | N&#x2F;A |
