@@ -52,6 +52,7 @@ body:
         - Meilisearch Operation
         - Extension Meter Component
         - Migration Bundle
+        - Mock API Bundle
         - Multilevel Autocomplete API Interface
         - Opensearch Operation
         - PDF Viewer Interface

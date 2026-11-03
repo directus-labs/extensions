@@ -53,6 +53,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Meilisearch Operation](//github.com/directus-labs/extensions/tree/main/packages/meilisearch-operation) | Operation | N&#x2F;A |
 | [Extension Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component) | Bundle | N&#x2F;A |
 | [Migration Bundle](//github.com/directus-labs/extensions/tree/main/packages/migration-bundle) | Bundle | N&#x2F;A |
+| [Mock API Bundle](//github.com/directus-labs/extensions/tree/main/packages/mock-api-bundle) | Bundle | N&#x2F;A |
 | [Multilevel Autocomplete API Interface](//github.com/directus-labs/extensions/tree/main/packages/multilevel-autocomplete-api-interface) | Interface | N&#x2F;A |
 | [Opensearch Operation](//github.com/directus-labs/extensions/tree/main/packages/opensearch-operation) | Operation | N&#x2F;A |
 | [PDF Viewer Interface](//github.com/directus-labs/extensions/tree/main/packages/pdf-viewer-interface) | Interface | N&#x2F;A |
