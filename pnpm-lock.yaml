@@ -1028,6 +1028,9 @@ importers:
         specifier: ^10.0.5
         version: 10.0.7(vue@3.5.13(typescript@5.8.3))
     devDependencies:
+      '@directus-labs/utils':
+        specifier: workspace:*
+        version: link:../../utils
       '@directus/extensions-sdk':
         specifier: 18.1.0
         version: 18.1.0(@types/node@24.7.2)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(express@5.1.0)(knex@3.1.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.87.0)(terser@5.39.2)(typescript@5.8.3)(yaml@2.7.1)
