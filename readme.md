@@ -37,6 +37,7 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Liquidjs Operation](//github.com/directus-labs/extensions/tree/main/packages/liquidjs-operation) | Operation | ✅ |
 | [Extension Meter Component](//github.com/directus-labs/extensions/tree/main/packages/meter-component) | Bundle | N&#x2F;A |
 | [Migration Bundle](//github.com/directus-labs/extensions/tree/main/packages/migration-bundle) | Bundle | N&#x2F;A |
+| [Mock API Bundle](//github.com/directus-labs/extensions/tree/main/packages/mock-api-bundle) | Bundle | N&#x2F;A |
 | [PDF Viewer Interface](//github.com/directus-labs/extensions/tree/main/packages/pdf-viewer-interface) | Interface | N&#x2F;A |
 | [Plausible Analytics Bundle](//github.com/directus-labs/extensions/tree/main/packages/plausible-analytics-bundle) | Bundle | N&#x2F;A |
 | [Related Items Bundle](//github.com/directus-labs/extensions/tree/main/packages/related-items-bundle) | Bundle | N&#x2F;A |
