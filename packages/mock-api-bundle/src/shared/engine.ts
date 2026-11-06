@@ -160,16 +160,62 @@ function tokenValue(token: string, context: TemplateContext): unknown {
 	}
 }
 
-export function fillTemplate(template: string, context: TemplateContext): string {
-	return template.replaceAll(TOKEN, (_match, raw: string) => {
-		const token = raw.trim();
-		if (token === 'now') return (context.now ?? (() => new Date().toISOString()))();
-		if (token === 'uuid') return (context.uuid ?? (() => globalThis.crypto.randomUUID()))();
+function resolveToken(token: string, context: TemplateContext): unknown {
+	if (token === 'now') return (context.now ?? (() => new Date().toISOString()))();
+	if (token === 'uuid') return (context.uuid ?? (() => globalThis.crypto.randomUUID()))();
+	return tokenValue(token, context);
+}
 
-		const value = tokenValue(token, context);
-		if (value == null) return '';
-		return typeof value === 'object' ? JSON.stringify(value) : String(value);
-	});
+const JSON_LITERAL = /^(?:-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false|null)$/;
+
+function insideString(value: unknown): string {
+	if (value == null) return '';
+	const text = typeof value === 'string' ? value : (JSON.stringify(value) ?? '');
+	return JSON.stringify(text).slice(1, -1);
+}
+
+// Path params and query values are always strings, so `{"id": {{params.id}}}` keeps 5 as a number
+// but turns `abc` into "abc" instead of breaking the JSON.
+function outsideString(value: unknown): string {
+	if (value == null) return 'null';
+	if (typeof value === 'string') return JSON_LITERAL.test(value) ? value : JSON.stringify(value);
+	return JSON.stringify(value) ?? 'null';
+}
+
+const TOKEN_AT = /\{\{([^}]+)\}\}/y;
+
+export function fillTemplate(template: string, context: TemplateContext): string {
+	let out = '';
+	let inString = false;
+	let i = 0;
+
+	while (i < template.length) {
+		const char = template[i]!;
+
+		if (char === '{' && template[i + 1] === '{') {
+			TOKEN_AT.lastIndex = i;
+			const match = TOKEN_AT.exec(template);
+
+			if (match) {
+				const value = resolveToken(match[1]!.trim(), context);
+				out += inString ? insideString(value) : outsideString(value);
+				i = TOKEN_AT.lastIndex;
+				continue;
+			}
+		}
+
+		if (inString && char === '\\') {
+			out += template.slice(i, i + 2);
+			i += 2;
+			continue;
+		}
+
+		if (char === '"') inString = !inString;
+		out += char;
+		i++;
+	}
+
+	return out;
 }
 
 // Tokens become 0 so they parse both inside quotes and where a number goes.

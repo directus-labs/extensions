@@ -42,7 +42,7 @@ Response bodies can include these tokens:
 | `{{now}}`        | The current time (ISO 8601)    |
 | `{{uuid}}`       | A new UUID                     |
 
-Tokens can go inside quotes or where a number goes, e.g. `{"id": {{params.id}}}`. An empty body returns `204`.
+Tokens can go inside quotes or where a number goes, e.g. `{"id": {{params.id}}}`. Inside quotes, values are escaped so the JSON stays valid. Where a number goes, numbers, `true`, `false` and objects are written as JSON, other text is quoted, and a missing value becomes `null`. An empty body returns `204`.
 
 **Delay** waits the given number of milliseconds before responding (30 seconds at most), which helps when testing loading states.
 
