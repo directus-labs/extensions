@@ -54,14 +54,7 @@ export function segments(path: string): string[] {
 }
 
 export function parseRequiredQuery(query: string | null | undefined): [string, string][] {
-	return String(query ?? '')
-		.replace(/^\?/, '')
-		.split('&')
-		.filter(Boolean)
-		.map((pair) => {
-			const [key = '', value = ''] = pair.split('=');
-			return [decodeURIComponent(key), decodeURIComponent(value)];
-		});
+	return [...new URLSearchParams(String(query ?? '').trim())];
 }
 
 interface Candidate {
@@ -69,13 +62,14 @@ interface Candidate {
 	endpoint: MockEndpoint;
 	params: Record<string, string>;
 	specificity: number;
+	wildcard: boolean;
 	order: number;
 }
 
 function matchPath(
 	pattern: string[],
 	request: string[],
-): { params: Record<string, string>; specificity: number } | null {
+): { params: Record<string, string>; specificity: number; wildcard: boolean } | null {
 	const params: Record<string, string> = {};
 	let specificity = 0;
 
@@ -85,7 +79,7 @@ function matchPath(
 		if (part === '*' && i === pattern.length - 1) {
 			if (request.length === i) return null;
 			params['*'] = request.slice(i).join('/');
-			return { params, specificity: specificity + 1 };
+			return { params, specificity, wildcard: true };
 		}
 
 		const value = request[i];
@@ -100,7 +94,7 @@ function matchPath(
 		}
 	}
 
-	return pattern.length === request.length ? { params, specificity } : null;
+	return pattern.length === request.length ? { params, specificity, wildcard: false } : null;
 }
 
 function findEndpoint(collections: MockCollection[], request: MockRequest): Candidate | null {
@@ -123,7 +117,10 @@ function findEndpoint(collections: MockCollection[], request: MockRequest): Cand
 		});
 	});
 
-	candidates.sort((a, b) => a.specificity - b.specificity || a.order - b.order);
+	candidates.sort(
+		(a, b) => Number(a.wildcard) - Number(b.wildcard) || a.specificity - b.specificity || a.order - b.order,
+	);
+
 	return candidates[0] ?? null;
 }
 

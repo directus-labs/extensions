@@ -21,7 +21,7 @@ Enable the **Mock API** module under **Settings → Project Settings → Modules
 curl -H "Authorization: Bearer <token>" https://your-project/mock/tasks-api/tasks/5
 ```
 
-Use the **Test request** panel on an endpoint to try it without leaving Studio. **Log** shows the last 50 requests and which endpoint answered each one.
+Use the **Test request** panel on an endpoint to try it without leaving Studio. **Log** shows the last 50 requests and which endpoint answered each one. The log lives in memory, so it clears on restart, and with several API instances each one keeps its own.
 
 ### Paths
 

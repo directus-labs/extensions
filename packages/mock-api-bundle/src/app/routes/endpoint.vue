@@ -13,14 +13,17 @@ const router = useRouter();
 const { api, collections, load, servedAt, notify, errorMessage, failedValidations, setupError } = useMockApi();
 
 const isNew = computed(() => props.endpointId === '+');
-const collection = computed(() => collections.value.find((c) => String(c.id) === props.collectionId) ?? null);
-
 const item = ref<Record<string, any> | null>(null);
+const collectionId = computed(() => (isNew.value ? Number(props.collectionId) : item.value?.collection ?? null));
+const collection = computed(() => collections.value.find((c) => c.id === collectionId.value) ?? null);
+
 const edits = ref<Record<string, any>>({});
 const loading = ref(false);
 const saving = ref(false);
 const validationErrors = ref<Record<string, unknown>[]>([]);
 const confirmDelete = ref(false);
+const deleting = ref(false);
+let itemRequest = 0;
 const leaveTo = ref<RouteLocationRaw | null>(null);
 
 const hasEdits = computed(() => Object.keys(edits.value).length > 0);
@@ -32,8 +35,8 @@ const url = computed(() =>
 );
 
 const fullUrl = computed(() => {
-	const parts = window.location.href.split('/');
-	return parts.slice(0, parts.indexOf('admin')).join('/') + url.value;
+	const root = new URL(api.defaults.baseURL ?? '/', window.location.href);
+	return new URL(url.value.replace(/^\//, ''), root).toString();
 });
 
 async function copyUrl() {
@@ -49,6 +52,7 @@ async function copyUrl() {
 const title = computed(() => (isNew.value ? 'Creating endpoint' : (item.value?.name ?? 'Endpoint')));
 
 async function fetchItem() {
+	const request = ++itemRequest;
 	edits.value = {};
 	validationErrors.value = [];
 
@@ -57,18 +61,25 @@ async function fetchItem() {
 		return;
 	}
 
+	if (String(item.value?.id) !== props.endpointId) item.value = null;
 	loading.value = true;
 
 	try {
 		const response = await api.get(`/items/${ENDPOINTS}/${props.endpointId}`, { params: { fields: ['*'] } });
+		if (request !== itemRequest) return;
 		item.value = response.data.data;
+
+		if (String(item.value!.collection) !== props.collectionId) {
+			router.replace(`/mock-api/${item.value!.collection}/${props.endpointId}`);
+		}
 	}
 	catch (error) {
+		if (request !== itemRequest) return;
 		notify(errorMessage(error), 'error');
 		router.replace(`/mock-api/${props.collectionId}`);
 	}
 	finally {
-		loading.value = false;
+		if (request === itemRequest) loading.value = false;
 	}
 }
 
@@ -105,44 +116,53 @@ async function save() {
 	}
 }
 
+const bySort = (a: any, b: any) => (a.sort ?? Infinity) - (b.sort ?? Infinity) || a.id - b.id;
+
 async function saveAsCopy() {
+	if ('responses' in edits.value || 'active_response' in edits.value) {
+		notify('Save your response changes first, then save as copy.', 'error');
+		return;
+	}
+
 	saving.value = true;
 
 	try {
 		const source = (
 			await api.get(`/items/${ENDPOINTS}/${props.endpointId}`, {
-				params: { fields: ['*', 'responses.name', 'responses.status', 'responses.body', 'active_response.name'] },
+				params: { fields: ['*', 'responses.id', 'responses.sort', 'responses.name', 'responses.status', 'responses.body'] },
 			})
 		).data.data;
 		const merged = { ...source, ...edits.value };
+		const responses = [...source.responses].sort(bySort);
 
 		const created = (
 			await api.post(`/items/${ENDPOINTS}`, {
-				collection: Number(props.collectionId),
+				collection: source.collection,
 				name: `${merged.name} (copy)`,
 				method: merged.method,
 				path: merged.path,
 				query: merged.query,
 				delay: merged.delay,
 				notes: merged.notes,
-				responses: source.responses.map((r: any) => ({ name: r.name, status: r.status, body: r.body })),
+				responses: responses.map((r: any, index: number) => ({ name: r.name, status: r.status, body: r.body, sort: index + 1 })),
 			})
 		).data.data;
 
-		const activeName = source.active_response?.name;
+		const activeIndex = responses.findIndex((r: any) => r.id === source.active_response);
 
-		if (activeName) {
-			const match = (
+		if (activeIndex !== -1) {
+			const copies = (
 				await api.get(`/items/${RESPONSES}`, {
-					params: { filter: { endpoint: { _eq: created.id }, name: { _eq: activeName } }, fields: ['id'], limit: 1 },
+					params: { filter: { endpoint: { _eq: created.id } }, fields: ['id', 'sort'], sort: ['sort', 'id'], limit: -1 },
 				})
-			).data.data[0];
+			).data.data;
+			const match = copies[activeIndex];
 			if (match) await api.patch(`/items/${ENDPOINTS}/${created.id}`, { active_response: match.id });
 		}
 
 		edits.value = {};
 		notify('Saved as copy');
-		router.push(`/mock-api/${props.collectionId}/${created.id}`);
+		router.push(`/mock-api/${source.collection}/${created.id}`);
 	}
 	catch (error) {
 		notify(errorMessage(error), 'error');
@@ -153,15 +173,20 @@ async function saveAsCopy() {
 }
 
 async function remove() {
+	deleting.value = true;
+
 	try {
 		await api.delete(`/items/${ENDPOINTS}/${props.endpointId}`);
 		edits.value = {};
 		confirmDelete.value = false;
 		notify('Endpoint deleted');
-		router.replace(`/mock-api/${props.collectionId}`);
+		router.replace(`/mock-api/${collectionId.value ?? props.collectionId}`);
 	}
 	catch (error) {
 		notify(errorMessage(error), 'error');
+	}
+	finally {
+		deleting.value = false;
 	}
 }
 
@@ -192,7 +217,7 @@ watch(
 </script>
 
 <template>
-	<private-view :title="title" show-back @back="router.push(`/mock-api/${collectionId}`)">
+	<private-view :title="title" show-back @back="router.push(`/mock-api/${collectionId ?? props.collectionId}`)">
 		<template #navigation>
 			<MockNavigation />
 		</template>
@@ -242,7 +267,7 @@ watch(
 					<v-button secondary @click="confirmDelete = false">
 						Cancel
 					</v-button>
-					<v-button kind="danger" @click="remove">
+					<v-button kind="danger" :loading="deleting" :disabled="deleting" @click="remove">
 						Delete
 					</v-button>
 				</v-card-actions>

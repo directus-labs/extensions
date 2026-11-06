@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { METHODS } from '../../shared/engine';
+import { BASE_PATH } from '../../shared/tables';
 import { useMockApi } from '../composables/use-mock-api';
 import { statusKind } from '../utils/kinds';
 
@@ -17,9 +18,10 @@ const result = ref<{ status: number; ms: number; text: string } | null>(null);
 const bodyError = ref<string | null>(null);
 
 watch(
-	() => [props.defaultPath, props.defaultMethod],
-	() => {
-		method.value = props.defaultMethod;
+	() => [props.defaultPath, props.defaultMethod] as const,
+	(_, [oldPath, oldMethod]) => {
+		if (method.value === oldMethod) method.value = props.defaultMethod;
+		if (path.value !== samplePath(oldPath)) return;
 		path.value = samplePath(props.defaultPath);
 		result.value = null;
 	},
@@ -30,7 +32,7 @@ function samplePath(value: string) {
 		.replaceAll(/:collection\b/g, 'pages')
 		.replaceAll(/:id\b/g, '5')
 		.replaceAll(/\/:([a-z_]+)/gi, '/sample')
-		.replace(/\/\*$/, '/anything');
+		.replace(/\/\*(?=\?|$)/, '/anything');
 }
 
 function pretty(data: unknown) {
@@ -42,8 +44,10 @@ function pretty(data: unknown) {
 async function send() {
 	bodyError.value = null;
 
-	if (!path.value.startsWith('/') || path.value.startsWith('//')) {
-		bodyError.value = 'Enter a path on this project, starting with a single "/".';
+	const mockRoot = `/${BASE_PATH}/`;
+
+	if (!path.value.startsWith(mockRoot) || !new URL(path.value, 'http://mock.local').pathname.startsWith(mockRoot)) {
+		bodyError.value = `Enter a mock path starting with "${mockRoot}".`;
 		return;
 	}
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { BASE_PATH } from '../../shared/tables';
 import MockNavigation from '../components/mock-navigation.vue';
 import { useMockApi } from '../composables/use-mock-api';
@@ -17,7 +17,9 @@ interface LogEntry {
 
 const entries = ref<LogEntry[]>([]);
 const loading = ref(false);
-let timer: ReturnType<typeof setInterval> | null = null;
+let timer: ReturnType<typeof setTimeout> | null = null;
+let unmounted = false;
+let failing = false;
 
 const headers = [
 	{ text: 'Time', value: 'time', width: 120 },
@@ -27,21 +29,35 @@ const headers = [
 	{ text: 'Answered by', value: 'answered_by', width: 260 },
 ];
 
+const rows = computed(() => entries.value.map((entry, index) => ({ ...entry, key: `${index}-${entry.time}` })));
+
 const time = (iso: string) =>
 	new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
 async function fetchLog() {
 	try {
 		entries.value = (await api.get(`/${BASE_PATH}/_meta/log`)).data.data;
+		failing = false;
+	}
+	catch (error) {
+		if (!failing) notify(errorMessage(error), 'error');
+		failing = true;
+	}
+}
+
+async function poll() {
+	await fetchLog();
+	if (!unmounted) timer = setTimeout(poll, 3000);
+}
+
+async function clearLog() {
+	try {
+		await api.delete(`/${BASE_PATH}/_meta/log`);
+		entries.value = [];
 	}
 	catch (error) {
 		notify(errorMessage(error), 'error');
 	}
-}
-
-async function clearLog() {
-	await api.delete(`/${BASE_PATH}/_meta/log`);
-	entries.value = [];
 }
 
 onMounted(async () => {
@@ -49,11 +65,12 @@ onMounted(async () => {
 	await load();
 	await fetchLog();
 	loading.value = false;
-	timer = setInterval(fetchLog, 3000);
+	if (!unmounted) timer = setTimeout(poll, 3000);
 });
 
 onBeforeUnmount(() => {
-	if (timer) clearInterval(timer);
+	unmounted = true;
+	if (timer) clearTimeout(timer);
 });
 </script>
 
@@ -77,8 +94,8 @@ onBeforeUnmount(() => {
 			<v-table
 				v-else
 				:headers="headers"
-				:items="entries"
-				item-key="time"
+				:items="rows"
+				item-key="key"
 				:loading="loading"
 				:clickable="false"
 				fixed-header

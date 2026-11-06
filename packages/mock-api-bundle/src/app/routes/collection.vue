@@ -23,6 +23,8 @@ const edits = ref<Record<string, any>>({});
 const saving = ref(false);
 const validationErrors = ref<Record<string, unknown>[]>([]);
 const confirmDelete = ref(false);
+const deleting = ref(false);
+let endpointsRequest = 0;
 
 const headers = [
 	{ text: 'Method', value: 'method', width: 110 },
@@ -33,6 +35,8 @@ const headers = [
 ];
 
 async function fetchEndpoints() {
+	const request = ++endpointsRequest;
+	endpoints.value = [];
 	if (isNew.value || !collection.value) return;
 	loadingEndpoints.value = true;
 
@@ -58,13 +62,13 @@ async function fetchEndpoints() {
 			},
 		});
 
-		endpoints.value = response.data.data;
+		if (request === endpointsRequest) endpoints.value = response.data.data;
 	}
 	catch (error) {
-		notify(errorMessage(error), 'error');
+		if (request === endpointsRequest) notify(errorMessage(error), 'error');
 	}
 	finally {
-		loadingEndpoints.value = false;
+		if (request === endpointsRequest) loadingEndpoints.value = false;
 	}
 }
 
@@ -102,6 +106,8 @@ async function saveCollection() {
 }
 
 async function deleteCollection() {
+	deleting.value = true;
+
 	try {
 		await api.delete(`/items/${COLLECTIONS}/${collection.value!.id}`);
 		confirmDelete.value = false;
@@ -113,18 +119,28 @@ async function deleteCollection() {
 	catch (error) {
 		notify(errorMessage(error), 'error');
 	}
+	finally {
+		deleting.value = false;
+	}
 }
 
 watch(
 	() => props.collectionId,
 	async () => {
-		await load();
 		edits.value = {};
 		validationErrors.value = [];
+		endpoints.value = [];
+		await load();
 		await fetchEndpoints();
 	},
 	{ immediate: true },
 );
+
+watch(drawerOpen, (open) => {
+	if (open) return;
+	edits.value = {};
+	validationErrors.value = [];
+});
 </script>
 
 <template>
@@ -271,7 +287,7 @@ watch(
 					<v-button secondary @click="confirmDelete = false">
 						Cancel
 					</v-button>
-					<v-button kind="danger" @click="deleteCollection">
+					<v-button kind="danger" :loading="deleting" :disabled="deleting" @click="deleteCollection">
 						Delete
 					</v-button>
 				</v-card-actions>

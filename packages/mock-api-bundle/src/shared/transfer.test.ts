@@ -62,6 +62,22 @@ describe('planImport', () => {
 			targetPrefix: 'bookmarks-3',
 		});
 	});
+
+	it('copy skips prefixes used later in the same file', () => {
+		const incoming = { ...file, collections: [file.collections[0]!, { ...file.collections[0]!, prefix: 'bookmarks-3' }] };
+		const targets = planImport(local, incoming, 'copy').collections.map((c) => c.targetPrefix);
+		expect(targets).toEqual(['bookmarks-4', 'bookmarks-3']);
+	});
+});
+
+describe('endpointKey', () => {
+	it('keeps an encoded & or = inside a query value apart from a real one', () => {
+		expect(endpointKey(endpoint('GET', '/x', 'a=x%26b%3Dy'))).not.toBe(endpointKey(endpoint('GET', '/x', 'a=x&b=y')));
+	});
+
+	it('ignores query order', () => {
+		expect(endpointKey(endpoint('GET', '/x', 'b=2&a=1'))).toBe(endpointKey(endpoint('GET', '/x', '?a=1&b=2')));
+	});
 });
 
 describe('validateExport', () => {

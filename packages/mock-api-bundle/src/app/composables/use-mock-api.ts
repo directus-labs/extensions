@@ -12,7 +12,6 @@ export interface MockCollectionRow {
 }
 
 const collections = ref<MockCollectionRow[]>([]);
-const ready = ref(false);
 const setupError = ref<string | null>(null);
 let loading: Promise<void> | null = null;
 
@@ -37,6 +36,8 @@ export function useMockApi() {
 
 	function load() {
 		loading ??= (async () => {
+			setupError.value = null;
+
 			try {
 				await ensureStores();
 
@@ -46,7 +47,6 @@ export function useMockApi() {
 				}
 
 				await refresh();
-				ready.value = true;
 			}
 			catch (error: any) {
 				setupError.value = error?.response?.data?.errors?.[0]?.message ?? String(error);
@@ -80,7 +80,6 @@ export function useMockApi() {
 	return {
 		api,
 		collections,
-		ready,
 		setupError,
 		load,
 		refresh,

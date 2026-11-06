@@ -14,8 +14,10 @@ function validateBody(payload: Record<string, any>) {
 	throw new InvalidPayloadError({ reason: `${name} isn't valid JSON: ${error}` });
 }
 
-const hook: HookConfig = ({ filter }, context) => {
-	ensureSchema(context).catch(() => {});
+const hook: HookConfig = ({ filter, init }, context) => {
+	init('app.after', () => {
+		ensureSchema(context).catch(() => {});
+	});
 
 	filter(`${RESPONSES}.items.create`, (payload) => validateBody(payload as Record<string, any>));
 	filter(`${RESPONSES}.items.update`, (payload) => validateBody(payload as Record<string, any>));

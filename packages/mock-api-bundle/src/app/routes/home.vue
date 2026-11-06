@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { EXAMPLE, EXAMPLE_PREFIX } from '../../shared/example';
 import { BASE_PATH } from '../../shared/tables';
 import MockNavigation from '../components/mock-navigation.vue';
 import { useMockApi } from '../composables/use-mock-api';
 
+const route = useRoute();
 const router = useRouter();
 const { api, collections, load, refresh, notify, errorMessage, setupError } = useMockApi();
 const addingExample = ref(false);
@@ -28,9 +29,10 @@ async function addExample() {
 }
 
 onMounted(async () => {
+	const startPath = route.fullPath;
 	await load();
 	const first = collections.value[0];
-	if (first) router.replace(`/mock-api/${first.id}`);
+	if (first && route.fullPath === startPath) router.replace(`/mock-api/${first.id}`);
 });
 </script>
 

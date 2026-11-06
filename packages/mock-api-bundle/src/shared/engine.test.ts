@@ -113,6 +113,29 @@ describe('resolveRequest', () => {
 		expect(resolveRequest(collections, request('GET', '/bookmarks/files'))).toBeNull();
 	});
 
+	it('prefers a param over a trailing wildcard, whatever the order', () => {
+		const files = (paths: string[]): MockCollection[] => [
+			{
+				name: 'Files',
+				prefix: 'f',
+				endpoints: paths.map((path) => ({ name: path, method: 'GET', path, query: '', delay: 0, response: null })),
+			},
+		];
+
+		expect(resolveRequest(files(['/files/*', '/files/:id']), request('GET', '/f/files/1'))?.endpoint.name).toBe('/files/:id');
+		expect(resolveRequest(files(['/*', '/:a/:b']), request('GET', '/f/x/y'))?.endpoint.name).toBe('/:a/:b');
+	});
+
+	it('reads the required query the same way as the request query', () => {
+		const people = (query: string): MockCollection[] => [
+			{ name: 'P', prefix: 'p', endpoints: [{ name: 'q', method: 'GET', path: '/x', query, delay: 0, response: null }] },
+		];
+
+		expect(resolveRequest(people('name=Jane+Doe'), request('GET', '/p/x?name=Jane%20Doe'))).not.toBeNull();
+		expect(resolveRequest(people('token=abc=='), request('GET', '/p/x?token=abc=='))).not.toBeNull();
+		expect(resolveRequest(people('token=abc=='), request('GET', '/p/x?token=abc'))).toBeNull();
+	});
+
 	it('an endpoint without responses answers 204', () => {
 		expect(resolveRequest(collections, request('DELETE', '/bookmarks/bookmarks/pages/5'))).toMatchObject({
 			status: 204,
