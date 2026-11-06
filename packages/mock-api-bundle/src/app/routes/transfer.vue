@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ImportPlan, ImportStrategy } from '../../shared/transfer';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { EXAMPLE } from '../../shared/example';
 import { BASE_PATH } from '../../shared/tables';
 import { describePlan } from '../../shared/transfer';
@@ -19,6 +19,9 @@ const plan = ref<ImportPlan | null>(null);
 const planError = ref<string | null>(null);
 const importing = ref(false);
 const fileInput = ref<HTMLInputElement | null>(null);
+const confirmReplace = ref(false);
+let previewTimer: ReturnType<typeof setTimeout> | null = null;
+let previewRequest = 0;
 
 const strategies: { value: ImportStrategy; label: string; description: string }[] = [
 	{
@@ -86,8 +89,7 @@ function useExample() {
 }
 
 async function preview() {
-	plan.value = null;
-	planError.value = null;
+	const request = ++previewRequest;
 	if (!fileText.value.trim()) return;
 
 	try {
@@ -96,19 +98,36 @@ async function preview() {
 			strategy: strategy.value,
 			dry_run: true,
 		});
-		plan.value = response.data.data;
+		if (request === previewRequest) plan.value = response.data.data;
 	}
 	catch (error) {
-		planError.value = errorMessage(error);
+		if (request === previewRequest) planError.value = errorMessage(error);
 	}
 }
 
+function schedulePreview() {
+	previewRequest++;
+	plan.value = null;
+	planError.value = null;
+	if (previewTimer) clearTimeout(previewTimer);
+	previewTimer = setTimeout(preview, 300);
+}
+
+function startImport() {
+	if (strategy.value === 'replace' && plan.value?.replacedCollections) confirmReplace.value = true;
+	else runImport();
+}
+
 async function runImport() {
+	confirmReplace.value = false;
 	importing.value = true;
 
 	try {
 		await api.post(`/${BASE_PATH}/_meta/import`, { file: fileText.value, strategy: strategy.value });
+		const before = new Set(collections.value.map((c) => c.id));
 		await refresh();
+		const ids = collections.value.map((c) => c.id);
+		selected.value = ids.filter((id) => selected.value.includes(id) || !before.has(id));
 		notify('Import complete');
 		fileText.value = '';
 		fileName.value = null;
@@ -122,7 +141,11 @@ async function runImport() {
 	}
 }
 
-watch([fileText, strategy], preview);
+watch([fileText, strategy], schedulePreview);
+
+onBeforeUnmount(() => {
+	if (previewTimer) clearTimeout(previewTimer);
+});
 
 onMounted(async () => {
 	await load();
@@ -207,7 +230,7 @@ onMounted(async () => {
 				</v-notice>
 
 				<div>
-					<v-button :loading="importing" :disabled="!canImport" @click="runImport">
+					<v-button :loading="importing" :disabled="!canImport" @click="startImport">
 						<v-icon name="upload" left />
 						Import
 					</v-button>
@@ -223,6 +246,24 @@ onMounted(async () => {
 				</p>
 			</sidebar-detail>
 		</template>
+
+		<v-dialog v-model="confirmReplace" @esc="confirmReplace = false">
+			<v-card>
+				<v-card-title>Replace your collections?</v-card-title>
+				<v-card-text>
+					Your collections with the same prefix as the file, and all of their endpoints and responses, are deleted
+					and replaced by the file's version. This can't be undone.
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="confirmReplace = false">
+						Cancel
+					</v-button>
+					<v-button kind="danger" :loading="importing" @click="runImport">
+						Replace
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 

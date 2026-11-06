@@ -40,10 +40,9 @@ export interface ExportFile {
 export const PREFIX_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 
 export function endpointKey(endpoint: { method: string; path: string; query?: string | null }): string {
-	const query = parseRequiredQuery(endpoint.query)
-		.map(([key, value]) => `${key}=${value}`)
-		.sort()
-		.join('&');
+	const params = new URLSearchParams(parseRequiredQuery(endpoint.query));
+	params.sort();
+	const query = params.toString();
 
 	return `${endpoint.method.toUpperCase()} /${segments(endpoint.path).join('/')}${query ? `?${query}` : ''}`;
 }
@@ -160,7 +159,7 @@ export function planImport(local: LocalCollectionSummary[], file: ExportFile, st
 		collections: [],
 	};
 
-	const taken = new Set(local.map((c) => trimSlashes(c.prefix)));
+	const taken = new Set([...local, ...file.collections].map((c) => trimSlashes(c.prefix)));
 
 	for (const incoming of file.collections) {
 		const prefix = trimSlashes(incoming.prefix);

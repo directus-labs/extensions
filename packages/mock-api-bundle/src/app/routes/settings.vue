@@ -9,10 +9,17 @@ const { api, load, notify, errorMessage, setupError } = useMockApi();
 const item = ref<Record<string, any> | null>(null);
 const edits = ref<Record<string, any>>({});
 const saving = ref(false);
+const fetchError = ref<string | null>(null);
 const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
 async function fetchSettings() {
-	item.value = (await api.get(`/items/${SETTINGS}`)).data.data ?? {};
+	try {
+		item.value = (await api.get(`/items/${SETTINGS}`)).data.data ?? {};
+		fetchError.value = null;
+	}
+	catch (error) {
+		fetchError.value = errorMessage(error);
+	}
 }
 
 async function save() {
@@ -51,8 +58,8 @@ onMounted(async () => {
 		</template>
 
 		<div class="content">
-			<v-notice v-if="setupError" type="danger">
-				{{ setupError }}
+			<v-notice v-if="setupError || fetchError" type="danger">
+				{{ setupError ?? fetchError }}
 			</v-notice>
 			<v-form
 				v-else-if="item"

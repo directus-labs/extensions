@@ -34,7 +34,8 @@ function sendBody(res: Response, status: number, body: string) {
 	}
 
 	try {
-		res.status(status).json(JSON.parse(body));
+		JSON.parse(body);
+		res.status(status).type('application/json').send(body);
 	}
 	catch {
 		res.status(status).type('text/plain').send(body);
