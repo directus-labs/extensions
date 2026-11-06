@@ -1,6 +1,6 @@
-import type { MockCollection } from './engine';
+import type { MockCollection, TemplateContext } from './engine';
 import { describe, expect, it } from 'vitest';
-import { bodyError, resolveRequest } from './engine';
+import { bodyError, fillTemplate, resolveRequest } from './engine';
 
 const response = (name: string, status: number, body: string) => ({ name, status, body });
 
@@ -124,6 +124,44 @@ describe('resolveRequest', () => {
 		expect(resolveRequest(collections, request('GET', '/bookmarks/bookmarks/pages/5'))).toBeNull();
 		expect(resolveRequest(collections, request('POST', '/other/bookmarks/pages/5'))).toBeNull();
 		expect(resolveRequest(collections, request('POST', '/bookmarks/bookmarks/pages/5/extra'))).toBeNull();
+	});
+});
+
+describe('fillTemplate', () => {
+	const fill = (template: string, context: Partial<TemplateContext> = {}) =>
+		JSON.parse(fillTemplate(template, { params: {}, query: new URLSearchParams(), body: {}, ...context }));
+
+	it('should escape values inside quotes', () => {
+		const title = 'say "hi"\nback\\slash';
+		expect(fill('{"title": "{{body.title}}"}', { body: { title } })).toEqual({ title });
+		expect(fill('{"q": "x {{query.q}} y"}', { query: new URLSearchParams('q="') })).toEqual({ q: 'x " y' });
+	});
+
+	it('should write objects inside quotes as JSON text', () => {
+		expect(fill('{"tags": "{{body.tags}}"}', { body: { tags: ['a'] } })).toEqual({ tags: '["a"]' });
+	});
+
+	it('should keep numbers and literals as they are where a number goes', () => {
+		const query = new URLSearchParams('ok=true');
+		expect(fill('{"id": {{params.id}}, "ok": {{query.ok}}}', { params: { id: '5' }, query })).toEqual({ id: 5, ok: true });
+	});
+
+	it('should quote other strings where a number goes', () => {
+		const params = { id: 'abc', n: '007' };
+		expect(fill('{"id": {{params.id}}, "n": {{params.n}}}', { params })).toEqual({ id: 'abc', n: '007' });
+	});
+
+	it('should insert body values as JSON where a number goes', () => {
+		const body = { tags: ['a', 'b'], t: 'x"y' };
+		expect(fill('{"tags": {{body.tags}}, "t": {{body.t}}}', { body })).toEqual(body);
+	});
+
+	it('should use null for a missing value where a number goes, and nothing inside quotes', () => {
+		expect(fill('{"a": {{body.nope}}, "b": "{{body.nope}}"}')).toEqual({ a: null, b: '' });
+	});
+
+	it('should not end a string on an escaped quote', () => {
+		expect(fill(String.raw`{"a": "\"{{params.id}}\""}`, { params: { id: 'x"' } })).toEqual({ a: '"x""' });
 	});
 });
 
