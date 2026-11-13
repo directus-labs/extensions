@@ -1,12 +1,19 @@
+# DEPRECATED
+
+> **This extension is deprecated and no longer maintained. It will not receive updates or Directus 12 support.**
+> Use the built-in [AI Text](https://directus.com/docs/guides/flows/operations#ai-text) flow operation instead. Pass the image in **Files**, set **Output** to **Object** with `focal_point_x` and `focal_point_y`, then save them with an Update Data step.
+
+---
+
 # AI Focal Point Detection Operation
 
 Determine an image focal point, powered by [OpenAI](https://platform.openai.com/).
 
-![The AI Focal Point Detection operation, showing an Openai API Key field and a File URL field.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-focal-point-detection-operation/docs/options.png)
+![The AI Focal Point Detection operation, showing an Openai API Key field and a File URL field.](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/ai-focal-point-detection-operation/docs/options.png)
 
 This operation contains two required configuration options - an [OpenAI API Key](https://platform.openai.com), and a link to a file. It returns a JSON object containing the focal point coordinates and the reason these were chosen.
 
-![The output showing a JSON object containing a a flocal_point_x, focal_point_y, and reason parameter.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-focal-point-detection-operation/docs/output.png)
+![The output showing a JSON object containing a a flocal_point_x, focal_point_y, and reason parameter.](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/ai-focal-point-detection-operation/docs/output.png)
 
 You can use the operation to then save the result to a file.
 

@@ -1,8 +1,15 @@
+# DEPRECATED
+
+> **This extension is deprecated and no longer maintained. It will not receive updates or Directus 12 support.**
+> Use the built-in [AI Text](https://directus.com/docs/guides/flows/operations#ai-text) flow operation instead. Pass the image in **Files** and ask for alt text.
+
+---
+
 # AI Alt Text Writer Operation
 
 Create captions for your images within Directus Files with this custom operation, using [Clarifai](https://www.clarifai.com).
 
-![The AI Alt Text Writer operation, showing available options](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-alt-text-writer/docs/options.png)
+![The AI Alt Text Writer operation, showing available options](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/ai-alt-text-writer/docs/options.png)
 
 This operation requires two options to be set - first a personal access token from [Clarifai](https://www.clarifai.com) (you can find this in your personal settings under [Security](https://clarifai.com/settings/security)), and a link to the image file. The operation will return a string containing a text that describes the image.
 
