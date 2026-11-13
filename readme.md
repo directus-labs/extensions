@@ -18,11 +18,6 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | Extension | Type | Sandboxed |
 | --------- | --------- | --------- |
 | [Address Completion Interface](//github.com/directus-labs/extensions/tree/main/packages/address-completion-interface) | Interface | N&#x2F;A |
-| [AI Alt Text Writer Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-alt-text-writer) | Operation | ✅ |
-| [AI Focal Point Detection Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-focal-point-detection-operation) | Operation | ✅ |
-| [AI Image Generation Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-image-generation-operation) | Operation | ✅ |
-| [AI Translator Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-translator-operation) | Operation | ✅ |
-| [AI Writer Operation](//github.com/directus-labs/extensions/tree/main/packages/ai-writer-operation) | Operation | ✅ |
 | [Calculated Fields Bundle](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle) | Bundle | N&#x2F;A |
 | [Callout Richtext](//github.com/directus-labs/extensions/tree/main/packages/callout-richtext) | Richtext | N&#x2F;A |
 | [Card Select Interfaces](//github.com/directus-labs/extensions/tree/main/packages/card-select-interfaces) | Bundle | N&#x2F;A |
