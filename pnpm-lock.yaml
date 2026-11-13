@@ -474,6 +474,9 @@ importers:
         specifier: 10.20.1
         version: 10.20.1
     devDependencies:
+      '@directus-labs/utils':
+        specifier: workspace:*
+        version: link:../../utils
       '@directus/extensions-sdk':
         specifier: 13.0.1
         version: 13.0.1(@types/node@22.15.19)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(lightningcss@1.33.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.93.2)(terser@5.39.2)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))
@@ -580,6 +583,9 @@ importers:
 
   packages/pdf-viewer-interface:
     devDependencies:
+      '@directus-labs/utils':
+        specifier: workspace:*
+        version: link:../../utils
       '@directus/extensions-sdk':
         specifier: ^11.0.8
         version: 11.0.9(@types/node@24.7.2)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(lightningcss@1.33.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.93.2)(terser@5.39.2)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))
@@ -881,6 +887,9 @@ importers:
         specifier: ^3.7.8
         version: 3.7.8
     devDependencies:
+      '@directus-labs/utils':
+        specifier: workspace:*
+        version: link:../../utils
       '@directus/extensions-sdk':
         specifier: 11.0.4
         version: 11.0.4(@types/node@24.7.2)(@unhead/vue@2.0.9(vue@3.5.13(typescript@5.8.3)))(knex@3.1.0)(lightningcss@1.33.0)(pinia@3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)))(sass@1.93.2)(terser@5.39.2)(typescript@5.8.3)(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))
