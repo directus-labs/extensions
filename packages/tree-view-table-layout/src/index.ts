@@ -544,12 +544,45 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return { saveEdits };
 
 			async function saveEdits(edits: Record<PrimaryKey, Item>) {
+				const pk = primaryKeyField.value?.field ?? 'id';
+				const parentFieldName = parentField.value;
+				// Normalise an m2o value (object {pk}, scalar, or null) to its related key for comparison.
+				const relKey = (value: any) =>
+					value == null ? null : (typeof value === 'object' ? value[pk] : value);
+
+				// Only PATCH rows whose value actually changed. Upstream re-patches EVERY row's sort
+				// key on any drag (600+ requests), which is slow and lets a fast reload race a
+				// reparent queued behind those writes. We also send parent edits first so a reparent
+				// persists immediately, before the (now minimal) sort-position updates.
+				const entries = Object.entries(edits).sort(([, a], [, b]) => {
+					const aParent = parentFieldName && parentFieldName in (a as object) ? 0 : 1;
+					const bParent = parentFieldName && parentFieldName in (b as object) ? 0 : 1;
+					return aParent - bParent;
+				});
+
 				try {
-					for (const [id, payload] of Object.entries(edits)) {
-						await api.patch(
-							`${getEndpoint(collection.value!)}/${id}`,
-							payload,
+					for (const [id, payload] of entries) {
+						const original = items.value.find(
+							(item) => String(item[pk]) === String(id),
 						);
+
+						const changed: Item = {};
+
+						for (const [field, value] of Object.entries(payload)) {
+							const isParent = field === parentFieldName;
+							const before = isParent ? relKey(original?.[field]) : original?.[field];
+							const after = isParent ? relKey(value) : value;
+
+							if (original === undefined || before !== after)
+								changed[field] = value;
+						}
+
+						if (Object.keys(changed).length > 0) {
+							await api.patch(
+								`${getEndpoint(collection.value!)}/${id}`,
+								changed,
+							);
+						}
 					}
 				}
 				catch (error: any) {
