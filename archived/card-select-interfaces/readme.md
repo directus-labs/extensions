@@ -1,6 +1,13 @@
+# DEPRECATED
+
+> **This extension is deprecated and no longer maintained. It will not receive updates or Directus 12 support.**
+> Use the built-in [Card Select and Card Select (Multiple)](https://directus.com/docs/guides/data-model/interfaces#card-select) interfaces instead (Directus 12.7+). They add search, plus icons or images on each card.
+
+---
+
 # Card Select Interfaces
 
-![Screenshot of the Card Select interfaces in a form](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/card-select-interfaces/docs/card-select-interfaces.png)
+![Screenshot of the Card Select interfaces in a form](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/card-select-interfaces.png)
 
 A bundle of card-based interfaces for Directus that provides selection options for both radio (single select) and checkbox (multiple select) inputs.
 
@@ -20,9 +27,9 @@ A card-based single selection interface that replaces the standard radio button 
 
 Field Types: String, Integer, Float, Decimal, Big Integer
 
-![Radio Cards Interface Example](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/card-select-interfaces/docs/radio-cards-interface.png)
+![Radio Cards Interface Example](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/radio-cards-example.png)
 
-![Radio Cards Interface Config](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/card-select-interfaces/docs/radio-cards-config.png)
+![Radio Cards Interface Config](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/radio-cards-config.png)
 
 ### Checkbox Cards Interface
 
@@ -30,9 +37,9 @@ A card-based multiple selection interface that replaces standard checkboxes with
 
 Field Types: JSON, CSV
 
-![Checkbox Cards Interface Example](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/card-select-interfaces/docs/checkbox-cards-interface.png)
+![Checkbox Cards Interface Example](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/checkbox-cards-example.png)
 
-![Checkbox Cards Interface Config](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/card-select-interfaces/docs/checkbox-cards-config.png)
+![Checkbox Cards Interface Config](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/checkbox-cards-config.png)
 
 ## Configuration Options
 

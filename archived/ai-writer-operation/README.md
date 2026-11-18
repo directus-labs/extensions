@@ -1,13 +1,20 @@
+# DEPRECATED
+
+> **This extension is deprecated and no longer maintained. It will not receive updates or Directus 12 support.**
+> Use the built-in [AI Text](https://directus.com/docs/guides/flows/operations#ai-text) flow operation instead. It works with the providers set in **Settings → AI**: OpenAI, Anthropic, Google, OpenRouter, or any OpenAI-compatible endpoint.
+
+---
+
 # AI Writer Operation
 
 Generate text based on a written prompt within Directus Flows with this custom operation, powered by [OpenAI's Text Generation API]([https://.com](https://openai.com/product)), [Anthropic](https://www.anthropic.com/) [MistralAi  (via Replicate)](https://replicate.com/mistralai/mistral-7b-v0.1) and [Meta's LLama (via Replicate)](https://replicate.com/meta/meta-llama-3.1-405b-instruct).
 
-![The AI Writer operation, showing a masked OpenAI API Key field, model and prompt selection fields, and a multiline text input.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-writer-operation/docs/options.png)
+![The AI Writer operation, showing a masked OpenAI API Key field, model and prompt selection fields, and a multiline text input.](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/ai-writer-operation/docs/options.png)
 
 ## Configuration
 This operation contains some configuration options - an Api-Key, a selection of which model and prompt to use, and a text input. The text input can contain references like `{{$last.data}}` to refer to data available in the current flow. The prompt can be customised further using the optional Messages repeater field. The operation returns a string of the transformed or generated text.
 
-![The output showing a string that has been grammatically fixed.](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-writer-operation/docs/output.png)
+![The output showing a string that has been grammatically fixed.](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/ai-writer-operation/docs/output.png)
 
 ### API-Keys
 You can generate your API-Keys on the follosing sites:

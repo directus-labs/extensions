@@ -1,8 +1,15 @@
+# DEPRECATED
+
+> **This extension is deprecated and no longer maintained. It will not receive updates or Directus 12 support.**
+> Use the built-in [AI Image](https://directus.com/docs/guides/flows/operations#ai-image) flow operation instead. It saves generated images straight to the file library and works with OpenAI, Google, and OpenRouter.
+
+---
+
 # AI Image Generation Operation
 
 Generate new images within Directus Flows with this custom operation, powered by [OpenAI](https://platform.openai.com).
 
-![The AI Image Generation operation, showing an OpenAI API Key field, and fields for a prompt, quality, and size selection](https://raw.githubusercontent.com/directus-labs/extensions/main/packages/ai-image-generation-operation/docs/options.png)
+![The AI Image Generation operation, showing an OpenAI API Key field, and fields for a prompt, quality, and size selection](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/ai-image-generation-operation/docs/options.png)
 
 This operation contains four required configuration options - an [OpenAI API Key](https://platform.openai.com), a text prompt, a quality (standard or high), and a size (square, portrait, or landscape). It returns a string which is a direct URL to the generated image.
 
