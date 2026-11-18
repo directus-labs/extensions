@@ -20,7 +20,6 @@ Some of the published extensions may not be compatible with the sandbox requirem
 | [Address Completion Interface](//github.com/directus-labs/extensions/tree/main/packages/address-completion-interface) | Interface | N&#x2F;A |
 | [Calculated Fields Bundle](//github.com/directus-labs/extensions/tree/main/packages/calculated-fields-bundle) | Bundle | N&#x2F;A |
 | [Callout Richtext](//github.com/directus-labs/extensions/tree/main/packages/callout-richtext) | Richtext | N&#x2F;A |
-| [Card Select Interfaces](//github.com/directus-labs/extensions/tree/main/packages/card-select-interfaces) | Bundle | N&#x2F;A |
 | [Command Palette Module](//github.com/directus-labs/extensions/tree/main/packages/command-palette-module) | Module | N&#x2F;A |
 | [Display Link Interface](//github.com/directus-labs/extensions/tree/main/packages/display-link-interface) | Display | N&#x2F;A |
 | [Experimental M2A Interface](//github.com/directus-labs/extensions/tree/main/packages/experimental-m2a-interface) | Interface | N&#x2F;A |
