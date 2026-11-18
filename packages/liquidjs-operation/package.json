@@ -58,6 +58,7 @@
 		"liquidjs": "10.20.1"
 	},
 	"devDependencies": {
+		"@directus-labs/utils": "workspace:*",
 		"@directus/extensions-sdk": "13.0.1",
 		"@types/node": "^22.13.1",
 		"typescript": "^5.7.3",
