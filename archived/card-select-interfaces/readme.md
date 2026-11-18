@@ -27,7 +27,7 @@ A card-based single selection interface that replaces the standard radio button 
 
 Field Types: String, Integer, Float, Decimal, Big Integer
 
-![Radio Cards Interface Example](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/radio-cards-interface.png)
+![Radio Cards Interface Example](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/radio-cards-example.png)
 
 ![Radio Cards Interface Config](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/radio-cards-config.png)
 
@@ -37,7 +37,7 @@ A card-based multiple selection interface that replaces standard checkboxes with
 
 Field Types: JSON, CSV
 
-![Checkbox Cards Interface Example](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/checkbox-cards-interface.png)
+![Checkbox Cards Interface Example](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/checkbox-cards-example.png)
 
 ![Checkbox Cards Interface Config](https://raw.githubusercontent.com/directus-labs/extensions/main/archived/card-select-interfaces/docs/checkbox-cards-config.png)
 
