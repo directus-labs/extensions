@@ -131,7 +131,7 @@ function usePreventClickAfterDragging({ mouseDownHandler, clickHandler }) {
 					name="expand_more"
 					class="collapse-btn"
 					:class="{ 'children-collapsed': childrenCollapsed }"
-					@click.stop="$emit('toggle-children')"
+					@click.stop="$emit('toggle-children', $event.shiftKey)"
 				/>
 			</div>
 		</td>
