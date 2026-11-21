@@ -1,4 +1,9 @@
-import { isSystemCollection } from '@directus/system-data';
+// Inlined from @directus/system-data: Directus 12's app bundle does not provide that package in
+// its import map, so importing it directly leaves an unresolvable bare specifier that breaks the
+// whole extension at runtime. The check is just the documented "directus_" system-prefix test.
+function isSystemCollection(collection: string): boolean {
+	return typeof collection === 'string' && collection.startsWith('directus_');
+}
 
 const accessibleSystemCollections = {
 	directus_users: { route: '/users' },

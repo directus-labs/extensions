@@ -2,7 +2,10 @@
 import type { ShowSelect } from '@directus/extensions';
 // import { Header, Sort } from './types';
 import type { Header, Sort } from '../core-clones/components/v-table/types';
-import { useSync } from '@directus/composables';
+// useSync comes from the SDK, not @directus/composables: Directus 12's app bundle does not
+// provide @directus/composables in its import map, so importing it directly leaves an
+// unresolvable bare specifier that breaks the whole extension at runtime. The SDK re-exports it.
+import { useSync } from '@directus/extensions-sdk';
 import { clone, throttle } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import { useI18n } from 'vue-i18n';
