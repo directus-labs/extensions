@@ -9,7 +9,10 @@ export interface AiWriterOperationOptions {
 	apiKeyAnthropic?: string | null;
 	apiKeyOpenAi?: string | null;
 	apiKeyReplicate?: string | null;
+	apiKeyCustom?: string | null;
+	customEndpoint?: string | null;
 	model?: string | null;
+	customModelName?: string | null;
 	promptKey?: string | null;
 	system?: string | null;
 	json_mode?: boolean;
