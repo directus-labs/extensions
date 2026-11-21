@@ -222,6 +222,17 @@ export default defineInterface({
 						default_value: null,
 					},
 				},
+				{
+					field: 'rootSelector',
+					name: 'Root selector',
+					type: 'string',
+					meta: {
+						width: 'full',
+					},
+					schema: {
+						default_value: defaults.rootSelector,
+					},
+				},
 			],
 		};
 
