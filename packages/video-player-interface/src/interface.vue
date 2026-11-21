@@ -16,7 +16,7 @@ const { fileDrawer, fileID, setFileSelection } = useFileSelect(service);
 const { idInput, inputIsClickable, inputPlaceholder, onInputClick } = useInputField(service, fileDrawer);
 const { id, clearID } = useVideoID(service, idInput, fileID);
 
-watch(() => props.value, setServiceAndID);
+watch(() => props.value, setServiceAndID, { immediate: true });
 watch([service, id], emitInputValue);
 
 function setServiceAndID() {
