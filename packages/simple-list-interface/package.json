@@ -1,7 +1,7 @@
 {
 	"name": "@directus-labs/simple-list-interface",
 	"type": "module",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Input a simple list of items with full keyboard support.",
 	"repository": {
 		"type": "git",
