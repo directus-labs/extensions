@@ -1,7 +1,7 @@
 # DEPRECATED
 
 > **This extension is deprecated and no longer maintained. It will not receive updates or Directus 12 support.**
-> Use the built-in [Card Select and Card Select (Multiple)](https://directus.com/docs/guides/data-model/interfaces#card-select) interfaces instead (Directus 12.7+). They add search, plus icons or images on each card.
+> Use the built-in [Card Select and Card Select (Multiple)](https://directus.com/docs/guides/data-model/interfaces#card-select) interfaces instead (Directus 12.7+). They add search, plus icons or images on each card. Existing fields don't switch over on their own, so change each field's interface to Card Select or Card Select (Multiple) before uninstalling this extension. Cards that use SVG icons will need an icon or image instead.
 
 ---
 

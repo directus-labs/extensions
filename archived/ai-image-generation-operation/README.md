@@ -1,7 +1,7 @@
 # DEPRECATED
 
 > **This extension is deprecated and no longer maintained. It will not receive updates or Directus 12 support.**
-> Use the built-in [AI Image](https://directus.com/docs/guides/flows/operations#ai-image) flow operation instead. It saves generated images straight to the file library and works with OpenAI, Google, and OpenRouter.
+> Use the built-in [AI Image](https://directus.com/docs/guides/flows/operations#ai-image) flow operation instead (Directus 12.7+). It saves generated images straight to the file library and works with OpenAI, Google, and OpenRouter.
 
 ---
 

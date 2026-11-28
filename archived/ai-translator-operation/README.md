@@ -1,7 +1,7 @@
 # DEPRECATED
 
 > **This extension is deprecated and no longer maintained. It will not receive updates or Directus 12 support.**
-> Use the built-in [AI Text](https://directus.com/docs/guides/flows/operations#ai-text) flow operation instead, and ask it to translate. It works with the providers set in **Settings → AI**.
+> Use the built-in [AI Text](https://directus.com/docs/guides/flows/operations#ai-text) flow operation instead (Directus 12.7+), and ask it to translate. It works with the providers set in **Settings → AI**.
 
 ---
 

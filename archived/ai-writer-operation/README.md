@@ -1,7 +1,7 @@
 # DEPRECATED
 
 > **This extension is deprecated and no longer maintained. It will not receive updates or Directus 12 support.**
-> Use the built-in [AI Text](https://directus.com/docs/guides/flows/operations#ai-text) flow operation instead. It works with the providers set in **Settings → AI**: OpenAI, Anthropic, Google, OpenRouter, or any OpenAI-compatible endpoint.
+> Use the built-in [AI Text](https://directus.com/docs/guides/flows/operations#ai-text) flow operation instead (Directus 12.7+). It works with the providers set in **Settings → AI**: OpenAI, Anthropic, Google, OpenRouter, or any OpenAI-compatible endpoint.
 
 ---
 

@@ -1,7 +1,7 @@
 # DEPRECATED
 
 > **This extension is deprecated and no longer maintained. It will not receive updates or Directus 12 support.**
-> Use the built-in [AI Text](https://directus.com/docs/guides/flows/operations#ai-text) flow operation instead. Pass the image in **Files**, set **Output** to **Object** with `focal_point_x` and `focal_point_y`, then save them with an Update Data step.
+> Use the built-in [AI Text](https://directus.com/docs/guides/flows/operations#ai-text) flow operation instead (Directus 12.7+). Pass the image in **Files**, include its `width` and `height` in the prompt, set **Output** to **Object** with `focal_point_x` and `focal_point_y` as pixel values, then save them with an Update Data step.
 
 ---
 
